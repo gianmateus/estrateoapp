@@ -9,11 +9,22 @@ declare global {
       user: {
         id: string;
         email: string;
+        nome: string;
+        permissoes: string;
       };
     }
   }
 }
 
+/**
+ * Middleware de autenticação JWT
+ * 
+ * Valida o token JWT presente no header Authorization
+ * Verifica se o token está no formato correto (Bearer <token>)
+ * Decodifica o token usando a chave JWT_SECRET do .env
+ * Se válido, anexa os dados do usuário ao req.user
+ * Se inválido, retorna status 401 Unauthorized
+ */
 export default async function authMiddleware(
   req: Request,
   res: Response,
@@ -26,6 +37,7 @@ export default async function authMiddleware(
     if (!authHeader) {
       return res.status(401).json({
         error: true,
+        code: 'token_missing',
         message: 'Token não fornecido'
       });
     }
@@ -36,6 +48,7 @@ export default async function authMiddleware(
     if (parts.length !== 2) {
       return res.status(401).json({
         error: true,
+        code: 'token_format_invalid',
         message: 'Erro no formato do token'
       });
     }
@@ -45,18 +58,32 @@ export default async function authMiddleware(
     if (!/^Bearer$/i.test(scheme)) {
       return res.status(401).json({
         error: true,
+        code: 'token_schema_invalid',
         message: 'Token mal formatado'
       });
     }
     
     // Verificar se o token é válido
-    const secret = process.env.JWT_SECRET || 'chave_secreta_jwt_estrateo';
+    const secret = process.env.JWT_SECRET;
     
-    jwt.verify(token, secret, async (err, decoded: any) => {
-      if (err) {
+    if (!secret) {
+      console.error('JWT_SECRET não definido no ambiente');
+      return res.status(500).json({
+        error: true,
+        code: 'server_configuration_error',
+        message: 'Erro de configuração do servidor'
+      });
+    }
+    
+    try {
+      // Verificar e decodificar o token de forma síncrona
+      const decoded = jwt.verify(token, secret) as jwt.JwtPayload;
+      
+      if (!decoded || typeof decoded !== 'object' || !decoded.id) {
         return res.status(401).json({
           error: true,
-          message: 'Token inválido ou expirado'
+          code: 'token_payload_invalid',
+          message: 'Payload do token inválido'
         });
       }
       
@@ -68,6 +95,7 @@ export default async function authMiddleware(
       if (!user) {
         return res.status(401).json({
           error: true,
+          code: 'user_not_found',
           message: 'Usuário não encontrado'
         });
       }
@@ -75,15 +103,41 @@ export default async function authMiddleware(
       // Adicionar informações do usuário à requisição
       req.user = {
         id: user.id,
-        email: user.email
+        email: user.email,
+        nome: user.nome,
+        permissoes: user.permissoes
       };
       
       return next();
-    });
+    } catch (jwtError) {
+      if (jwtError instanceof jwt.TokenExpiredError) {
+        return res.status(401).json({
+          error: true,
+          code: 'token_expired',
+          message: 'Token expirado'
+        });
+      }
+      
+      if (jwtError instanceof jwt.JsonWebTokenError) {
+        return res.status(401).json({
+          error: true,
+          code: 'token_invalid',
+          message: 'Token inválido'
+        });
+      }
+      
+      // Outros erros de JWT
+      return res.status(401).json({
+        error: true,
+        code: 'token_verification_failed',
+        message: 'Falha na verificação do token'
+      });
+    }
   } catch (error) {
     console.error('Erro no middleware de autenticação:', error);
     return res.status(500).json({
       error: true,
+      code: 'server_error',
       message: 'Erro interno no servidor'
     });
   }
