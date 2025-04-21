@@ -44,8 +44,8 @@ i18n
     },
     
     detection: {
-      order: ['navigator', 'localStorage', 'htmlTag'],
-      caches: ['localStorage'],
+      order: ['localStorage', 'htmlTag', 'navigator'],
+      caches: [],
     },
     
     // Configuração para carregar arquivos do diretório public/locales
@@ -53,5 +53,8 @@ i18n
       loadPath: '/locales/{{lng}}/translation.json',
     }
   });
+
+// Forçar o idioma inglês
+i18n.changeLanguage('en');
 
 export default i18n; 
