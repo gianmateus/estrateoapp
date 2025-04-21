@@ -36,4 +36,12 @@ Thumbs.db
 # Diretórios de cache
 .npm
 .eslintcache
-.cache 
+.cache
+
+# Arquivos de banco de dados
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+backend/prisma/dev.db
+backend/prisma/dev.db-journal 
