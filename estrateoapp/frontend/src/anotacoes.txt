@@ -1,0 +1,128 @@
+import {
+  TextField,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  NoteAdd as NoteIcon,
+  Save as SaveIcon,
+} from '@mui/material';
+
+const STORAGE_KEYS = {
+  // ... outros valores existentes
+  anotacoes: 'ia_anotacoes_usuario'
+};
+
+interface Anotacao {
+  id: string;
+  data: string;
+  categoria: string;
+  texto: string;
+}
+
+const [anotacoes, setAnotacoes] = useState<Anotacao[]>([]);
+const [dialogoAnotacaoAberto, setDialogoAnotacaoAberto] = useState(false);
+const [novaAnotacao, setNovaAnotacao] = useState<{categoria: string, texto: string}>({
+  categoria: '',
+  texto: ''
+});
+const [snackbarSucessoAberta, setSnackbarSucessoAberta] = useState(false);
+
+useEffect(() => {
+  try {
+    const anotacoesStr = localStorage.getItem(STORAGE_KEYS.anotacoes);
+    if (anotacoesStr) {
+      setAnotacoes(JSON.parse(anotacoesStr));
+    }
+  } catch (error) {
+    console.error('Erro ao carregar anotações:', error);
+  }
+}, []);
+
+const adicionarAnotacao = () => {
+  if (!novaAnotacao.categoria || !novaAnotacao.texto) return;
+  
+  const novaAnotacaoObj: Anotacao = {
+    id: `anotacao_${Date.now()}`,
+    data: new Date().toISOString(),
+    categoria: novaAnotacao.categoria,
+    texto: novaAnotacao.texto
+  };
+  
+  const novasAnotacoes = [...anotacoes, novaAnotacaoObj];
+  setAnotacoes(novasAnotacoes);
+  
+  // Salvar no localStorage
+  try {
+    localStorage.setItem(STORAGE_KEYS.anotacoes, JSON.stringify(novasAnotacoes));
+    setSnackbarSucessoAberta(true);
+  } catch (error) {
+    console.error('Erro ao salvar anotação:', error);
+  }
+  
+  // Fechar diálogo e limpar campos
+  setDialogoAnotacaoAberto(false);
+  setNovaAnotacao({ categoria: '', texto: '' });
+};
+
+const renderizarAnotacoes = () => {
+  return (
+    <Card variant="outlined" sx={{ mb: 3 }}>
+      <CardHeader 
+        title={t.minhasAnotacoes}
+        action={
+          <Button
+            startIcon={<NoteIcon />}
+            onClick={() => setDialogoAnotacaoAberto(true)}
+            variant="outlined"
+            size="small"
+          >
+            {t.adicionarAnotacao}
+          </Button>
+        }
+      />
+      <CardContent>
+        {anotacoes.length > 0 ? (
+          <List>
+            {anotacoes.map((anotacao) => (
+              <ListItem key={anotacao.id} divider>
+                <ListItemText
+                  primary={anotacao.categoria}
+                  secondary={
+                    <>
+                      <Typography variant="body2" component="span" color="text.secondary">
+                        {new Date(anotacao.data).toLocaleDateString()} - 
+                      </Typography>
+                      <Typography variant="body2" component="span" sx={{ ml: 1 }}>
+                        {anotacao.texto}
+                      </Typography>
+                    </>
+                  }
+                />
+              </ListItem>
+            ))}
+          </List>
+        ) : (
+          <Typography variant="body1" align="center">
+            {t.semDados}
+          </Typography>
+        )}
+      </CardContent>
+    </Card>
+  );
+};
+
+{/* Renderizar a seção de anotações */}
+{renderizarAnotacoes()}
+
+{/* Diálogo para adicionar anotação */}
+<Dialog open={dialogoAnotacaoAberto} onClose={() => setDialogoAnotacaoAberto(false)}>
+  <DialogTitle>{t.adicionarAnotacao}</DialogTitle>
+  <DialogContent>
+    <TextField
+      autoFocus
+      margin="dense"
+      id="categoria"
+      label={t.categoriaAnotacao}
+      type="text"
+ 
