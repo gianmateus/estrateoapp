@@ -89,5 +89,77 @@
   "geradoHoje": "Gerado Hoje",
   "sugestao1": "Seu estoque de batatas está abaixo do mínimo, considere reabastecer",
   "sugestao2": "As vendas tendem a aumentar 20% nos finais de semana, prepare seu estoque",
-  "sugestao3": "Seus gastos com fornecedores aumentaram 15% este mês"
+  "sugestao3": "Seus gastos com fornecedores aumentaram 15% este mês",
+  
+  "demoBanner": "Usando dados de demonstração. Conecte à API para dados reais.",
+  "usuario": "Usuário",
+  "estatisticasUso": "Estatísticas de Uso",
+  "usuariosAtivosHoje": "Usuários Ativos Hoje",
+  "usuariosTotais": "Total de Usuários",
+  
+  "idiomas": "Idiomas",
+  "ingles": "Inglês",
+  "alemao": "Alemão",
+  
+  "gerarRelatorio": "Gerar Relatório",
+  "total": "Total",
+  
+  "relatorioGeradoComSucesso": "Relatório gerado com sucesso!",
+  "erroAoGerarRelatorio": "Erro ao gerar relatório. Tente novamente.",
+  
+  "mensagem": {
+    "entradaAdicionada": "Entrada adicionada com sucesso!",
+    "saidaAdicionada": "Saída adicionada com sucesso!",
+    "erroAdicionarTransacao": "Erro ao adicionar transação, tente novamente"
+  },
+  
+  "finance": {
+    "transactions": "Movimentações Financeiras",
+    "filter": "Filtrar",
+    "charts": "Gráficos",
+    "noCategory": "Sem categoria",
+    "activeFilters": "Filtros Ativos",
+    "clearFilters": "Limpar Filtros",
+    "noTransactions": "Nenhuma transação encontrada",
+    "recurrence": "Recorrência",
+    "latestTransactions": "Últimas Transações",
+    "salary": "Salário",
+    "shopping": "Compras",
+    "payments": "Pagamentos",
+    "inputs": "Entradas",
+    "outputs": "Saídas"
+  },
+  
+  "finance.charts": {
+    "monthlyIncome": "Entradas e Saídas Mensais",
+    "weekdayIncome": "Entradas por Dia da Semana"
+  },
+  
+  "finance.recurrence": {
+    "none": "Nenhuma",
+    "biweekly": "Quinzenal",
+    "monthly": "Mensal",
+    "quarterly": "Trimestral"
+  },
+  
+  "finance.delete": {
+    "title": "Excluir Transação",
+    "confirmation": "Tem certeza que deseja excluir esta transação?",
+    "success": "Transação excluída com sucesso",
+    "cancel": "Cancelar",
+    "confirm": "Excluir",
+    "paymentTitle": "Excluir Pagamento",
+    "paymentConfirmation": "Tem certeza que deseja excluir este pagamento?",
+    "paymentSuccess": "Pagamento excluído com sucesso"
+  },
+  
+  "weekdays": {
+    "monday": "Segunda-feira",
+    "tuesday": "Terça-feira",
+    "wednesday": "Quarta-feira",
+    "thursday": "Quinta-feira",
+    "friday": "Sexta-feira",
+    "saturday": "Sábado",
+    "sunday": "Domingo"
+  }
 } 

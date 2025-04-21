@@ -28,7 +28,7 @@ import {
 } from '@mui/material';
 import { Add as AddIcon, Remove as RemoveIcon, BarChart as ChartIcon, Edit as EditIcon, Close as CloseIcon, FilterList as FilterListIcon, Clear as ClearIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import { format, differenceInDays } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
+import { ptBR, enUS, de } from 'date-fns/locale';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { useAuth } from '../contexts/AuthContext';
 import { useFinanceiro } from '../contexts/FinanceiroContext';
@@ -49,9 +49,8 @@ interface PagamentoProgramado {
 const categoriasSaida = ['Salário', 'Compras', 'Pagamentos'];
 const idiomas = [
   { codigo: 'pt-BR', nome: 'Português', bandeira: '🇧🇷' },
-  { codigo: 'it-IT', nome: 'Italiano', bandeira: '🇮🇹' },
-  { codigo: 'de-DE', nome: 'Alemão', bandeira: '🇩🇪' },
-  { codigo: 'en-US', nome: 'English', bandeira: '🇺🇸' }
+  { codigo: 'en-US', nome: 'English', bandeira: '🇺🇸' },
+  { codigo: 'de-DE', nome: 'Deutsch', bandeira: '🇩🇪' }
 ];
 
 const Financeiro = () => {
@@ -134,7 +133,7 @@ const Financeiro = () => {
     if (!hasPermission('financeiro.editar')) {
       setSnackbar({
         open: true,
-        message: 'Você não tem permissão para adicionar transações',
+        message: t('acessoNegado'),
         severity: 'error',
       });
       return;
@@ -154,7 +153,7 @@ const Financeiro = () => {
         valor: parseFloat(formData.valor),
         data: new Date(formData.data).toISOString(),
         descricao: formData.descricao,
-        categoria: formData.categoria || "Sem categoria",
+        categoria: formData.categoria || t('finance.noCategory'),
         metodoPagamento: formData.observacao || undefined,
         observacao: formData.observacao
       });
@@ -176,7 +175,7 @@ const Financeiro = () => {
       
       setSnackbar({
         open: true,
-        message: `${tipoTransacao === 'entrada' ? 'Entrada' : 'Saída'} adicionada com sucesso!`,
+        message: tipoTransacao === 'entrada' ? t('mensagem.entradaAdicionada') : t('mensagem.saidaAdicionada'),
         severity: 'success'
       });
       
@@ -185,7 +184,7 @@ const Financeiro = () => {
       console.error('Erro ao adicionar transação', error);
       setSnackbar({
         open: true,
-        message: 'Erro ao adicionar transação, tente novamente',
+        message: t('mensagem.erroAdicionarTransacao'),
         severity: 'error'
       });
     } finally {
@@ -255,12 +254,21 @@ const Financeiro = () => {
   };
 
   const getDadosGraficos = () => {
-    const meses = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+    // Usar nomes de mês abreviados de acordo com o idioma atual
+    const dataAtual = new Date();
+    const mesesAbreviados: string[] = [];
+    
+    // Gerar lista de meses abreviados no idioma atual
+    for (let i = 0; i < 12; i++) {
+      const data = new Date(dataAtual.getFullYear(), i, 1);
+      mesesAbreviados.push(format(data, 'MMM', { locale: getDateLocale() }).toLowerCase());
+    }
+    
     const anoAtual = new Date().getFullYear();
     
     const dadosMensaisIniciais: Record<string, { mes: string, entradas: number, saidas: number }> = {};
     
-    meses.forEach((mes, index) => {
+    mesesAbreviados.forEach((mes, index) => {
       const mesFormatado = `${mes} ${anoAtual}`;
       dadosMensaisIniciais[mesFormatado] = { 
         mes: mesFormatado, 
@@ -273,7 +281,8 @@ const Financeiro = () => {
     
     transacoes.forEach(transacao => {
       const data = new Date(transacao.data);
-      const mes = meses[data.getMonth()];
+      // Usar o format para obter o mês abreviado no idioma atual
+      const mes = format(data, 'MMM', { locale: getDateLocale() }).toLowerCase();
       const ano = data.getFullYear();
       const mesAno = `${mes} ${ano}`;
       
@@ -291,13 +300,29 @@ const Financeiro = () => {
     const dadosMensais = Object.values(dadosMensaisPorMes).sort((a, b) => {
       const [mesA, anoA] = a.mes.split(' ');
       const [mesB, anoB] = b.mes.split(' ');
-      const indexA = meses.indexOf(mesA);
-      const indexB = meses.indexOf(mesB);
-      if (anoA !== anoB) return parseInt(anoA) - parseInt(anoB);
+      
+      // Comparar anos primeiro
+      if (parseInt(anoA) !== parseInt(anoB)) {
+        return parseInt(anoA) - parseInt(anoB);
+      }
+      
+      // Depois comparar meses - encontrar índice nos meses traduzidos
+      const indexA = mesesAbreviados.indexOf(mesA);
+      const indexB = mesesAbreviados.indexOf(mesB);
       return indexA - indexB;
     });
 
-    const diasSemana = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+    // Usar nomes de dias da semana no idioma atual
+    const diasSemana = [
+      t('weekdays.sunday'),
+      t('weekdays.monday'),
+      t('weekdays.tuesday'),
+      t('weekdays.wednesday'),
+      t('weekdays.thursday'),
+      t('weekdays.friday'),
+      t('weekdays.saturday')
+    ];
+    
     const dadosPorDiaIniciais = diasSemana.map(dia => ({ name: dia, valor: 0 }));
     
     const entradasPorDia = [...dadosPorDiaIniciais];
@@ -423,14 +448,14 @@ const Financeiro = () => {
   const handleRemoverTransacao = (id: string) => {
     setDialogoConfirmacao({
       aberto: true,
-      titulo: t('financeiro.excluir.titulo'),
-      mensagem: t('financeiro.excluir.confirmacao'),
+      titulo: t('finance.delete.title'),
+      mensagem: t('finance.delete.confirmation'),
       itemId: id,
       onConfirm: () => {
         removerTransacao(id);
         setSnackbar({
           open: true,
-          message: t('financeiro.excluir.sucesso'),
+          message: t('finance.delete.success'),
           severity: 'success'
         });
         setDialogoConfirmacao(prev => ({ ...prev, aberto: false }));
@@ -441,14 +466,14 @@ const Financeiro = () => {
   const handleRemoverPagamento = (id: string) => {
     setDialogoConfirmacao({
       aberto: true,
-      titulo: t('financeiro.excluir.tituloPagamento'),
-      mensagem: t('financeiro.excluir.confirmacaoPagamento'),
+      titulo: t('finance.delete.paymentTitle'),
+      mensagem: t('finance.delete.paymentConfirmation'),
       itemId: id,
       onConfirm: () => {
         setPagamentos(pagamentos.filter(p => p.id !== id));
         setSnackbar({
           open: true,
-          message: t('financeiro.excluir.sucessoPagamento'),
+          message: t('finance.delete.paymentSuccess'),
           severity: 'success'
         });
         setDialogoConfirmacao(prev => ({ ...prev, aberto: false }));
@@ -458,6 +483,50 @@ const Financeiro = () => {
 
   const handleFecharConfirmacao = () => {
     setDialogoConfirmacao(prev => ({ ...prev, aberto: false }));
+  };
+
+  // Função para obter o locale do date-fns com base no idioma atual
+  const getDateLocale = () => {
+    switch (i18n.language) {
+      case 'pt-BR':
+        return ptBR;
+      case 'de-DE':
+        return de;
+      default:
+        return enUS;
+    }
+  };
+
+  // Função para formatar moeda de acordo com o idioma atual
+  const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat(i18n.language, {
+      style: 'currency',
+      currency: 'EUR'
+    }).format(value);
+  };
+
+  // Função para formatar datas de acordo com o idioma atual
+  const formatDate = (date: Date, formatStr: string = 'dd/MM/yyyy') => {
+    return format(date, formatStr, { locale: getDateLocale() });
+  };
+  
+  // Função para formatar data completa no estilo de cada idioma usando toLocaleDateString
+  const formatFullDate = (date: Date) => {
+    return date.toLocaleDateString(i18n.language, {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
+
+  // Obter categorias traduzidas
+  const getCategoriasSaida = () => {
+    return [
+      t('finance.salary'),
+      t('finance.shopping'),
+      t('finance.payments')
+    ];
   };
 
   return (
@@ -516,7 +585,7 @@ const Financeiro = () => {
             }}
           >
             <AddIcon sx={{ fontSize: 40, mb: 1 }} />
-            <Typography variant="h6">{t('entrada')}</Typography>
+            <Typography variant="h6">{t('novaEntrada')}</Typography>
           </Button>
         </Grid>
 
@@ -538,7 +607,7 @@ const Financeiro = () => {
             }}
           >
             <RemoveIcon sx={{ fontSize: 40, mb: 1 }} />
-            <Typography variant="h6">{t('saida')}</Typography>
+            <Typography variant="h6">{t('novaSaida')}</Typography>
           </Button>
         </Grid>
 
@@ -546,14 +615,14 @@ const Financeiro = () => {
           <Paper sx={{ p: 3 }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
               <Typography variant="h6">
-                {t('saldo')}: €{balanco.saldoAtual.toFixed(2)}
+                {t('saldo')}: {formatCurrency(balanco.saldoAtual)}
               </Typography>
               <Button
                 variant="contained"
                 startIcon={<ChartIcon />}
                 onClick={() => setOpenGraficos(true)}
               >
-                {t('graficos')}
+                {t('finance.charts')}
               </Button>
             </Box>
 
@@ -629,24 +698,24 @@ const Financeiro = () => {
               </Grid>
             </Grid>
 
-            <Typography variant="h6" gutterBottom>{t('ultimasTransacoes')}</Typography>
+            <Typography variant="h6" gutterBottom>{t('finance.latestTransactions')}</Typography>
             
             <Paper sx={{ mt: 2, mb: 2, p: 2 }}>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-                <Typography variant="h6">{t('financeiro.movimentacoes')}</Typography>
+                <Typography variant="h6">{t('finance.transactions')}</Typography>
                 <Button 
                   variant="contained" 
                   startIcon={<FilterListIcon />}
                   onClick={() => setFiltroDialogAberto(true)}
                 >
-                  {t('financeiro.filtrar')}
+                  {t('finance.filter')}
                 </Button>
               </Box>
 
               {filtrosAtivos.length > 0 && (
                 <Box sx={{ mb: 2, display: 'flex', flexWrap: 'wrap', gap: 1 }}>
                   <Typography variant="subtitle2" sx={{ alignSelf: 'center', mr: 1 }}>
-                    {t('financeiro.filtrosAtivos')}:
+                    {t('finance.activeFilters')}:
                   </Typography>
                   {filtrosAtivos.map((filtro, index) => (
                     <Chip 
@@ -662,7 +731,7 @@ const Financeiro = () => {
                     onClick={() => setFiltrosAtivos([])}
                     startIcon={<ClearIcon />}
                   >
-                    {t('financeiro.limparFiltros')}
+                    {t('finance.clearFilters')}
                   </Button>
                 </Box>
               )}
@@ -681,10 +750,10 @@ const Financeiro = () => {
                           {transacao.tipo === 'entrada' ? (
                             <>
                               <Typography variant="body1" fontWeight="bold">
-                                +€{transacao.valor.toFixed(2)}
+                                +{formatCurrency(transacao.valor)}
                               </Typography>
                               <Typography variant="body2" color="text.secondary">
-                                {transacao.categoria}
+                                {transacao.categoria || t('finance.noCategory')}
                               </Typography>
                             </>
                           ) : (
@@ -694,10 +763,10 @@ const Financeiro = () => {
                         
                         <Grid item xs={6} sm={6} sx={{ textAlign: 'center' }}>
                           <Typography variant="body1">
-                            {format(new Date(transacao.data), 'dd/MM/yyyy')}
+                            {formatDate(new Date(transacao.data))}
                           </Typography>
                           <Typography variant="body2" color="text.secondary">
-                            {format(new Date(transacao.data), 'EEEE', { locale: ptBR })}
+                            {formatFullDate(new Date(transacao.data))}
                           </Typography>
                         </Grid>
                         
@@ -705,10 +774,10 @@ const Financeiro = () => {
                           {transacao.tipo === 'saida' ? (
                             <>
                               <Typography variant="body1" fontWeight="bold">
-                                -€{transacao.valor.toFixed(2)}
+                                -{formatCurrency(transacao.valor)}
                               </Typography>
                               <Typography variant="body2" color="text.secondary">
-                                {transacao.categoria}
+                                {transacao.categoria || t('finance.noCategory')}
                               </Typography>
                             </>
                           ) : (
@@ -740,7 +809,7 @@ const Financeiro = () => {
                 ))}
                 {transacoesFiltradas.length === 0 && (
                   <Typography variant="body1" sx={{ textAlign: 'center', my: 3, color: 'text.secondary' }}>
-                    {t('financeiro.nenhumaTransacao')}
+                    {t('finance.noTransactions')}
                   </Typography>
                 )}
               </List>
@@ -769,10 +838,10 @@ const Financeiro = () => {
                 >
                   <Box>
                     <Typography>
-                      {pagamento.descricao} - €{pagamento.valor.toFixed(2)}
+                      {pagamento.descricao} - {formatCurrency(pagamento.valor)}
                     </Typography>
                     <Typography variant="body2">
-                      {format(pagamento.dataVencimento, "dd/MM/yyyy")} 
+                      {formatDate(pagamento.dataVencimento)} 
                       {!pagamento.pago && ` (${differenceInDays(pagamento.dataVencimento, new Date())} ${t('diasParaVencer')})`}
                     </Typography>
                   </Box>
@@ -871,23 +940,23 @@ const Financeiro = () => {
                   error={!!formErrors.categoria}
                   helperText={formErrors.categoria}
                 >
-                  {categoriasSaida.map((categoria) => (
+                  {getCategoriasSaida().map((categoria) => (
                     <MenuItem key={categoria} value={categoria}>
                       {categoria}
                     </MenuItem>
                   ))}
                 </TextField>
                 <FormControl fullWidth margin="dense">
-                  <InputLabel>{t('financeiro.recorrencia')}</InputLabel>
+                  <InputLabel>{t('finance.recurrence')}</InputLabel>
                   <Select
                     value={formData.recorrencia}
                     onChange={(e) => setFormData({ ...formData, recorrencia: e.target.value })}
-                    label={t('financeiro.recorrencia')}
+                    label={t('finance.recurrence')}
                   >
-                    <MenuItem value="nenhuma">{t('financeiro.recorrencia.nenhuma')}</MenuItem>
-                    <MenuItem value="quinzenal">{t('financeiro.recorrencia.quinzenal')}</MenuItem>
-                    <MenuItem value="mensal">{t('financeiro.recorrencia.mensal')}</MenuItem>
-                    <MenuItem value="trimestral">{t('financeiro.recorrencia.trimestral')}</MenuItem>
+                    <MenuItem value="nenhuma">{t('finance.recurrence.none')}</MenuItem>
+                    <MenuItem value="quinzenal">{t('finance.recurrence.biweekly')}</MenuItem>
+                    <MenuItem value="mensal">{t('finance.recurrence.monthly')}</MenuItem>
+                    <MenuItem value="trimestral">{t('finance.recurrence.quarterly')}</MenuItem>
                   </Select>
                 </FormControl>
               </>
@@ -947,7 +1016,7 @@ const Financeiro = () => {
             <Grid container spacing={3}>
               <Grid item xs={12}>
                 <Typography variant="h6" gutterBottom>
-                  {t('financeiro.graficos.entradasPorMes')}
+                  {t('finance.charts.monthlyIncome')}
                 </Typography>
                 <Paper style={{ height: 300, padding: 20 }}>
                   <ResponsiveContainer width="100%" height="100%">
@@ -958,17 +1027,17 @@ const Financeiro = () => {
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="name" />
                       <YAxis />
-                      <Tooltip formatter={(value) => `€${value}`} />
+                      <Tooltip formatter={(value) => formatCurrency(Number(value))} />
                       <Legend />
-                      <Bar dataKey="entrada" fill="#4caf50" name={t('financeiro.entradas')} />
-                      <Bar dataKey="saida" fill="#f44336" name={t('financeiro.saidas')} />
+                      <Bar dataKey="entrada" fill="#4caf50" name={t('finance.inputs')} />
+                      <Bar dataKey="saida" fill="#f44336" name={t('finance.outputs')} />
                     </BarChart>
                   </ResponsiveContainer>
                 </Paper>
               </Grid>
               <Grid item xs={12}>
                 <Typography variant="h6" gutterBottom>
-                  {t('financeiro.graficos.entradasPorDiaSemana')}
+                  {t('finance.charts.weekdayIncome')}
                 </Typography>
                 <Paper style={{ height: 300, padding: 20 }}>
                   <ResponsiveContainer width="100%" height="100%">
@@ -979,9 +1048,9 @@ const Financeiro = () => {
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="name" />
                       <YAxis />
-                      <Tooltip formatter={(value) => `€${value}`} />
+                      <Tooltip formatter={(value) => formatCurrency(Number(value))} />
                       <Legend />
-                      <Bar dataKey="valor" fill="#4caf50" name={t('financeiro.entradas')} />
+                      <Bar dataKey="valor" fill="#4caf50" name={t('finance.inputs')} />
                     </BarChart>
                   </ResponsiveContainer>
                 </Paper>
@@ -1012,10 +1081,10 @@ const Financeiro = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleFecharConfirmacao} color="primary">
-            {t('financeiro.excluir.cancelar')}
+            {t('finance.delete.cancel')}
           </Button>
           <Button onClick={() => dialogoConfirmacao.onConfirm()} color="error" autoFocus>
-            {t('financeiro.excluir.confirmar')}
+            {t('finance.delete.confirm')}
           </Button>
         </DialogActions>
       </Dialog>

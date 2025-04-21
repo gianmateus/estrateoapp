@@ -89,5 +89,71 @@
   "geradoHoje": "Heute generiert",
   "sugestao1": "Ihr Kartoffelbestand ist unter dem Minimum, erwägen Sie Nachbestellung",
   "sugestao2": "Die Verkäufe steigen am Wochenende um 20%, bereiten Sie Ihren Bestand vor",
-  "sugestao3": "Ihre Lieferantenkosten sind diesen Monat um 15% gestiegen"
+  "sugestao3": "Ihre Lieferantenkosten sind diesen Monat um 15% gestiegen",
+
+  "idiomas": "Sprachen",
+  "ingles": "Englisch",
+  "alemao": "Deutsch",
+  
+  "gerarRelatorio": "Bericht erstellen",
+  "total": "Gesamt",
+  
+  "relatorioGeradoComSucesso": "Bericht erfolgreich generiert!",
+  "erroAoGerarRelatorio": "Fehler beim Generieren des Berichts. Bitte versuchen Sie es erneut.",
+  
+  "mensagem": {
+    "entradaAdicionada": "Einnahme erfolgreich hinzugefügt!",
+    "saidaAdicionada": "Ausgabe erfolgreich hinzugefügt!",
+    "erroAdicionarTransacao": "Fehler beim Hinzufügen der Transaktion, bitte versuchen Sie es erneut"
+  },
+  
+  "finance": {
+    "transactions": "Finanztransaktionen",
+    "filter": "Filtern",
+    "charts": "Diagramme",
+    "noCategory": "Keine Kategorie",
+    "activeFilters": "Aktive Filter",
+    "clearFilters": "Filter löschen",
+    "noTransactions": "Keine Transaktionen gefunden",
+    "recurrence": "Wiederholung",
+    "latestTransactions": "Letzte Transaktionen",
+    "salary": "Gehalt",
+    "shopping": "Einkäufe",
+    "payments": "Zahlungen",
+    "inputs": "Einnahmen",
+    "outputs": "Ausgaben"
+  },
+  
+  "finance.charts": {
+    "monthlyIncome": "Monatliche Einnahmen & Ausgaben",
+    "weekdayIncome": "Einnahmen nach Wochentag"
+  },
+
+  "finance.recurrence": {
+    "none": "Keine",
+    "biweekly": "Zweiwöchentlich",
+    "monthly": "Monatlich",
+    "quarterly": "Vierteljährlich"
+  },
+
+  "finance.delete": {
+    "title": "Transaktion löschen",
+    "confirmation": "Sind Sie sicher, dass Sie diese Transaktion löschen möchten?",
+    "success": "Transaktion erfolgreich gelöscht",
+    "cancel": "Abbrechen",
+    "confirm": "Löschen",
+    "paymentTitle": "Zahlung löschen",
+    "paymentConfirmation": "Sind Sie sicher, dass Sie diese Zahlung löschen möchten?",
+    "paymentSuccess": "Zahlung erfolgreich gelöscht"
+  },
+  
+  "weekdays": {
+    "monday": "Montag",
+    "tuesday": "Dienstag",
+    "wednesday": "Mittwoch",
+    "thursday": "Donnerstag",
+    "friday": "Freitag",
+    "saturday": "Samstag",
+    "sunday": "Sonntag"
+  }
 } 
