@@ -49,14 +49,26 @@ const Login = () => {
   const location = useLocation();
   const { t } = useTranslation();
 
-  // Redirect if already authenticated
-  // Redirecionar se já estiver autenticado
+  // Redirect directly to dashboard
+  // Redirecionar diretamente para o dashboard
   useEffect(() => {
-    if (isAuthenticated) {
-      const from = location.state?.from?.pathname || '/dashboard';
-      navigate(from, { replace: true });
-    }
-  }, [isAuthenticated, navigate, location]);
+    // TODO: Reativar autenticação após ajustes no dashboard.
+    // Simular usuário autenticado ignorando verificação real
+    const demoUser = {
+      id: '1',
+      nome: 'Administrador',
+      email: 'admin@estrateo.com',
+      cargo: 'Administrador',
+      permissoes: ['admin', 'view_dashboard', 'view_pagamentos', 'view_inventario', 'view_perfil']
+    };
+    
+    // Salvar no localStorage para manter a sessão
+    localStorage.setItem('auth_token', 'bypass_token_temporary');
+    localStorage.setItem('auth_user', JSON.stringify(demoUser));
+    
+    // Redirecionar para o dashboard
+    navigate('/dashboard', { replace: true });
+  }, [navigate]);
 
   /**
    * Validates email format
@@ -102,26 +114,9 @@ const Login = () => {
    */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
-
-    // Basic field validation
-    // Validação básica dos campos
-    const isEmailValid = validateEmail(email);
-    const isPasswordValid = validatePassword(password);
-
-    if (!isEmailValid || !isPasswordValid) {
-      return;
-    }
-
-    try {
-      const result = await login(email, password);
-      if (!result.success) {
-        setError(result.message || "Invalid credentials");
-      }
-    } catch (err) {
-      console.error('Login error:', err);
-      setError("An error occurred during login");
-    }
+    // TODO: Reativar autenticação após ajustes no dashboard.
+    // Bypass authentication and redirect to dashboard
+    navigate('/dashboard');
   };
 
   /**
@@ -139,7 +134,7 @@ const Login = () => {
    * Redireciona para a página de preços/cadastro
    */
   const handleCreateAccount = () => {
-    navigate('/pricing');
+    navigate('/dashboard');  // Bypass signup and go directly to dashboard
   };
 
   return (

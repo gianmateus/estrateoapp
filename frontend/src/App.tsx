@@ -397,7 +397,7 @@ function App() {
             <Routes>
               {/* Public routes accessible without authentication
                   Rotas públicas acessíveis sem autenticação */}
-              <Route path="/" element={<Home />} />
+              <Route path="/" element={<Navigate to="/dashboard" replace />} />
               <Route path="/login" element={<Login />} />
               <Route path="/cadastro" element={<Cadastro />} />
               <Route path="/acesso-negado" element={<AcessoNegado />} />

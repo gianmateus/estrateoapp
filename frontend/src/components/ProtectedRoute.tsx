@@ -5,7 +5,7 @@
  * Componente de Rota Protegida para proteger rotas que requerem autenticação e/ou permissões específicas
  * Redireciona usuários não autenticados para o login e usuários não autorizados para a página de acesso negado
  */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { CircularProgress, Box } from '@mui/material';
@@ -35,6 +35,28 @@ const ProtectedRoute = ({ children, requiredPermission }: ProtectedRouteProps) =
   const { isAuthenticated, isLoading, checkUserPermission } = useAuth();
   const location = useLocation();
 
+  // TODO: Reativar autenticação após ajustes no dashboard.
+  // Bypass authentication temporarily - this is a hack for development
+  
+  useEffect(() => {
+    // Verificar se já existe um usuário simulado no localStorage
+    const bypassUser = localStorage.getItem('auth_user');
+    
+    // Se não existir, criar um usuário simulado
+    if (!bypassUser) {
+      const demoUser = {
+        id: '1',
+        nome: 'Administrador',
+        email: 'admin@estrateo.com',
+        cargo: 'Administrador',
+        permissoes: ['admin', 'view_dashboard', 'view_pagamentos', 'view_inventario', 'view_perfil']
+      };
+      
+      localStorage.setItem('auth_token', 'bypass_token_temporary');
+      localStorage.setItem('auth_user', JSON.stringify(demoUser));
+    }
+  }, []);
+
   /**
    * Show loading indicator while checking authentication
    * Displays a centered circular progress indicator
@@ -50,24 +72,15 @@ const ProtectedRoute = ({ children, requiredPermission }: ProtectedRouteProps) =
     );
   }
 
-  /**
-   * Redirect to login if not authenticated
-   * Preserves the original location for redirecting back after login
-   * 
-   * Redirecionar para login se não estiver autenticado
-   * Preserva a localização original para redirecionar de volta após o login
-   */
+  // TODO: Reativar autenticação após ajustes no dashboard.
+  // Always render children, bypassing authentication check
+  return <>{children}</>;
+
+  /* Original authentication logic - temporarily disabled
   if (!isAuthenticated) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  /**
-   * Check specific permission if required
-   * Redirects to access denied page if user lacks the necessary permission
-   * 
-   * Verificar permissão específica se necessário
-   * Redireciona para a página de acesso negado se o usuário não tiver a permissão necessária
-   */
   if (requiredPermission) {
     // Check if it's an array of permissions or a single permission
     // Verifica se é um array de permissões ou uma permissão única
@@ -80,14 +93,8 @@ const ProtectedRoute = ({ children, requiredPermission }: ProtectedRouteProps) =
     }
   }
 
-  /**
-   * Render protected content if all checks pass
-   * Returns the children components when user is authenticated and authorized
-   * 
-   * Renderizar o conteúdo protegido se todas as verificações passarem
-   * Retorna os componentes filhos quando o usuário está autenticado e autorizado
-   */
   return <>{children}</>;
+  */
 };
 
 export default ProtectedRoute;

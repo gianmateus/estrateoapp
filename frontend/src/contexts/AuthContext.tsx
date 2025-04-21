@@ -67,6 +67,26 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
    */
   useEffect(() => {
     const checkAuthState = async () => {
+      // TODO: Reativar autenticação após ajustes no dashboard.
+      // Verificar se existe um usuário simulado no localStorage
+      const storedUser = localStorage.getItem('auth_user');
+      
+      if (storedUser) {
+        try {
+          // Usar o usuário simulado
+          const parsedUser = JSON.parse(storedUser);
+          setCurrentUser(parsedUser);
+          setIsLoading(false);
+          return;
+        } catch (e) {
+          console.error('Erro ao fazer parse do usuário armazenado:', e);
+          // Limpar localStorage em caso de erro
+          localStorage.removeItem('auth_token');
+          localStorage.removeItem('auth_user');
+        }
+      }
+      
+      // Lógica original se não houver usuário simulado
       const token = localStorage.getItem('auth_token');
       if (token) {
         try {
@@ -91,6 +111,20 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
    * @returns Promise<boolean> Retorna true se autenticado, false caso contrário
    */
   const verifyAuthentication = async (): Promise<boolean> => {
+    // TODO: Reativar autenticação após ajustes no dashboard.
+    // Verificar se existe um usuário simulado para bypass
+    const storedUser = localStorage.getItem('auth_user');
+    if (storedUser) {
+      try {
+        const parsedUser = JSON.parse(storedUser);
+        setCurrentUser(parsedUser);
+        return true;
+      } catch (e) {
+        console.error('Erro ao fazer parse do usuário armazenado:', e);
+      }
+    }
+    
+    // Lógica original
     try {
       const response = await api.get('/auth/me');
       setCurrentUser(response.data.user || response.data);
@@ -112,6 +146,28 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const authenticateUser = async (email: string, password: string): Promise<{success: boolean; message?: string}> => {
     setIsLoading(true);
     
+    // TODO: Reativar autenticação após ajustes no dashboard.
+    // Bypass de autenticação - aceitar qualquer credencial
+    const demoUser = {
+      id: '1',
+      nome: 'Administrador',
+      email: email || 'admin@estrateo.com',
+      cargo: 'Administrador',
+      permissoes: ['admin', 'view_dashboard', 'view_pagamentos', 'view_inventario', 'view_perfil']
+    };
+    
+    // Salvar no localStorage
+    localStorage.setItem('auth_token', 'bypass_token_temporary');
+    localStorage.setItem('auth_user', JSON.stringify(demoUser));
+    
+    // Definir usuário atual
+    setCurrentUser(demoUser);
+    setIsLoading(false);
+    
+    return { success: true };
+    
+    // Código original comentado para referência futura
+    /*
     // Modo de demonstração para permitir login sem backend
     if (email === 'admin@restaurante.com' && password === 'Admin@123') {
       // Usuário de demonstração
@@ -176,6 +232,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     } finally {
       setIsLoading(false);
     }
+    */
   };
 
   /**
@@ -197,8 +254,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
    * @returns true se o usuário tem a permissão, false caso contrário | true if user has permission, false otherwise
    */
   const checkUserPermission = (permission: string): boolean => {
+    // TODO: Reativar autenticação após ajustes no dashboard.
+    // Para bypass, considerar que o usuário tem todas as permissões
+    return true;
+    
+    // Código original comentado
+    /*
     if (!currentUser) return false;
     return currentUser.permissoes.includes(permission) || currentUser.permissoes.includes('admin');
+    */
   };
   
   return (
