@@ -36,6 +36,7 @@ i18n
   .init({
     resources,
     fallbackLng: 'en',
+    lng: 'en', // Definir inglês como idioma padrão
     debug: process.env.NODE_ENV === 'development',
     
     interpolation: {

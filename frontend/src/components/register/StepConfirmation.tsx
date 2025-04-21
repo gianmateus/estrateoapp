@@ -39,10 +39,10 @@ const StepConfirmation: React.FC = () => {
     <Grid container spacing={3}>
       <Grid item xs={12}>
         <Typography variant="h6" gutterBottom>
-          {t('Confirmação')}
+          {t('confirmation')}
         </Typography>
         <Typography variant="body2" color="textSecondary" gutterBottom>
-          {t('Revise suas informações antes de criar a conta')}
+          {t('reviewInformation')}
         </Typography>
       </Grid>
       
@@ -50,14 +50,14 @@ const StepConfirmation: React.FC = () => {
       <Grid item xs={12}>
         <Paper elevation={0} variant="outlined" sx={{ p: 3 }}>
           <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
-            {t('Informações Pessoais')}
+            {t('personalInformation')}
           </Typography>
           <Divider sx={{ my: 2 }} />
           
           <Grid container spacing={2}>
             <Grid item xs={12} sm={4}>
               <Typography variant="body2" color="textSecondary">
-                {t('Nome Completo')}
+                {t('fullName')}
               </Typography>
             </Grid>
             <Grid item xs={12} sm={8}>
@@ -68,7 +68,7 @@ const StepConfirmation: React.FC = () => {
             
             <Grid item xs={12} sm={4}>
               <Typography variant="body2" color="textSecondary">
-                {t('Email')}
+                {t('email')}
               </Typography>
             </Grid>
             <Grid item xs={12} sm={8}>
@@ -79,7 +79,7 @@ const StepConfirmation: React.FC = () => {
             
             <Grid item xs={12} sm={4}>
               <Typography variant="body2" color="textSecondary">
-                {t('Telefone')}
+                {t('phone')}
               </Typography>
             </Grid>
             <Grid item xs={12} sm={8}>
@@ -95,14 +95,14 @@ const StepConfirmation: React.FC = () => {
       <Grid item xs={12}>
         <Paper elevation={0} variant="outlined" sx={{ p: 3 }}>
           <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
-            {t('Dados do Negócio')}
+            {t('businessInformation')}
           </Typography>
           <Divider sx={{ my: 2 }} />
           
           <Grid container spacing={2}>
             <Grid item xs={12} sm={4}>
               <Typography variant="body2" color="textSecondary">
-                {t('Nome do Negócio')}
+                {t('businessName')}
               </Typography>
             </Grid>
             <Grid item xs={12} sm={8}>
@@ -113,7 +113,7 @@ const StepConfirmation: React.FC = () => {
             
             <Grid item xs={12} sm={4}>
               <Typography variant="body2" color="textSecondary">
-                {t('ID do Negócio')}
+                {t('businessId')}
               </Typography>
             </Grid>
             <Grid item xs={12} sm={8}>
@@ -124,7 +124,7 @@ const StepConfirmation: React.FC = () => {
             
             <Grid item xs={12} sm={4}>
               <Typography variant="body2" color="textSecondary">
-                {t('Tipo de Negócio')}
+                {t('businessType')}
               </Typography>
             </Grid>
             <Grid item xs={12} sm={8}>
@@ -135,7 +135,7 @@ const StepConfirmation: React.FC = () => {
             
             <Grid item xs={12} sm={4}>
               <Typography variant="body2" color="textSecondary">
-                {t('Endereço do Negócio')}
+                {t('businessAddress')}
               </Typography>
             </Grid>
             <Grid item xs={12} sm={8}>
@@ -151,7 +151,7 @@ const StepConfirmation: React.FC = () => {
       <Grid item xs={12}>
         <Box sx={{ mt: 2 }}>
           <Typography variant="body2" color="textSecondary">
-            {t('Ao clicar em "Create Account", você concorda com os nossos Termos de Serviço e Política de Privacidade.')}
+            {t('termsConditionsAgreement')}
           </Typography>
         </Box>
       </Grid>

@@ -43,10 +43,10 @@ const StepPersonalInfo: React.FC = () => {
     <Grid container spacing={3}>
       <Grid item xs={12}>
         <Typography variant="h6" gutterBottom>
-          {t('Informações Pessoais')}
+          {t('personalInformation')}
         </Typography>
         <Typography variant="body2" color="textSecondary">
-          {t('Preencha seus dados pessoais para criar uma conta')}
+          {t('fillPersonalData')}
         </Typography>
       </Grid>
       
@@ -54,10 +54,10 @@ const StepPersonalInfo: React.FC = () => {
       <Grid item xs={12}>
         <TextField
           fullWidth
-          label={t('Nome Completo')}
+          label={t('fullName')}
           variant="outlined"
           {...register('fullName', { 
-            required: t('Nome completo é obrigatório') as string
+            required: t('fullNameRequired') as string
           })}
           error={!!errors.fullName}
           helperText={errors.fullName?.message}
@@ -68,14 +68,14 @@ const StepPersonalInfo: React.FC = () => {
       <Grid item xs={12}>
         <TextField
           fullWidth
-          label={t('Email')}
+          label={t('email')}
           variant="outlined"
           type="email"
           {...register('email', { 
-            required: t('Email é obrigatório') as string,
+            required: t('emailRequired') as string,
             pattern: {
               value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-              message: t('Formato de email inválido') as string
+              message: t('invalidEmailFormat') as string
             }
           })}
           error={!!errors.email}
@@ -87,14 +87,14 @@ const StepPersonalInfo: React.FC = () => {
       <Grid item xs={12}>
         <TextField
           fullWidth
-          label={t('Senha')}
+          label={t('password')}
           variant="outlined"
           type={showPassword ? 'text' : 'password'}
           {...register('password', { 
-            required: t('Senha é obrigatória') as string,
+            required: t('passwordRequired') as string,
             minLength: {
               value: 6,
-              message: t('A senha deve ter pelo menos 6 caracteres') as string
+              message: t('passwordMinLength') as string
             }
           })}
           error={!!errors.password}
@@ -119,13 +119,13 @@ const StepPersonalInfo: React.FC = () => {
       <Grid item xs={12}>
         <TextField
           fullWidth
-          label={t('Confirmar Senha')}
+          label={t('confirmPassword')}
           variant="outlined"
           type={showConfirmPassword ? 'text' : 'password'}
           {...register('confirmPassword', { 
-            required: t('Confirmação de senha é obrigatória') as string,
+            required: t('confirmPasswordRequired') as string,
             validate: value => 
-              value === password || (t('As senhas não conferem') as string)
+              value === password || (t('passwordsDoNotMatch') as string)
           })}
           error={!!errors.confirmPassword}
           helperText={errors.confirmPassword?.message}
@@ -148,7 +148,7 @@ const StepPersonalInfo: React.FC = () => {
       {/* Telefone com react-phone-input-2 */}
       <Grid item xs={12}>
         <Typography variant="body2" gutterBottom>
-          {t('Telefone')}
+          {t('phone')}
         </Typography>
         <PhoneInput
           country={'de'} // Alemanha como padrão

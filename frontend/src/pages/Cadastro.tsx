@@ -44,9 +44,9 @@ interface RegisterFormData {
 
 // Define as etapas do cadastro
 const steps = [
-  'Informações Pessoais',
-  'Dados do Negócio',
-  'Confirmação'
+  'personalInformation',
+  'businessInformation',
+  'confirmation'
 ];
 
 const Cadastro: React.FC = () => {
@@ -153,9 +153,9 @@ const Cadastro: React.FC = () => {
       
       // Tratamento de erro
       if (axios.isAxiosError(error) && error.response) {
-        setErrorMessage(error.response.data.message || t('Erro ao criar conta. Tente novamente.'));
+        setErrorMessage(error.response.data.message || t('registerError'));
       } else {
-        setErrorMessage(t('Erro ao criar conta. Tente novamente.'));
+        setErrorMessage(t('registerError'));
       }
     } finally {
       setIsSubmitting(false);
@@ -172,7 +172,7 @@ const Cadastro: React.FC = () => {
       case 2:
         return <StepConfirmation />;
       default:
-        return 'Etapa desconhecida';
+        return t('unknownStep');
     }
   };
 
@@ -190,10 +190,10 @@ const Cadastro: React.FC = () => {
       >
         <Box sx={{ mb: 4, textAlign: 'center' }}>
           <Typography variant="h4" component="h1" gutterBottom>
-            {t('Criar uma Nova Conta')}
+            {t('createNewAccount')}
           </Typography>
           <Typography variant="body1" color="textSecondary">
-            {t('Preencha as informações abaixo para se registrar')}
+            {t('fillInformation')}
           </Typography>
         </Box>
         
@@ -216,10 +216,10 @@ const Cadastro: React.FC = () => {
           <Box sx={{ textAlign: 'center', py: 3 }}>
             <CheckIcon sx={{ fontSize: 60, color: 'success.main', mb: 2 }} />
             <Typography variant="h5" gutterBottom>
-              {t('Conta criada com sucesso!')}
+              {t('accountCreatedSuccess')}
             </Typography>
             <Typography variant="body1" color="textSecondary" paragraph>
-              {t('Você já pode fazer login e começar a usar o sistema.')}
+              {t('loginToStart')}
             </Typography>
             <Box sx={{ mt: 3 }}>
               <Button 
@@ -228,7 +228,7 @@ const Cadastro: React.FC = () => {
                 to="/login"
                 size="large"
               >
-                {t('Ir para Login')}
+                {t('goToLogin')}
               </Button>
             </Box>
           </Box>
@@ -256,7 +256,7 @@ const Cadastro: React.FC = () => {
                   startIcon={<ArrowBackIcon />}
                   disabled={isSubmitting}
                 >
-                  {activeStep === 0 ? t('Voltar ao Login') : t('Voltar')}
+                  {activeStep === 0 ? t('backToLogin') : t('back')}
                 </Button>
                 
                 <Button
@@ -266,7 +266,7 @@ const Cadastro: React.FC = () => {
                   endIcon={activeStep === steps.length - 1 ? <CheckIcon /> : <ArrowForwardIcon />}
                   disabled={isSubmitting}
                 >
-                  {activeStep === steps.length - 1 ? t('Create Account') : t('Próximo')}
+                  {activeStep === steps.length - 1 ? t('createAccount') : t('next')}
                 </Button>
               </Box>
             </form>
@@ -278,9 +278,9 @@ const Cadastro: React.FC = () => {
       {activeStep !== steps.length && (
         <Box sx={{ textAlign: 'center', mb: 5 }}>
           <Typography variant="body2" color="textSecondary">
-            {t('Já tem uma conta?')}{' '}
+            {t('alreadyHaveAccount')}{' '}
             <Link to="/login" style={{ textDecoration: 'none', color: theme.palette.primary.main }}>
-              {t('Faça login')}
+              {t('loginHere')}
             </Link>
           </Typography>
         </Box>
