@@ -26,10 +26,10 @@ const StepBusinessInfo: React.FC = () => {
     <Grid container spacing={3}>
       <Grid item xs={12}>
         <Typography variant="h6" gutterBottom>
-          {t('Dados do Negócio')}
+          {t('Business Information')}
         </Typography>
         <Typography variant="body2" color="textSecondary">
-          {t('Preencha as informações sobre o seu negócio')}
+          {t('Please provide your business information')}
         </Typography>
       </Grid>
       
@@ -37,10 +37,10 @@ const StepBusinessInfo: React.FC = () => {
       <Grid item xs={12}>
         <TextField
           fullWidth
-          label={t('Nome do Negócio')}
+          label={t('Business Name')}
           variant="outlined"
           {...register('businessName', { 
-            required: t('Nome do negócio é obrigatório') as string
+            required: t('Business name is required') as string
           })}
           error={!!errors.businessName}
           helperText={errors.businessName?.message}
@@ -51,11 +51,11 @@ const StepBusinessInfo: React.FC = () => {
       <Grid item xs={12}>
         <TextField
           fullWidth
-          label={t('ID do Negócio')}
+          label={t('Business ID')}
           variant="outlined"
           placeholder="e.g. VAT number, Tax ID"
           {...register('businessId', { 
-            required: t('ID do negócio é obrigatório') as string
+            required: t('Business ID is required') as string
           })}
           error={!!errors.businessId}
           helperText={errors.businessId?.message}
@@ -66,12 +66,12 @@ const StepBusinessInfo: React.FC = () => {
       <Grid item xs={12}>
         <TextField
           fullWidth
-          label={t('Endereço do Negócio')}
+          label={t('Business Address')}
           variant="outlined"
           multiline
           rows={3}
           {...register('businessAddress', { 
-            required: t('Endereço do negócio é obrigatório') as string
+            required: t('Business address is required') as string
           })}
           error={!!errors.businessAddress}
           helperText={errors.businessAddress?.message}
@@ -82,10 +82,10 @@ const StepBusinessInfo: React.FC = () => {
       <Grid item xs={12}>
         <TextField
           fullWidth
-          label={t('Tipo de Negócio')}
+          label={t('Business Type')}
           variant="outlined"
           {...register('businessType', { 
-            required: t('Tipo de negócio é obrigatório') as string
+            required: t('Business type is required') as string
           })}
           error={!!errors.businessType}
           helperText={errors.businessType?.message}
