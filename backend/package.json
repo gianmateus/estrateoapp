@@ -12,7 +12,8 @@
     "build": "tsc",
     "seed:admin": "ts-node scripts/seedAdmin.ts",
     "test": "jest",
-    "seed": "prisma db seed"
+    "seed": "prisma db seed",
+    "prisma": "prisma"
   },
   "dependencies": {
     "@prisma/client": "^6.6.0",

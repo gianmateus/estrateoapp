@@ -9,7 +9,7 @@ const userController = {
       const users = await prisma.user.findMany({
         select: {
           id: true,
-          name: true,
+          nome: true,
           email: true,
           createdAt: true
         }
@@ -34,7 +34,7 @@ const userController = {
         where: { id },
         select: {
           id: true,
-          name: true,
+          nome: true,
           email: true,
           createdAt: true
         }
@@ -60,10 +60,10 @@ const userController = {
   // Criar novo usuário
   async criar(req: Request, res: Response) {
     try {
-      const { name, email, password } = req.body;
+      const { nome, email, password } = req.body;
       
       // Validações básicas
-      if (!name || !email || !password) {
+      if (!nome || !email || !password) {
         return res.status(400).json({
           error: true,
           message: 'Dados incompletos. Informe nome, email e senha'
@@ -88,13 +88,13 @@ const userController = {
       // Criar usuário
       const user = await prisma.user.create({
         data: {
-          name,
+          nome,
           email,
           password: hashedPassword
         },
         select: {
           id: true,
-          name: true,
+          nome: true,
           email: true,
           createdAt: true
         }
@@ -117,7 +117,7 @@ const userController = {
   async atualizar(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      const { name, email, password } = req.body;
+      const { nome, email, password } = req.body;
       
       // Verificar se usuário existe
       const usuarioExistente = await prisma.user.findUnique({
@@ -134,7 +134,7 @@ const userController = {
       // Preparar dados para atualização
       const dadosAtualizacao: any = {};
       
-      if (name) dadosAtualizacao.name = name;
+      if (nome) dadosAtualizacao.nome = nome;
       if (email) dadosAtualizacao.email = email;
       if (password) {
         dadosAtualizacao.password = await bcrypt.hash(password, 10);
@@ -146,7 +146,7 @@ const userController = {
         data: dadosAtualizacao,
         select: {
           id: true,
-          name: true,
+          nome: true,
           email: true,
           createdAt: true
         }
@@ -199,39 +199,40 @@ const userController = {
     }
   },
 
-  // Obter perfil do usuário atual
+  // Buscar perfil do usuário atual
   async getProfile(req: Request, res: Response) {
     try {
-      const userId = req.user.id;
+      const { id } = req.user;
       
       const user = await prisma.user.findUnique({
-        where: { id: userId },
+        where: { id },
         select: {
           id: true,
-          name: true,
+          nome: true,
           email: true,
+          cargo: true,
+          telefone: true,
+          setor: true,
           permissoes: true,
           tipoNegocio: true,
-          cargo: true,
-          whatsapp: true,
-          horarioFuncionamento: true,
+          numeroFuncionarios: true,
           createdAt: true
         }
       });
       
       if (!user) {
-        return res.status(404).json({ 
-          error: true, 
-          message: 'Usuário não encontrado' 
+        return res.status(404).json({
+          error: true,
+          message: 'Perfil não encontrado'
         });
       }
       
       return res.status(200).json(user);
     } catch (error) {
-      console.error('Erro ao buscar perfil do usuário:', error);
-      return res.status(500).json({ 
-        error: true, 
-        message: 'Erro ao buscar perfil do usuário' 
+      console.error('Erro ao buscar perfil:', error);
+      return res.status(500).json({
+        error: true,
+        message: 'Erro ao buscar perfil do usuário'
       });
     }
   },
@@ -239,43 +240,50 @@ const userController = {
   // Atualizar perfil do usuário atual
   async updateProfile(req: Request, res: Response) {
     try {
-      const userId = req.user.id;
-      const { name, whatsapp, tipoNegocio, cargo, horarioFuncionamento } = req.body;
+      const { id } = req.user;
+      const { 
+        nome, 
+        email, 
+        cargo, 
+        telefone, 
+        setor, 
+        tipoNegocio, 
+        numeroFuncionarios 
+      } = req.body;
       
-      // Verificar se usuário existe
-      const usuarioExistente = await prisma.user.findUnique({
-        where: { id: userId }
+      // Verificar se o perfil existe
+      const perfilExistente = await prisma.user.findUnique({
+        where: { id }
       });
       
-      if (!usuarioExistente) {
+      if (!perfilExistente) {
         return res.status(404).json({
           error: true,
-          message: 'Usuário não encontrado'
+          message: 'Perfil não encontrado'
         });
       }
       
-      // Preparar dados para atualização
-      const dadosAtualizacao: any = {};
-      
-      if (name) dadosAtualizacao.name = name;
-      if (whatsapp !== undefined) dadosAtualizacao.whatsapp = whatsapp;
-      if (tipoNegocio !== undefined) dadosAtualizacao.tipoNegocio = tipoNegocio;
-      if (cargo !== undefined) dadosAtualizacao.cargo = cargo;
-      if (horarioFuncionamento !== undefined) dadosAtualizacao.horarioFuncionamento = horarioFuncionamento;
-      
-      // Atualizar usuário
+      // Atualizar perfil
       const userAtualizado = await prisma.user.update({
-        where: { id: userId },
-        data: dadosAtualizacao,
+        where: { id },
+        data: {
+          nome: nome || perfilExistente.nome,
+          email: email || perfilExistente.email,
+          cargo,
+          telefone,
+          setor,
+          tipoNegocio,
+          numeroFuncionarios
+        },
         select: {
           id: true,
-          name: true,
+          nome: true,
           email: true,
-          permissoes: true,
-          tipoNegocio: true,
           cargo: true,
-          whatsapp: true,
-          horarioFuncionamento: true,
+          telefone: true,
+          setor: true,
+          tipoNegocio: true,
+          numeroFuncionarios: true,
           createdAt: true
         }
       });
@@ -285,10 +293,10 @@ const userController = {
         user: userAtualizado
       });
     } catch (error) {
-      console.error('Erro ao atualizar perfil do usuário:', error);
-      return res.status(500).json({ 
-        error: true, 
-        message: 'Erro ao atualizar perfil do usuário' 
+      console.error('Erro ao atualizar perfil:', error);
+      return res.status(500).json({
+        error: true,
+        message: 'Erro ao atualizar perfil do usuário'
       });
     }
   },
