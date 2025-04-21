@@ -3,12 +3,7 @@ import { useFormContext } from 'react-hook-form';
 import { 
   Grid, 
   TextField, 
-  Typography, 
-  MenuItem, 
-  Select,
-  FormControl,
-  InputLabel,
-  FormHelperText
+  Typography
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
@@ -20,26 +15,12 @@ interface BusinessInfoFormData {
   businessType: string;
 }
 
-// Lista de tipos de negócios comuns na Alemanha
-const businessTypes = [
-  'Restaurant', // Restaurante
-  'Café',
-  'Barbershop', // Barbearia
-  'Clothing Store', // Loja de Roupas
-  'Bakery', // Padaria
-  'Grocery Store', // Mercearia
-  'Pharmacy', // Farmácia
-  'Hotel',
-  'Fitness Studio', // Academia
-  'Other' // Outro
-];
-
 const StepBusinessInfo: React.FC = () => {
   // Hooks para tradução
   const { t } = useTranslation();
   
   // Form Context do React Hook Form
-  const { register, formState: { errors }, control } = useFormContext<BusinessInfoFormData>();
+  const { register, formState: { errors } } = useFormContext<BusinessInfoFormData>();
 
   return (
     <Grid container spacing={3}>
@@ -97,29 +78,18 @@ const StepBusinessInfo: React.FC = () => {
         />
       </Grid>
       
-      {/* Tipo de Negócio */}
+      {/* Tipo de Negócio - Agora como TextField */}
       <Grid item xs={12}>
-        <FormControl fullWidth error={!!errors.businessType}>
-          <InputLabel id="business-type-label">{t('Tipo de Negócio')}</InputLabel>
-          <Select
-            labelId="business-type-label"
-            id="business-type"
-            label={t('Tipo de Negócio')}
-            defaultValue=""
-            {...register('businessType', { 
-              required: t('Tipo de negócio é obrigatório') as string
-            })}
-          >
-            {businessTypes.map((type) => (
-              <MenuItem key={type} value={type}>
-                {type}
-              </MenuItem>
-            ))}
-          </Select>
-          {errors.businessType && (
-            <FormHelperText>{errors.businessType.message}</FormHelperText>
-          )}
-        </FormControl>
+        <TextField
+          fullWidth
+          label={t('Tipo de Negócio')}
+          variant="outlined"
+          {...register('businessType', { 
+            required: t('Tipo de negócio é obrigatório') as string
+          })}
+          error={!!errors.businessType}
+          helperText={errors.businessType?.message}
+        />
       </Grid>
     </Grid>
   );
