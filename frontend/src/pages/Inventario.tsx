@@ -282,7 +282,7 @@ const Inventario = () => {
       
       // Data
       doc.setFontSize(12);
-      doc.text(`Data: ${new Date().toLocaleDateString()}`, 105, 25, { align: 'center' });
+      doc.text(`Data: ${new Date().toLocaleDateString('pt-BR')}`, 105, 25, { align: 'center' });
       
       // Cabeçalho da tabela
       doc.setFontSize(12);
