@@ -111,66 +111,48 @@ Prisma.NullTypes = {
  */
 
 exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
-  ReadUncommitted: 'ReadUncommitted',
-  ReadCommitted: 'ReadCommitted',
-  RepeatableRead: 'RepeatableRead',
   Serializable: 'Serializable'
 });
 
 exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
-  name: 'name',
+  nome: 'nome',
   email: 'email',
+  cargo: 'cargo',
+  telefone: 'telefone',
+  setor: 'setor',
   password: 'password',
   permissoes: 'permissoes',
   tipoNegocio: 'tipoNegocio',
-  cargo: 'cargo',
-  whatsapp: 'whatsapp',
-  horarioFuncionamento: 'horarioFuncionamento',
-  createdAt: 'createdAt'
+  numeroFuncionarios: 'numeroFuncionarios',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.PagamentoScalarFieldEnum = {
   id: 'id',
-  descricao: 'descricao',
   valor: 'valor',
-  categoria: 'categoria',
-  vencimento: 'vencimento',
-  pago: 'pago',
+  data: 'data',
+  status: 'status',
+  descricao: 'descricao',
   userId: 'userId',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.InventarioScalarFieldEnum = {
   id: 'id',
   nome: 'nome',
-  categoria: 'categoria',
-  unidade: 'unidade',
-  quantidadeAtual: 'quantidadeAtual',
-  quantidadeIdeal: 'quantidadeIdeal',
+  quantidade: 'quantidade',
+  preco: 'preco',
   userId: 'userId',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
-};
-
-exports.Prisma.NullableJsonNullValueInput = {
-  DbNull: Prisma.DbNull,
-  JsonNull: Prisma.JsonNull
-};
-
-exports.Prisma.QueryMode = {
-  default: 'default',
-  insensitive: 'insensitive'
-};
-
-exports.Prisma.JsonNullValueFilter = {
-  DbNull: Prisma.DbNull,
-  JsonNull: Prisma.JsonNull,
-  AnyNull: Prisma.AnyNull
 };
 
 exports.Prisma.NullsOrder = {

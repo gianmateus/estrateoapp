@@ -10,45 +10,46 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = "file:./dev.db"
 }
 
 model User {
-  id                   String       @id @default(uuid())
-  name                 String
-  email                String       @unique
-  password             String
-  permissoes           String[]     @default([])
-  tipoNegocio          String?
-  cargo                String?
-  whatsapp             String?
-  horarioFuncionamento Json?
-  createdAt            DateTime     @default(now())
-  pagamentos           Pagamento[]
-  inventario           Inventario[]
+  id                 String       @id @default(uuid())
+  nome               String
+  email              String       @unique
+  cargo              String?
+  telefone           String?
+  setor              String?
+  password           String
+  permissoes         String       @default("user")
+  tipoNegocio        String?
+  numeroFuncionarios Int?
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+  pagamentos         Pagamento[]
+  inventario         Inventario[]
 }
 
 model Pagamento {
-  id         String   @id @default(uuid())
-  descricao  String
-  valor      Float
-  categoria  String
-  vencimento DateTime
-  pago       Boolean  @default(false)
-  userId     String
-  user       User     @relation(fields: [userId], references: [id])
-  createdAt  DateTime @default(now())
+  id        String   @id @default(uuid())
+  valor     Float
+  data      DateTime
+  status    String
+  descricao String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Inventario {
-  id              String   @id @default(uuid())
-  nome            String
-  categoria       String
-  unidade         String
-  quantidadeAtual Int
-  quantidadeIdeal Int
-  userId          String
-  user            User     @relation(fields: [userId], references: [id])
-  createdAt       DateTime @default(now())
+  id         String   @id @default(uuid())
+  nome       String
+  quantidade Int
+  preco      Float
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }

@@ -1,0 +1,5 @@
+[33mcommit ae1c612bb85f8e34a21e8053bd51e1515643492b[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m)[m
+Author: Seu Nome <seu-email@exemplo.com>
+Date:   Mon Apr 21 19:31:04 2025 +0200
+
+    chore: migra banco de dados para PostgreSQL e prepara backend para deploy no Railway

@@ -48,9 +48,9 @@ interface PagamentoProgramado {
 
 const categoriasSaida = ['Salário', 'Compras', 'Pagamentos'];
 const idiomas = [
-  { codigo: 'pt-BR', nome: 'Português', bandeira: '🇧🇷' },
-  { codigo: 'en-US', nome: 'English', bandeira: '🇺🇸' },
-  { codigo: 'de-DE', nome: 'Deutsch', bandeira: '🇩🇪' }
+  { codigo: 'pt', nome: 'Português', bandeira: '🇧🇷' },
+  { codigo: 'en', nome: 'English', bandeira: '🇺🇸' },
+  { codigo: 'de', nome: 'Deutsch', bandeira: '🇩🇪' }
 ];
 
 const Financeiro = () => {
@@ -112,6 +112,8 @@ const Financeiro = () => {
     itemId: ''
   });
 
+  const [carregando, setCarregando] = useState<boolean>(false);
+
   const handleOpenDialog = (tipo: 'entrada' | 'saida') => {
     setTipoTransacao(tipo);
     setOpenDialog(true);
@@ -148,12 +150,12 @@ const Financeiro = () => {
     try {
       await new Promise(resolve => setTimeout(resolve, 500));
       
-      adicionarTransacao({
+      await adicionarTransacao({
         tipo: tipoTransacao,
         valor: parseFloat(formData.valor),
         data: new Date(formData.data).toISOString(),
         descricao: formData.descricao,
-        categoria: formData.categoria || t('finance.noCategory'),
+        categoria: formData.categoria || t('finance_noCategory'),
         metodoPagamento: formData.observacao || undefined,
         observacao: formData.observacao
       });
@@ -175,7 +177,7 @@ const Financeiro = () => {
       
       setSnackbar({
         open: true,
-        message: tipoTransacao === 'entrada' ? t('mensagem.entradaAdicionada') : t('mensagem.saidaAdicionada'),
+        message: tipoTransacao === 'entrada' ? t('mensagem_entradaAdicionada') : t('mensagem_saidaAdicionada'),
         severity: 'success'
       });
       
@@ -184,7 +186,7 @@ const Financeiro = () => {
       console.error('Erro ao adicionar transação', error);
       setSnackbar({
         open: true,
-        message: t('mensagem.erroAdicionarTransacao'),
+        message: t('mensagem_erroAdicionarTransacao'),
         severity: 'error'
       });
     } finally {
@@ -201,19 +203,19 @@ const Financeiro = () => {
       observacao: ''
     };
     
-    const valorValidation = validateNumberField(formData.valor, 'Valor', { required: true, min: 0.01 });
+    const valorValidation = validateNumberField(formData.valor, t('valor'), { required: true, min: 0.01 });
     if (!valorValidation.isValid) {
-      errors.valor = valorValidation.message || 'Valor inválido';
+      errors.valor = valorValidation.message || t('valorInvalido');
     }
     
-    const dataValidation = validateDateField(formData.data, 'Data', { required: true });
+    const dataValidation = validateDateField(formData.data, t('data'), { required: true });
     if (!dataValidation.isValid) {
-      errors.data = dataValidation.message || 'Data inválida';
+      errors.data = dataValidation.message || t('dataInvalida');
     }
     
-    const descricaoValidation = validateTextField(formData.descricao, 'Descrição', { required: true, minLength: 3, maxLength: 100 });
+    const descricaoValidation = validateTextField(formData.descricao, t('descricao'), { required: true, minLength: 3, maxLength: 100 });
     if (!descricaoValidation.isValid) {
-      errors.descricao = descricaoValidation.message || 'Descrição inválida';
+      errors.descricao = descricaoValidation.message || t('descricaoInvalida');
     }
     
     setFormErrors(errors);
@@ -251,6 +253,15 @@ const Financeiro = () => {
       
       return true;
     });
+  };
+
+  const handleFilter = () => {
+    setCarregando(true);
+    setTimeout(() => {
+      // Não precisamos fazer nada aqui, pois o useMemo já vai recalcular
+      // transacoesFiltradas quando filtros mudar
+      setCarregando(false);
+    }, 300); // Pequeno atraso para mostrar o loader
   };
 
   const getDadosGraficos = () => {
@@ -314,13 +325,13 @@ const Financeiro = () => {
 
     // Usar nomes de dias da semana no idioma atual
     const diasSemana = [
-      t('weekdays.sunday'),
-      t('weekdays.monday'),
-      t('weekdays.tuesday'),
-      t('weekdays.wednesday'),
-      t('weekdays.thursday'),
-      t('weekdays.friday'),
-      t('weekdays.saturday')
+      t('weekdays_sunday'),
+      t('weekdays_monday'),
+      t('weekdays_tuesday'),
+      t('weekdays_wednesday'),
+      t('weekdays_thursday'),
+      t('weekdays_friday'),
+      t('weekdays_saturday')
     ];
     
     const dadosPorDiaIniciais = diasSemana.map(dia => ({ name: dia, valor: 0 }));
@@ -442,20 +453,23 @@ const Financeiro = () => {
   };
 
   const transacoesFiltradas = useMemo(() => {
-    return filtrarTransacoes();
+    return filtrarTransacoes().sort((a, b) => {
+      // Ordenar por data em ordem decrescente (mais recente primeiro)
+      return new Date(b.data).getTime() - new Date(a.data).getTime();
+    });
   }, [transacoes, filtros]);
 
   const handleRemoverTransacao = (id: string) => {
     setDialogoConfirmacao({
       aberto: true,
-      titulo: t('finance.delete.title'),
-      mensagem: t('finance.delete.confirmation'),
+      titulo: t('finance_delete_title'),
+      mensagem: t('finance_delete_confirmation'),
       itemId: id,
       onConfirm: () => {
         removerTransacao(id);
         setSnackbar({
           open: true,
-          message: t('finance.delete.success'),
+          message: t('finance_delete_success'),
           severity: 'success'
         });
         setDialogoConfirmacao(prev => ({ ...prev, aberto: false }));
@@ -466,14 +480,14 @@ const Financeiro = () => {
   const handleRemoverPagamento = (id: string) => {
     setDialogoConfirmacao({
       aberto: true,
-      titulo: t('finance.delete.paymentTitle'),
-      mensagem: t('finance.delete.paymentConfirmation'),
+      titulo: t('finance_delete_paymentTitle'),
+      mensagem: t('finance_delete_paymentConfirmation'),
       itemId: id,
       onConfirm: () => {
         setPagamentos(pagamentos.filter(p => p.id !== id));
         setSnackbar({
           open: true,
-          message: t('finance.delete.paymentSuccess'),
+          message: t('finance_delete_paymentSuccess'),
           severity: 'success'
         });
         setDialogoConfirmacao(prev => ({ ...prev, aberto: false }));
@@ -488,9 +502,9 @@ const Financeiro = () => {
   // Função para obter o locale do date-fns com base no idioma atual
   const getDateLocale = () => {
     switch (i18n.language) {
-      case 'pt-BR':
+      case 'pt':
         return ptBR;
-      case 'de-DE':
+      case 'de':
         return de;
       default:
         return enUS;
@@ -523,9 +537,9 @@ const Financeiro = () => {
   // Obter categorias traduzidas
   const getCategoriasSaida = () => {
     return [
-      t('finance.salary'),
-      t('finance.shopping'),
-      t('finance.payments')
+      t('finance_salary'),
+      t('finance_shopping'),
+      t('finance_payments')
     ];
   };
 
@@ -622,7 +636,7 @@ const Financeiro = () => {
                 startIcon={<ChartIcon />}
                 onClick={() => setOpenGraficos(true)}
               >
-                {t('finance.charts')}
+                {t('graficos')}
               </Button>
             </Box>
 
@@ -698,24 +712,24 @@ const Financeiro = () => {
               </Grid>
             </Grid>
 
-            <Typography variant="h6" gutterBottom>{t('finance.latestTransactions')}</Typography>
+            <Typography variant="h6" gutterBottom>{t('finance_latestTransactions')}</Typography>
             
             <Paper sx={{ mt: 2, mb: 2, p: 2 }}>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-                <Typography variant="h6">{t('finance.transactions')}</Typography>
+                <Typography variant="h6">{t('finance_transactions')}</Typography>
                 <Button 
                   variant="contained" 
                   startIcon={<FilterListIcon />}
-                  onClick={() => setFiltroDialogAberto(true)}
+                  onClick={handleFilter}
                 >
-                  {t('finance.filter')}
+                  {t('finance_filter')}
                 </Button>
               </Box>
 
               {filtrosAtivos.length > 0 && (
                 <Box sx={{ mb: 2, display: 'flex', flexWrap: 'wrap', gap: 1 }}>
                   <Typography variant="subtitle2" sx={{ alignSelf: 'center', mr: 1 }}>
-                    {t('finance.activeFilters')}:
+                    {t('finance_activeFilters')}:
                   </Typography>
                   {filtrosAtivos.map((filtro, index) => (
                     <Chip 
@@ -731,88 +745,94 @@ const Financeiro = () => {
                     onClick={() => setFiltrosAtivos([])}
                     startIcon={<ClearIcon />}
                   >
-                    {t('finance.clearFilters')}
+                    {t('finance_clearFilters')}
                   </Button>
                 </Box>
               )}
 
-              <List>
-                {transacoesFiltradas.map((transacao, index) => (
-                  <React.Fragment key={transacao.id}>
-                    <ListItem 
-                      sx={{
-                        borderRadius: 1,
-                        backgroundColor: index % 2 === 0 ? 'rgba(0, 0, 0, 0.03)' : 'transparent',
-                      }}
-                    >
-                      <Grid container spacing={2} alignItems="center">
-                        <Grid item xs={3} sm={3} sx={{ textAlign: 'left', color: transacao.tipo === 'entrada' ? theme.palette.success.main : theme.palette.error.main }}>
-                          {transacao.tipo === 'entrada' ? (
-                            <>
-                              <Typography variant="body1" fontWeight="bold">
-                                +{formatCurrency(transacao.valor)}
-                              </Typography>
-                              <Typography variant="body2" color="text.secondary">
-                                {transacao.categoria || t('finance.noCategory')}
-                              </Typography>
-                            </>
-                          ) : (
-                            <></>
-                          )}
+              {carregando ? (
+                <Box sx={{ display: 'flex', justifyContent: 'center', my: 3 }}>
+                  <CircularProgress />
+                </Box>
+              ) : (
+                <List>
+                  {transacoesFiltradas.map((transacao, index) => (
+                    <React.Fragment key={transacao.id}>
+                      <ListItem 
+                        sx={{
+                          borderRadius: 1,
+                          backgroundColor: index % 2 === 0 ? 'rgba(0, 0, 0, 0.03)' : 'transparent',
+                        }}
+                      >
+                        <Grid container spacing={2} alignItems="center">
+                          <Grid item xs={3} sm={3} sx={{ textAlign: 'left', color: transacao.tipo === 'entrada' ? theme.palette.success.main : theme.palette.error.main }}>
+                            {transacao.tipo === 'entrada' ? (
+                              <>
+                                <Typography variant="body1" fontWeight="bold">
+                                  +{formatCurrency(transacao.valor)}
+                                </Typography>
+                                <Typography variant="body2" color="text.secondary">
+                                  {transacao.categoria || t('finance_noCategory')}
+                                </Typography>
+                              </>
+                            ) : (
+                              <></>
+                            )}
+                          </Grid>
+                          
+                          <Grid item xs={6} sm={6} sx={{ textAlign: 'center' }}>
+                            <Typography variant="body1">
+                              {formatDate(new Date(transacao.data))}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                              {formatFullDate(new Date(transacao.data))}
+                            </Typography>
+                          </Grid>
+                          
+                          <Grid item xs={3} sm={3} sx={{ textAlign: 'right', color: transacao.tipo === 'saida' ? theme.palette.error.main : theme.palette.success.main }}>
+                            {transacao.tipo === 'saida' ? (
+                              <>
+                                <Typography variant="body1" fontWeight="bold">
+                                  -{formatCurrency(transacao.valor)}
+                                </Typography>
+                                <Typography variant="body2" color="text.secondary">
+                                  {transacao.categoria || t('finance_noCategory')}
+                                </Typography>
+                              </>
+                            ) : (
+                              <></>
+                            )}
+                          </Grid>
                         </Grid>
                         
-                        <Grid item xs={6} sm={6} sx={{ textAlign: 'center' }}>
-                          <Typography variant="body1">
-                            {formatDate(new Date(transacao.data))}
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            {formatFullDate(new Date(transacao.data))}
-                          </Typography>
-                        </Grid>
-                        
-                        <Grid item xs={3} sm={3} sx={{ textAlign: 'right', color: transacao.tipo === 'saida' ? theme.palette.error.main : theme.palette.success.main }}>
-                          {transacao.tipo === 'saida' ? (
-                            <>
-                              <Typography variant="body1" fontWeight="bold">
-                                -{formatCurrency(transacao.valor)}
-                              </Typography>
-                              <Typography variant="body2" color="text.secondary">
-                                {transacao.categoria || t('finance.noCategory')}
-                              </Typography>
-                            </>
-                          ) : (
-                            <></>
-                          )}
-                        </Grid>
-                      </Grid>
-                      
-                      <IconButton 
-                        edge="end" 
-                        aria-label="editar"
-                        onClick={() => handleEditarTransacao(transacao)}
-                        sx={{ ml: 1 }}
-                      >
-                        <EditIcon />
-                      </IconButton>
-                      <IconButton 
-                        edge="end" 
-                        aria-label="excluir"
-                        onClick={() => handleRemoverTransacao(transacao.id)}
-                        sx={{ ml: 1 }}
-                        color="error"
-                      >
-                        <DeleteIcon fontSize="small" />
-                      </IconButton>
-                    </ListItem>
-                    {index < transacoesFiltradas.length - 1 && <Divider />}
-                  </React.Fragment>
-                ))}
-                {transacoesFiltradas.length === 0 && (
-                  <Typography variant="body1" sx={{ textAlign: 'center', my: 3, color: 'text.secondary' }}>
-                    {t('finance.noTransactions')}
-                  </Typography>
-                )}
-              </List>
+                        <IconButton 
+                          edge="end" 
+                          aria-label="editar"
+                          onClick={() => handleEditarTransacao(transacao)}
+                          sx={{ ml: 1 }}
+                        >
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton 
+                          edge="end" 
+                          aria-label="excluir"
+                          onClick={() => handleRemoverTransacao(transacao.id)}
+                          sx={{ ml: 1 }}
+                          color="error"
+                        >
+                          <DeleteIcon fontSize="small" />
+                        </IconButton>
+                      </ListItem>
+                      {index < transacoesFiltradas.length - 1 && <Divider />}
+                    </React.Fragment>
+                  ))}
+                  {transacoesFiltradas.length === 0 && (
+                    <Typography variant="body1" sx={{ textAlign: 'center', my: 3, color: 'text.secondary' }}>
+                      {t('finance_noTransactions')}
+                    </Typography>
+                  )}
+                </List>
+              )}
             </Paper>
           </Paper>
         </Grid>
@@ -947,16 +967,16 @@ const Financeiro = () => {
                   ))}
                 </TextField>
                 <FormControl fullWidth margin="dense">
-                  <InputLabel>{t('finance.recurrence')}</InputLabel>
+                  <InputLabel>{t('finance_recurrence')}</InputLabel>
                   <Select
                     value={formData.recorrencia}
                     onChange={(e) => setFormData({ ...formData, recorrencia: e.target.value })}
-                    label={t('finance.recurrence')}
+                    label={t('finance_recurrence')}
                   >
-                    <MenuItem value="nenhuma">{t('finance.recurrence.none')}</MenuItem>
-                    <MenuItem value="quinzenal">{t('finance.recurrence.biweekly')}</MenuItem>
-                    <MenuItem value="mensal">{t('finance.recurrence.monthly')}</MenuItem>
-                    <MenuItem value="trimestral">{t('finance.recurrence.quarterly')}</MenuItem>
+                    <MenuItem value="nenhuma">{t('finance_recurrence_none')}</MenuItem>
+                    <MenuItem value="quinzenal">{t('finance_recurrence_biweekly')}</MenuItem>
+                    <MenuItem value="mensal">{t('finance_recurrence_monthly')}</MenuItem>
+                    <MenuItem value="trimestral">{t('finance_recurrence_quarterly')}</MenuItem>
                   </Select>
                 </FormControl>
               </>
@@ -1016,7 +1036,7 @@ const Financeiro = () => {
             <Grid container spacing={3}>
               <Grid item xs={12}>
                 <Typography variant="h6" gutterBottom>
-                  {t('finance.charts.monthlyIncome')}
+                  {t('finance_charts_monthlyIncome')}
                 </Typography>
                 <Paper style={{ height: 300, padding: 20 }}>
                   <ResponsiveContainer width="100%" height="100%">
@@ -1029,15 +1049,15 @@ const Financeiro = () => {
                       <YAxis />
                       <Tooltip formatter={(value) => formatCurrency(Number(value))} />
                       <Legend />
-                      <Bar dataKey="entrada" fill="#4caf50" name={t('finance.inputs')} />
-                      <Bar dataKey="saida" fill="#f44336" name={t('finance.outputs')} />
+                      <Bar dataKey="entrada" fill="#4caf50" name={t('finance_inputs')} />
+                      <Bar dataKey="saida" fill="#f44336" name={t('finance_outputs')} />
                     </BarChart>
                   </ResponsiveContainer>
                 </Paper>
               </Grid>
               <Grid item xs={12}>
                 <Typography variant="h6" gutterBottom>
-                  {t('finance.charts.weekdayIncome')}
+                  {t('finance_charts_weekdayIncome')}
                 </Typography>
                 <Paper style={{ height: 300, padding: 20 }}>
                   <ResponsiveContainer width="100%" height="100%">
@@ -1050,7 +1070,7 @@ const Financeiro = () => {
                       <YAxis />
                       <Tooltip formatter={(value) => formatCurrency(Number(value))} />
                       <Legend />
-                      <Bar dataKey="valor" fill="#4caf50" name={t('finance.inputs')} />
+                      <Bar dataKey="valor" fill="#4caf50" name={t('finance_inputs')} />
                     </BarChart>
                   </ResponsiveContainer>
                 </Paper>
@@ -1081,10 +1101,10 @@ const Financeiro = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleFecharConfirmacao} color="primary">
-            {t('finance.delete.cancel')}
+            {t('finance_delete_cancel')}
           </Button>
           <Button onClick={() => dialogoConfirmacao.onConfirm()} color="error" autoFocus>
-            {t('finance.delete.confirm')}
+            {t('finance_delete_confirm')}
           </Button>
         </DialogActions>
       </Dialog>

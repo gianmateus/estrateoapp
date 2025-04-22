@@ -43,6 +43,7 @@ import {
 } from '@mui/icons-material';
 import WhatsAppService from '../services/WhatsAppService';
 import { useAuth } from '../contexts/AuthContext';
+import { formatCurrency, formatDate } from '../utils/formatters';
 
 interface MensagemState {
   id: string;
@@ -61,11 +62,11 @@ interface RegistroDiarioState {
 }
 
 const formatarData = (data: Date): string => {
-  return data.toLocaleString('pt-BR');
+  return formatDate(data);
 };
 
 const formatarValor = (valor: number): string => {
-  return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  return formatCurrency(valor);
 };
 
 const Whatsapp = () => {
@@ -434,7 +435,7 @@ const Whatsapp = () => {
                       .sort((a, b) => new Date(b.data).getTime() - new Date(a.data).getTime())
                       .map((registro) => (
                         <TableRow key={registro.data}>
-                          <TableCell>{new Date(registro.data).toLocaleDateString('pt-BR')}</TableCell>
+                          <TableCell>{formatarData(new Date(registro.data))}</TableCell>
                           <TableCell>{formatarValor(registro.faturamento)}</TableCell>
                           <TableCell>{registro.descricao}</TableCell>
                           <TableCell>{registro.observacoes}</TableCell>
@@ -563,7 +564,7 @@ const Whatsapp = () => {
                 value={novoRegistro.faturamento}
                 onChange={handleInputRegistroChange}
                 InputProps={{
-                  startAdornment: <InputAdornment position="start">R$</InputAdornment>,
+                  startAdornment: <InputAdornment position="start">€</InputAdornment>,
                 }}
               />
             </Grid>

@@ -58,7 +58,7 @@ const unidades = [
 ];
 
 const Inventario = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { isAuthenticated } = useAuth();
   
   // Estados
@@ -282,7 +282,12 @@ const Inventario = () => {
       
       // Data
       doc.setFontSize(12);
-      doc.text(`Data: ${new Date().toLocaleDateString('pt-BR')}`, 105, 25, { align: 'center' });
+      const dateFormatted = new Intl.DateTimeFormat(i18n.language, {
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric'
+      }).format(new Date());
+      doc.text(`Data: ${dateFormatted}`, 105, 25, { align: 'center' });
       
       // Cabeçalho da tabela
       doc.setFontSize(12);

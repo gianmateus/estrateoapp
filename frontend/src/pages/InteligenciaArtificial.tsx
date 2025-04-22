@@ -43,6 +43,7 @@ import {
 import ChatGPTService from '../services/ChatGPTService';
 import { useAuth } from '../contexts/AuthContext';
 import { Link } from 'react-router-dom';
+import { formatCurrency, formatDate } from '../utils/formatters';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -631,11 +632,7 @@ const InteligenciaArtificial = () => {
                         fontWeight="bold" 
                         color="text.secondary"
                       >
-                        {new Date(previsao.date).toLocaleDateString('pt-BR', { 
-                          weekday: 'long', 
-                          day: 'numeric', 
-                          month: 'long'
-                        })}
+                        {formatDate(new Date(previsao.date))}
                       </Typography>
                       <Typography 
                         variant="h4" 
@@ -646,10 +643,7 @@ const InteligenciaArtificial = () => {
                           fontWeight: 'bold' 
                         }}
                       >
-                        R$ {previsao.predicted_sales.toLocaleString('pt-BR', { 
-                          minimumFractionDigits: 2, 
-                          maximumFractionDigits: 2 
-                        })}
+                        {formatCurrency(previsao.predicted_sales)}
                       </Typography>
                     </CardContent>
                   </Card>
@@ -822,13 +816,7 @@ const InteligenciaArtificial = () => {
                           fontWeight: 'medium' 
                         }}
                       >
-                        {typeof dado.value === 'number' ? 
-                          `R$ ${dado.value.toLocaleString('pt-BR', { 
-                            minimumFractionDigits: 2, 
-                            maximumFractionDigits: 2 
-                          })}` : 
-                          dado.value
-                        }
+                        {formatCurrency(dado.value)}
                       </Typography>
                       <Typography 
                         variant="body2" 

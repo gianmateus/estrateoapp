@@ -1096,80 +1096,118 @@ export namespace Prisma {
 
   export type AggregateUser = {
     _count: UserCountAggregateOutputType | null
+    _avg: UserAvgAggregateOutputType | null
+    _sum: UserSumAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
   }
 
+  export type UserAvgAggregateOutputType = {
+    numeroFuncionarios: number | null
+  }
+
+  export type UserSumAggregateOutputType = {
+    numeroFuncionarios: number | null
+  }
+
   export type UserMinAggregateOutputType = {
     id: string | null
-    name: string | null
+    nome: string | null
     email: string | null
-    password: string | null
-    tipoNegocio: string | null
     cargo: string | null
-    whatsapp: string | null
+    telefone: string | null
+    setor: string | null
+    password: string | null
+    permissoes: string | null
+    tipoNegocio: string | null
+    numeroFuncionarios: number | null
     createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type UserMaxAggregateOutputType = {
     id: string | null
-    name: string | null
+    nome: string | null
     email: string | null
-    password: string | null
-    tipoNegocio: string | null
     cargo: string | null
-    whatsapp: string | null
+    telefone: string | null
+    setor: string | null
+    password: string | null
+    permissoes: string | null
+    tipoNegocio: string | null
+    numeroFuncionarios: number | null
     createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type UserCountAggregateOutputType = {
     id: number
-    name: number
+    nome: number
     email: number
+    cargo: number
+    telefone: number
+    setor: number
     password: number
     permissoes: number
     tipoNegocio: number
-    cargo: number
-    whatsapp: number
-    horarioFuncionamento: number
+    numeroFuncionarios: number
     createdAt: number
+    updatedAt: number
     _all: number
   }
 
 
+  export type UserAvgAggregateInputType = {
+    numeroFuncionarios?: true
+  }
+
+  export type UserSumAggregateInputType = {
+    numeroFuncionarios?: true
+  }
+
   export type UserMinAggregateInputType = {
     id?: true
-    name?: true
+    nome?: true
     email?: true
-    password?: true
-    tipoNegocio?: true
     cargo?: true
-    whatsapp?: true
+    telefone?: true
+    setor?: true
+    password?: true
+    permissoes?: true
+    tipoNegocio?: true
+    numeroFuncionarios?: true
     createdAt?: true
+    updatedAt?: true
   }
 
   export type UserMaxAggregateInputType = {
     id?: true
-    name?: true
+    nome?: true
     email?: true
-    password?: true
-    tipoNegocio?: true
     cargo?: true
-    whatsapp?: true
+    telefone?: true
+    setor?: true
+    password?: true
+    permissoes?: true
+    tipoNegocio?: true
+    numeroFuncionarios?: true
     createdAt?: true
+    updatedAt?: true
   }
 
   export type UserCountAggregateInputType = {
     id?: true
-    name?: true
+    nome?: true
     email?: true
+    cargo?: true
+    telefone?: true
+    setor?: true
     password?: true
     permissoes?: true
     tipoNegocio?: true
-    cargo?: true
-    whatsapp?: true
-    horarioFuncionamento?: true
+    numeroFuncionarios?: true
     createdAt?: true
+    updatedAt?: true
     _all?: true
   }
 
@@ -1211,6 +1249,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: UserAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: UserSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: UserMinAggregateInputType
@@ -1241,22 +1291,28 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: UserCountAggregateInputType | true
+    _avg?: UserAvgAggregateInputType
+    _sum?: UserSumAggregateInputType
     _min?: UserMinAggregateInputType
     _max?: UserMaxAggregateInputType
   }
 
   export type UserGroupByOutputType = {
     id: string
-    name: string
+    nome: string
     email: string
-    password: string
-    permissoes: string[]
-    tipoNegocio: string | null
     cargo: string | null
-    whatsapp: string | null
-    horarioFuncionamento: JsonValue | null
+    telefone: string | null
+    setor: string | null
+    password: string
+    permissoes: string
+    tipoNegocio: string | null
+    numeroFuncionarios: number | null
     createdAt: Date
+    updatedAt: Date
     _count: UserCountAggregateOutputType | null
+    _avg: UserAvgAggregateOutputType | null
+    _sum: UserSumAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
   }
@@ -1277,15 +1333,17 @@ export namespace Prisma {
 
   export type UserSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    name?: boolean
+    nome?: boolean
     email?: boolean
+    cargo?: boolean
+    telefone?: boolean
+    setor?: boolean
     password?: boolean
     permissoes?: boolean
     tipoNegocio?: boolean
-    cargo?: boolean
-    whatsapp?: boolean
-    horarioFuncionamento?: boolean
+    numeroFuncionarios?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
     pagamentos?: boolean | User$pagamentosArgs<ExtArgs>
     inventario?: boolean | User$inventarioArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -1293,44 +1351,50 @@ export namespace Prisma {
 
   export type UserSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    name?: boolean
+    nome?: boolean
     email?: boolean
+    cargo?: boolean
+    telefone?: boolean
+    setor?: boolean
     password?: boolean
     permissoes?: boolean
     tipoNegocio?: boolean
-    cargo?: boolean
-    whatsapp?: boolean
-    horarioFuncionamento?: boolean
+    numeroFuncionarios?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    name?: boolean
+    nome?: boolean
     email?: boolean
+    cargo?: boolean
+    telefone?: boolean
+    setor?: boolean
     password?: boolean
     permissoes?: boolean
     tipoNegocio?: boolean
-    cargo?: boolean
-    whatsapp?: boolean
-    horarioFuncionamento?: boolean
+    numeroFuncionarios?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectScalar = {
     id?: boolean
-    name?: boolean
+    nome?: boolean
     email?: boolean
+    cargo?: boolean
+    telefone?: boolean
+    setor?: boolean
     password?: boolean
     permissoes?: boolean
     tipoNegocio?: boolean
-    cargo?: boolean
-    whatsapp?: boolean
-    horarioFuncionamento?: boolean
+    numeroFuncionarios?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "password" | "permissoes" | "tipoNegocio" | "cargo" | "whatsapp" | "horarioFuncionamento" | "createdAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nome" | "email" | "cargo" | "telefone" | "setor" | "password" | "permissoes" | "tipoNegocio" | "numeroFuncionarios" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     pagamentos?: boolean | User$pagamentosArgs<ExtArgs>
     inventario?: boolean | User$inventarioArgs<ExtArgs>
@@ -1347,15 +1411,17 @@ export namespace Prisma {
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      name: string
+      nome: string
       email: string
-      password: string
-      permissoes: string[]
-      tipoNegocio: string | null
       cargo: string | null
-      whatsapp: string | null
-      horarioFuncionamento: Prisma.JsonValue | null
+      telefone: string | null
+      setor: string | null
+      password: string
+      permissoes: string
+      tipoNegocio: string | null
+      numeroFuncionarios: number | null
       createdAt: Date
+      updatedAt: Date
     }, ExtArgs["result"]["user"]>
     composites: {}
   }
@@ -1782,15 +1848,17 @@ export namespace Prisma {
    */
   interface UserFieldRefs {
     readonly id: FieldRef<"User", 'String'>
-    readonly name: FieldRef<"User", 'String'>
+    readonly nome: FieldRef<"User", 'String'>
     readonly email: FieldRef<"User", 'String'>
-    readonly password: FieldRef<"User", 'String'>
-    readonly permissoes: FieldRef<"User", 'String[]'>
-    readonly tipoNegocio: FieldRef<"User", 'String'>
     readonly cargo: FieldRef<"User", 'String'>
-    readonly whatsapp: FieldRef<"User", 'String'>
-    readonly horarioFuncionamento: FieldRef<"User", 'Json'>
+    readonly telefone: FieldRef<"User", 'String'>
+    readonly setor: FieldRef<"User", 'String'>
+    readonly password: FieldRef<"User", 'String'>
+    readonly permissoes: FieldRef<"User", 'String'>
+    readonly tipoNegocio: FieldRef<"User", 'String'>
+    readonly numeroFuncionarios: FieldRef<"User", 'Int'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
+    readonly updatedAt: FieldRef<"User", 'DateTime'>
   }
     
 
@@ -2020,7 +2088,6 @@ export namespace Prisma {
      * The data used to create many Users.
      */
     data: UserCreateManyInput | UserCreateManyInput[]
-    skipDuplicates?: boolean
   }
 
   /**
@@ -2039,7 +2106,6 @@ export namespace Prisma {
      * The data used to create many Users.
      */
     data: UserCreateManyInput | UserCreateManyInput[]
-    skipDuplicates?: boolean
   }
 
   /**
@@ -2267,35 +2333,35 @@ export namespace Prisma {
 
   export type PagamentoMinAggregateOutputType = {
     id: string | null
-    descricao: string | null
     valor: number | null
-    categoria: string | null
-    vencimento: Date | null
-    pago: boolean | null
+    data: Date | null
+    status: string | null
+    descricao: string | null
     userId: string | null
     createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type PagamentoMaxAggregateOutputType = {
     id: string | null
-    descricao: string | null
     valor: number | null
-    categoria: string | null
-    vencimento: Date | null
-    pago: boolean | null
+    data: Date | null
+    status: string | null
+    descricao: string | null
     userId: string | null
     createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type PagamentoCountAggregateOutputType = {
     id: number
-    descricao: number
     valor: number
-    categoria: number
-    vencimento: number
-    pago: number
+    data: number
+    status: number
+    descricao: number
     userId: number
     createdAt: number
+    updatedAt: number
     _all: number
   }
 
@@ -2310,35 +2376,35 @@ export namespace Prisma {
 
   export type PagamentoMinAggregateInputType = {
     id?: true
-    descricao?: true
     valor?: true
-    categoria?: true
-    vencimento?: true
-    pago?: true
+    data?: true
+    status?: true
+    descricao?: true
     userId?: true
     createdAt?: true
+    updatedAt?: true
   }
 
   export type PagamentoMaxAggregateInputType = {
     id?: true
-    descricao?: true
     valor?: true
-    categoria?: true
-    vencimento?: true
-    pago?: true
+    data?: true
+    status?: true
+    descricao?: true
     userId?: true
     createdAt?: true
+    updatedAt?: true
   }
 
   export type PagamentoCountAggregateInputType = {
     id?: true
-    descricao?: true
     valor?: true
-    categoria?: true
-    vencimento?: true
-    pago?: true
+    data?: true
+    status?: true
+    descricao?: true
     userId?: true
     createdAt?: true
+    updatedAt?: true
     _all?: true
   }
 
@@ -2430,13 +2496,13 @@ export namespace Prisma {
 
   export type PagamentoGroupByOutputType = {
     id: string
-    descricao: string
     valor: number
-    categoria: string
-    vencimento: Date
-    pago: boolean
+    data: Date
+    status: string
+    descricao: string | null
     userId: string
     createdAt: Date
+    updatedAt: Date
     _count: PagamentoCountAggregateOutputType | null
     _avg: PagamentoAvgAggregateOutputType | null
     _sum: PagamentoSumAggregateOutputType | null
@@ -2460,52 +2526,52 @@ export namespace Prisma {
 
   export type PagamentoSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    descricao?: boolean
     valor?: boolean
-    categoria?: boolean
-    vencimento?: boolean
-    pago?: boolean
+    data?: boolean
+    status?: boolean
+    descricao?: boolean
     userId?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["pagamento"]>
 
   export type PagamentoSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    descricao?: boolean
     valor?: boolean
-    categoria?: boolean
-    vencimento?: boolean
-    pago?: boolean
+    data?: boolean
+    status?: boolean
+    descricao?: boolean
     userId?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["pagamento"]>
 
   export type PagamentoSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    descricao?: boolean
     valor?: boolean
-    categoria?: boolean
-    vencimento?: boolean
-    pago?: boolean
+    data?: boolean
+    status?: boolean
+    descricao?: boolean
     userId?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["pagamento"]>
 
   export type PagamentoSelectScalar = {
     id?: boolean
-    descricao?: boolean
     valor?: boolean
-    categoria?: boolean
-    vencimento?: boolean
-    pago?: boolean
+    data?: boolean
+    status?: boolean
+    descricao?: boolean
     userId?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
   }
 
-  export type PagamentoOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "descricao" | "valor" | "categoria" | "vencimento" | "pago" | "userId" | "createdAt", ExtArgs["result"]["pagamento"]>
+  export type PagamentoOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "valor" | "data" | "status" | "descricao" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["pagamento"]>
   export type PagamentoInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -2523,13 +2589,13 @@ export namespace Prisma {
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      descricao: string
       valor: number
-      categoria: string
-      vencimento: Date
-      pago: boolean
+      data: Date
+      status: string
+      descricao: string | null
       userId: string
       createdAt: Date
+      updatedAt: Date
     }, ExtArgs["result"]["pagamento"]>
     composites: {}
   }
@@ -2955,13 +3021,13 @@ export namespace Prisma {
    */
   interface PagamentoFieldRefs {
     readonly id: FieldRef<"Pagamento", 'String'>
-    readonly descricao: FieldRef<"Pagamento", 'String'>
     readonly valor: FieldRef<"Pagamento", 'Float'>
-    readonly categoria: FieldRef<"Pagamento", 'String'>
-    readonly vencimento: FieldRef<"Pagamento", 'DateTime'>
-    readonly pago: FieldRef<"Pagamento", 'Boolean'>
+    readonly data: FieldRef<"Pagamento", 'DateTime'>
+    readonly status: FieldRef<"Pagamento", 'String'>
+    readonly descricao: FieldRef<"Pagamento", 'String'>
     readonly userId: FieldRef<"Pagamento", 'String'>
     readonly createdAt: FieldRef<"Pagamento", 'DateTime'>
+    readonly updatedAt: FieldRef<"Pagamento", 'DateTime'>
   }
     
 
@@ -3191,7 +3257,6 @@ export namespace Prisma {
      * The data used to create many Pagamentos.
      */
     data: PagamentoCreateManyInput | PagamentoCreateManyInput[]
-    skipDuplicates?: boolean
   }
 
   /**
@@ -3210,7 +3275,6 @@ export namespace Prisma {
      * The data used to create many Pagamentos.
      */
     data: PagamentoCreateManyInput | PagamentoCreateManyInput[]
-    skipDuplicates?: boolean
     /**
      * Choose, which related nodes to fetch as well
      */
@@ -3389,91 +3453,85 @@ export namespace Prisma {
   }
 
   export type InventarioAvgAggregateOutputType = {
-    quantidadeAtual: number | null
-    quantidadeIdeal: number | null
+    quantidade: number | null
+    preco: number | null
   }
 
   export type InventarioSumAggregateOutputType = {
-    quantidadeAtual: number | null
-    quantidadeIdeal: number | null
+    quantidade: number | null
+    preco: number | null
   }
 
   export type InventarioMinAggregateOutputType = {
     id: string | null
     nome: string | null
-    categoria: string | null
-    unidade: string | null
-    quantidadeAtual: number | null
-    quantidadeIdeal: number | null
+    quantidade: number | null
+    preco: number | null
     userId: string | null
     createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type InventarioMaxAggregateOutputType = {
     id: string | null
     nome: string | null
-    categoria: string | null
-    unidade: string | null
-    quantidadeAtual: number | null
-    quantidadeIdeal: number | null
+    quantidade: number | null
+    preco: number | null
     userId: string | null
     createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type InventarioCountAggregateOutputType = {
     id: number
     nome: number
-    categoria: number
-    unidade: number
-    quantidadeAtual: number
-    quantidadeIdeal: number
+    quantidade: number
+    preco: number
     userId: number
     createdAt: number
+    updatedAt: number
     _all: number
   }
 
 
   export type InventarioAvgAggregateInputType = {
-    quantidadeAtual?: true
-    quantidadeIdeal?: true
+    quantidade?: true
+    preco?: true
   }
 
   export type InventarioSumAggregateInputType = {
-    quantidadeAtual?: true
-    quantidadeIdeal?: true
+    quantidade?: true
+    preco?: true
   }
 
   export type InventarioMinAggregateInputType = {
     id?: true
     nome?: true
-    categoria?: true
-    unidade?: true
-    quantidadeAtual?: true
-    quantidadeIdeal?: true
+    quantidade?: true
+    preco?: true
     userId?: true
     createdAt?: true
+    updatedAt?: true
   }
 
   export type InventarioMaxAggregateInputType = {
     id?: true
     nome?: true
-    categoria?: true
-    unidade?: true
-    quantidadeAtual?: true
-    quantidadeIdeal?: true
+    quantidade?: true
+    preco?: true
     userId?: true
     createdAt?: true
+    updatedAt?: true
   }
 
   export type InventarioCountAggregateInputType = {
     id?: true
     nome?: true
-    categoria?: true
-    unidade?: true
-    quantidadeAtual?: true
-    quantidadeIdeal?: true
+    quantidade?: true
+    preco?: true
     userId?: true
     createdAt?: true
+    updatedAt?: true
     _all?: true
   }
 
@@ -3566,12 +3624,11 @@ export namespace Prisma {
   export type InventarioGroupByOutputType = {
     id: string
     nome: string
-    categoria: string
-    unidade: string
-    quantidadeAtual: number
-    quantidadeIdeal: number
+    quantidade: number
+    preco: number
     userId: string
     createdAt: Date
+    updatedAt: Date
     _count: InventarioCountAggregateOutputType | null
     _avg: InventarioAvgAggregateOutputType | null
     _sum: InventarioSumAggregateOutputType | null
@@ -3596,51 +3653,47 @@ export namespace Prisma {
   export type InventarioSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     nome?: boolean
-    categoria?: boolean
-    unidade?: boolean
-    quantidadeAtual?: boolean
-    quantidadeIdeal?: boolean
+    quantidade?: boolean
+    preco?: boolean
     userId?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["inventario"]>
 
   export type InventarioSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     nome?: boolean
-    categoria?: boolean
-    unidade?: boolean
-    quantidadeAtual?: boolean
-    quantidadeIdeal?: boolean
+    quantidade?: boolean
+    preco?: boolean
     userId?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["inventario"]>
 
   export type InventarioSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     nome?: boolean
-    categoria?: boolean
-    unidade?: boolean
-    quantidadeAtual?: boolean
-    quantidadeIdeal?: boolean
+    quantidade?: boolean
+    preco?: boolean
     userId?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["inventario"]>
 
   export type InventarioSelectScalar = {
     id?: boolean
     nome?: boolean
-    categoria?: boolean
-    unidade?: boolean
-    quantidadeAtual?: boolean
-    quantidadeIdeal?: boolean
+    quantidade?: boolean
+    preco?: boolean
     userId?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
   }
 
-  export type InventarioOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nome" | "categoria" | "unidade" | "quantidadeAtual" | "quantidadeIdeal" | "userId" | "createdAt", ExtArgs["result"]["inventario"]>
+  export type InventarioOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nome" | "quantidade" | "preco" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["inventario"]>
   export type InventarioInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -3659,12 +3712,11 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       nome: string
-      categoria: string
-      unidade: string
-      quantidadeAtual: number
-      quantidadeIdeal: number
+      quantidade: number
+      preco: number
       userId: string
       createdAt: Date
+      updatedAt: Date
     }, ExtArgs["result"]["inventario"]>
     composites: {}
   }
@@ -4091,12 +4143,11 @@ export namespace Prisma {
   interface InventarioFieldRefs {
     readonly id: FieldRef<"Inventario", 'String'>
     readonly nome: FieldRef<"Inventario", 'String'>
-    readonly categoria: FieldRef<"Inventario", 'String'>
-    readonly unidade: FieldRef<"Inventario", 'String'>
-    readonly quantidadeAtual: FieldRef<"Inventario", 'Int'>
-    readonly quantidadeIdeal: FieldRef<"Inventario", 'Int'>
+    readonly quantidade: FieldRef<"Inventario", 'Int'>
+    readonly preco: FieldRef<"Inventario", 'Float'>
     readonly userId: FieldRef<"Inventario", 'String'>
     readonly createdAt: FieldRef<"Inventario", 'DateTime'>
+    readonly updatedAt: FieldRef<"Inventario", 'DateTime'>
   }
     
 
@@ -4326,7 +4377,6 @@ export namespace Prisma {
      * The data used to create many Inventarios.
      */
     data: InventarioCreateManyInput | InventarioCreateManyInput[]
-    skipDuplicates?: boolean
   }
 
   /**
@@ -4345,7 +4395,6 @@ export namespace Prisma {
      * The data used to create many Inventarios.
      */
     data: InventarioCreateManyInput | InventarioCreateManyInput[]
-    skipDuplicates?: boolean
     /**
      * Choose, which related nodes to fetch as well
      */
@@ -4516,9 +4565,6 @@ export namespace Prisma {
    */
 
   export const TransactionIsolationLevel: {
-    ReadUncommitted: 'ReadUncommitted',
-    ReadCommitted: 'ReadCommitted',
-    RepeatableRead: 'RepeatableRead',
     Serializable: 'Serializable'
   };
 
@@ -4527,15 +4573,17 @@ export namespace Prisma {
 
   export const UserScalarFieldEnum: {
     id: 'id',
-    name: 'name',
+    nome: 'nome',
     email: 'email',
+    cargo: 'cargo',
+    telefone: 'telefone',
+    setor: 'setor',
     password: 'password',
     permissoes: 'permissoes',
     tipoNegocio: 'tipoNegocio',
-    cargo: 'cargo',
-    whatsapp: 'whatsapp',
-    horarioFuncionamento: 'horarioFuncionamento',
-    createdAt: 'createdAt'
+    numeroFuncionarios: 'numeroFuncionarios',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -4543,13 +4591,13 @@ export namespace Prisma {
 
   export const PagamentoScalarFieldEnum: {
     id: 'id',
-    descricao: 'descricao',
     valor: 'valor',
-    categoria: 'categoria',
-    vencimento: 'vencimento',
-    pago: 'pago',
+    data: 'data',
+    status: 'status',
+    descricao: 'descricao',
     userId: 'userId',
-    createdAt: 'createdAt'
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
   };
 
   export type PagamentoScalarFieldEnum = (typeof PagamentoScalarFieldEnum)[keyof typeof PagamentoScalarFieldEnum]
@@ -4558,12 +4606,11 @@ export namespace Prisma {
   export const InventarioScalarFieldEnum: {
     id: 'id',
     nome: 'nome',
-    categoria: 'categoria',
-    unidade: 'unidade',
-    quantidadeAtual: 'quantidadeAtual',
-    quantidadeIdeal: 'quantidadeIdeal',
+    quantidade: 'quantidade',
+    preco: 'preco',
     userId: 'userId',
-    createdAt: 'createdAt'
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
   };
 
   export type InventarioScalarFieldEnum = (typeof InventarioScalarFieldEnum)[keyof typeof InventarioScalarFieldEnum]
@@ -4575,31 +4622,6 @@ export namespace Prisma {
   };
 
   export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
-
-
-  export const NullableJsonNullValueInput: {
-    DbNull: typeof DbNull,
-    JsonNull: typeof JsonNull
-  };
-
-  export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
-
-
-  export const QueryMode: {
-    default: 'default',
-    insensitive: 'insensitive'
-  };
-
-  export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
-
-
-  export const JsonNullValueFilter: {
-    DbNull: typeof DbNull,
-    JsonNull: typeof JsonNull,
-    AnyNull: typeof AnyNull
-  };
-
-  export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
 
   export const NullsOrder: {
@@ -4623,23 +4645,9 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'String[]'
+   * Reference to a field of type 'Int'
    */
-  export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'Json'
-   */
-  export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
-    
-
-
-  /**
-   * Reference to a field of type 'QueryMode'
-   */
-  export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
     
 
 
@@ -4651,44 +4659,9 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'DateTime[]'
-   */
-  export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
-    
-
-
-  /**
    * Reference to a field of type 'Float'
    */
   export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
-    
-
-
-  /**
-   * Reference to a field of type 'Float[]'
-   */
-  export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'Boolean'
-   */
-  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
-    
-
-
-  /**
-   * Reference to a field of type 'Int'
-   */
-  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
-    
-
-
-  /**
-   * Reference to a field of type 'Int[]'
-   */
-  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
     
   /**
    * Deep Input Types
@@ -4700,30 +4673,34 @@ export namespace Prisma {
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
     id?: StringFilter<"User"> | string
-    name?: StringFilter<"User"> | string
+    nome?: StringFilter<"User"> | string
     email?: StringFilter<"User"> | string
-    password?: StringFilter<"User"> | string
-    permissoes?: StringNullableListFilter<"User">
-    tipoNegocio?: StringNullableFilter<"User"> | string | null
     cargo?: StringNullableFilter<"User"> | string | null
-    whatsapp?: StringNullableFilter<"User"> | string | null
-    horarioFuncionamento?: JsonNullableFilter<"User">
+    telefone?: StringNullableFilter<"User"> | string | null
+    setor?: StringNullableFilter<"User"> | string | null
+    password?: StringFilter<"User"> | string
+    permissoes?: StringFilter<"User"> | string
+    tipoNegocio?: StringNullableFilter<"User"> | string | null
+    numeroFuncionarios?: IntNullableFilter<"User"> | number | null
     createdAt?: DateTimeFilter<"User"> | Date | string
+    updatedAt?: DateTimeFilter<"User"> | Date | string
     pagamentos?: PagamentoListRelationFilter
     inventario?: InventarioListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
     id?: SortOrder
-    name?: SortOrder
+    nome?: SortOrder
     email?: SortOrder
+    cargo?: SortOrderInput | SortOrder
+    telefone?: SortOrderInput | SortOrder
+    setor?: SortOrderInput | SortOrder
     password?: SortOrder
     permissoes?: SortOrder
     tipoNegocio?: SortOrderInput | SortOrder
-    cargo?: SortOrderInput | SortOrder
-    whatsapp?: SortOrderInput | SortOrder
-    horarioFuncionamento?: SortOrderInput | SortOrder
+    numeroFuncionarios?: SortOrderInput | SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
     pagamentos?: PagamentoOrderByRelationAggregateInput
     inventario?: InventarioOrderByRelationAggregateInput
   }
@@ -4734,32 +4711,38 @@ export namespace Prisma {
     AND?: UserWhereInput | UserWhereInput[]
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
-    name?: StringFilter<"User"> | string
-    password?: StringFilter<"User"> | string
-    permissoes?: StringNullableListFilter<"User">
-    tipoNegocio?: StringNullableFilter<"User"> | string | null
+    nome?: StringFilter<"User"> | string
     cargo?: StringNullableFilter<"User"> | string | null
-    whatsapp?: StringNullableFilter<"User"> | string | null
-    horarioFuncionamento?: JsonNullableFilter<"User">
+    telefone?: StringNullableFilter<"User"> | string | null
+    setor?: StringNullableFilter<"User"> | string | null
+    password?: StringFilter<"User"> | string
+    permissoes?: StringFilter<"User"> | string
+    tipoNegocio?: StringNullableFilter<"User"> | string | null
+    numeroFuncionarios?: IntNullableFilter<"User"> | number | null
     createdAt?: DateTimeFilter<"User"> | Date | string
+    updatedAt?: DateTimeFilter<"User"> | Date | string
     pagamentos?: PagamentoListRelationFilter
     inventario?: InventarioListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
     id?: SortOrder
-    name?: SortOrder
+    nome?: SortOrder
     email?: SortOrder
+    cargo?: SortOrderInput | SortOrder
+    telefone?: SortOrderInput | SortOrder
+    setor?: SortOrderInput | SortOrder
     password?: SortOrder
     permissoes?: SortOrder
     tipoNegocio?: SortOrderInput | SortOrder
-    cargo?: SortOrderInput | SortOrder
-    whatsapp?: SortOrderInput | SortOrder
-    horarioFuncionamento?: SortOrderInput | SortOrder
+    numeroFuncionarios?: SortOrderInput | SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
     _count?: UserCountOrderByAggregateInput
+    _avg?: UserAvgOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
     _min?: UserMinOrderByAggregateInput
+    _sum?: UserSumOrderByAggregateInput
   }
 
   export type UserScalarWhereWithAggregatesInput = {
@@ -4767,15 +4750,17 @@ export namespace Prisma {
     OR?: UserScalarWhereWithAggregatesInput[]
     NOT?: UserScalarWhereWithAggregatesInput | UserScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"User"> | string
-    name?: StringWithAggregatesFilter<"User"> | string
+    nome?: StringWithAggregatesFilter<"User"> | string
     email?: StringWithAggregatesFilter<"User"> | string
-    password?: StringWithAggregatesFilter<"User"> | string
-    permissoes?: StringNullableListFilter<"User">
-    tipoNegocio?: StringNullableWithAggregatesFilter<"User"> | string | null
     cargo?: StringNullableWithAggregatesFilter<"User"> | string | null
-    whatsapp?: StringNullableWithAggregatesFilter<"User"> | string | null
-    horarioFuncionamento?: JsonNullableWithAggregatesFilter<"User">
+    telefone?: StringNullableWithAggregatesFilter<"User"> | string | null
+    setor?: StringNullableWithAggregatesFilter<"User"> | string | null
+    password?: StringWithAggregatesFilter<"User"> | string
+    permissoes?: StringWithAggregatesFilter<"User"> | string
+    tipoNegocio?: StringNullableWithAggregatesFilter<"User"> | string | null
+    numeroFuncionarios?: IntNullableWithAggregatesFilter<"User"> | number | null
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
   }
 
   export type PagamentoWhereInput = {
@@ -4783,25 +4768,25 @@ export namespace Prisma {
     OR?: PagamentoWhereInput[]
     NOT?: PagamentoWhereInput | PagamentoWhereInput[]
     id?: StringFilter<"Pagamento"> | string
-    descricao?: StringFilter<"Pagamento"> | string
     valor?: FloatFilter<"Pagamento"> | number
-    categoria?: StringFilter<"Pagamento"> | string
-    vencimento?: DateTimeFilter<"Pagamento"> | Date | string
-    pago?: BoolFilter<"Pagamento"> | boolean
+    data?: DateTimeFilter<"Pagamento"> | Date | string
+    status?: StringFilter<"Pagamento"> | string
+    descricao?: StringNullableFilter<"Pagamento"> | string | null
     userId?: StringFilter<"Pagamento"> | string
     createdAt?: DateTimeFilter<"Pagamento"> | Date | string
+    updatedAt?: DateTimeFilter<"Pagamento"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
 
   export type PagamentoOrderByWithRelationInput = {
     id?: SortOrder
-    descricao?: SortOrder
     valor?: SortOrder
-    categoria?: SortOrder
-    vencimento?: SortOrder
-    pago?: SortOrder
+    data?: SortOrder
+    status?: SortOrder
+    descricao?: SortOrderInput | SortOrder
     userId?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
   }
 
@@ -4810,25 +4795,25 @@ export namespace Prisma {
     AND?: PagamentoWhereInput | PagamentoWhereInput[]
     OR?: PagamentoWhereInput[]
     NOT?: PagamentoWhereInput | PagamentoWhereInput[]
-    descricao?: StringFilter<"Pagamento"> | string
     valor?: FloatFilter<"Pagamento"> | number
-    categoria?: StringFilter<"Pagamento"> | string
-    vencimento?: DateTimeFilter<"Pagamento"> | Date | string
-    pago?: BoolFilter<"Pagamento"> | boolean
+    data?: DateTimeFilter<"Pagamento"> | Date | string
+    status?: StringFilter<"Pagamento"> | string
+    descricao?: StringNullableFilter<"Pagamento"> | string | null
     userId?: StringFilter<"Pagamento"> | string
     createdAt?: DateTimeFilter<"Pagamento"> | Date | string
+    updatedAt?: DateTimeFilter<"Pagamento"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id">
 
   export type PagamentoOrderByWithAggregationInput = {
     id?: SortOrder
-    descricao?: SortOrder
     valor?: SortOrder
-    categoria?: SortOrder
-    vencimento?: SortOrder
-    pago?: SortOrder
+    data?: SortOrder
+    status?: SortOrder
+    descricao?: SortOrderInput | SortOrder
     userId?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
     _count?: PagamentoCountOrderByAggregateInput
     _avg?: PagamentoAvgOrderByAggregateInput
     _max?: PagamentoMaxOrderByAggregateInput
@@ -4841,13 +4826,13 @@ export namespace Prisma {
     OR?: PagamentoScalarWhereWithAggregatesInput[]
     NOT?: PagamentoScalarWhereWithAggregatesInput | PagamentoScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Pagamento"> | string
-    descricao?: StringWithAggregatesFilter<"Pagamento"> | string
     valor?: FloatWithAggregatesFilter<"Pagamento"> | number
-    categoria?: StringWithAggregatesFilter<"Pagamento"> | string
-    vencimento?: DateTimeWithAggregatesFilter<"Pagamento"> | Date | string
-    pago?: BoolWithAggregatesFilter<"Pagamento"> | boolean
+    data?: DateTimeWithAggregatesFilter<"Pagamento"> | Date | string
+    status?: StringWithAggregatesFilter<"Pagamento"> | string
+    descricao?: StringNullableWithAggregatesFilter<"Pagamento"> | string | null
     userId?: StringWithAggregatesFilter<"Pagamento"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Pagamento"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Pagamento"> | Date | string
   }
 
   export type InventarioWhereInput = {
@@ -4856,24 +4841,22 @@ export namespace Prisma {
     NOT?: InventarioWhereInput | InventarioWhereInput[]
     id?: StringFilter<"Inventario"> | string
     nome?: StringFilter<"Inventario"> | string
-    categoria?: StringFilter<"Inventario"> | string
-    unidade?: StringFilter<"Inventario"> | string
-    quantidadeAtual?: IntFilter<"Inventario"> | number
-    quantidadeIdeal?: IntFilter<"Inventario"> | number
+    quantidade?: IntFilter<"Inventario"> | number
+    preco?: FloatFilter<"Inventario"> | number
     userId?: StringFilter<"Inventario"> | string
     createdAt?: DateTimeFilter<"Inventario"> | Date | string
+    updatedAt?: DateTimeFilter<"Inventario"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
 
   export type InventarioOrderByWithRelationInput = {
     id?: SortOrder
     nome?: SortOrder
-    categoria?: SortOrder
-    unidade?: SortOrder
-    quantidadeAtual?: SortOrder
-    quantidadeIdeal?: SortOrder
+    quantidade?: SortOrder
+    preco?: SortOrder
     userId?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
   }
 
@@ -4883,24 +4866,22 @@ export namespace Prisma {
     OR?: InventarioWhereInput[]
     NOT?: InventarioWhereInput | InventarioWhereInput[]
     nome?: StringFilter<"Inventario"> | string
-    categoria?: StringFilter<"Inventario"> | string
-    unidade?: StringFilter<"Inventario"> | string
-    quantidadeAtual?: IntFilter<"Inventario"> | number
-    quantidadeIdeal?: IntFilter<"Inventario"> | number
+    quantidade?: IntFilter<"Inventario"> | number
+    preco?: FloatFilter<"Inventario"> | number
     userId?: StringFilter<"Inventario"> | string
     createdAt?: DateTimeFilter<"Inventario"> | Date | string
+    updatedAt?: DateTimeFilter<"Inventario"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id">
 
   export type InventarioOrderByWithAggregationInput = {
     id?: SortOrder
     nome?: SortOrder
-    categoria?: SortOrder
-    unidade?: SortOrder
-    quantidadeAtual?: SortOrder
-    quantidadeIdeal?: SortOrder
+    quantidade?: SortOrder
+    preco?: SortOrder
     userId?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
     _count?: InventarioCountOrderByAggregateInput
     _avg?: InventarioAvgOrderByAggregateInput
     _max?: InventarioMaxOrderByAggregateInput
@@ -4914,269 +4895,275 @@ export namespace Prisma {
     NOT?: InventarioScalarWhereWithAggregatesInput | InventarioScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Inventario"> | string
     nome?: StringWithAggregatesFilter<"Inventario"> | string
-    categoria?: StringWithAggregatesFilter<"Inventario"> | string
-    unidade?: StringWithAggregatesFilter<"Inventario"> | string
-    quantidadeAtual?: IntWithAggregatesFilter<"Inventario"> | number
-    quantidadeIdeal?: IntWithAggregatesFilter<"Inventario"> | number
+    quantidade?: IntWithAggregatesFilter<"Inventario"> | number
+    preco?: FloatWithAggregatesFilter<"Inventario"> | number
     userId?: StringWithAggregatesFilter<"Inventario"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Inventario"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Inventario"> | Date | string
   }
 
   export type UserCreateInput = {
     id?: string
-    name: string
+    nome: string
     email: string
-    password: string
-    permissoes?: UserCreatepermissoesInput | string[]
-    tipoNegocio?: string | null
     cargo?: string | null
-    whatsapp?: string | null
-    horarioFuncionamento?: NullableJsonNullValueInput | InputJsonValue
+    telefone?: string | null
+    setor?: string | null
+    password: string
+    permissoes?: string
+    tipoNegocio?: string | null
+    numeroFuncionarios?: number | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     pagamentos?: PagamentoCreateNestedManyWithoutUserInput
     inventario?: InventarioCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
     id?: string
-    name: string
+    nome: string
     email: string
-    password: string
-    permissoes?: UserCreatepermissoesInput | string[]
-    tipoNegocio?: string | null
     cargo?: string | null
-    whatsapp?: string | null
-    horarioFuncionamento?: NullableJsonNullValueInput | InputJsonValue
+    telefone?: string | null
+    setor?: string | null
+    password: string
+    permissoes?: string
+    tipoNegocio?: string | null
+    numeroFuncionarios?: number | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     pagamentos?: PagamentoUncheckedCreateNestedManyWithoutUserInput
     inventario?: InventarioUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
+    nome?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
-    permissoes?: UserUpdatepermissoesInput | string[]
-    tipoNegocio?: NullableStringFieldUpdateOperationsInput | string | null
     cargo?: NullableStringFieldUpdateOperationsInput | string | null
-    whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
-    horarioFuncionamento?: NullableJsonNullValueInput | InputJsonValue
+    telefone?: NullableStringFieldUpdateOperationsInput | string | null
+    setor?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: StringFieldUpdateOperationsInput | string
+    permissoes?: StringFieldUpdateOperationsInput | string
+    tipoNegocio?: NullableStringFieldUpdateOperationsInput | string | null
+    numeroFuncionarios?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     pagamentos?: PagamentoUpdateManyWithoutUserNestedInput
     inventario?: InventarioUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
+    nome?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
-    permissoes?: UserUpdatepermissoesInput | string[]
-    tipoNegocio?: NullableStringFieldUpdateOperationsInput | string | null
     cargo?: NullableStringFieldUpdateOperationsInput | string | null
-    whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
-    horarioFuncionamento?: NullableJsonNullValueInput | InputJsonValue
+    telefone?: NullableStringFieldUpdateOperationsInput | string | null
+    setor?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: StringFieldUpdateOperationsInput | string
+    permissoes?: StringFieldUpdateOperationsInput | string
+    tipoNegocio?: NullableStringFieldUpdateOperationsInput | string | null
+    numeroFuncionarios?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     pagamentos?: PagamentoUncheckedUpdateManyWithoutUserNestedInput
     inventario?: InventarioUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
     id?: string
-    name: string
+    nome: string
     email: string
-    password: string
-    permissoes?: UserCreatepermissoesInput | string[]
-    tipoNegocio?: string | null
     cargo?: string | null
-    whatsapp?: string | null
-    horarioFuncionamento?: NullableJsonNullValueInput | InputJsonValue
+    telefone?: string | null
+    setor?: string | null
+    password: string
+    permissoes?: string
+    tipoNegocio?: string | null
+    numeroFuncionarios?: number | null
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type UserUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
+    nome?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
-    permissoes?: UserUpdatepermissoesInput | string[]
-    tipoNegocio?: NullableStringFieldUpdateOperationsInput | string | null
     cargo?: NullableStringFieldUpdateOperationsInput | string | null
-    whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
-    horarioFuncionamento?: NullableJsonNullValueInput | InputJsonValue
+    telefone?: NullableStringFieldUpdateOperationsInput | string | null
+    setor?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: StringFieldUpdateOperationsInput | string
+    permissoes?: StringFieldUpdateOperationsInput | string
+    tipoNegocio?: NullableStringFieldUpdateOperationsInput | string | null
+    numeroFuncionarios?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type UserUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
+    nome?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
-    permissoes?: UserUpdatepermissoesInput | string[]
-    tipoNegocio?: NullableStringFieldUpdateOperationsInput | string | null
     cargo?: NullableStringFieldUpdateOperationsInput | string | null
-    whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
-    horarioFuncionamento?: NullableJsonNullValueInput | InputJsonValue
+    telefone?: NullableStringFieldUpdateOperationsInput | string | null
+    setor?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: StringFieldUpdateOperationsInput | string
+    permissoes?: StringFieldUpdateOperationsInput | string
+    tipoNegocio?: NullableStringFieldUpdateOperationsInput | string | null
+    numeroFuncionarios?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type PagamentoCreateInput = {
     id?: string
-    descricao: string
     valor: number
-    categoria: string
-    vencimento: Date | string
-    pago?: boolean
+    data: Date | string
+    status: string
+    descricao?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     user: UserCreateNestedOneWithoutPagamentosInput
   }
 
   export type PagamentoUncheckedCreateInput = {
     id?: string
-    descricao: string
     valor: number
-    categoria: string
-    vencimento: Date | string
-    pago?: boolean
+    data: Date | string
+    status: string
+    descricao?: string | null
     userId: string
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type PagamentoUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    descricao?: StringFieldUpdateOperationsInput | string
     valor?: FloatFieldUpdateOperationsInput | number
-    categoria?: StringFieldUpdateOperationsInput | string
-    vencimento?: DateTimeFieldUpdateOperationsInput | Date | string
-    pago?: BoolFieldUpdateOperationsInput | boolean
+    data?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    descricao?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutPagamentosNestedInput
   }
 
   export type PagamentoUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    descricao?: StringFieldUpdateOperationsInput | string
     valor?: FloatFieldUpdateOperationsInput | number
-    categoria?: StringFieldUpdateOperationsInput | string
-    vencimento?: DateTimeFieldUpdateOperationsInput | Date | string
-    pago?: BoolFieldUpdateOperationsInput | boolean
+    data?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    descricao?: NullableStringFieldUpdateOperationsInput | string | null
     userId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type PagamentoCreateManyInput = {
     id?: string
-    descricao: string
     valor: number
-    categoria: string
-    vencimento: Date | string
-    pago?: boolean
+    data: Date | string
+    status: string
+    descricao?: string | null
     userId: string
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type PagamentoUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    descricao?: StringFieldUpdateOperationsInput | string
     valor?: FloatFieldUpdateOperationsInput | number
-    categoria?: StringFieldUpdateOperationsInput | string
-    vencimento?: DateTimeFieldUpdateOperationsInput | Date | string
-    pago?: BoolFieldUpdateOperationsInput | boolean
+    data?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    descricao?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type PagamentoUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    descricao?: StringFieldUpdateOperationsInput | string
     valor?: FloatFieldUpdateOperationsInput | number
-    categoria?: StringFieldUpdateOperationsInput | string
-    vencimento?: DateTimeFieldUpdateOperationsInput | Date | string
-    pago?: BoolFieldUpdateOperationsInput | boolean
+    data?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    descricao?: NullableStringFieldUpdateOperationsInput | string | null
     userId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type InventarioCreateInput = {
     id?: string
     nome: string
-    categoria: string
-    unidade: string
-    quantidadeAtual: number
-    quantidadeIdeal: number
+    quantidade: number
+    preco: number
     createdAt?: Date | string
+    updatedAt?: Date | string
     user: UserCreateNestedOneWithoutInventarioInput
   }
 
   export type InventarioUncheckedCreateInput = {
     id?: string
     nome: string
-    categoria: string
-    unidade: string
-    quantidadeAtual: number
-    quantidadeIdeal: number
+    quantidade: number
+    preco: number
     userId: string
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type InventarioUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     nome?: StringFieldUpdateOperationsInput | string
-    categoria?: StringFieldUpdateOperationsInput | string
-    unidade?: StringFieldUpdateOperationsInput | string
-    quantidadeAtual?: IntFieldUpdateOperationsInput | number
-    quantidadeIdeal?: IntFieldUpdateOperationsInput | number
+    quantidade?: IntFieldUpdateOperationsInput | number
+    preco?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutInventarioNestedInput
   }
 
   export type InventarioUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     nome?: StringFieldUpdateOperationsInput | string
-    categoria?: StringFieldUpdateOperationsInput | string
-    unidade?: StringFieldUpdateOperationsInput | string
-    quantidadeAtual?: IntFieldUpdateOperationsInput | number
-    quantidadeIdeal?: IntFieldUpdateOperationsInput | number
+    quantidade?: IntFieldUpdateOperationsInput | number
+    preco?: FloatFieldUpdateOperationsInput | number
     userId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type InventarioCreateManyInput = {
     id?: string
     nome: string
-    categoria: string
-    unidade: string
-    quantidadeAtual: number
-    quantidadeIdeal: number
+    quantidade: number
+    preco: number
     userId: string
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type InventarioUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     nome?: StringFieldUpdateOperationsInput | string
-    categoria?: StringFieldUpdateOperationsInput | string
-    unidade?: StringFieldUpdateOperationsInput | string
-    quantidadeAtual?: IntFieldUpdateOperationsInput | number
-    quantidadeIdeal?: IntFieldUpdateOperationsInput | number
+    quantidade?: IntFieldUpdateOperationsInput | number
+    preco?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type InventarioUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     nome?: StringFieldUpdateOperationsInput | string
-    categoria?: StringFieldUpdateOperationsInput | string
-    unidade?: StringFieldUpdateOperationsInput | string
-    quantidadeAtual?: IntFieldUpdateOperationsInput | number
-    quantidadeIdeal?: IntFieldUpdateOperationsInput | number
+    quantidade?: IntFieldUpdateOperationsInput | number
+    preco?: FloatFieldUpdateOperationsInput | number
     userId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
-    in?: string[] | ListStringFieldRefInput<$PrismaModel>
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel>
+    in?: string[]
+    notIn?: string[]
     lt?: string | StringFieldRefInput<$PrismaModel>
     lte?: string | StringFieldRefInput<$PrismaModel>
     gt?: string | StringFieldRefInput<$PrismaModel>
@@ -5184,22 +5171,13 @@ export namespace Prisma {
     contains?: string | StringFieldRefInput<$PrismaModel>
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
     not?: NestedStringFilter<$PrismaModel> | string
-  }
-
-  export type StringNullableListFilter<$PrismaModel = never> = {
-    equals?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    has?: string | StringFieldRefInput<$PrismaModel> | null
-    hasEvery?: string[] | ListStringFieldRefInput<$PrismaModel>
-    hasSome?: string[] | ListStringFieldRefInput<$PrismaModel>
-    isEmpty?: boolean
   }
 
   export type StringNullableFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    in?: string[] | null
+    notIn?: string[] | null
     lt?: string | StringFieldRefInput<$PrismaModel>
     lte?: string | StringFieldRefInput<$PrismaModel>
     gt?: string | StringFieldRefInput<$PrismaModel>
@@ -5207,37 +5185,24 @@ export namespace Prisma {
     contains?: string | StringFieldRefInput<$PrismaModel>
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
-  export type JsonNullableFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonNullableFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
 
-  export type JsonNullableFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | null
+    notIn?: number[] | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
   export type DateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[]
+    notIn?: Date[] | string[]
     lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
@@ -5272,43 +5237,61 @@ export namespace Prisma {
 
   export type UserCountOrderByAggregateInput = {
     id?: SortOrder
-    name?: SortOrder
+    nome?: SortOrder
     email?: SortOrder
+    cargo?: SortOrder
+    telefone?: SortOrder
+    setor?: SortOrder
     password?: SortOrder
     permissoes?: SortOrder
     tipoNegocio?: SortOrder
-    cargo?: SortOrder
-    whatsapp?: SortOrder
-    horarioFuncionamento?: SortOrder
+    numeroFuncionarios?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type UserAvgOrderByAggregateInput = {
+    numeroFuncionarios?: SortOrder
   }
 
   export type UserMaxOrderByAggregateInput = {
     id?: SortOrder
-    name?: SortOrder
+    nome?: SortOrder
     email?: SortOrder
-    password?: SortOrder
-    tipoNegocio?: SortOrder
     cargo?: SortOrder
-    whatsapp?: SortOrder
+    telefone?: SortOrder
+    setor?: SortOrder
+    password?: SortOrder
+    permissoes?: SortOrder
+    tipoNegocio?: SortOrder
+    numeroFuncionarios?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
     id?: SortOrder
-    name?: SortOrder
+    nome?: SortOrder
     email?: SortOrder
-    password?: SortOrder
-    tipoNegocio?: SortOrder
     cargo?: SortOrder
-    whatsapp?: SortOrder
+    telefone?: SortOrder
+    setor?: SortOrder
+    password?: SortOrder
+    permissoes?: SortOrder
+    tipoNegocio?: SortOrder
+    numeroFuncionarios?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type UserSumOrderByAggregateInput = {
+    numeroFuncionarios?: SortOrder
   }
 
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
-    in?: string[] | ListStringFieldRefInput<$PrismaModel>
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel>
+    in?: string[]
+    notIn?: string[]
     lt?: string | StringFieldRefInput<$PrismaModel>
     lte?: string | StringFieldRefInput<$PrismaModel>
     gt?: string | StringFieldRefInput<$PrismaModel>
@@ -5316,7 +5299,6 @@ export namespace Prisma {
     contains?: string | StringFieldRefInput<$PrismaModel>
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
     not?: NestedStringWithAggregatesFilter<$PrismaModel> | string
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedStringFilter<$PrismaModel>
@@ -5325,8 +5307,8 @@ export namespace Prisma {
 
   export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    in?: string[] | null
+    notIn?: string[] | null
     lt?: string | StringFieldRefInput<$PrismaModel>
     lte?: string | StringFieldRefInput<$PrismaModel>
     gt?: string | StringFieldRefInput<$PrismaModel>
@@ -5334,43 +5316,32 @@ export namespace Prisma {
     contains?: string | StringFieldRefInput<$PrismaModel>
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
     not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedStringNullableFilter<$PrismaModel>
     _max?: NestedStringNullableFilter<$PrismaModel>
   }
-  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
 
-  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | null
+    notIn?: number[] | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
     _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedJsonNullableFilter<$PrismaModel>
-    _max?: NestedJsonNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[]
+    notIn?: Date[] | string[]
     lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
@@ -5383,18 +5354,13 @@ export namespace Prisma {
 
   export type FloatFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
     lt?: number | FloatFieldRefInput<$PrismaModel>
     lte?: number | FloatFieldRefInput<$PrismaModel>
     gt?: number | FloatFieldRefInput<$PrismaModel>
     gte?: number | FloatFieldRefInput<$PrismaModel>
     not?: NestedFloatFilter<$PrismaModel> | number
-  }
-
-  export type BoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
   export type UserScalarRelationFilter = {
@@ -5404,13 +5370,13 @@ export namespace Prisma {
 
   export type PagamentoCountOrderByAggregateInput = {
     id?: SortOrder
-    descricao?: SortOrder
     valor?: SortOrder
-    categoria?: SortOrder
-    vencimento?: SortOrder
-    pago?: SortOrder
+    data?: SortOrder
+    status?: SortOrder
+    descricao?: SortOrder
     userId?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type PagamentoAvgOrderByAggregateInput = {
@@ -5419,24 +5385,24 @@ export namespace Prisma {
 
   export type PagamentoMaxOrderByAggregateInput = {
     id?: SortOrder
-    descricao?: SortOrder
     valor?: SortOrder
-    categoria?: SortOrder
-    vencimento?: SortOrder
-    pago?: SortOrder
+    data?: SortOrder
+    status?: SortOrder
+    descricao?: SortOrder
     userId?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type PagamentoMinOrderByAggregateInput = {
     id?: SortOrder
-    descricao?: SortOrder
     valor?: SortOrder
-    categoria?: SortOrder
-    vencimento?: SortOrder
-    pago?: SortOrder
+    data?: SortOrder
+    status?: SortOrder
+    descricao?: SortOrder
     userId?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type PagamentoSumOrderByAggregateInput = {
@@ -5445,8 +5411,8 @@ export namespace Prisma {
 
   export type FloatWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
     lt?: number | FloatFieldRefInput<$PrismaModel>
     lte?: number | FloatFieldRefInput<$PrismaModel>
     gt?: number | FloatFieldRefInput<$PrismaModel>
@@ -5459,18 +5425,10 @@ export namespace Prisma {
     _max?: NestedFloatFilter<$PrismaModel>
   }
 
-  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
-  }
-
   export type IntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
     lt?: number | IntFieldRefInput<$PrismaModel>
     lte?: number | IntFieldRefInput<$PrismaModel>
     gt?: number | IntFieldRefInput<$PrismaModel>
@@ -5481,50 +5439,47 @@ export namespace Prisma {
   export type InventarioCountOrderByAggregateInput = {
     id?: SortOrder
     nome?: SortOrder
-    categoria?: SortOrder
-    unidade?: SortOrder
-    quantidadeAtual?: SortOrder
-    quantidadeIdeal?: SortOrder
+    quantidade?: SortOrder
+    preco?: SortOrder
     userId?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type InventarioAvgOrderByAggregateInput = {
-    quantidadeAtual?: SortOrder
-    quantidadeIdeal?: SortOrder
+    quantidade?: SortOrder
+    preco?: SortOrder
   }
 
   export type InventarioMaxOrderByAggregateInput = {
     id?: SortOrder
     nome?: SortOrder
-    categoria?: SortOrder
-    unidade?: SortOrder
-    quantidadeAtual?: SortOrder
-    quantidadeIdeal?: SortOrder
+    quantidade?: SortOrder
+    preco?: SortOrder
     userId?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type InventarioMinOrderByAggregateInput = {
     id?: SortOrder
     nome?: SortOrder
-    categoria?: SortOrder
-    unidade?: SortOrder
-    quantidadeAtual?: SortOrder
-    quantidadeIdeal?: SortOrder
+    quantidade?: SortOrder
+    preco?: SortOrder
     userId?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type InventarioSumOrderByAggregateInput = {
-    quantidadeAtual?: SortOrder
-    quantidadeIdeal?: SortOrder
+    quantidade?: SortOrder
+    preco?: SortOrder
   }
 
   export type IntWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
     lt?: number | IntFieldRefInput<$PrismaModel>
     lte?: number | IntFieldRefInput<$PrismaModel>
     gt?: number | IntFieldRefInput<$PrismaModel>
@@ -5535,10 +5490,6 @@ export namespace Prisma {
     _sum?: NestedIntFilter<$PrismaModel>
     _min?: NestedIntFilter<$PrismaModel>
     _max?: NestedIntFilter<$PrismaModel>
-  }
-
-  export type UserCreatepermissoesInput = {
-    set: string[]
   }
 
   export type PagamentoCreateNestedManyWithoutUserInput = {
@@ -5573,13 +5524,16 @@ export namespace Prisma {
     set?: string
   }
 
-  export type UserUpdatepermissoesInput = {
-    set?: string[]
-    push?: string | string[]
-  }
-
   export type NullableStringFieldUpdateOperationsInput = {
     set?: string | null
+  }
+
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
   }
 
   export type DateTimeFieldUpdateOperationsInput = {
@@ -5656,10 +5610,6 @@ export namespace Prisma {
     divide?: number
   }
 
-  export type BoolFieldUpdateOperationsInput = {
-    set?: boolean
-  }
-
   export type UserUpdateOneRequiredWithoutPagamentosNestedInput = {
     create?: XOR<UserCreateWithoutPagamentosInput, UserUncheckedCreateWithoutPagamentosInput>
     connectOrCreate?: UserCreateOrConnectWithoutPagamentosInput
@@ -5692,8 +5642,8 @@ export namespace Prisma {
 
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
-    in?: string[] | ListStringFieldRefInput<$PrismaModel>
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel>
+    in?: string[]
+    notIn?: string[]
     lt?: string | StringFieldRefInput<$PrismaModel>
     lte?: string | StringFieldRefInput<$PrismaModel>
     gt?: string | StringFieldRefInput<$PrismaModel>
@@ -5706,8 +5656,8 @@ export namespace Prisma {
 
   export type NestedStringNullableFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    in?: string[] | null
+    notIn?: string[] | null
     lt?: string | StringFieldRefInput<$PrismaModel>
     lte?: string | StringFieldRefInput<$PrismaModel>
     gt?: string | StringFieldRefInput<$PrismaModel>
@@ -5718,10 +5668,21 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
+  export type NestedIntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | null
+    notIn?: number[] | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
   export type NestedDateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[]
+    notIn?: Date[] | string[]
     lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
@@ -5731,8 +5692,8 @@ export namespace Prisma {
 
   export type NestedStringWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
-    in?: string[] | ListStringFieldRefInput<$PrismaModel>
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel>
+    in?: string[]
+    notIn?: string[]
     lt?: string | StringFieldRefInput<$PrismaModel>
     lte?: string | StringFieldRefInput<$PrismaModel>
     gt?: string | StringFieldRefInput<$PrismaModel>
@@ -5748,8 +5709,8 @@ export namespace Prisma {
 
   export type NestedIntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
     lt?: number | IntFieldRefInput<$PrismaModel>
     lte?: number | IntFieldRefInput<$PrismaModel>
     gt?: number | IntFieldRefInput<$PrismaModel>
@@ -5759,8 +5720,8 @@ export namespace Prisma {
 
   export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    in?: string[] | null
+    notIn?: string[] | null
     lt?: string | StringFieldRefInput<$PrismaModel>
     lte?: string | StringFieldRefInput<$PrismaModel>
     gt?: string | StringFieldRefInput<$PrismaModel>
@@ -5774,44 +5735,37 @@ export namespace Prisma {
     _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
-  export type NestedIntNullableFilter<$PrismaModel = never> = {
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    in?: number[] | null
+    notIn?: number[] | null
     lt?: number | IntFieldRefInput<$PrismaModel>
     lte?: number | IntFieldRefInput<$PrismaModel>
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
   }
-  export type NestedJsonNullableFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
-        Required<NestedJsonNullableFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
 
-  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | null
+    notIn?: number[] | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
   export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[]
+    notIn?: Date[] | string[]
     lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
@@ -5824,8 +5778,8 @@ export namespace Prisma {
 
   export type NestedFloatFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
     lt?: number | FloatFieldRefInput<$PrismaModel>
     lte?: number | FloatFieldRefInput<$PrismaModel>
     gt?: number | FloatFieldRefInput<$PrismaModel>
@@ -5833,15 +5787,10 @@ export namespace Prisma {
     not?: NestedFloatFilter<$PrismaModel> | number
   }
 
-  export type NestedBoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
-  }
-
   export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
     lt?: number | FloatFieldRefInput<$PrismaModel>
     lte?: number | FloatFieldRefInput<$PrismaModel>
     gt?: number | FloatFieldRefInput<$PrismaModel>
@@ -5854,18 +5803,10 @@ export namespace Prisma {
     _max?: NestedFloatFilter<$PrismaModel>
   }
 
-  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
-  }
-
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
     lt?: number | IntFieldRefInput<$PrismaModel>
     lte?: number | IntFieldRefInput<$PrismaModel>
     gt?: number | IntFieldRefInput<$PrismaModel>
@@ -5880,22 +5821,22 @@ export namespace Prisma {
 
   export type PagamentoCreateWithoutUserInput = {
     id?: string
-    descricao: string
     valor: number
-    categoria: string
-    vencimento: Date | string
-    pago?: boolean
+    data: Date | string
+    status: string
+    descricao?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type PagamentoUncheckedCreateWithoutUserInput = {
     id?: string
-    descricao: string
     valor: number
-    categoria: string
-    vencimento: Date | string
-    pago?: boolean
+    data: Date | string
+    status: string
+    descricao?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type PagamentoCreateOrConnectWithoutUserInput = {
@@ -5905,27 +5846,24 @@ export namespace Prisma {
 
   export type PagamentoCreateManyUserInputEnvelope = {
     data: PagamentoCreateManyUserInput | PagamentoCreateManyUserInput[]
-    skipDuplicates?: boolean
   }
 
   export type InventarioCreateWithoutUserInput = {
     id?: string
     nome: string
-    categoria: string
-    unidade: string
-    quantidadeAtual: number
-    quantidadeIdeal: number
+    quantidade: number
+    preco: number
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type InventarioUncheckedCreateWithoutUserInput = {
     id?: string
     nome: string
-    categoria: string
-    unidade: string
-    quantidadeAtual: number
-    quantidadeIdeal: number
+    quantidade: number
+    preco: number
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type InventarioCreateOrConnectWithoutUserInput = {
@@ -5935,7 +5873,6 @@ export namespace Prisma {
 
   export type InventarioCreateManyUserInputEnvelope = {
     data: InventarioCreateManyUserInput | InventarioCreateManyUserInput[]
-    skipDuplicates?: boolean
   }
 
   export type PagamentoUpsertWithWhereUniqueWithoutUserInput = {
@@ -5959,13 +5896,13 @@ export namespace Prisma {
     OR?: PagamentoScalarWhereInput[]
     NOT?: PagamentoScalarWhereInput | PagamentoScalarWhereInput[]
     id?: StringFilter<"Pagamento"> | string
-    descricao?: StringFilter<"Pagamento"> | string
     valor?: FloatFilter<"Pagamento"> | number
-    categoria?: StringFilter<"Pagamento"> | string
-    vencimento?: DateTimeFilter<"Pagamento"> | Date | string
-    pago?: BoolFilter<"Pagamento"> | boolean
+    data?: DateTimeFilter<"Pagamento"> | Date | string
+    status?: StringFilter<"Pagamento"> | string
+    descricao?: StringNullableFilter<"Pagamento"> | string | null
     userId?: StringFilter<"Pagamento"> | string
     createdAt?: DateTimeFilter<"Pagamento"> | Date | string
+    updatedAt?: DateTimeFilter<"Pagamento"> | Date | string
   }
 
   export type InventarioUpsertWithWhereUniqueWithoutUserInput = {
@@ -5990,39 +5927,42 @@ export namespace Prisma {
     NOT?: InventarioScalarWhereInput | InventarioScalarWhereInput[]
     id?: StringFilter<"Inventario"> | string
     nome?: StringFilter<"Inventario"> | string
-    categoria?: StringFilter<"Inventario"> | string
-    unidade?: StringFilter<"Inventario"> | string
-    quantidadeAtual?: IntFilter<"Inventario"> | number
-    quantidadeIdeal?: IntFilter<"Inventario"> | number
+    quantidade?: IntFilter<"Inventario"> | number
+    preco?: FloatFilter<"Inventario"> | number
     userId?: StringFilter<"Inventario"> | string
     createdAt?: DateTimeFilter<"Inventario"> | Date | string
+    updatedAt?: DateTimeFilter<"Inventario"> | Date | string
   }
 
   export type UserCreateWithoutPagamentosInput = {
     id?: string
-    name: string
+    nome: string
     email: string
-    password: string
-    permissoes?: UserCreatepermissoesInput | string[]
-    tipoNegocio?: string | null
     cargo?: string | null
-    whatsapp?: string | null
-    horarioFuncionamento?: NullableJsonNullValueInput | InputJsonValue
+    telefone?: string | null
+    setor?: string | null
+    password: string
+    permissoes?: string
+    tipoNegocio?: string | null
+    numeroFuncionarios?: number | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     inventario?: InventarioCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutPagamentosInput = {
     id?: string
-    name: string
+    nome: string
     email: string
-    password: string
-    permissoes?: UserCreatepermissoesInput | string[]
-    tipoNegocio?: string | null
     cargo?: string | null
-    whatsapp?: string | null
-    horarioFuncionamento?: NullableJsonNullValueInput | InputJsonValue
+    telefone?: string | null
+    setor?: string | null
+    password: string
+    permissoes?: string
+    tipoNegocio?: string | null
+    numeroFuncionarios?: number | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     inventario?: InventarioUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -6044,57 +5984,65 @@ export namespace Prisma {
 
   export type UserUpdateWithoutPagamentosInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
+    nome?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
-    permissoes?: UserUpdatepermissoesInput | string[]
-    tipoNegocio?: NullableStringFieldUpdateOperationsInput | string | null
     cargo?: NullableStringFieldUpdateOperationsInput | string | null
-    whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
-    horarioFuncionamento?: NullableJsonNullValueInput | InputJsonValue
+    telefone?: NullableStringFieldUpdateOperationsInput | string | null
+    setor?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: StringFieldUpdateOperationsInput | string
+    permissoes?: StringFieldUpdateOperationsInput | string
+    tipoNegocio?: NullableStringFieldUpdateOperationsInput | string | null
+    numeroFuncionarios?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     inventario?: InventarioUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPagamentosInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
+    nome?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
-    permissoes?: UserUpdatepermissoesInput | string[]
-    tipoNegocio?: NullableStringFieldUpdateOperationsInput | string | null
     cargo?: NullableStringFieldUpdateOperationsInput | string | null
-    whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
-    horarioFuncionamento?: NullableJsonNullValueInput | InputJsonValue
+    telefone?: NullableStringFieldUpdateOperationsInput | string | null
+    setor?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: StringFieldUpdateOperationsInput | string
+    permissoes?: StringFieldUpdateOperationsInput | string
+    tipoNegocio?: NullableStringFieldUpdateOperationsInput | string | null
+    numeroFuncionarios?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     inventario?: InventarioUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutInventarioInput = {
     id?: string
-    name: string
+    nome: string
     email: string
-    password: string
-    permissoes?: UserCreatepermissoesInput | string[]
-    tipoNegocio?: string | null
     cargo?: string | null
-    whatsapp?: string | null
-    horarioFuncionamento?: NullableJsonNullValueInput | InputJsonValue
+    telefone?: string | null
+    setor?: string | null
+    password: string
+    permissoes?: string
+    tipoNegocio?: string | null
+    numeroFuncionarios?: number | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     pagamentos?: PagamentoCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutInventarioInput = {
     id?: string
-    name: string
+    nome: string
     email: string
-    password: string
-    permissoes?: UserCreatepermissoesInput | string[]
-    tipoNegocio?: string | null
     cargo?: string | null
-    whatsapp?: string | null
-    horarioFuncionamento?: NullableJsonNullValueInput | InputJsonValue
+    telefone?: string | null
+    setor?: string | null
+    password: string
+    permissoes?: string
+    tipoNegocio?: string | null
+    numeroFuncionarios?: number | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     pagamentos?: PagamentoUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -6116,110 +6064,110 @@ export namespace Prisma {
 
   export type UserUpdateWithoutInventarioInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
+    nome?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
-    permissoes?: UserUpdatepermissoesInput | string[]
-    tipoNegocio?: NullableStringFieldUpdateOperationsInput | string | null
     cargo?: NullableStringFieldUpdateOperationsInput | string | null
-    whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
-    horarioFuncionamento?: NullableJsonNullValueInput | InputJsonValue
+    telefone?: NullableStringFieldUpdateOperationsInput | string | null
+    setor?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: StringFieldUpdateOperationsInput | string
+    permissoes?: StringFieldUpdateOperationsInput | string
+    tipoNegocio?: NullableStringFieldUpdateOperationsInput | string | null
+    numeroFuncionarios?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     pagamentos?: PagamentoUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutInventarioInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
+    nome?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
-    permissoes?: UserUpdatepermissoesInput | string[]
-    tipoNegocio?: NullableStringFieldUpdateOperationsInput | string | null
     cargo?: NullableStringFieldUpdateOperationsInput | string | null
-    whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
-    horarioFuncionamento?: NullableJsonNullValueInput | InputJsonValue
+    telefone?: NullableStringFieldUpdateOperationsInput | string | null
+    setor?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: StringFieldUpdateOperationsInput | string
+    permissoes?: StringFieldUpdateOperationsInput | string
+    tipoNegocio?: NullableStringFieldUpdateOperationsInput | string | null
+    numeroFuncionarios?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     pagamentos?: PagamentoUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type PagamentoCreateManyUserInput = {
     id?: string
-    descricao: string
     valor: number
-    categoria: string
-    vencimento: Date | string
-    pago?: boolean
+    data: Date | string
+    status: string
+    descricao?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type InventarioCreateManyUserInput = {
     id?: string
     nome: string
-    categoria: string
-    unidade: string
-    quantidadeAtual: number
-    quantidadeIdeal: number
+    quantidade: number
+    preco: number
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type PagamentoUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
-    descricao?: StringFieldUpdateOperationsInput | string
     valor?: FloatFieldUpdateOperationsInput | number
-    categoria?: StringFieldUpdateOperationsInput | string
-    vencimento?: DateTimeFieldUpdateOperationsInput | Date | string
-    pago?: BoolFieldUpdateOperationsInput | boolean
+    data?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    descricao?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type PagamentoUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
-    descricao?: StringFieldUpdateOperationsInput | string
     valor?: FloatFieldUpdateOperationsInput | number
-    categoria?: StringFieldUpdateOperationsInput | string
-    vencimento?: DateTimeFieldUpdateOperationsInput | Date | string
-    pago?: BoolFieldUpdateOperationsInput | boolean
+    data?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    descricao?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type PagamentoUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
-    descricao?: StringFieldUpdateOperationsInput | string
     valor?: FloatFieldUpdateOperationsInput | number
-    categoria?: StringFieldUpdateOperationsInput | string
-    vencimento?: DateTimeFieldUpdateOperationsInput | Date | string
-    pago?: BoolFieldUpdateOperationsInput | boolean
+    data?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    descricao?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type InventarioUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     nome?: StringFieldUpdateOperationsInput | string
-    categoria?: StringFieldUpdateOperationsInput | string
-    unidade?: StringFieldUpdateOperationsInput | string
-    quantidadeAtual?: IntFieldUpdateOperationsInput | number
-    quantidadeIdeal?: IntFieldUpdateOperationsInput | number
+    quantidade?: IntFieldUpdateOperationsInput | number
+    preco?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type InventarioUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     nome?: StringFieldUpdateOperationsInput | string
-    categoria?: StringFieldUpdateOperationsInput | string
-    unidade?: StringFieldUpdateOperationsInput | string
-    quantidadeAtual?: IntFieldUpdateOperationsInput | number
-    quantidadeIdeal?: IntFieldUpdateOperationsInput | number
+    quantidade?: IntFieldUpdateOperationsInput | number
+    preco?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type InventarioUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     nome?: StringFieldUpdateOperationsInput | string
-    categoria?: StringFieldUpdateOperationsInput | string
-    unidade?: StringFieldUpdateOperationsInput | string
-    quantidadeAtual?: IntFieldUpdateOperationsInput | number
-    quantidadeIdeal?: IntFieldUpdateOperationsInput | number
+    quantidade?: IntFieldUpdateOperationsInput | number
+    preco?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 

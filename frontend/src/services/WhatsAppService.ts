@@ -2,6 +2,8 @@
  * Serviço para integração com WhatsApp e gestão de mensagens
  */
 
+import i18n from '../i18n';
+
 // Para desenvolvimento, simulamos as chamadas de API
 // Em produção, seria necessário utilizar um serviço de mensagens real como Twilio ou API oficial do WhatsApp Business
 interface Mensagem {
@@ -123,7 +125,14 @@ const WhatsAppService = {
   
   // Envia mensagem perguntando sobre o faturamento diário
   async enviarPerguntaFaturamento(telefone: string): Promise<Mensagem> {
-    const dataHoje = new Date().toLocaleDateString('pt-BR');
+    // Usar o idioma atual do i18n ou PT como fallback
+    const language = i18n?.language || 'pt-BR';
+    const dataHoje = new Intl.DateTimeFormat(language, {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    }).format(new Date());
+    
     const texto = `Olá! O restaurante fechou por hoje (${dataHoje}). Poderia informar o faturamento total do dia? Por favor, responda com o valor e uma breve descrição.`;
     
     return this.enviarMensagem(telefone, texto);

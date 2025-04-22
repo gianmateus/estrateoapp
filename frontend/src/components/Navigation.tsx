@@ -23,6 +23,7 @@ import {
   Avatar,
   Menu,
   MenuItem,
+  Button
 } from '@mui/material';
 import {
   AccountBalance as FinanceiroIcon,
@@ -36,6 +37,7 @@ import {
   RestaurantMenu as RestaurantIcon,
   Dashboard as DashboardIcon,
   WhatsApp as WhatsAppIcon,
+  Language as LanguageIcon
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
@@ -95,7 +97,8 @@ const Navigation = ({ toggleTheme }: NavigationProps) => {
   const theme = useTheme();
   const { user, logout, hasPermission } = useAuth();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const [languageMenuAnchor, setLanguageMenuAnchor] = React.useState<null | HTMLElement>(null);
 
   /**
    * Handler to open the user menu
@@ -129,6 +132,30 @@ const Navigation = ({ toggleTheme }: NavigationProps) => {
   const handleLogout = () => {
     handleMenuClose();
     logout();
+  };
+
+  /**
+   * Handler to open the language menu
+   * Triggered when the user clicks on the language button
+   */
+  const handleLanguageMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setLanguageMenuAnchor(event.currentTarget);
+  };
+
+  /**
+   * Handler to close the language menu
+   */
+  const handleLanguageMenuClose = () => {
+    setLanguageMenuAnchor(null);
+  };
+
+  /**
+   * Handler to change the application language
+   * @param language Language code to change to
+   */
+  const handleLanguageChange = (language: string) => {
+    i18n.changeLanguage(language);
+    handleLanguageMenuClose();
   };
 
   /**
@@ -225,11 +252,35 @@ const Navigation = ({ toggleTheme }: NavigationProps) => {
             ESTRATEO
           </Typography>
         </Box>
-        {/* Theme toggle button - switches between light and dark mode
-            Botão de alternância de tema - alterna entre modo claro e escuro */}
-        <IconButton onClick={toggleTheme}>
-          {theme.palette.mode === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
-        </IconButton>
+        <Box sx={{ display: 'flex' }}>
+          {/* Language toggle button */}
+          <IconButton onClick={handleLanguageMenuOpen} sx={{ mr: 1 }}>
+            <LanguageIcon />
+          </IconButton>
+          
+          {/* Language selection menu */}
+          <Menu
+            anchorEl={languageMenuAnchor}
+            open={Boolean(languageMenuAnchor)}
+            onClose={handleLanguageMenuClose}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'right',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+          >
+            <MenuItem onClick={() => handleLanguageChange('en')}>{t('ingles')}</MenuItem>
+            <MenuItem onClick={() => handleLanguageChange('de')}>{t('alemao')}</MenuItem>
+          </Menu>
+          
+          {/* Theme toggle button */}
+          <IconButton onClick={toggleTheme}>
+            {theme.palette.mode === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
+          </IconButton>
+        </Box>
       </Box>
       <Divider />
       

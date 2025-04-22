@@ -2,6 +2,7 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { TFunction } from 'i18next';
 import { formatCurrency } from './formatters';
+import i18n from '../i18n';
 
 interface ReportData {
   currentDate: Date;
@@ -51,9 +52,15 @@ export const generateDashboardReport = async (data: ReportData, t: TFunction): P
   currentY += 10;
   pdf.setFontSize(normalFontSize);
   pdf.setFont('helvetica', 'normal');
-  // Usar formatos europeus de data baseado no idioma
-  const currentLanguage = t('idiomas') === 'Sprachen' ? 'de-DE' : (t('idiomas') === 'Languages' ? 'en-GB' : 'pt-BR');
-  const dateFormatted = data.currentDate.toLocaleDateString(currentLanguage);
+  
+  // Usar o idioma atual do i18n para formatar a data
+  const dateFormatted = new Intl.DateTimeFormat(i18n.language, {
+    year: 'numeric',
+    month: 'long',
+    day: '2-digit',
+    weekday: 'long'
+  }).format(data.currentDate);
+  
   pdf.text(
     `${t('data')}: ${dateFormatted}`, 
     pdf.internal.pageSize.getWidth() / 2, 
@@ -225,9 +232,14 @@ export const generateDashboardReportFromDOM = async (
   // Adicionar data
   pdf.setFontSize(10);
   pdf.setFont('helvetica', 'normal');
-  // Usar formatos europeus de data baseado no idioma
-  const currentLanguage = t('idiomas') === 'Sprachen' ? 'de-DE' : (t('idiomas') === 'Languages' ? 'en-GB' : 'pt-BR');
-  const dateFormatted = new Date().toLocaleDateString(currentLanguage);
+  
+  // Usar o idioma atual do i18n para formatar a data
+  const dateFormatted = new Intl.DateTimeFormat(i18n.language, {
+    year: 'numeric',
+    month: 'long',
+    day: '2-digit'
+  }).format(new Date());
+  
   pdf.text(
     `${t('data')}: ${dateFormatted}`, 
     pdf.internal.pageSize.getWidth() / 2, 
