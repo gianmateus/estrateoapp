@@ -1,4 +1,9 @@
 /**
+ * Tipo para frequência de uso do item
+ */
+export type FrequenciaUso = 'diaria' | 'semanal' | 'mensal' | 'nenhuma';
+
+/**
  * Interface representando um item do inventário retornado pela API
  */
 export interface InventarioItem {
@@ -8,8 +13,11 @@ export interface InventarioItem {
   unidade: string;
   quantidadeAtual: number;
   quantidadeIdeal: number;
+  frequencia: FrequenciaUso;
+  observacao: string;
   userId: string;
   createdAt: string; // formato ISO 8601
+  estoqueNecessario?: number; // Campo opcional para cálculo de necessidade
 }
 
 /**
@@ -21,6 +29,9 @@ export interface InventarioInput {
   unidade: string;
   quantidadeAtual: number;
   quantidadeIdeal: number;
+  frequencia: FrequenciaUso;
+  observacao: string;
+  estoqueNecessario?: number;
 }
 
 /**

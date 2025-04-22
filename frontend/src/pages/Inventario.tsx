@@ -24,6 +24,7 @@ import {
   Divider,
   Chip,
   Badge,
+  InputAdornment,
 } from '@mui/material';
 import {
   Add as AddIcon,
@@ -36,7 +37,7 @@ import {
 import { jsPDF } from 'jspdf';
 import { useAuth } from '../contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
-import { InventarioItem, InventarioInput, InventarioUpdateInput } from '../types/Inventario';
+import { InventarioItem, InventarioInput, InventarioUpdateInput, FrequenciaUso } from '../types/Inventario';
 import api from '../services/api';
 
 const categorias = [
@@ -57,6 +58,13 @@ const unidades = [
   { value: 'pacote', label: 'Pacote' }
 ];
 
+const frequencias = [
+  { value: 'diaria', label: 'Diária' },
+  { value: 'semanal', label: 'Semanal' },
+  { value: 'mensal', label: 'Mensal' },
+  { value: 'nenhuma', label: 'Nenhuma' }
+];
+
 const Inventario = () => {
   const { t, i18n } = useTranslation();
   const { isAuthenticated } = useAuth();
@@ -72,14 +80,19 @@ const Inventario = () => {
     categoria: 'alimento',
     unidade: 'unidade',
     quantidadeAtual: 0,
-    quantidadeIdeal: 0
+    quantidadeIdeal: 0,
+    frequencia: 'nenhuma',
+    observacao: '',
+    estoqueNecessario: 0
   });
   const [formErrors, setFormErrors] = useState({
     nome: '',
     categoria: '',
     unidade: '',
     quantidadeAtual: '',
-    quantidadeIdeal: ''
+    quantidadeIdeal: '',
+    frequencia: '',
+    observacao: ''
   });
   const [confirmDelete, setConfirmDelete] = useState<{ open: boolean; id: string }>({
     open: false,
@@ -90,6 +103,9 @@ const Inventario = () => {
     message: '',
     severity: 'success' as 'success' | 'error' | 'info' | 'warning'
   });
+  
+  // Estado para armazenar itens com estoque necessário e atual
+  const [estoqueManual, setEstoqueManual] = useState<Record<string, { atual: number, necessario: number }>>({});
 
   // Buscar dados da API
   useEffect(() => {
@@ -125,7 +141,10 @@ const Inventario = () => {
         categoria: item.categoria,
         unidade: item.unidade,
         quantidadeAtual: item.quantidadeAtual,
-        quantidadeIdeal: item.quantidadeIdeal
+        quantidadeIdeal: item.quantidadeIdeal,
+        frequencia: item.frequencia,
+        observacao: item.observacao,
+        estoqueNecessario: item.estoqueNecessario
       });
     } else {
       // Modo criação
@@ -136,7 +155,10 @@ const Inventario = () => {
         categoria: 'alimento',
         unidade: 'unidade',
         quantidadeAtual: 0,
-        quantidadeIdeal: 0
+        quantidadeIdeal: 0,
+        frequencia: 'nenhuma',
+        observacao: '',
+        estoqueNecessario: 0
       });
     }
     setOpenDialog(true);
@@ -149,7 +171,9 @@ const Inventario = () => {
       categoria: '',
       unidade: '',
       quantidadeAtual: '',
-      quantidadeIdeal: ''
+      quantidadeIdeal: '',
+      frequencia: '',
+      observacao: ''
     });
   };
 
@@ -159,7 +183,9 @@ const Inventario = () => {
       categoria: '',
       unidade: '',
       quantidadeAtual: '',
-      quantidadeIdeal: ''
+      quantidadeIdeal: '',
+      frequencia: '',
+      observacao: ''
     };
     
     let isValid = true;
@@ -191,6 +217,12 @@ const Inventario = () => {
     // Validar quantidade ideal
     if (formData.quantidadeIdeal < 0) {
       errors.quantidadeIdeal = t('valorDeveSerPositivo');
+      isValid = false;
+    }
+    
+    // Validar frequência
+    if (!formData.frequencia) {
+      errors.frequencia = t('campoObrigatorio');
       isValid = false;
     }
     
@@ -241,6 +273,12 @@ const Inventario = () => {
     try {
       await api.delete(`/inventario/${id}`);
       setItens(itens.filter(item => item.id !== id));
+      
+      // Remover do estoque manual
+      const novoEstoqueManual = { ...estoqueManual };
+      delete novoEstoqueManual[id];
+      setEstoqueManual(novoEstoqueManual);
+      
       setSnackbar({
         open: true,
         message: t('itemExcluidoComSucesso'),
@@ -253,9 +291,8 @@ const Inventario = () => {
         message: t('erroAoExcluirItem'),
         severity: 'error'
       });
-    } finally {
-      setConfirmDelete({ open: false, id: '' });
     }
+    setConfirmDelete({ open: false, id: '' });
   };
 
   const handleOpenConfirmDelete = (id: string) => {
@@ -268,18 +305,44 @@ const Inventario = () => {
 
   // Verificar se o item está abaixo do nível recomendado
   const isItemCritico = (item: InventarioItem): boolean => {
-    return item.quantidadeAtual < item.quantidadeIdeal;
+    // Usar o valor de estoque manual se existir, senão usar o valor do item
+    const estoqueAtual = estoqueManual[item.id]?.atual ?? item.quantidadeAtual;
+    const estoqueNecessario = estoqueManual[item.id]?.necessario ?? item.quantidadeIdeal;
+    
+    return estoqueAtual < estoqueNecessario;
+  };
+  
+  // Função para atualizar o estoque atual manualmente
+  const handleUpdateEstoqueAtual = (id: string, valor: number) => {
+    setEstoqueManual(prev => ({
+      ...prev,
+      [id]: {
+        ...prev[id],
+        atual: valor
+      }
+    }));
+  };
+  
+  // Função para atualizar o estoque necessário manualmente
+  const handleUpdateEstoqueNecessario = (id: string, valor: number) => {
+    setEstoqueManual(prev => ({
+      ...prev,
+      [id]: {
+        ...prev[id],
+        necessario: valor
+      }
+    }));
   };
 
-  // Gerar relatório em PDF
-  const handleGerarPdf = () => {
+  // Gerar relatório de compras em PDF
+  const handleGerarRelatorioPDF = () => {
     try {
       const doc = new jsPDF();
-      
+
       // Título
       doc.setFontSize(18);
-      doc.text('Relatório de Inventário', 105, 15, { align: 'center' });
-      
+      doc.text(t('inventario_buyReport'), 105, 15, { align: 'center' });
+
       // Data
       doc.setFontSize(12);
       const dateFormatted = new Intl.DateTimeFormat(i18n.language, {
@@ -287,64 +350,159 @@ const Inventario = () => {
         month: 'numeric',
         day: 'numeric'
       }).format(new Date());
-      doc.text(`Data: ${dateFormatted}`, 105, 25, { align: 'center' });
-      
+      doc.text(`${t('data')}: ${dateFormatted}`, 105, 25, { align: 'center' });
+
       // Cabeçalho da tabela
       doc.setFontSize(12);
-      doc.text('Nome', 20, 40);
-      doc.text('Categoria', 70, 40);
-      doc.text('Quantidade', 120, 40);
-      doc.text('Status', 170, 40);
-      
+      doc.text(t('nome'), 20, 40);
+      doc.text(t('categoria'), 70, 40);
+      doc.text(t('inventario_currentStock'), 120, 40);
+      doc.text(t('inventario_toBuy'), 170, 40);
+
       doc.line(20, 43, 190, 43);
-      
-      // Dados
+
+      // Dados - somente itens que precisam ser comprados (estoque atual < necessário)
       let y = 50;
+      let totalItensAComprar = 0;
+      
       itens.forEach((item, index) => {
-        const status = isItemCritico(item) ? 'BAIXO' : 'OK';
+        const estoqueAtual = estoqueManual[item.id]?.atual ?? item.quantidadeAtual;
+        const estoqueNecessario = estoqueManual[item.id]?.necessario ?? item.quantidadeIdeal;
+        const quantidadeAComprar = estoqueNecessario - estoqueAtual;
+        
+        if (quantidadeAComprar <= 0) return; // Pular itens que não precisam ser comprados
+        
+        totalItensAComprar++;
         
         doc.text(item.nome.substring(0, 20), 20, y);
         doc.text(
-          categorias.find(c => c.value === item.categoria)?.label || item.categoria, 
+          categorias.find(c => c.value === item.categoria)?.label || item.categoria,
           70, y
         );
-        doc.text(`${item.quantidadeAtual} ${item.unidade}`, 120, y);
-        doc.text(status, 170, y);
-        
+        doc.text(`${estoqueAtual} ${item.unidade}`, 120, y);
+        doc.text(`${quantidadeAComprar} ${item.unidade}`, 170, y);
+
         y += 10;
-        
+
         // Nova página se necessário
         if (y > 280 && index < itens.length - 1) {
           doc.addPage();
           y = 20;
-          
+
           // Cabeçalho na nova página
-          doc.text('Nome', 20, y);
-          doc.text('Categoria', 70, y);
-          doc.text('Quantidade', 120, y);
-          doc.text('Status', 170, y);
-          
+          doc.text(t('nome'), 20, y);
+          doc.text(t('categoria'), 70, y);
+          doc.text(t('inventario_currentStock'), 120, y);
+          doc.text(t('inventario_toBuy'), 170, y);
+
           doc.line(20, y+3, 190, y+3);
           y += 10;
         }
       });
       
+      // Se não houver itens a comprar, exibir mensagem
+      if (totalItensAComprar === 0) {
+        doc.text(t('nenhumItemParaComprar'), 105, 60, { align: 'center' });
+      }
+
+      // Salvar PDF
+      doc.save('relatorio-compras.pdf');
+
+      setSnackbar({
+        open: true,
+        message: t('relatorioGeradoComSucesso'),
+        severity: 'success'
+      });
+    } catch (error) {
+      console.error('Erro ao gerar relatório:', error);
+      setSnackbar({
+        open: true,
+        message: t('erroAoGerarRelatorio'),
+        severity: 'error'
+      });
+    }
+  };
+
+  // Gerar relatório em PDF
+  const handleGerarPdf = () => {
+    try {
+      const doc = new jsPDF();
+
+      // Título
+      doc.setFontSize(18);
+      doc.text(t('inventario_inventoryReport'), 105, 15, { align: 'center' });
+
+      // Data
+      doc.setFontSize(12);
+      const dateFormatted = new Intl.DateTimeFormat(i18n.language, {
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric'
+      }).format(new Date());
+      doc.text(`${t('data')}: ${dateFormatted}`, 105, 25, { align: 'center' });
+
+      // Cabeçalho da tabela
+      doc.setFontSize(12);
+      doc.text(t('nome'), 20, 40);
+      doc.text(t('categoria'), 70, 40);
+      doc.text(t('quantidade'), 120, 40);
+      doc.text(t('status'), 170, 40);
+
+      doc.line(20, 43, 190, 43);
+
+      // Dados
+      let y = 50;
+      itens.forEach((item, index) => {
+        const estoqueAtual = estoqueManual[item.id]?.atual ?? item.quantidadeAtual;
+        const estoqueNecessario = estoqueManual[item.id]?.necessario ?? item.quantidadeIdeal;
+        const status = estoqueAtual < estoqueNecessario ? 'BAIXO' : 'OK';
+
+        doc.text(item.nome.substring(0, 20), 20, y);
+        doc.text(
+          categorias.find(c => c.value === item.categoria)?.label || item.categoria,
+          70, y
+        );
+        doc.text(`${estoqueAtual} ${item.unidade}`, 120, y);
+        doc.text(status, 170, y);
+
+        y += 10;
+
+        // Nova página se necessário
+        if (y > 280 && index < itens.length - 1) {
+          doc.addPage();
+          y = 20;
+
+          // Cabeçalho na nova página
+          doc.text(t('nome'), 20, y);
+          doc.text(t('categoria'), 70, y);
+          doc.text(t('quantidade'), 120, y);
+          doc.text(t('status'), 170, y);
+
+          doc.line(20, y+3, 190, y+3);
+          y += 10;
+        }
+      });
+
       // Resumo
       const totalItens = itens.length;
-      const itensCriticos = itens.filter(isItemCritico).length;
-      
+      const itensCriticos = itens.filter(item => {
+        const estoqueAtual = estoqueManual[item.id]?.atual ?? item.quantidadeAtual;
+        const estoqueNecessario = estoqueManual[item.id]?.necessario ?? item.quantidadeIdeal;
+        return estoqueAtual < estoqueNecessario;
+      }).length;
+
       doc.addPage();
       doc.setFontSize(16);
-      doc.text('Resumo do Inventário', 105, 20, { align: 'center' });
-      
+      doc.text(t('resumoInventario'), 105, 20, { align: 'center' });
+
       doc.setFontSize(12);
-      doc.text(`Total de itens: ${totalItens}`, 20, 40);
-      doc.text(`Itens abaixo do ideal: ${itensCriticos}`, 20, 50);
-      doc.text(`Porcentagem: ${totalItens > 0 ? ((itensCriticos / totalItens) * 100).toFixed(2) : 0}%`, 20, 60);
-      
+      doc.text(`${t('itensTotal')}: ${totalItens}`, 20, 40);
+      doc.text(`${t('itensAbaixoMin')}: ${itensCriticos}`, 20, 50);
+      doc.text(`${t('porcentagem')}: ${totalItens > 0 ? ((itensCriticos / totalItens) * 100).toFixed(2) : 0}%`, 20, 60);
+
       // Salvar PDF
       doc.save('inventario.pdf');
-      
+
       setSnackbar({
         open: true,
         message: t('relatorioGeradoComSucesso'),
@@ -373,13 +531,24 @@ const Inventario = () => {
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Typography variant="h4">{t('inventario')}</Typography>
-        <Button
-          variant="contained"
-          startIcon={<PdfIcon />}
-          onClick={handleGerarPdf}
-        >
-          {t('gerarRelatorio')}
-        </Button>
+        <Box>
+          <Button
+            variant="contained"
+            startIcon={<PdfIcon />}
+            onClick={handleGerarPdf}
+            sx={{ mr: 1 }}
+          >
+            {t('gerarRelatorio')}
+          </Button>
+          <Button
+            variant="contained"
+            color="success"
+            startIcon={<PdfIcon />}
+            onClick={handleGerarRelatorioPDF}
+          >
+            {t('inventario_buyReport')}
+          </Button>
+        </Box>
       </Box>
 
       {/* Mostrar indicador de carregamento se estiver carregando */}
@@ -398,8 +567,8 @@ const Inventario = () => {
 
       {/* Mostrar alerta se houver itens críticos */}
       {getTotalItensCriticos() > 0 && (
-        <Alert 
-          severity="warning" 
+        <Alert
+          severity="warning"
           sx={{ mt: 2, mb: 4 }}
           icon={<WarningIcon />}
         >
@@ -434,15 +603,17 @@ const Inventario = () => {
             <Typography variant="h6" gutterBottom>
               {t('itensCadastrados')}
             </Typography>
-            
+
             <List>
               {itens
                 .sort((a, b) => a.nome.localeCompare(b.nome))
                 .map((item) => {
                   const isCritico = isItemCritico(item);
-                  
+                  const estoqueAtual = estoqueManual[item.id]?.atual ?? item.quantidadeAtual;
+                  const estoqueNecessario = estoqueManual[item.id]?.necessario ?? item.quantidadeIdeal;
+
                   return (
-                    <ListItem 
+                    <ListItem
                       key={item.id}
                       sx={{
                         border: '1px solid',
@@ -452,29 +623,84 @@ const Inventario = () => {
                         backgroundColor: isCritico ? 'warning.light' : 'transparent',
                       }}
                     >
-                      <ListItemText
-                        primary={
-                          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                            {item.nome}
-                            {isCritico && (
-                              <Tooltip title={t('itemAbaixoDoIdeal')}>
-                                <WarningIcon color="warning" sx={{ ml: 1 }} fontSize="small" />
-                              </Tooltip>
+                      <Grid container spacing={2}>
+                        <Grid item xs={12} sm={6}>
+                          <ListItemText
+                            primary={
+                              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                {item.nome}
+                                {isCritico && (
+                                  <Tooltip title={t('itemAbaixoDoIdeal')}>
+                                    <WarningIcon color="warning" sx={{ ml: 1 }} fontSize="small" />
+                                  </Tooltip>
+                                )}
+                              </Box>
+                            }
+                            secondary={
+                              <>
+                                <Typography variant="body2" component="span">
+                                  {`${t('categoria')}: ${categorias.find(c => c.value === item.categoria)?.label || item.categoria}`}
+                                </Typography>
+                                <br />
+                                <Typography variant="body2" component="span">
+                                  {`${t('inventario_unit')}: ${item.unidade} | ${t('inventario_frequency')}: ${
+                                    frequencias.find(f => f.value === item.frequencia)?.label || t('inventario_frequency_none')
+                                  }`}
+                                </Typography>
+                                {item.observacao && (
+                                  <>
+                                    <br />
+                                    <Typography variant="body2" component="span">
+                                      {`${t('inventario_notes')}: ${item.observacao}`}
+                                    </Typography>
+                                  </>
+                                )}
+                              </>
+                            }
+                          />
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                              <Typography variant="body2" sx={{ minWidth: 120 }}>
+                                {t('inventario_currentStock')}:
+                              </Typography>
+                              <TextField
+                                size="small"
+                                type="number"
+                                value={estoqueAtual}
+                                onChange={(e) => handleUpdateEstoqueAtual(item.id, Number(e.target.value))}
+                                InputProps={{
+                                  endAdornment: <InputAdornment position="end">{item.unidade}</InputAdornment>,
+                                  inputProps: { min: 0, step: 1 }
+                                }}
+                                sx={{ width: 120 }}
+                              />
+                            </Box>
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                              <Typography variant="body2" sx={{ minWidth: 120 }}>
+                                {t('inventario_stockNeeded')}:
+                              </Typography>
+                              <TextField
+                                size="small"
+                                type="number"
+                                value={estoqueNecessario}
+                                onChange={(e) => handleUpdateEstoqueNecessario(item.id, Number(e.target.value))}
+                                InputProps={{
+                                  endAdornment: <InputAdornment position="end">{item.unidade}</InputAdornment>,
+                                  inputProps: { min: 0, step: 1 }
+                                }}
+                                sx={{ width: 120 }}
+                              />
+                            </Box>
+                            {estoqueAtual < estoqueNecessario && (
+                              <Typography variant="body2" color="error">
+                                {t('inventario_toBuy')}: {estoqueNecessario - estoqueAtual} {item.unidade}
+                              </Typography>
                             )}
                           </Box>
-                        }
-                        secondary={
-                          <>
-                            <Typography variant="body2" component="span">
-                              {`${t('categoria')}: ${categorias.find(c => c.value === item.categoria)?.label || item.categoria}`}
-                            </Typography>
-                            <br />
-                            <Typography variant="body2" component="span">
-                              {`${t('quantidade')}: ${item.quantidadeAtual} ${item.unidade} / ${t('ideal')}: ${item.quantidadeIdeal} ${item.unidade}`}
-                            </Typography>
-                          </>
-                        }
-                      />
+                        </Grid>
+                      </Grid>
                       <ListItemSecondaryAction>
                         <Tooltip title={t('editar')}>
                           <IconButton edge="end" onClick={() => handleOpenDialog(item)} sx={{ mr: 1 }}>
@@ -541,6 +767,22 @@ const Inventario = () => {
               </MenuItem>
             ))}
           </TextField>
+          <TextField
+            margin="dense"
+            label={t('inventario_frequency')}
+            select
+            fullWidth
+            value={formData.frequencia}
+            onChange={(e) => setFormData({ ...formData, frequencia: e.target.value as FrequenciaUso })}
+            error={!!formErrors.frequencia}
+            helperText={formErrors.frequencia}
+          >
+            {frequencias.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {t(`inventario_frequency_${option.value}`)}
+              </MenuItem>
+            ))}
+          </TextField>
           <Box sx={{ display: 'flex', gap: 2 }}>
             <TextField
               margin="dense"
@@ -565,6 +807,17 @@ const Inventario = () => {
               InputProps={{ inputProps: { min: 0 } }}
             />
           </Box>
+          <TextField
+            margin="dense"
+            label={t('inventario_notes')}
+            fullWidth
+            multiline
+            rows={2}
+            value={formData.observacao}
+            onChange={(e) => setFormData({ ...formData, observacao: e.target.value })}
+            error={!!formErrors.observacao}
+            helperText={formErrors.observacao}
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog} disabled={loading}>
