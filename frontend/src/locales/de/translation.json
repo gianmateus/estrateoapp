@@ -156,8 +156,11 @@
     "modals": {
       "stockTitle": "Aktuellen Bestand verwalten",
       "neededTitle": "Wöchentlichen Bedarf verwalten",
+      "editStockTitle": "Bestandsartikel bearbeiten",
+      "editNeededTitle": "Bedarfsartikel bearbeiten",
       "noItems": "Keine Artikel im Inventar gefunden",
       "save": "Speichern",
+      "saveChanges": "Änderungen speichern",
       "cancel": "Abbrechen"
     }
   },
@@ -286,5 +289,7 @@
   },
   
   "finance_month": "Monat",
-  "finance_year": "Jahr"
+  "finance_year": "Jahr",
+  
+  "acoes": "Aktionen"
 } 

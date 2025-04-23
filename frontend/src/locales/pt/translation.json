@@ -159,8 +159,11 @@
     "modals": {
       "stockTitle": "Gerenciar Estoque Atual",
       "neededTitle": "Gerenciar Necessidade Semanal",
+      "editStockTitle": "Editar Item do Estoque",
+      "editNeededTitle": "Editar Item da Necessidade Semanal",
       "noItems": "Nenhum item encontrado no inventário",
       "save": "Salvar",
+      "saveChanges": "Salvar Alterações",
       "cancel": "Cancelar"
     }
   },
@@ -286,5 +289,7 @@
     "friday": "Sexta-feira",
     "saturday": "Sábado",
     "sunday": "Domingo"
-  }
+  },
+  
+  "acoes": "Ações"
 } 

@@ -156,8 +156,11 @@
     "modals": {
       "stockTitle": "Manage Current Stock",
       "neededTitle": "Manage Weekly Need",
+      "editStockTitle": "Edit Stock Item",
+      "editNeededTitle": "Edit Weekly Need Item",
       "noItems": "No items found in inventory",
       "save": "Save",
+      "saveChanges": "Save Changes",
       "cancel": "Cancel"
     }
   },
@@ -286,5 +289,7 @@
   },
   
   "finance_month": "Month",
-  "finance_year": "Year"
+  "finance_year": "Year",
+  
+  "acoes": "Actions"
 } 
