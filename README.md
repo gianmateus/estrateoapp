@@ -1,74 +1,83 @@
-# Estrateo
+# Estratéo - Sistema de Gestão para Restaurantes
 
-Estrateo é uma plataforma de gestão empresarial que integra inteligência artificial para otimizar processos de negócio.
+Sistema de gestão completo para restaurantes, com funcionalidades de controle financeiro, inventário, pagamentos e gerenciamento.
 
-## Estrutura do Projeto
+## 🚀 Estrutura do Projeto
 
-Este é um monorepo contendo:
+- **Frontend**: Aplicação React com Material UI
+- **Backend**: API Node.js com Express e Prisma ORM
 
-- **frontend**: Aplicação React com TypeScript para a interface do usuário
-- **backend**: API Node.js com TypeScript para o servidor
+## 🛠️ Tecnologias Utilizadas
 
-## Requisitos
+### Frontend
+- React
+- Material UI
+- React Router
+- i18next (internacionalização)
+- Axios
+- jsPDF
 
-- Node.js 16+
+### Backend
+- Node.js
+- Express
+- Prisma ORM
+- SQLite (desenvolvimento)
+- JWT para autenticação
+
+## ⚙️ Instalação e Configuração
+
+### Pré-requisitos
+- Node.js (versão 14.x ou superior)
 - npm ou yarn
-
-## Instalação
 
 ### Frontend
 
 ```bash
+# Navegar para a pasta do frontend
 cd frontend
+
+# Instalar dependências
 npm install
+
+# Iniciar o servidor de desenvolvimento
 npm start
 ```
 
 ### Backend
 
 ```bash
+# Navegar para a pasta do backend
 cd backend
+
+# Instalar dependências
 npm install
+
+# Configurar o banco de dados
+npx prisma migrate dev
+
+# Iniciar o servidor
 npm run dev
 ```
 
-## Variáveis de Ambiente
+## 📱 Funcionalidades Principais
 
-Crie um arquivo `.env` baseado no `.env.example` em cada diretório (frontend e backend).
+- **Dashboard**: Visão geral de estatísticas e indicadores
+- **Financeiro**: Controle de receitas, despesas e fluxo de caixa
+- **Inventário**: Gestão de estoque e necessidades semanais
+- **Pagamentos**: Controle de contas a pagar e programação de pagamentos
+- **IA & Análises**: Recomendações baseadas em dados
 
-## Documentação
+## 🌐 Internacionalização
 
-Para mais detalhes sobre cada parte do projeto, consulte os READMEs específicos em cada pasta.
+O sistema suporta os seguintes idiomas:
+- Português (Brasil)
+- Inglês
+- Alemão
 
-## Formatação de Moeda
+## 📝 Licença
 
-A aplicação usa o formato monetário europeu (EUR) para exibir valores financeiros. A formatação é centralizada através dos seguintes mecanismos:
+Este projeto está licenciado sob a licença MIT.
 
-1. **Utilitário de formatação**: `formatCurrency()` em `frontend/src/utils/formatters.ts`
+## 👥 Contribuição
 
-   ```ts
-   export const formatCurrency = (value: number): string => {
-     return new Intl.NumberFormat('de-DE', {
-       style: 'currency',
-       currency: 'EUR'
-     }).format(value);
-   };
-   ```
-
-2. **Componente Currency**: Um componente React para exibir valores monetários formatados:
-
-   ```tsx
-   // Uso básico:
-   <Currency value={12345.67} /> // € 12.345,67
-   
-   // Com propriedades adicionais do Typography
-   <Currency value={100} variant="h4" color="primary" />
-   ```
-
-3. **Formato de exibição**: € 1.234,56 (formato europeu com ponto para milhar e vírgula para decimal)
-
-Para alterar o formato de moeda no futuro, basta modificar a função `formatCurrency()` e todas as exibições na aplicação serão atualizadas automaticamente.
-
-## Licença
-
-Este projeto está licenciado sob a licença MIT. 
+Contribuições são bem-vindas! Sinta-se à vontade para abrir issues ou enviar pull requests. 
