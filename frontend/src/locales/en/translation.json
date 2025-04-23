@@ -123,7 +123,7 @@
   "total": "Total",
   
   "relatorioGeradoComSucesso": "Report generated successfully!",
-  "erroAoGerarRelatorio": "Error generating report. Please try again.",
+  "erroAoGerarRelatorio": "Error generating report. Try again.",
   
   "valorInvalido": "Invalid value",
   "dataInvalida": "Invalid date",
@@ -141,12 +141,26 @@
   "inventario_inventoryReport": "Inventory Report",
   "inventario_stockNeeded": "Stock Needed",
   "inventario_itemToQuantity": "Item/Quantity Relation",
-  "inventario_buyReport": "Shopping Report",
+  "inventario_buyReport": "Purchase Report",
   "inventario_toBuy": "To Buy",
   "inventario_frequency_daily": "Daily",
   "inventario_frequency_weekly": "Weekly",
   "inventario_frequency_monthly": "Monthly",
   "inventario_frequency_none": "None",
+  
+  "inventory": {
+    "buttons": {
+      "stock": "Current Stock",
+      "needed": "Weekly Need"
+    },
+    "modals": {
+      "stockTitle": "Manage Current Stock",
+      "neededTitle": "Manage Weekly Need",
+      "noItems": "No items found in inventory",
+      "save": "Save",
+      "cancel": "Cancel"
+    }
+  },
   
   "salvar": "Save",
   "editar": "Edit",
@@ -269,5 +283,8 @@
     "friday": "Friday",
     "saturday": "Saturday",
     "sunday": "Sunday"
-  }
+  },
+  
+  "finance_month": "Month",
+  "finance_year": "Year"
 } 

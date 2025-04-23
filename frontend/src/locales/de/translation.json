@@ -148,6 +148,20 @@
   "inventario_frequency_monthly": "Monatlich",
   "inventario_frequency_none": "Keine",
   
+  "inventory": {
+    "buttons": {
+      "stock": "Aktueller Bestand",
+      "needed": "Wöchentlicher Bedarf"
+    },
+    "modals": {
+      "stockTitle": "Aktuellen Bestand verwalten",
+      "neededTitle": "Wöchentlichen Bedarf verwalten",
+      "noItems": "Keine Artikel im Inventar gefunden",
+      "save": "Speichern",
+      "cancel": "Abbrechen"
+    }
+  },
+  
   "salvar": "Speichern",
   "editar": "Bearbeiten",
   "excluir": "Löschen",
@@ -269,5 +283,8 @@
     "friday": "Freitag",
     "saturday": "Samstag",
     "sunday": "Sonntag"
-  }
+  },
+  
+  "finance_month": "Monat",
+  "finance_year": "Jahr"
 } 

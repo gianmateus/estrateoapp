@@ -148,6 +148,23 @@
   "inventario_frequency_monthly": "Mensal",
   "inventario_frequency_none": "Nenhuma",
   
+  "finance_month": "Mês",
+  "finance_year": "Ano",
+  
+  "inventory": {
+    "buttons": {
+      "stock": "Estoque Atual",
+      "needed": "Necessidade Semanal"
+    },
+    "modals": {
+      "stockTitle": "Gerenciar Estoque Atual",
+      "neededTitle": "Gerenciar Necessidade Semanal",
+      "noItems": "Nenhum item encontrado no inventário",
+      "save": "Salvar",
+      "cancel": "Cancelar"
+    }
+  },
+  
   "salvar": "Salvar",
   "editar": "Editar",
   "excluir": "Excluir",
