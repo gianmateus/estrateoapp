@@ -32,10 +32,12 @@ import {
   VIEW_DASHBOARD_PERMISSION, 
   VIEW_PAYMENTS_PERMISSION,
   VIEW_INVENTORY_PERMISSION,
-  VIEW_PROFILE_PERMISSION
+  VIEW_PROFILE_PERMISSION,
+  VIEW_EMPLOYEES_PERMISSION
 } from './constants/permissions';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Calendario from './pages/Calendario';
+import Funcionarios from './pages/Funcionarios';
 import NotFound from './pages/NotFound';
 import ResetPassword from './pages/ResetPassword';
 import Loading from './components/Loading';
@@ -518,6 +520,18 @@ function App() {
                         <Navigation toggleTheme={toggleTheme} />
                         <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
                           <Calendario />
+                        </Box>
+                      </Box>
+                    </ProtectedRoute>
+                  } />
+                  {/* Funcionarios module route - requires funcionarios permission
+                       Rota para o módulo de funcionários - requer permissão de funcionários */}
+                  <Route path="/dashboard/funcionarios" element={
+                    <ProtectedRoute requiredPermission={VIEW_EMPLOYEES_PERMISSION}>
+                      <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+                        <Navigation toggleTheme={toggleTheme} />
+                        <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+                          <Funcionarios />
                         </Box>
                       </Box>
                     </ProtectedRoute>

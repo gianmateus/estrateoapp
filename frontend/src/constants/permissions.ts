@@ -17,10 +17,10 @@ export const ADMIN_PERMISSION = 'admin';
  * Permissões do módulo de Pagamentos
  * Controla acesso às funcionalidades relacionadas a pagamentos
  */
-export const VIEW_PAYMENTS_PERMISSION = 'view_pagamentos';
-export const CREATE_PAYMENT_PERMISSION = 'criar_pagamento';
-export const EDIT_PAYMENT_PERMISSION = 'editar_pagamento';
-export const DELETE_PAYMENT_PERMISSION = 'excluir_pagamento';
+export const VIEW_PAYMENTS_PERMISSION = 'view_payments';
+export const CREATE_PAYMENT_PERMISSION = 'create_payment';
+export const EDIT_PAYMENT_PERMISSION = 'edit_payment';
+export const DELETE_PAYMENT_PERMISSION = 'delete_payment';
 
 /**
  * Inventory module permissions
@@ -29,10 +29,11 @@ export const DELETE_PAYMENT_PERMISSION = 'excluir_pagamento';
  * Permissões do módulo de Inventário
  * Controla acesso às funcionalidades relacionadas ao inventário
  */
-export const VIEW_INVENTORY_PERMISSION = 'view_inventario';
+export const VIEW_INVENTORY_PERMISSION = 'view_inventory';
 export const CREATE_INVENTORY_PERMISSION = 'criar_inventario';
 export const EDIT_INVENTORY_PERMISSION = 'editar_inventario';
-export const DELETE_INVENTORY_PERMISSION = 'excluir_inventario';
+export const DELETE_INVENTORY_PERMISSION = 'deletar_inventario';
+export const INVENTORY_REPORT_PERMISSION = 'relatorio_inventario';
 
 /**
  * User profile permissions
@@ -41,8 +42,8 @@ export const DELETE_INVENTORY_PERMISSION = 'excluir_inventario';
  * Permissões de Perfil/Usuário
  * Controla acesso às funcionalidades de gerenciamento de perfil
  */
-export const EDIT_PROFILE_PERMISSION = 'editar_perfil';
-export const VIEW_PROFILE_PERMISSION = 'view_perfil';
+export const EDIT_PROFILE_PERMISSION = 'edit_profile';
+export const VIEW_PROFILE_PERMISSION = 'view_profile';
 
 /**
  * Dashboard permissions
@@ -60,7 +61,7 @@ export const VIEW_DASHBOARD_PERMISSION = 'view_dashboard';
  * Grupos de permissões para facilitar o gerenciamento
  * Grupos de permissões relacionadas para atribuição mais fácil
  */
-export const FULL_PAYMENT_PERMISSIONS = [
+export const FULL_PAYMENTS_PERMISSIONS = [
   VIEW_PAYMENTS_PERMISSION,
   CREATE_PAYMENT_PERMISSION,
   EDIT_PAYMENT_PERMISSION,
@@ -72,6 +73,24 @@ export const FULL_INVENTORY_PERMISSIONS = [
   CREATE_INVENTORY_PERMISSION,
   EDIT_INVENTORY_PERMISSION,
   DELETE_INVENTORY_PERMISSION
+];
+
+/**
+ * Funcionários (Employees) module permissions
+ * Controls access to employee-related features
+ * 
+ * Permissões do módulo de funcionários
+ * Controla acesso às funcionalidades relacionadas a funcionários
+ */
+export const VIEW_EMPLOYEES_PERMISSION = 'funcionarios.visualizar';
+export const CREATE_EMPLOYEE_PERMISSION = 'funcionarios.criar';
+export const EDIT_EMPLOYEE_PERMISSION = 'funcionarios.editar';
+export const DELETE_EMPLOYEE_PERMISSION = 'funcionarios.deletar';
+export const FULL_EMPLOYEES_PERMISSIONS = [
+  VIEW_EMPLOYEES_PERMISSION,
+  CREATE_EMPLOYEE_PERMISSION,
+  EDIT_EMPLOYEE_PERMISSION,
+  DELETE_EMPLOYEE_PERMISSION
 ];
 
 /**
@@ -90,5 +109,6 @@ export const DEFAULT_USER_PERMISSIONS = [
   EDIT_INVENTORY_PERMISSION,
   EDIT_PROFILE_PERMISSION,
   VIEW_PROFILE_PERMISSION,
-  VIEW_DASHBOARD_PERMISSION
+  VIEW_DASHBOARD_PERMISSION,
+  VIEW_EMPLOYEES_PERMISSION
 ]; 

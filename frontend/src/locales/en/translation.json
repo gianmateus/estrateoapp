@@ -22,6 +22,8 @@
   "financeiro": "Financial",
   "inventario": "Inventory",
   "pagamentos": "Payments",
+  "calendario": "Calendar",
+  "funcionarios": "Employees",
   "inteligenciaArtificial": "AI & Analytics",
   "whatsapp": "WhatsApp",
   "titulo": "Restaurant Admin",
@@ -291,5 +293,34 @@
   "finance_month": "Month",
   "finance_year": "Year",
   
-  "acoes": "Actions"
+  "acoes": "Actions",
+  
+  "sugestoes": {
+    "titulo": "Suggestions",
+    "estoqueMinimo": "You have {{number}} items below minimum stock level. Consider reordering soon.",
+    "financeiro": "Your expenses have increased by {{percent}}% compared to last month. Review your finances.",
+    "vendas": "Sales are up by {{percent}}% this week! Keep up the good work!"
+  },
+  
+  "cargo": "Position",
+  "dataContratacao": "Hire Date",
+  "novoFuncionario": "New Employee",
+  "editarFuncionario": "Edit Employee",
+  "estatisticas": "Statistics",
+  "folhaPagamento": "Payroll",
+  "pontosFerias": "Time & Vacations",
+  "ativo": "Active",
+  "inativo": "Inactive",
+  "ferias": "Vacation",
+  "licenca": "Leave",
+  "buscar": "Search",
+  "todos": "All",
+  "confirmarExclusaoFuncionario": "Are you sure you want to delete this employee?",
+  "documento": "ID/SSN",
+  "funcionalidadeEmDesenvolvimento": "This feature is under development",
+  
+  "endereco": "Address",
+  "telefone": "Phone",
+  "departamento": "Department",
+  "salario": "Salary"
 } 

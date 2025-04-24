@@ -38,7 +38,8 @@ import {
   Dashboard as DashboardIcon,
   WhatsApp as WhatsAppIcon,
   Language as LanguageIcon,
-  DateRange as CalendarioIcon
+  DateRange as CalendarioIcon,
+  People as PeopleIcon
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
@@ -196,6 +197,12 @@ const Navigation = ({ toggleTheme }: NavigationProps) => {
       icon: <CalendarioIcon />, 
       path: '/dashboard/calendario',
       permission: 'calendario.visualizar'
+    },
+    { 
+      text: t('funcionarios'), 
+      icon: <PeopleIcon />, 
+      path: '/dashboard/funcionarios',
+      permission: 'funcionarios.visualizar'
     },
     { 
       text: t('inteligenciaArtificial'), 

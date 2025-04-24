@@ -23,6 +23,7 @@
   "inventario": "Inventário",
   "pagamentos": "Pagamentos",
   "calendario": "Calendário",
+  "funcionarios": "Funcionários",
   "inteligenciaArtificial": "IA & Análises",
   "whatsapp": "WhatsApp",
   "titulo": "Restaurante Admin",
@@ -301,5 +302,27 @@
     "sunday": "Domingo"
   },
   
-  "acoes": "Ações"
+  "acoes": "Ações",
+  
+  "cargo": "Cargo",
+  "dataContratacao": "Data de Contratação",
+  "novoFuncionario": "Novo Funcionário",
+  "editarFuncionario": "Editar Funcionário",
+  "estatisticas": "Estatísticas",
+  "folhaPagamento": "Folha de Pagamento",
+  "pontosFerias": "Pontos e Férias",
+  "ativo": "Ativo",
+  "inativo": "Inativo",
+  "ferias": "Férias",
+  "licenca": "Licença",
+  "buscar": "Buscar",
+  "todos": "Todos",
+  "confirmarExclusaoFuncionario": "Tem certeza que deseja excluir este funcionário?",
+  "documento": "CPF/CNPJ",
+  "funcionalidadeEmDesenvolvimento": "Esta funcionalidade está em desenvolvimento",
+  
+  "endereco": "Endereço",
+  "telefone": "Telefone",
+  "departamento": "Departamento",
+  "salario": "Salário"
 } 
