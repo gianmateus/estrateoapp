@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Box,
@@ -51,6 +51,7 @@ interface Pagamento {
   vencimento: string; // formato ISO 8601
   notaFiscal?: string;
   descricao?: string;
+  recorrencia: 'nenhuma' | 'semanal' | 'quinzenal' | 'mensal' | 'trimestral';
   pago: boolean;
   createdAt: string; // formato ISO 8601
 }
@@ -116,6 +117,7 @@ const Pagamentos = () => {
     vencimento: format(new Date(), 'yyyy-MM-dd'),
     notaFiscal: '',
     descricao: '',
+    recorrencia: 'nenhuma' as 'nenhuma' | 'semanal' | 'quinzenal' | 'mensal' | 'trimestral',
     pago: false
   });
   const [formErrors, setFormErrors] = useState({
@@ -134,6 +136,42 @@ const Pagamentos = () => {
     severity: 'success' as 'success' | 'error' | 'info' | 'warning'
   });
 
+  // Estados para filtros de ano e mês
+  const anoAtual = new Date().getFullYear();
+  const mesAtual = new Date().getMonth();
+  
+  const [filtroAno, setFiltroAno] = useState(anoAtual);
+  const [filtroMes, setFiltroMes] = useState(mesAtual);
+  
+  // Anos disponíveis para filtro (dinâmico baseado nos dados)
+  const anosDisponiveis = useMemo(() => {
+    const anos = new Set<number>();
+    // Adiciona o ano atual
+    anos.add(anoAtual);
+    
+    // Adiciona anos dos pagamentos
+    pagamentos.forEach(pagamento => {
+      const ano = new Date(pagamento.vencimento).getFullYear();
+      anos.add(ano);
+      
+      // Para pagamentos recorrentes, adiciona anos futuros
+      if (pagamento.recorrencia !== 'nenhuma') {
+        const anosFuturos = calcularAnosFuturos(pagamento);
+        anosFuturos.forEach(a => anos.add(a));
+      }
+    });
+    
+    return Array.from(anos).sort((a, b) => a - b);
+  }, [pagamentos, anoAtual]);
+  
+  // Nomes dos meses para o seletor
+  const getNomesMeses = useMemo(() => {
+    const locale = getDateLocale(i18n.language);
+    return Array.from({ length: 12 }, (_, i) => 
+      format(new Date(2021, i, 1), 'MMMM', { locale })
+    );
+  }, [i18n.language]);
+
   // Mock de dados para desenvolvimento local
   const mockPagamentos = [
     {
@@ -144,6 +182,7 @@ const Pagamentos = () => {
       vencimento: '2023-05-05T12:00:00Z',
       notaFiscal: 'RG78945612',
       descricao: 'Aluguel mensal',
+      recorrencia: 'mensal',
       pago: true,
       createdAt: '2023-04-28T15:30:00Z'
     },
@@ -154,6 +193,7 @@ const Pagamentos = () => {
       categoria: 'fornecedor',
       vencimento: new Date().toISOString(),
       notaFiscal: 'NF9865478',
+      recorrencia: 'semanal',
       pago: false,
       createdAt: '2023-04-29T09:15:00Z'
     },
@@ -163,6 +203,7 @@ const Pagamentos = () => {
       valor: 130,
       categoria: 'internet',
       vencimento: addDays(new Date(), 1).toISOString(),
+      recorrencia: 'mensal',
       pago: false,
       createdAt: '2023-04-30T10:20:00Z'
     },
@@ -174,6 +215,7 @@ const Pagamentos = () => {
       vencimento: addDays(new Date(), 2).toISOString(),
       notaFiscal: 'WR456789',
       descricao: 'Consumo de abril',
+      recorrencia: 'mensal',
       pago: false,
       createdAt: '2023-04-30T14:45:00Z'
     }
@@ -214,6 +256,7 @@ const Pagamentos = () => {
         vencimento: pagamento.vencimento.split('T')[0], // Remover parte de tempo
         notaFiscal: pagamento.notaFiscal || '',
         descricao: pagamento.descricao || '',
+        recorrencia: pagamento.recorrencia,
         pago: pagamento.pago
       });
     } else {
@@ -227,6 +270,7 @@ const Pagamentos = () => {
         vencimento: format(new Date(), 'yyyy-MM-dd'),
         notaFiscal: '',
         descricao: '',
+        recorrencia: 'nenhuma',
         pago: false
       });
     }
@@ -301,6 +345,7 @@ const Pagamentos = () => {
                 vencimento: new Date(formData.vencimento).toISOString(),
                 notaFiscal: formData.notaFiscal,
                 descricao: formData.descricao,
+                recorrencia: formData.recorrencia,
                 pago: formData.pago
               } 
             : p
@@ -321,6 +366,7 @@ const Pagamentos = () => {
           vencimento: new Date(formData.vencimento).toISOString(),
           notaFiscal: formData.notaFiscal,
           descricao: formData.descricao,
+          recorrencia: formData.recorrencia,
           pago: formData.pago,
           createdAt: new Date().toISOString()
         };
@@ -427,10 +473,112 @@ const Pagamentos = () => {
     setSnackbar({ ...snackbar, open: false });
   };
 
+  // Gerar relatório de pagamentos
+  const handleGerarRelatorio = () => {
+    setOpenRelatorio(true);
+    // Aqui implementaria a lógica de gerar o PDF
+    setTimeout(() => {
+      setOpenRelatorio(false);
+      setSnackbar({
+        open: true,
+        message: t('relatorioGeradoComSucesso'),
+        severity: 'success'
+      });
+    }, 1500);
+  };
+
+  // Função para calcular próxima data com base na recorrência
+  const calcularProximaData = (data: Date, recorrencia: string): Date => {
+    const novaData = new Date(data);
+    switch (recorrencia) {
+      case 'semanal':
+        novaData.setDate(novaData.getDate() + 7);
+        break;
+      case 'quinzenal':
+        novaData.setDate(novaData.getDate() + 15);
+        break;
+      case 'mensal':
+        novaData.setMonth(novaData.getMonth() + 1);
+        break;
+      case 'trimestral':
+        novaData.setMonth(novaData.getMonth() + 3);
+        break;
+    }
+    return novaData;
+  };
+
+  // Função para calcular anos futuros baseado na recorrência
+  const calcularAnosFuturos = (pagamento: Pagamento): number[] => {
+    const anos = new Set<number>();
+    const dataInicial = new Date(pagamento.vencimento);
+    const anoInicial = dataInicial.getFullYear();
+    
+    // Adiciona o ano inicial
+    anos.add(anoInicial);
+    
+    // Para recorrências, projeta 5 anos para frente
+    if (pagamento.recorrencia !== 'nenhuma') {
+      const anoLimite = anoInicial + 5;
+      let dataAtual = dataInicial;
+      
+      while (dataAtual.getFullYear() <= anoLimite) {
+        dataAtual = calcularProximaData(dataAtual, pagamento.recorrencia);
+        anos.add(dataAtual.getFullYear());
+      }
+    }
+    
+    return Array.from(anos);
+  };
+
+  // Função para expandir pagamentos recorrentes
+  const expandirPagamentosRecorrentes = useMemo(() => {
+    const pagamentosExpandidos: Pagamento[] = [];
+    
+    pagamentos.forEach(pagamento => {
+      // Adiciona o pagamento original
+      pagamentosExpandidos.push({...pagamento});
+      
+      // Se for recorrente, adiciona ocorrências futuras
+      if (pagamento.recorrencia !== 'nenhuma') {
+        let dataAtual = new Date(pagamento.vencimento);
+        const anoLimite = filtroAno + 1; // Expande até 1 ano além do filtro atual
+        
+        // Loop até atingir limite de repetições ou limite de ano
+        let contador = 0;
+        const maxRepeticoes = pagamento.recorrencia === 'semanal' ? 52 : 
+                             pagamento.recorrencia === 'quinzenal' ? 24 : 
+                             pagamento.recorrencia === 'mensal' ? 12 : 4;
+        
+        while (contador < maxRepeticoes && dataAtual.getFullYear() <= anoLimite) {
+          dataAtual = calcularProximaData(dataAtual, pagamento.recorrencia);
+          
+          // Cria uma nova instância do pagamento recorrente
+          const novoPagamento: Pagamento = {
+            ...pagamento,
+            id: `${pagamento.id}-recorrencia-${contador}`,
+            vencimento: dataAtual.toISOString(),
+            pago: false // Ocorrências futuras sempre como não pagas
+          };
+          
+          pagamentosExpandidos.push(novoPagamento);
+          contador++;
+        }
+      }
+    });
+    
+    return pagamentosExpandidos;
+  }, [pagamentos, filtroAno]);
+
   // Agrupar pagamentos por data de vencimento
   const pagamentosAgrupados = () => {
+    // Filtrar pagamentos por ano e mês selecionados
+    const pagamentosFiltrados = expandirPagamentosRecorrentes.filter(pagamento => {
+      const data = new Date(pagamento.vencimento);
+      return data.getFullYear() === filtroAno && data.getMonth() === filtroMes;
+    });
+    
     // Ordenar cronologicamente
-    const pagamentosOrdenados = [...pagamentos].sort(
+    const pagamentosOrdenados = [...pagamentosFiltrados].sort(
       (a, b) => new Date(a.vencimento).getTime() - new Date(b.vencimento).getTime()
     );
     
@@ -448,20 +596,6 @@ const Pagamentos = () => {
     return grupos;
   };
 
-  // Gerar relatório de pagamentos
-  const handleGerarRelatorio = () => {
-    setOpenRelatorio(true);
-    // Aqui implementaria a lógica de gerar o PDF
-    setTimeout(() => {
-      setOpenRelatorio(false);
-      setSnackbar({
-        open: true,
-        message: t('relatorioGeradoComSucesso'),
-        severity: 'success'
-      });
-    }, 1500);
-  };
-
   // Componente que exibe um item de pagamento agrupado por data
   const PagamentoCard = ({ pagamento, onToggle, onEdit, onDelete, language }: {
     pagamento: Pagamento,
@@ -476,6 +610,18 @@ const Pagamentos = () => {
         currency: 'EUR'
       }).format(value);
     };
+    
+    const getRecorrenciaLabel = (recorrencia: string) => {
+      switch(recorrencia) {
+        case 'semanal': return t('recorrencia_semanal');
+        case 'quinzenal': return t('recorrencia_quinzenal');
+        case 'mensal': return t('recorrencia_mensal');
+        case 'trimestral': return t('recorrencia_trimestral');
+        default: return null;
+      }
+    };
+    
+    const recorrenciaLabel = getRecorrenciaLabel(pagamento.recorrencia);
 
     return (
       <Card 
@@ -493,9 +639,19 @@ const Pagamentos = () => {
               <Typography variant="subtitle1" fontWeight="bold">
                 {pagamento.nome}
               </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {getCategorias(language).find((c) => c.value === pagamento.categoria)?.label}
-              </Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Typography variant="body2" color="text.secondary">
+                  {getCategorias(language).find((c) => c.value === pagamento.categoria)?.label}
+                </Typography>
+                {recorrenciaLabel && (
+                  <Chip 
+                    label={recorrenciaLabel}
+                    size="small"
+                    color="primary"
+                    variant="outlined"
+                  />
+                )}
+              </Box>
             </Grid>
             
             <Grid item xs={6} sm={3} md={2}>
@@ -599,12 +755,68 @@ const Pagamentos = () => {
         </Button>
       </Box>
 
+      {/* Título da seção */}
+      <Typography variant="h6" gutterBottom>
+        {t('pagamentosCadastrados')}
+      </Typography>
+
+      {/* Seletor de Ano */}
+      <Box sx={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        gap: 2, 
+        overflow: 'auto',
+        p: 1,
+        mb: 1,
+        borderRadius: 1,
+        bgcolor: 'background.paper',
+        boxShadow: 1
+      }}>
+        {anosDisponiveis.map(ano => (
+          <Button
+            key={ano}
+            variant={filtroAno === ano ? "contained" : "outlined"}
+            onClick={() => setFiltroAno(ano)}
+            sx={{ 
+              minWidth: '80px',
+              px: 2
+            }}
+          >
+            {ano}
+          </Button>
+        ))}
+      </Box>
+      
+      {/* Seletor de Mês */}
+      <Box sx={{ 
+        display: 'flex', 
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: 1,
+        p: 1,
+        mb: 2,
+        borderRadius: 1,
+        bgcolor: 'background.paper',
+        boxShadow: 1
+      }}>
+        {getNomesMeses.map((mes, index) => (
+          <Button
+            key={index}
+            variant={filtroMes === index ? "contained" : "text"}
+            onClick={() => setFiltroMes(index)}
+            sx={{ 
+              flex: { xs: '1 0 30%', sm: '1 0 15%', md: '1 0 8%' },
+              textTransform: 'capitalize',
+              fontSize: { xs: '0.7rem', sm: '0.8rem', md: '0.875rem' }
+            }}
+          >
+            {mes}
+          </Button>
+        ))}
+      </Box>
+
       {/* Listagem de pagamentos agrupados por data */}
       <Box sx={{ mt: 2 }}>
-        <Typography variant="h6" gutterBottom>
-          {t('pagamentosCadastrados')}
-        </Typography>
-        
         {loading ? (
           <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
             <CircularProgress />
@@ -724,6 +936,22 @@ const Pagamentos = () => {
                     {categoria.label}
                   </MenuItem>
                 ))}
+              </Select>
+            </FormControl>
+            
+            <FormControl fullWidth>
+              <InputLabel id="recorrencia-label">{t('recorrencia')}</InputLabel>
+              <Select
+                labelId="recorrencia-label"
+                value={formData.recorrencia}
+                onChange={(e) => setFormData({ ...formData, recorrencia: e.target.value as any })}
+                label={t('recorrencia')}
+              >
+                <MenuItem value="nenhuma">{t('recorrencia_nenhuma')}</MenuItem>
+                <MenuItem value="semanal">{t('recorrencia_semanal')}</MenuItem>
+                <MenuItem value="quinzenal">{t('recorrencia_quinzenal')}</MenuItem>
+                <MenuItem value="mensal">{t('recorrencia_mensal')}</MenuItem>
+                <MenuItem value="trimestral">{t('recorrencia_trimestral')}</MenuItem>
               </Select>
             </FormControl>
             
