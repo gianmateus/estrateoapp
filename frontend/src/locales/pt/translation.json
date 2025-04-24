@@ -22,6 +22,7 @@
   "financeiro": "Financeiro",
   "inventario": "Inventário",
   "pagamentos": "Pagamentos",
+  "calendario": "Calendário",
   "inteligenciaArtificial": "IA & Análises",
   "whatsapp": "WhatsApp",
   "titulo": "Restaurante Admin",
@@ -234,6 +235,15 @@
   "weekdays_friday": "Sexta-feira",
   "weekdays_saturday": "Sábado",
   "weekdays_sunday": "Domingo",
+  
+  "calendario": "Calendário",
+  "mesAnterior": "Mês Anterior",
+  "proximoMes": "Próximo Mês",
+  "hoje": "Hoje",
+  "nenhumaEntradaRegistrada": "Nenhuma entrada registrada",
+  "nenhumaSaidaRegistrada": "Nenhuma saída registrada",
+  "nenhumPagamentoRegistrado": "Nenhum pagamento registrado",
+  "pendente": "Pendente",
   
   "mensagem": {
     "entradaAdicionada": "Entrada adicionada com sucesso!",

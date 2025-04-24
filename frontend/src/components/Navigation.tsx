@@ -37,7 +37,8 @@ import {
   RestaurantMenu as RestaurantIcon,
   Dashboard as DashboardIcon,
   WhatsApp as WhatsAppIcon,
-  Language as LanguageIcon
+  Language as LanguageIcon,
+  DateRange as CalendarioIcon
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
@@ -189,6 +190,12 @@ const Navigation = ({ toggleTheme }: NavigationProps) => {
       icon: <PagamentosIcon />, 
       path: '/dashboard/pagamentos',
       permission: 'pagamentos.visualizar'
+    },
+    { 
+      text: t('calendario'), 
+      icon: <CalendarioIcon />, 
+      path: '/dashboard/calendario',
+      permission: 'calendario.visualizar'
     },
     { 
       text: t('inteligenciaArtificial'), 

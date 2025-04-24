@@ -143,6 +143,49 @@ const Pagamentos = () => {
   const [filtroAno, setFiltroAno] = useState(anoAtual);
   const [filtroMes, setFiltroMes] = useState(mesAtual);
   
+  // Função para calcular próxima data com base na recorrência
+  const calcularProximaData = (data: Date, recorrencia: string): Date => {
+    const novaData = new Date(data);
+    switch (recorrencia) {
+      case 'semanal':
+        novaData.setDate(novaData.getDate() + 7);
+        break;
+      case 'quinzenal':
+        novaData.setDate(novaData.getDate() + 15);
+        break;
+      case 'mensal':
+        novaData.setMonth(novaData.getMonth() + 1);
+        break;
+      case 'trimestral':
+        novaData.setMonth(novaData.getMonth() + 3);
+        break;
+    }
+    return novaData;
+  };
+
+  // Função para calcular anos futuros baseado na recorrência
+  const calcularAnosFuturos = (pagamento: Pagamento): number[] => {
+    const anos = new Set<number>();
+    const dataInicial = new Date(pagamento.vencimento);
+    const anoInicial = dataInicial.getFullYear();
+    
+    // Adiciona o ano inicial
+    anos.add(anoInicial);
+    
+    // Para recorrências, projeta 5 anos para frente
+    if (pagamento.recorrencia !== 'nenhuma') {
+      const anoLimite = anoInicial + 5;
+      let dataAtual = dataInicial;
+      
+      while (dataAtual.getFullYear() <= anoLimite) {
+        dataAtual = calcularProximaData(dataAtual, pagamento.recorrencia);
+        anos.add(dataAtual.getFullYear());
+      }
+    }
+    
+    return Array.from(anos);
+  };
+  
   // Anos disponíveis para filtro (dinâmico baseado nos dados)
   const anosDisponiveis = useMemo(() => {
     const anos = new Set<number>();
@@ -173,7 +216,7 @@ const Pagamentos = () => {
   }, [i18n.language]);
 
   // Mock de dados para desenvolvimento local
-  const mockPagamentos = [
+  const mockPagamentos: Pagamento[] = [
     {
       id: '1',
       nome: 'Aluguel Restaurante',
@@ -485,49 +528,6 @@ const Pagamentos = () => {
         severity: 'success'
       });
     }, 1500);
-  };
-
-  // Função para calcular próxima data com base na recorrência
-  const calcularProximaData = (data: Date, recorrencia: string): Date => {
-    const novaData = new Date(data);
-    switch (recorrencia) {
-      case 'semanal':
-        novaData.setDate(novaData.getDate() + 7);
-        break;
-      case 'quinzenal':
-        novaData.setDate(novaData.getDate() + 15);
-        break;
-      case 'mensal':
-        novaData.setMonth(novaData.getMonth() + 1);
-        break;
-      case 'trimestral':
-        novaData.setMonth(novaData.getMonth() + 3);
-        break;
-    }
-    return novaData;
-  };
-
-  // Função para calcular anos futuros baseado na recorrência
-  const calcularAnosFuturos = (pagamento: Pagamento): number[] => {
-    const anos = new Set<number>();
-    const dataInicial = new Date(pagamento.vencimento);
-    const anoInicial = dataInicial.getFullYear();
-    
-    // Adiciona o ano inicial
-    anos.add(anoInicial);
-    
-    // Para recorrências, projeta 5 anos para frente
-    if (pagamento.recorrencia !== 'nenhuma') {
-      const anoLimite = anoInicial + 5;
-      let dataAtual = dataInicial;
-      
-      while (dataAtual.getFullYear() <= anoLimite) {
-        dataAtual = calcularProximaData(dataAtual, pagamento.recorrencia);
-        anos.add(dataAtual.getFullYear());
-      }
-    }
-    
-    return Array.from(anos);
   };
 
   // Função para expandir pagamentos recorrentes
