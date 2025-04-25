@@ -29,6 +29,9 @@ interface AuthContextType {
   // Permission methods
   checkUserPermission: (permission: string) => boolean;
   hasPermission: (permission: string) => boolean; // Alias for checkUserPermission
+  
+  // Theme toggle function
+  toggleTheme?: () => void;
 }
 
 /**
@@ -278,7 +281,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         logout: signOut, // Alias for signOut
         verifyAuthentication,
         checkUserPermission,
-        hasPermission: checkUserPermission // Alias for checkUserPermission
+        hasPermission: checkUserPermission, // Alias for checkUserPermission
+        toggleTheme: () => {} // Placeholder for toggleTheme
       }}
     >
       {children}

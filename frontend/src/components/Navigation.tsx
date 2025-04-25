@@ -65,7 +65,7 @@ const drawerWidth = 240;
  * Define as props que podem ser passadas para o componente Navigation
  */
 interface NavigationProps {
-  toggleTheme: () => void;  // Function to toggle between light/dark themes
+  toggleTheme?: () => void;  // Function to toggle between light/dark themes
                            // Função para alternar entre temas claro/escuro
 }
 
@@ -159,6 +159,13 @@ const Navigation = ({ toggleTheme }: NavigationProps) => {
   const handleLanguageChange = (language: string) => {
     i18n.changeLanguage(language);
     handleLanguageMenuClose();
+  };
+
+  // Função segura para alternar o tema, caso toggleTheme seja undefined
+  const handleThemeToggle = () => {
+    if (toggleTheme) {
+      toggleTheme();
+    }
   };
 
   /**
@@ -298,7 +305,7 @@ const Navigation = ({ toggleTheme }: NavigationProps) => {
           </Menu>
           
           {/* Theme toggle button */}
-          <IconButton onClick={toggleTheme}>
+          <IconButton onClick={handleThemeToggle}>
             {theme.palette.mode === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
           </IconButton>
         </Box>
