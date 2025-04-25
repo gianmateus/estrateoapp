@@ -305,6 +305,13 @@
   
   "acoes": "Ações",
   
+  "sugestoes": {
+    "titulo": "Sugestões",
+    "estoqueMinimo": "Você tem {{number}} itens abaixo do nível mínimo de estoque. Considere reabastecer em breve.",
+    "financeiro": "Suas despesas aumentaram {{percent}}% em comparação com o mês passado. Revise suas finanças.",
+    "vendas": "As vendas aumentaram {{percent}}% nesta semana! Continue com o bom trabalho!"
+  },
+  
   "cargo": "Cargo",
   "dataContratacao": "Data de Contratação",
   "novoFuncionario": "Novo Funcionário",
@@ -331,7 +338,7 @@
   "of": "de",
   "erroAoBuscarDados": "Erro ao buscar dados. Tente novamente.",
   
-  "contador": {
+  "relatorioContador": {
     "titulo": "Relatório para Contador",
     "introducao": "Veja abaixo todos os dados organizados que seu contador precisa. No final da página, você pode gerar o relatório completo com apenas um clique.",
     "resumoGeral": "Resumo Geral",

@@ -26,6 +26,7 @@
   "funcionarios": "Employees",
   "inteligenciaArtificial": "AI & Analytics",
   "whatsapp": "WhatsApp",
+  "contador": "Accountant",
   "titulo": "Restaurant Admin",
   "perfil": "My Profile",
   "sair": "Log Out",
@@ -328,7 +329,7 @@
   "of": "of",
   "erroAoBuscarDados": "Error fetching data. Please try again.",
   
-  "contador": {
+  "relatorioContador": {
     "titulo": "Accountant Report",
     "introducao": "Find below all the organized data your accountant needs. At the end of the page, you can generate the complete report with just one click.",
     "resumoGeral": "General Summary",

@@ -61,7 +61,7 @@ const BotaoGerarRelatorio: React.FC<BotaoGerarRelatorioProps> = ({
           <Typography variant="button">{t('carregando')}</Typography>
         </>
       ) : (
-        t('contador.gerarRelatorio')
+        t('relatorioContador.gerarRelatorio')
       )}
     </Button>
   );
