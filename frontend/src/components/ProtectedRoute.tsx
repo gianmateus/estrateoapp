@@ -77,7 +77,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ requiredPermission }) =
   // Instead of rendering children directly, render with dashboard layout
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
-      <Navigation toggleTheme={toggleTheme} />
+      <Navigation />
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <Outlet />
       </Box>

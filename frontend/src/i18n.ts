@@ -25,6 +25,27 @@ const resources = {
   }
 };
 
+// Função para obter o idioma salvo ou o padrão
+const getSavedLanguage = () => {
+  const savedLanguage = localStorage.getItem('appLanguage');
+  
+  // Mapeamento de códigos de idioma completos para códigos curtos
+  const languageMap: { [key: string]: string } = {
+    'pt-BR': 'pt',
+    'en-US': 'en',
+    'de-DE': 'de',
+    'it-IT': 'it'
+  };
+  
+  if (savedLanguage && languageMap[savedLanguage]) {
+    return languageMap[savedLanguage];
+  }
+  
+  // Detectar idioma do navegador se não houver preferência salva
+  const browserLang = navigator.language.split('-')[0];
+  return ['pt', 'en', 'de', 'it'].includes(browserLang) ? browserLang : 'en';
+};
+
 i18n
   // Carregar traduções do backend
   .use(Backend)
@@ -36,7 +57,7 @@ i18n
   .init({
     resources,
     fallbackLng: 'en',
-    lng: 'en', // Definir inglês como idioma padrão
+    lng: getSavedLanguage(), // Usar o idioma salvo ou detectado
     debug: process.env.NODE_ENV === 'development',
     
     interpolation: {
@@ -45,7 +66,8 @@ i18n
     
     detection: {
       order: ['localStorage', 'htmlTag', 'navigator'],
-      caches: [],
+      lookupLocalStorage: 'appLanguage', // Nome da chave no localStorage
+      caches: ['localStorage'],
     },
     
     // Configuração para carregar arquivos do diretório public/locales
@@ -53,8 +75,5 @@ i18n
       loadPath: '/locales/{{lng}}/translation.json',
     }
   });
-
-// Forçar o idioma inglês
-i18n.changeLanguage('en');
 
 export default i18n; 

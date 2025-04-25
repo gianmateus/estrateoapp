@@ -47,11 +47,6 @@ interface PagamentoProgramado {
 }
 
 const categoriasSaida = ['Salário', 'Compras', 'Pagamentos'];
-const idiomas = [
-  { codigo: 'pt', nome: 'Português', bandeira: '🇧🇷' },
-  { codigo: 'en', nome: 'English', bandeira: '🇺🇸' },
-  { codigo: 'de', nome: 'Deutsch', bandeira: '🇩🇪' }
-];
 
 const Financeiro = () => {
   const { t, i18n } = useTranslation();
@@ -562,22 +557,6 @@ const Financeiro = () => {
       
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Typography variant="h4">{t('titulo')}</Typography>
-        <Box sx={{ display: 'flex', gap: 1 }}>
-          {idiomas.map(({ codigo, bandeira }) => (
-            <Button
-              key={codigo}
-              onClick={() => i18n.changeLanguage(codigo)}
-              sx={{
-                minWidth: 'auto',
-                p: 1,
-                fontSize: '1.5rem',
-                opacity: i18n.language === codigo ? 1 : 0.5
-              }}
-            >
-              {bandeira}
-            </Button>
-          ))}
-        </Box>
       </Box>
 
       <Grid container spacing={3}>

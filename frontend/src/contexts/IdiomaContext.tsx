@@ -54,7 +54,37 @@ export const translations = {
       email: 'Email',
       subscribe: 'Inscrever-se',
       successMessage: 'Obrigado por se inscrever na nossa newsletter!'
-    }
+    },
+    mudarIdioma: 'Mudar idioma',
+    mudarTema: 'Alternar tema',
+    modoClaro: 'Mudar para modo claro',
+    modoEscuro: 'Mudar para modo escuro',
+    perfil: 'Perfil',
+    sair: 'Sair',
+    portugues: 'Português',
+    ingles: 'Inglês',
+    alemao: 'Alemão',
+    italiano: 'Italiano',
+    usuarioDesconhecido: 'Usuário',
+    dashboard: 'Painel',
+    financeiro: 'Financeiro',
+    inventario: 'Inventário',
+    pagamentos: 'Pagamentos',
+    calendario: 'Calendário',
+    funcionarios: 'Funcionários',
+    contador: 'Contador',
+    inteligenciaArtificial: 'IA',
+    whatsapp: 'WhatsApp',
+    
+    // Settings page
+    configuracoes: 'Configurações',
+    preferenciasGerais: 'Preferências Gerais',
+    notificacoesNavegador: 'Notificações no navegador',
+    notificacoesEmail: 'Notificações por email',
+    localizacao: 'Localização',
+    moeda: 'Moeda',
+    salvarConfiguracoes: 'Salvar Configurações',
+    configuracoesSalvas: 'Configurações salvas com sucesso!',
   },
   'en-US': {
     hero: {
@@ -104,7 +134,37 @@ export const translations = {
       email: 'Email',
       subscribe: 'Subscribe',
       successMessage: 'Thank you for subscribing to our newsletter!'
-    }
+    },
+    mudarIdioma: 'Change language',
+    mudarTema: 'Toggle theme',
+    modoClaro: 'Switch to light mode',
+    modoEscuro: 'Switch to dark mode',
+    perfil: 'Profile',
+    sair: 'Log out',
+    portugues: 'Portuguese',
+    ingles: 'English',
+    alemao: 'German',
+    italiano: 'Italian',
+    usuarioDesconhecido: 'User',
+    dashboard: 'Dashboard',
+    financeiro: 'Financial',
+    inventario: 'Inventory',
+    pagamentos: 'Payments',
+    calendario: 'Calendar',
+    funcionarios: 'Employees',
+    contador: 'Accounting',
+    inteligenciaArtificial: 'AI',
+    whatsapp: 'WhatsApp',
+    
+    // Settings page
+    configuracoes: 'Settings',
+    preferenciasGerais: 'General Preferences',
+    notificacoesNavegador: 'Browser notifications',
+    notificacoesEmail: 'Email notifications',
+    localizacao: 'Location',
+    moeda: 'Currency',
+    salvarConfiguracoes: 'Save Settings',
+    configuracoesSalvas: 'Settings saved successfully!',
   },
   'de-DE': {
     hero: {
@@ -154,7 +214,37 @@ export const translations = {
       email: 'E-Mail',
       subscribe: 'Abonnieren',
       successMessage: 'Vielen Dank für Ihr Abonnement unseres Newsletters!'
-    }
+    },
+    mudarIdioma: 'Sprache ändern',
+    mudarTema: 'Thema umschalten',
+    modoClaro: 'Zum hellen Modus wechseln',
+    modoEscuro: 'Zum dunklen Modus wechseln',
+    perfil: 'Profil',
+    sair: 'Abmelden',
+    portugues: 'Portugiesisch',
+    ingles: 'Englisch',
+    alemao: 'Deutsch',
+    italiano: 'Italienisch',
+    usuarioDesconhecido: 'Benutzer',
+    dashboard: 'Dashboard',
+    financeiro: 'Finanzen',
+    inventario: 'Inventar',
+    pagamentos: 'Zahlungen',
+    calendario: 'Kalender',
+    funcionarios: 'Mitarbeiter',
+    contador: 'Buchhaltung',
+    inteligenciaArtificial: 'KI',
+    whatsapp: 'WhatsApp',
+    
+    // Settings page
+    configuracoes: 'Einstellungen',
+    preferenciasGerais: 'Allgemeine Präferenzen',
+    notificacoesNavegador: 'Browser-Benachrichtigungen',
+    notificacoesEmail: 'E-Mail-Benachrichtigungen',
+    localizacao: 'Standort',
+    moeda: 'Währung',
+    salvarConfiguracoes: 'Einstellungen speichern',
+    configuracoesSalvas: 'Einstellungen erfolgreich gespeichert!',
   },
   'it-IT': {
     hero: {
@@ -204,7 +294,37 @@ export const translations = {
       email: 'Email',
       subscribe: 'Iscriviti',
       successMessage: 'Grazie per esserti iscritto alla nostra newsletter!'
-    }
+    },
+    mudarIdioma: 'Cambia lingua',
+    mudarTema: 'Cambia tema',
+    modoClaro: 'Passa alla modalità chiara',
+    modoEscuro: 'Passa alla modalità scura',
+    perfil: 'Profilo',
+    sair: 'Esci',
+    portugues: 'Portoghese',
+    ingles: 'Inglese',
+    alemao: 'Tedesco',
+    italiano: 'Italiano',
+    usuarioDesconhecido: 'Utente',
+    dashboard: 'Dashboard',
+    financeiro: 'Finanza',
+    inventario: 'Inventario',
+    pagamentos: 'Pagamenti',
+    calendario: 'Calendario',
+    funcionarios: 'Dipendenti',
+    contador: 'Contabilità',
+    inteligenciaArtificial: 'IA',
+    whatsapp: 'WhatsApp',
+    
+    // Settings page
+    configuracoes: 'Impostazioni',
+    preferenciasGerais: 'Preferenze generali',
+    notificacoesNavegador: 'Notifiche del browser',
+    notificacoesEmail: 'Notifiche email',
+    localizacao: 'Posizione',
+    moeda: 'Valuta',
+    salvarConfiguracoes: 'Salva impostazioni',
+    configuracoesSalvas: 'Impostazioni salvate con successo!',
   }
 };
 
@@ -233,6 +353,27 @@ export const LanguageContext = createContext<LanguageContextType>({
 export const IdiomaContext = LanguageContext;
 
 /**
+ * Hook customizado para utilizar o contexto de idioma
+ * Fornece acesso ao idioma atual e à função para alterá-lo
+ * 
+ * Custom hook to use the language context
+ * Provides access to the current language and the function to change it
+ */
+export const useIdioma = () => {
+  const context = React.useContext(IdiomaContext);
+  
+  if (!context) {
+    throw new Error('useIdioma deve ser usado dentro de um IdiomaProvider');
+  }
+  
+  return {
+    currentLanguage: context.language,
+    changeLanguage: context.setLanguage,
+    translations: context.translations
+  };
+};
+
+/**
  * Interface para as propriedades do provedor de idioma
  * Interface for the language provider props
  */
@@ -248,11 +389,21 @@ interface LanguageProviderProps {
 export const LanguageProvider = ({ children, value }: LanguageProviderProps) => {
   const [language, setLanguage] = useState('en-US');
 
-  // Detectar o idioma do navegador e definir como padrão
+  // Detectar o idioma do navegador ou carregar do localStorage
   useEffect(() => {
     // Apenas detectar o idioma se não estiver recebendo um valor externo
     if (!value) {
       const detectLanguage = () => {
+        // Primeiro, tentar ler do localStorage
+        const savedLanguage = localStorage.getItem('appLanguage');
+        
+        if (savedLanguage && ['pt-BR', 'en-US', 'de-DE', 'it-IT'].includes(savedLanguage)) {
+          setLanguage(savedLanguage);
+          i18n.changeLanguage(savedLanguage);
+          return;
+        }
+        
+        // Se não houver idioma salvo, detectar do navegador
         const browserLang = navigator.language;
         let selectedLang = 'en-US'; // Padrão inglês
         
@@ -266,19 +417,22 @@ export const LanguageProvider = ({ children, value }: LanguageProviderProps) => 
         }
         
         setLanguage(selectedLang);
-        // Sincronizar com i18n
-        i18n.changeLanguage(selectedLang.split('-')[0]);
+        // Sincronizar com i18n e salvar no localStorage
+        i18n.changeLanguage(selectedLang);
+        localStorage.setItem('appLanguage', selectedLang);
       };
       
       detectLanguage();
     }
   }, [value]);
 
-  // Função para alterar o idioma e sincronizar com i18n
+  // Função para alterar o idioma, sincronizar com i18n e salvar no localStorage
   const handleSetLanguage = (lang: string) => {
     setLanguage(lang);
     // Sincronizar com i18n
-    i18n.changeLanguage(lang.split('-')[0]);
+    i18n.changeLanguage(lang);
+    // Salvar no localStorage
+    localStorage.setItem('appLanguage', lang);
   };
 
   // Usar valor externo se fornecido, caso contrário usar o estado interno

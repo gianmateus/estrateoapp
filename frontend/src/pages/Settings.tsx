@@ -17,18 +17,11 @@ import {
 import { useTranslation } from 'react-i18next';
 
 const Settings = () => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [emailNotificationsEnabled, setEmailNotificationsEnabled] = useState(true);
-  const [language, setLanguage] = useState(i18n.language);
   const [currency, setCurrency] = useState('EUR');
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  
-  const handleLanguageChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    const newLanguage = event.target.value as string;
-    setLanguage(newLanguage);
-    i18n.changeLanguage(newLanguage);
-  };
   
   const handleSaveSettings = () => {
     // Simulação de salvamento das configurações
@@ -42,12 +35,12 @@ const Settings = () => {
   return (
     <Box sx={{ p: 3 }}>
       <Typography variant="h5" gutterBottom>
-        Configurações
+        {t('configuracoes')}
       </Typography>
       
       <Paper sx={{ p: 3, mt: 2 }}>
         <Typography variant="h6" gutterBottom>
-          Preferências Gerais
+          {t('preferenciasGerais')}
         </Typography>
         
         <Box sx={{ my: 2 }}>
@@ -59,7 +52,7 @@ const Settings = () => {
                 color="primary"
               />
             }
-            label="Notificações no navegador"
+            label={t('notificacoesNavegador')}
           />
           
           <FormControlLabel
@@ -70,37 +63,23 @@ const Settings = () => {
                 color="primary"
               />
             }
-            label="Notificações por email"
+            label={t('notificacoesEmail')}
           />
         </Box>
         
         <Divider sx={{ my: 3 }} />
         
         <Typography variant="h6" gutterBottom>
-          Localização e Idioma
+          {t('localizacao')}
         </Typography>
         
         <Box sx={{ my: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
           <FormControl fullWidth>
-            <InputLabel id="language-select-label">Idioma</InputLabel>
-            <Select
-              labelId="language-select-label"
-              value={language}
-              label="Idioma"
-              onChange={(e) => handleLanguageChange(e as any)}
-            >
-              <MenuItem value="pt">Português</MenuItem>
-              <MenuItem value="en">English</MenuItem>
-              <MenuItem value="de">Deutsch</MenuItem>
-            </Select>
-          </FormControl>
-          
-          <FormControl fullWidth>
-            <InputLabel id="currency-select-label">Moeda</InputLabel>
+            <InputLabel id="currency-select-label">{t('moeda')}</InputLabel>
             <Select
               labelId="currency-select-label"
               value={currency}
-              label="Moeda"
+              label={t('moeda')}
               onChange={(e) => setCurrency(e.target.value)}
             >
               <MenuItem value="EUR">Euro (€)</MenuItem>
@@ -116,7 +95,7 @@ const Settings = () => {
             color="primary"
             onClick={handleSaveSettings}
           >
-            Salvar Configurações
+            {t('salvarConfiguracoes')}
           </Button>
         </Box>
       </Paper>
@@ -128,7 +107,7 @@ const Settings = () => {
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
       >
         <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>
-          Configurações salvas com sucesso!
+          {t('configuracoesSalvas')}
         </Alert>
       </Snackbar>
     </Box>

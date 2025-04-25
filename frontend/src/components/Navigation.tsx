@@ -17,33 +17,33 @@ import {
   Box,
   Typography,
   IconButton,
-  useTheme,
   Divider,
   Tooltip,
   Avatar,
   Menu,
   MenuItem,
-  Button
+  Button,
+  useTheme as useMuiTheme
 } from '@mui/material';
 import {
   AccountBalance as FinanceiroIcon,
   Inventory as InventarioIcon,
   Payment as PagamentosIcon,
-  Brightness4 as DarkModeIcon,
-  Brightness7 as LightModeIcon,
   ExitToApp as LogoutIcon,
   Person as PersonIcon,
   SmartToy as AIIcon,
   RestaurantMenu as RestaurantIcon,
   Dashboard as DashboardIcon,
   WhatsApp as WhatsAppIcon,
-  Language as LanguageIcon,
   DateRange as CalendarioIcon,
   People as PeopleIcon,
   Assessment as ContadorIcon
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
+// Componentes de UI
+import ToggleDarkModeButton from './ui/ToggleDarkModeButton';
+import ToggleLanguageButton from './ui/ToggleLanguageButton';
 // Importing the Estrateo logo
 // Importando a logo da Estrateo
 import logo from '../assets/logo.png';
@@ -65,8 +65,7 @@ const drawerWidth = 240;
  * Define as props que podem ser passadas para o componente Navigation
  */
 interface NavigationProps {
-  toggleTheme?: () => void;  // Function to toggle between light/dark themes
-                           // Função para alternar entre temas claro/escuro
+  // Propriedades opcionais podem ser adicionadas aqui no futuro
 }
 
 /**
@@ -94,14 +93,13 @@ interface MenuItem {
  * Componente de navegação lateral com menu e opções de usuário
  * Exibe itens de menu com base nas permissões do usuário e fornece acesso ao perfil do usuário
  */
-const Navigation = ({ toggleTheme }: NavigationProps) => {
+const Navigation = ({}: NavigationProps) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const theme = useTheme();
+  const muiTheme = useMuiTheme();
   const { user, logout, hasPermission } = useAuth();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const { t, i18n } = useTranslation();
-  const [languageMenuAnchor, setLanguageMenuAnchor] = React.useState<null | HTMLElement>(null);
+  const { t } = useTranslation();
 
   /**
    * Handler to open the user menu
@@ -135,37 +133,6 @@ const Navigation = ({ toggleTheme }: NavigationProps) => {
   const handleLogout = () => {
     handleMenuClose();
     logout();
-  };
-
-  /**
-   * Handler to open the language menu
-   * Triggered when the user clicks on the language button
-   */
-  const handleLanguageMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setLanguageMenuAnchor(event.currentTarget);
-  };
-
-  /**
-   * Handler to close the language menu
-   */
-  const handleLanguageMenuClose = () => {
-    setLanguageMenuAnchor(null);
-  };
-
-  /**
-   * Handler to change the application language
-   * @param language Language code to change to
-   */
-  const handleLanguageChange = (language: string) => {
-    i18n.changeLanguage(language);
-    handleLanguageMenuClose();
-  };
-
-  // Função segura para alternar o tema, caso toggleTheme seja undefined
-  const handleThemeToggle = () => {
-    if (toggleTheme) {
-      toggleTheme();
-    }
   };
 
   /**
@@ -241,170 +208,134 @@ const Navigation = ({ toggleTheme }: NavigationProps) => {
         '& .MuiDrawer-paper': {
           width: drawerWidth,
           boxSizing: 'border-box',
+          borderRight: `1px solid ${muiTheme.palette.divider}`,
         },
       }}
     >
-      {/* Navigation header with logo and theme toggle button 
-          Cabeçalho da navegação com logo e botão de alternância de tema */}
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          padding: theme.spacing(2),
-          justifyContent: 'space-between',
-          backgroundColor: theme.palette.mode === 'dark' ? theme.palette.background.paper : 'white',
-          borderBottom: `1px solid ${theme.palette.divider}`,
+      <Box 
+        sx={{ 
+          padding: 2, 
+          display: 'flex', 
+          flexDirection: 'column',
+          height: '100%'
         }}
       >
-        <Box 
-          sx={{ 
-            display: 'flex', 
-            alignItems: 'center', 
-            justifyContent: 'center', 
-            flex: 1,
-            mx: 'auto'
+        {/* Logo and app name with link to dashboard */}
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            mb: 1,
+            justifyContent: 'space-between'
           }}
         >
-          {/* Estrateo logo displayed in the sidebar
-              Logo da Estrateo exibida na barra lateral */}
-          <Typography
-            variant="h6"
-            component="div"
-            sx={{
-              fontWeight: 'bold',
-              color: theme.palette.primary.main,
-              letterSpacing: '0.5px',
-              fontSize: '1.5rem'
-            }}
-          >
-            ESTRATEO
-          </Typography>
+          <Link to="/dashboard" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center' }}>
+            <img src={logo} alt="Estrateo" width={32} height={32} style={{ marginRight: 8 }} />
+            <Typography variant="h6" sx={{ fontWeight: 700, color: muiTheme.palette.primary.main }}>
+              Estrateo
+            </Typography>
+          </Link>
         </Box>
-        <Box sx={{ display: 'flex' }}>
-          {/* Language toggle button */}
-          <IconButton onClick={handleLanguageMenuOpen} sx={{ mr: 1 }}>
-            <LanguageIcon />
-          </IconButton>
-          
-          {/* Language selection menu */}
-          <Menu
-            anchorEl={languageMenuAnchor}
-            open={Boolean(languageMenuAnchor)}
-            onClose={handleLanguageMenuClose}
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'right',
-            }}
-            transformOrigin={{
-              vertical: 'top',
-              horizontal: 'right',
-            }}
-          >
-            <MenuItem onClick={() => handleLanguageChange('en')}>{t('ingles')}</MenuItem>
-            <MenuItem onClick={() => handleLanguageChange('de')}>{t('alemao')}</MenuItem>
-          </Menu>
-          
-          {/* Theme toggle button */}
-          <IconButton onClick={handleThemeToggle}>
-            {theme.palette.mode === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
-          </IconButton>
+        
+        {/* Configurações globais (tema e idioma) - posicionados diretamente abaixo do logo */}
+        <Box sx={{ display: 'flex', justifyContent: 'flex-start', mb: 2, gap: 1 }}>
+          <ToggleDarkModeButton tooltipPlacement="bottom" />
+          <ToggleLanguageButton tooltipPlacement="bottom" />
         </Box>
-      </Box>
-      <Divider />
-      
-      {/* Main navigation menu with permission-based items
-          Menu de navegação principal com itens baseados em permissões */}
-      <List>
-        {menuItems.map((item) => (
-          (item.permission === null || hasPermission(item.permission)) && (
-            <ListItem key={item.path} disablePadding>
-              <ListItemButton
-                onClick={() => navigate(item.path)}
-                selected={location.pathname === item.path}
-                sx={{
-                  borderLeft: location.pathname === item.path 
-                    ? `4px solid ${theme.palette.primary.main}` 
-                    : '4px solid transparent',
-                  '&.Mui-selected': {
-                    backgroundColor: theme.palette.mode === 'dark' 
-                      ? 'rgba(255, 255, 255, 0.08)' 
-                      : 'rgba(0, 0, 0, 0.04)',
-                  },
-                  '&:hover': {
-                    backgroundColor: theme.palette.mode === 'dark' 
-                      ? 'rgba(255, 255, 255, 0.12)' 
-                      : 'rgba(0, 0, 0, 0.07)',
-                  },
-                }}
-              >
-                <ListItemIcon>
-                  {item.icon}
-                </ListItemIcon>
-                <ListItemText primary={item.text} />
-              </ListItemButton>
-            </ListItem>
-          )
-        ))}
-      </List>
-      
-      <Divider sx={{ mt: 'auto' }} />
-      
-      {/* User profile section at the bottom of sidebar
-          Seção de perfil do usuário na parte inferior da barra lateral */}
-      <Box sx={{ p: 2 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+
+        <Divider sx={{ mb: 2 }} />
+
+        {/* Main navigation menu with permission-based items */}
+        <List sx={{ flexGrow: 1 }}>
+          {menuItems.map((item) => (
+            // Only display menu items if user has the required permission
+            // (or if the item doesn't require a permission)
+            (!item.permission || hasPermission(item.permission)) && (
+              <ListItem key={item.text} disablePadding>
+                <ListItemButton
+                  onClick={() => navigate(item.path)}
+                  selected={location.pathname === item.path}
+                  sx={{
+                    borderLeft: location.pathname === item.path 
+                      ? `4px solid ${muiTheme.palette.primary.main}` 
+                      : '4px solid transparent',
+                    '&.Mui-selected': {
+                      backgroundColor: muiTheme.palette.mode === 'dark' 
+                        ? 'rgba(255, 255, 255, 0.08)' 
+                        : 'rgba(0, 0, 0, 0.04)',
+                    },
+                    '&:hover': {
+                      backgroundColor: muiTheme.palette.mode === 'dark' 
+                        ? 'rgba(255, 255, 255, 0.12)' 
+                        : 'rgba(0, 0, 0, 0.07)',
+                    },
+                  }}
+                >
+                  <ListItemIcon>
+                    {item.icon}
+                  </ListItemIcon>
+                  <ListItemText primary={item.text} />
+                </ListItemButton>
+              </ListItem>
+            )
+          ))}
+        </List>
+
+        {/* Bottom user section with profile link and menu */}
+        <Divider sx={{ mt: 'auto' }} />
+        
+        {/* User profile section */}
+        <Box sx={{ mt: 2, display: 'flex', alignItems: 'center' }}>
           <Avatar 
+            onClick={handleMenuOpen}
             sx={{ 
               width: 40, 
               height: 40, 
-              bgcolor: theme.palette.primary.main,
+              bgcolor: muiTheme.palette.primary.main,
               cursor: 'pointer',
               mr: 1
-            }} 
-            onClick={handleMenuOpen}
+            }}
           >
-            {user?.nome?.charAt(0) || 'U'}
+            {user?.nome && user.nome[0]}
           </Avatar>
-          <Box sx={{ ml: 1, overflow: 'hidden' }}>
-            <Typography 
-              variant="subtitle1" 
-              noWrap 
-              sx={{ fontWeight: 'medium', cursor: 'pointer' }}
-              onClick={handleMenuOpen}
-            >
+          <Box sx={{ flex: 1 }}>
+            <Typography variant="subtitle1" sx={{ fontWeight: 600, lineHeight: 1.2 }}>
               {user?.nome || t('usuarioDesconhecido')}
             </Typography>
-            <Typography variant="body2" color="text.secondary" noWrap>
-              {user?.email || ''}
+            <Typography variant="body2" sx={{ opacity: 0.7 }}>
+              {user?.email || 'email@exemplo.com'}
             </Typography>
           </Box>
+          
+          {/* User menu */}
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleMenuClose}
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+            transformOrigin={{
+              vertical: 'bottom',
+              horizontal: 'right',
+            }}
+          >
+            <MenuItem onClick={() => { handleMenuClose(); navigate('/dashboard/perfil'); }}>
+              <ListItemIcon>
+                <PersonIcon fontSize="small" />
+              </ListItemIcon>
+              {t('perfil')}
+            </MenuItem>
+            <Divider />
+            <MenuItem onClick={handleLogout}>
+              <ListItemIcon>
+                <LogoutIcon fontSize="small" />
+              </ListItemIcon>
+              {t('sair')}
+            </MenuItem>
+          </Menu>
         </Box>
-        
-        {/* User profile menu - appears when clicking on the avatar
-            Menu de perfil do usuário - aparece ao clicar no avatar */}
-        <Menu
-          anchorEl={anchorEl}
-          open={Boolean(anchorEl)}
-          onClose={handleMenuClose}
-          sx={{ mt: 1 }}
-        >
-          <MenuItem onClick={() => {
-            handleMenuClose();
-            navigate('/dashboard/perfil');
-          }}>
-            <ListItemIcon>
-              <PersonIcon fontSize="small" />
-            </ListItemIcon>
-            <ListItemText primary={t('perfil')} />
-          </MenuItem>
-          <Divider />
-          <MenuItem onClick={handleLogout}>
-            <ListItemIcon>
-              <LogoutIcon fontSize="small" color="error" />
-            </ListItemIcon>
-            <ListItemText primary={t('sair')} />
-          </MenuItem>
-        </Menu>
       </Box>
     </Drawer>
   );
