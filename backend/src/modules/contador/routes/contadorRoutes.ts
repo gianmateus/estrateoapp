@@ -7,15 +7,15 @@
  */
 import express from 'express';
 import { ContadorController } from '../controllers/contadorController';
-import { auth } from '../../../middlewares/auth';
-import { PermissionMiddleware } from '../../../middlewares/permissions';
+import { authMiddleware } from '../../../middlewares';
+import { permissionMiddleware } from '../../../middlewares';
 
 const router = express.Router();
 const contadorController = new ContadorController();
 
 // Middleware to check for financial view permission
 // Middleware para verificar permissão de visualização financeira
-const checkFinancialPermission = PermissionMiddleware.checkPermission('financeiro.visualizar');
+const checkFinancialPermission = permissionMiddleware.checkPermission('financeiro.visualizar');
 
 /**
  * @route   GET /api/contador/dados/:mes
@@ -28,7 +28,7 @@ const checkFinancialPermission = PermissionMiddleware.checkPermission('financeir
  */
 router.get(
   '/dados/:mes', 
-  [auth, checkFinancialPermission], 
+  [authMiddleware, checkFinancialPermission], 
   contadorController.getDadosMensais
 );
 
@@ -43,7 +43,7 @@ router.get(
  */
 router.get(
   '/relatorio/:mes', 
-  [auth, checkFinancialPermission], 
+  [authMiddleware, checkFinancialPermission], 
   contadorController.gerarRelatorioPDF
 );
 
