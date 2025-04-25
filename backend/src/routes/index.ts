@@ -6,6 +6,7 @@ import inventarioRoutes from './inventarioRoutes';
 import dashboardRoutes from './dashboardRoutes';
 import { authMiddleware } from '../middlewares';
 import funcionarioRoutes from '../modules/funcionarios/routes';
+import contadorRoutes from '../modules/contador/routes/contadorRoutes';
 
 const router = Router();
 
@@ -23,6 +24,9 @@ router.use('/dashboard', authMiddleware, dashboardRoutes);
 
 // Rotas de gerenciamento de funcionários
 router.use('/funcionarios', authMiddleware, funcionarioRoutes);
+
+// Rotas de contador
+router.use('/contador', contadorRoutes);
 
 // Outras rotas serão adicionadas aqui
 

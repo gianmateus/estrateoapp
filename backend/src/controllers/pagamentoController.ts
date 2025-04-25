@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import prisma from '../lib/prisma';
+import { EventBus } from '../lib/EventBus';
 
 class PagamentoController {
   // Listar pagamentos do usuário autenticado
@@ -46,6 +47,17 @@ class PagamentoController {
         }
       });
 
+      // Emitir evento de pagamento criado para sincronização entre módulos
+      EventBus.emit('pagamento.criado', {
+        id: pagamento.id,
+        descricao: pagamento.descricao,
+        valor: pagamento.valor,
+        data: pagamento.vencimento,
+        status: pagamento.pago ? 'pago' : 'pendente',
+        tipo: pagamento.categoria,
+        userId: pagamento.userId
+      });
+
       return res.status(201).json(pagamento);
     } catch (error) {
       console.error('Erro ao criar pagamento:', error);
@@ -85,6 +97,17 @@ class PagamentoController {
         }
       });
 
+      // Emitir evento de pagamento atualizado para sincronização entre módulos
+      EventBus.emit('pagamento.atualizado', {
+        id: pagamentoAtualizado.id,
+        descricao: pagamentoAtualizado.descricao,
+        valor: pagamentoAtualizado.valor,
+        data: pagamentoAtualizado.vencimento,
+        status: pagamentoAtualizado.pago ? 'pago' : 'pendente',
+        tipo: pagamentoAtualizado.categoria,
+        userId: pagamentoAtualizado.userId
+      });
+
       return res.json(pagamentoAtualizado);
     } catch (error) {
       console.error('Erro ao atualizar pagamento:', error);
@@ -115,6 +138,9 @@ class PagamentoController {
       await prisma.pagamento.delete({
         where: { id }
       });
+
+      // Emitir evento de pagamento excluído para sincronização entre módulos
+      EventBus.emit('pagamento.excluido', id);
 
       return res.status(204).send();
     } catch (error) {

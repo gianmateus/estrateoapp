@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import prisma from '../lib/prisma';
+import { EventBus } from '../lib/EventBus';
 
 const inventarioController = {
   // Listar todos os itens do inventário do usuário
@@ -155,6 +156,39 @@ const inventarioController = {
         where: { id },
         data: dadosAtualizacao
       });
+
+      // Emitir evento de movimentação de estoque se a quantidade foi alterada
+      if (quantidadeAtual !== undefined && itemExistente.quantidadeAtual !== Number(quantidadeAtual)) {
+        const diferencaQuantidade = Number(quantidadeAtual) - itemExistente.quantidadeAtual;
+        const tipo = diferencaQuantidade > 0 ? 'entrada' : 'saida';
+        
+        // Calcular valor da movimentação (simulado como 10 por unidade)
+        const valorPorUnidade = 10; // Valor fixo para exemplo
+        const valorMovimentacao = Math.abs(diferencaQuantidade) * valorPorUnidade;
+        
+        EventBus.emit('estoque.movimentado', {
+          id: `mov-${Date.now()}`,
+          itemId: itemAtualizado.id,
+          itemNome: itemAtualizado.nome,
+          quantidade: Math.abs(diferencaQuantidade),
+          tipo,
+          valor: valorMovimentacao,
+          data: new Date(),
+          responsavel: userId
+        });
+      }
+      
+      // Verificar se o item está abaixo do ideal após atualização
+      if (itemAtualizado.quantidadeAtual < itemAtualizado.quantidadeIdeal) {
+        EventBus.emit('estoque.item.abaixo.minimo', {
+          id: itemAtualizado.id,
+          nome: itemAtualizado.nome,
+          categoria: itemAtualizado.categoria,
+          quantidadeAtual: itemAtualizado.quantidadeAtual,
+          quantidadeMinima: itemAtualizado.quantidadeIdeal,
+          unidade: itemAtualizado.unidade
+        });
+      }
       
       return res.status(200).json({
         message: 'Item atualizado com sucesso',

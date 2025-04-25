@@ -322,5 +322,31 @@
   "endereco": "Address",
   "telefone": "Phone",
   "departamento": "Department",
-  "salario": "Salary"
+  "salario": "Salary",
+  
+  "rowsPerPage": "Rows per page:",
+  "of": "of",
+  "erroAoBuscarDados": "Error fetching data. Please try again.",
+  
+  "contador": {
+    "titulo": "Accountant Report",
+    "introducao": "Find below all the organized data your accountant needs. At the end of the page, you can generate the complete report with just one click.",
+    "resumoGeral": "General Summary",
+    "receitaTotal": "Total Revenue",
+    "despesasTotal": "Total Expenses",
+    "saldoFinal": "Final Balance",
+    "totalFuncionarios": "Total Employees Paid",
+    "graficoReceitas": "Revenue vs Expenses",
+    "tabelaEntradas": "Income",
+    "tabelaSaidas": "Expenses",
+    "tabelaFuncionarios": "Employees",
+    "cliente": "Customer",
+    "fornecedor": "Vendor",
+    "tipo": "Type",
+    "tipoContrato": "Contract Type",
+    "horasTrabalhadas": "Hours Worked",
+    "valorPago": "Amount Paid",
+    "selecioneMes": "Select month",
+    "gerarRelatorio": "Generate accountant report (PDF)"
+  }
 } 

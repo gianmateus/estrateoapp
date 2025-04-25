@@ -41,6 +41,8 @@ import Funcionarios from './pages/Funcionarios';
 import NotFound from './pages/NotFound';
 import ResetPassword from './pages/ResetPassword';
 import Loading from './components/Loading';
+import Contador from './pages/Contador';
+import PermissionGuard from './components/PermissionGuard';
 
 /**
  * Light theme color palette based on Estrateo's institutional colors
@@ -419,126 +421,80 @@ function App() {
                 <Routes>
                   {/* Public routes accessible without authentication
                       Rotas públicas acessíveis sem autenticação */}
-                  <Route path="/" element={<Navigate to="/dashboard" replace />} />
-                  <Route path="/login" element={<Login />} />
+                  <Route path="/" element={<Login />} />
                   <Route path="/cadastro" element={<Cadastro />} />
-                  <Route path="/acesso-negado" element={<AcessoNegado />} />
                   <Route path="/reset-password" element={<ResetPassword />} />
+                  <Route path="/acesso-negado" element={<AcessoNegado />} />
                   
                   {/* Nova rota para o componente Todo */}
                   <Route path="/todo" element={<TodoPage />} />
 
                   {/* Protected routes with Dashboard layout - require specific permissions
                       Rotas protegidas com layout do Dashboard - requerem permissões específicas */}
-                  <Route path="/dashboard" element={
-                    <ProtectedRoute requiredPermission={VIEW_DASHBOARD_PERMISSION}>
-                      <Box sx={{ display: 'flex', minHeight: '100vh' }}>
-                        <Navigation toggleTheme={toggleTheme} />
-                        <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-                          <Dashboard />
-                        </Box>
-                      </Box>
-                    </ProtectedRoute>
-                  } />
-                  {/* Financial module route - requires specific permission
-                      Rota para o módulo financeiro - requer permissão específica */}
-                  <Route path="/dashboard/financeiro" element={
-                    <ProtectedRoute requiredPermission="financeiro.visualizar">
-                      <Box sx={{ display: 'flex', minHeight: '100vh' }}>
-                        <Navigation toggleTheme={toggleTheme} />
-                        <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+                  <Route element={<ProtectedRoute />}>
+                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route 
+                      path="/dashboard/financeiro" 
+                      element={
+                        <PermissionGuard permission="financeiro.visualizar">
                           <Financeiro />
-                        </Box>
-                      </Box>
-                    </ProtectedRoute>
-                  } />
-                  {/* Inventory module route - requires specific permission
-                      Rota para o módulo de inventário - requer permissão específica */}
-                  <Route path="/dashboard/inventario" element={
-                    <ProtectedRoute requiredPermission={VIEW_INVENTORY_PERMISSION}>
-                      <Box sx={{ display: 'flex', minHeight: '100vh' }}>
-                        <Navigation toggleTheme={toggleTheme} />
-                        <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+                        </PermissionGuard>
+                      } 
+                    />
+                    <Route 
+                      path="/dashboard/inventario" 
+                      element={
+                        <PermissionGuard permission="inventario.visualizar">
                           <Inventario />
-                        </Box>
-                      </Box>
-                    </ProtectedRoute>
-                  } />
-                  {/* Payments module route - requires specific permission
-                      Rota para o módulo de pagamentos - requer permissão específica */}
-                  <Route path="/dashboard/pagamentos" element={
-                    <ProtectedRoute requiredPermission={VIEW_PAYMENTS_PERMISSION}>
-                      <Box sx={{ display: 'flex', minHeight: '100vh' }}>
-                        <Navigation toggleTheme={toggleTheme} />
-                        <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+                        </PermissionGuard>
+                      } 
+                    />
+                    <Route 
+                      path="/dashboard/pagamentos" 
+                      element={
+                        <PermissionGuard permission="pagamentos.visualizar">
                           <Pagamentos />
-                        </Box>
-                      </Box>
-                    </ProtectedRoute>
-                  } />
-                  {/* AI module route - requires specific permission
-                      Rota para o módulo de IA - requer permissão específica */}
-                  <Route path="/dashboard/inteligencia-artificial" element={
-                    <ProtectedRoute requiredPermission="ia.visualizar">
-                      <Box sx={{ display: 'flex', minHeight: '100vh' }}>
-                        <Navigation toggleTheme={toggleTheme} />
-                        <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-                          <InteligenciaArtificial />
-                        </Box>
-                      </Box>
-                    </ProtectedRoute>
-                  } />
-                  {/* User profile route - requires profile viewing permission
-                      Rota para o perfil do usuário - requer permissão de visualização de perfil */}
-                  <Route path="/dashboard/perfil" element={
-                    <ProtectedRoute requiredPermission={VIEW_PROFILE_PERMISSION}>
-                      <Box sx={{ display: 'flex', minHeight: '100vh' }}>
-                        <Navigation toggleTheme={toggleTheme} />
-                        <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-                          <Perfil />
-                        </Box>
-                      </Box>
-                    </ProtectedRoute>
-                  } />
-                  {/* WhatsApp module route - requires authentication but no special permission
-                      Rota para o módulo do WhatsApp - requer autenticação mas sem permissão especial */}
-                  <Route path="/dashboard/whatsapp" element={
-                    <ProtectedRoute>
-                      <Box sx={{ display: 'flex', minHeight: '100vh' }}>
-                        <Navigation toggleTheme={toggleTheme} />
-                        <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-                          <Whatsapp />
-                        </Box>
-                      </Box>
-                    </ProtectedRoute>
-                  } />
-                  {/* Calendario module route - requires calendario permission
-                       Rota para o módulo de calendário - requer permissão de calendário */}
-                  <Route path="/dashboard/calendario" element={
-                    <ProtectedRoute requiredPermission="calendario.visualizar">
-                      <Box sx={{ display: 'flex', minHeight: '100vh' }}>
-                        <Navigation toggleTheme={toggleTheme} />
-                        <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+                        </PermissionGuard>
+                      } 
+                    />
+                    <Route 
+                      path="/dashboard/calendario" 
+                      element={
+                        <PermissionGuard permission="calendario.visualizar">
                           <Calendario />
-                        </Box>
-                      </Box>
-                    </ProtectedRoute>
-                  } />
-                  {/* Funcionarios module route - requires funcionarios permission
-                       Rota para o módulo de funcionários - requer permissão de funcionários */}
-                  <Route path="/dashboard/funcionarios" element={
-                    <ProtectedRoute requiredPermission={VIEW_EMPLOYEES_PERMISSION}>
-                      <Box sx={{ display: 'flex', minHeight: '100vh' }}>
-                        <Navigation toggleTheme={toggleTheme} />
-                        <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+                        </PermissionGuard>
+                      } 
+                    />
+                    <Route 
+                      path="/dashboard/funcionarios" 
+                      element={
+                        <PermissionGuard permission="funcionarios.visualizar">
                           <Funcionarios />
-                        </Box>
-                      </Box>
-                    </ProtectedRoute>
-                  } />
+                        </PermissionGuard>
+                      } 
+                    />
+                    <Route 
+                      path="/dashboard/contador" 
+                      element={
+                        <PermissionGuard permission="financeiro.visualizar">
+                          <Contador />
+                        </PermissionGuard>
+                      } 
+                    />
+                    <Route 
+                      path="/dashboard/inteligencia-artificial" 
+                      element={
+                        <PermissionGuard permission="ia.visualizar">
+                          <InteligenciaArtificial />
+                        </PermissionGuard>
+                      } 
+                    />
+                    <Route path="/dashboard/whatsapp" element={<Whatsapp />} />
+                    <Route path="/dashboard/perfil" element={<Perfil />} />
+                    <Route path="/dashboard/todo" element={<TodoPage />} />
+                  </Route>
                   {/* Redirects for routes not found
                        Redirecionamentos para rotas não encontradas */}
-                  <Route path="/dashboard/*" element={<Navigate to="/dashboard" replace />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </Suspense>

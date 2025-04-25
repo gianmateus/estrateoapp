@@ -6,9 +6,10 @@
  * Redireciona usuários não autenticados para o login e usuários não autorizados para a página de acesso negado
  */
 import React, { useEffect } from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
+import { Navigate, useLocation, Outlet } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { CircularProgress, Box } from '@mui/material';
+import Navigation from './Navigation';
 
 /**
  * Interface for protected route component properties
@@ -18,21 +19,21 @@ import { CircularProgress, Box } from '@mui/material';
  * Define a estrutura de props para o componente ProtectedRoute
  */
 interface ProtectedRouteProps {
-  children: React.ReactNode;       // Child components to be rendered if access is granted
-                                  // Componentes filhos a serem renderizados se o acesso for concedido
   requiredPermission?: string | string[];     // Required permission(s) to access the route (optional)
                                              // Permissão ou array de permissões necessárias para acessar a rota (opcional)
 }
 
 /**
  * Component that checks authentication and permissions before rendering protected content
+ * Uses Outlet from React Router v6 to render child routes
  * Provides loading state, authentication verification, and permission-based access control
  * 
  * Componente que verifica autenticação e permissões antes de renderizar o conteúdo protegido
+ * Usa Outlet do React Router v6 para renderizar rotas filhas
  * Fornece estado de carregamento, verificação de autenticação e controle de acesso baseado em permissões
  */
-const ProtectedRoute = ({ children, requiredPermission }: ProtectedRouteProps) => {
-  const { isAuthenticated, isLoading, checkUserPermission } = useAuth();
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ requiredPermission }) => {
+  const { isAuthenticated, isLoading, checkUserPermission, toggleTheme } = useAuth();
   const location = useLocation();
 
   // TODO: Reativar autenticação após ajustes no dashboard.
@@ -73,8 +74,15 @@ const ProtectedRoute = ({ children, requiredPermission }: ProtectedRouteProps) =
   }
 
   // TODO: Reativar autenticação após ajustes no dashboard.
-  // Always render children, bypassing authentication check
-  return <>{children}</>;
+  // Instead of rendering children directly, render with dashboard layout
+  return (
+    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+      <Navigation toggleTheme={toggleTheme} />
+      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+        <Outlet />
+      </Box>
+    </Box>
+  );
 
   /* Original authentication logic - temporarily disabled
   if (!isAuthenticated) {
@@ -93,7 +101,14 @@ const ProtectedRoute = ({ children, requiredPermission }: ProtectedRouteProps) =
     }
   }
 
-  return <>{children}</>;
+  return (
+    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+      <Navigation toggleTheme={toggleTheme} />
+      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+        <Outlet />
+      </Box>
+    </Box>
+  );
   */
 };
 

@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import routes from './routes';
+import { initializeAllListeners } from './services/sincronizacao';
 
 // Carrega variáveis de ambiente
 dotenv.config();
@@ -26,7 +27,11 @@ app.get('/', (req, res) => {
   res.json({ message: 'API Estrateo funcionando!' });
 });
 
+// Inicializa os listeners de eventos para sincronização entre módulos
+initializeAllListeners();
+
 // Inicializa o servidor
 app.listen(port, () => {
   console.log(`Servidor rodando na porta ${port}`);
+  console.log('Sistema de eventos inicializado e pronto para sincronização entre módulos');
 }); 

@@ -39,7 +39,8 @@ import {
   WhatsApp as WhatsAppIcon,
   Language as LanguageIcon,
   DateRange as CalendarioIcon,
-  People as PeopleIcon
+  People as PeopleIcon,
+  Assessment as ContadorIcon
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
@@ -203,6 +204,12 @@ const Navigation = ({ toggleTheme }: NavigationProps) => {
       icon: <PeopleIcon />, 
       path: '/dashboard/funcionarios',
       permission: 'funcionarios.visualizar'
+    },
+    { 
+      text: t('contador'), 
+      icon: <ContadorIcon />, 
+      path: '/dashboard/contador',
+      permission: 'financeiro.visualizar'
     },
     { 
       text: t('inteligenciaArtificial'), 
