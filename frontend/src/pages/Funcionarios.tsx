@@ -26,7 +26,9 @@ import {
   MenuItem,
   Tooltip,
   Chip,
-  CircularProgress
+  CircularProgress,
+  Card,
+  CardContent
 } from '@mui/material';
 import {
   Add as AddIcon,
@@ -36,9 +38,24 @@ import {
   Person as PersonIcon,
   BarChart as ChartIcon,
   Assignment as AssignmentIcon,
-  CalendarMonth as CalendarIcon
+  CalendarMonth as CalendarIcon,
+  AccessTime as AccessTimeIcon,
+  WorkOutline as WorkIcon,
+  Money as MoneyIcon,
+  Star as StarIcon,
+  Print as PrintIcon,
+  FilterList as FilterListIcon,
+  GetApp as DownloadIcon,
+  Download as ExportIcon
 } from '@mui/icons-material';
 import { useTheme } from '@mui/material/styles';
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as ChartTooltip, 
+  Legend, ResponsiveContainer, PieChart, Pie, Cell
+} from 'recharts';
+
+// Importar o componente de folha de pagamento
+import PayrollPage from './employees/payroll/PayrollPage';
 
 // Interface para representar um funcionário
 interface Funcionario {
@@ -97,7 +114,9 @@ const Funcionarios = () => {
   const [filtroStatus, setFiltroStatus] = useState('');
   const [modalAberto, setModalAberto] = useState(false);
   const [funcionarioEditando, setFuncionarioEditando] = useState<Funcionario | null>(null);
-
+  const [periodoEstatisticas, setPeriodoEstatisticas] = useState(new Date().getMonth() + '/' + new Date().getFullYear());
+  const [mesAnoFiltro, setMesAnoFiltro] = useState(`${new Date().getMonth() + 1}/${new Date().getFullYear()}`);
+  
   // Mock de dados para desenvolvimento
   const mockFuncionarios: Funcionario[] = [
     {
@@ -166,6 +185,56 @@ const Funcionarios = () => {
       endereco: 'Rua Nova, 202'
     }
   ];
+
+  // Dados para os gráficos (mock data)
+  const dadosHorasPorFuncionario = [
+    { nome: 'Maria Silva', horas: 176 },
+    { nome: 'João Santos', horas: 168 },
+    { nome: 'Ana Oliveira', horas: 140 },
+    { nome: 'Pedro Costa', horas: 180 },
+    { nome: 'Juliana Pereira', horas: 156 },
+  ].sort((a, b) => a.horas - b.horas);
+
+  const dadosCustoPorFuncionario = [
+    { nome: 'Maria Silva', custo: 4500 },
+    { nome: 'João Santos', custo: 3800 },
+    { nome: 'Ana Oliveira', custo: 2200 },
+    { nome: 'Pedro Costa', custo: 1800 },
+    { nome: 'Juliana Pereira', custo: 2000 },
+  ];
+
+  const dadosHorasExtrasRegulares = [
+    { name: t('horasRegulares'), value: 820 },
+    { name: t('horasExtras'), value: 125 },
+  ];
+
+  const CORES_GRAFICO_PIZZA = ['#0088FE', '#FF8042'];
+
+  // Calcular KPIs
+  const funcionariosAtivos = mockFuncionarios.filter(f => f.status === 'ativo').length;
+  const totalHorasTrabalhadas = dadosHorasPorFuncionario.reduce((sum, item) => sum + item.horas, 0);
+  const custoTotalFuncionarios = dadosCustoPorFuncionario.reduce((sum, item) => sum + item.custo, 0);
+  const funcionarioMaisHoras = dadosHorasPorFuncionario.reduce((prev, current) => 
+    (prev.horas > current.horas) ? prev : current, { nome: '', horas: 0 });
+
+  // Renderizador customizado para tooltip do gráfico de pizza
+  const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index, name }: any) => {
+    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+    const x = cx + radius * Math.cos(-midAngle * Math.PI / 180);
+    const y = cy + radius * Math.sin(-midAngle * Math.PI / 180);
+  
+    return (
+      <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
+        {`${name} ${(percent * 100).toFixed(0)}%`}
+      </text>
+    );
+  };
+
+  // Manipulador para exportar estatísticas
+  const handleExportarEstatisticas = () => {
+    alert(t('funcionalidadeEmDesenvolvimento'));
+    // Aqui seria implementada a exportação para PDF/Excel
+  };
 
   // Buscar dados
   useEffect(() => {
@@ -275,158 +344,355 @@ const Funcionarios = () => {
     return <Chip label={label} color={color} size="small" />;
   };
 
+  // Manipulador para mudança de filtro mês/ano
+  const handleMudancaFiltroMesAno = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setMesAnoFiltro(event.target.value);
+  };
+
   return (
-    <Box>
-      <Typography variant="h4" component="h1" gutterBottom>
-        {t('funcionarios')}
-      </Typography>
-
-      <Paper sx={{ mb: 3, p: 2 }}>
-        <Tabs
-          value={tabValue}
-          onChange={handleChangeTab}
-          indicatorColor="primary"
-          textColor="primary"
-          sx={{ mb: 2 }}
+    <Box sx={{ flexGrow: 1, p: 3 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+        <Typography variant="h5" component="h1">
+          <PersonIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
+          {t('funcionarios')}
+        </Typography>
+        <Button
+          variant="contained"
+          color="primary"
+          startIcon={<AddIcon />}
+          onClick={handleNovoFuncionario}
         >
-          <Tab icon={<PersonIcon />} label={t('funcionarios')} />
-          <Tab icon={<ChartIcon />} label={t('estatisticas')} />
-          <Tab icon={<AssignmentIcon />} label={t('folhaPagamento')} />
-          <Tab icon={<CalendarIcon />} label={t('pontosFerias')} />
-        </Tabs>
+          {t('novoFuncionario')}
+        </Button>
+      </Box>
 
-        <TabPanel value={tabValue} index={0}>
-          <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 2 }}>
-            <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', flex: 1 }}>
+      <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}>
+        <Tabs value={tabValue} onChange={(e, newValue) => setTabValue(newValue)}>
+          <Tab label={t('lista')} icon={<AssignmentIcon />} iconPosition="start" />
+          <Tab label={t('estatisticas')} icon={<ChartIcon />} iconPosition="start" />
+          <Tab label={t('folhaPagamento')} icon={<MoneyIcon />} iconPosition="start" />
+        </Tabs>
+      </Box>
+
+      <TabPanel value={tabValue} index={0}>
+        <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 2 }}>
+          <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', flex: 1 }}>
+            <TextField
+              label={t('buscar')}
+              variant="outlined"
+              size="small"
+              value={filtroNome}
+              onChange={(e) => setFiltroNome(e.target.value)}
+              InputProps={{
+                endAdornment: <SearchIcon />
+              }}
+              sx={{ minWidth: 200 }}
+            />
+            <FormControl size="small" variant="outlined" sx={{ minWidth: 200 }}>
+              <InputLabel>{t('departamento')}</InputLabel>
+              <Select
+                value={filtroDepartamento}
+                onChange={(e) => setFiltroDepartamento(e.target.value)}
+                label={t('departamento')}
+              >
+                <MenuItem value="">{t('todos')}</MenuItem>
+                {departamentos.map(dep => (
+                  <MenuItem key={dep} value={dep}>{dep}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl size="small" variant="outlined" sx={{ minWidth: 200 }}>
+              <InputLabel>{t('status')}</InputLabel>
+              <Select
+                value={filtroStatus}
+                onChange={(e) => setFiltroStatus(e.target.value)}
+                label={t('status')}
+              >
+                <MenuItem value="">{t('todos')}</MenuItem>
+                <MenuItem value="ativo">{t('ativo')}</MenuItem>
+                <MenuItem value="inativo">{t('inativo')}</MenuItem>
+                <MenuItem value="ferias">{t('ferias')}</MenuItem>
+                <MenuItem value="licenca">{t('licenca')}</MenuItem>
+              </Select>
+            </FormControl>
+          </Box>
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<AddIcon />}
+            onClick={handleNovoFuncionario}
+          >
+            {t('novoFuncionario')}
+          </Button>
+        </Box>
+
+        {loading ? (
+          <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
+            <CircularProgress />
+          </Box>
+        ) : (
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>{t('nome')}</TableCell>
+                  <TableCell>{t('cargo')}</TableCell>
+                  <TableCell>{t('departamento')}</TableCell>
+                  <TableCell>{t('dataContratacao')}</TableCell>
+                  <TableCell>{t('salario')}</TableCell>
+                  <TableCell>{t('status')}</TableCell>
+                  <TableCell align="center">{t('acoes')}</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {funcionariosFiltrados.map((funcionario) => (
+                  <TableRow key={funcionario.id}>
+                    <TableCell>{funcionario.nome}</TableCell>
+                    <TableCell>{funcionario.cargo}</TableCell>
+                    <TableCell>{funcionario.departamento}</TableCell>
+                    <TableCell>{formatarData(funcionario.dataContratacao)}</TableCell>
+                    <TableCell>{formatarMoeda(funcionario.salario)}</TableCell>
+                    <TableCell>{renderizarStatus(funcionario.status)}</TableCell>
+                    <TableCell align="center">
+                      <Tooltip title={t('editar')}>
+                        <IconButton onClick={() => handleEditarFuncionario(funcionario)}>
+                          <EditIcon />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title={t('excluir')}>
+                        <IconButton color="error" onClick={() => handleExcluirFuncionario(funcionario.id)}>
+                          <DeleteIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
+      </TabPanel>
+
+      <TabPanel value={tabValue} index={1}>
+        <Box>
+          {/* Filtros para estatísticas */}
+          <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between' }}>
+            <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
               <TextField
-                label={t('buscar')}
+                label={t('periodo')}
                 variant="outlined"
                 size="small"
-                value={filtroNome}
-                onChange={(e) => setFiltroNome(e.target.value)}
-                InputProps={{
-                  endAdornment: <SearchIcon />
-                }}
-                sx={{ minWidth: 200 }}
+                value={mesAnoFiltro}
+                onChange={handleMudancaFiltroMesAno}
+                sx={{ width: 120 }}
               />
-              <FormControl size="small" variant="outlined" sx={{ minWidth: 200 }}>
-                <InputLabel>{t('departamento')}</InputLabel>
-                <Select
-                  value={filtroDepartamento}
-                  onChange={(e) => setFiltroDepartamento(e.target.value)}
-                  label={t('departamento')}
-                >
-                  <MenuItem value="">{t('todos')}</MenuItem>
-                  {departamentos.map(dep => (
-                    <MenuItem key={dep} value={dep}>{dep}</MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-              <FormControl size="small" variant="outlined" sx={{ minWidth: 200 }}>
-                <InputLabel>{t('status')}</InputLabel>
-                <Select
-                  value={filtroStatus}
-                  onChange={(e) => setFiltroStatus(e.target.value)}
-                  label={t('status')}
-                >
-                  <MenuItem value="">{t('todos')}</MenuItem>
-                  <MenuItem value="ativo">{t('ativo')}</MenuItem>
-                  <MenuItem value="inativo">{t('inativo')}</MenuItem>
-                  <MenuItem value="ferias">{t('ferias')}</MenuItem>
-                  <MenuItem value="licenca">{t('licenca')}</MenuItem>
-                </Select>
-              </FormControl>
+              <Button
+                variant="outlined"
+                startIcon={<FilterListIcon />}
+                onClick={() => setPeriodoEstatisticas(mesAnoFiltro)}
+              >
+                {t('filtrar')}
+              </Button>
             </Box>
-            <Button
-              variant="contained"
-              color="primary"
-              startIcon={<AddIcon />}
-              onClick={handleNovoFuncionario}
-            >
-              {t('novoFuncionario')}
-            </Button>
-          </Box>
-
-          {loading ? (
-            <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
-              <CircularProgress />
+            <Box>
+              <Button
+                variant="outlined"
+                startIcon={<ExportIcon />}
+                onClick={handleExportarEstatisticas}
+                sx={{ mr: 1 }}
+              >
+                {t('exportar')}
+              </Button>
+              <Button
+                variant="outlined"
+                startIcon={<PrintIcon />}
+                onClick={handleExportarEstatisticas}
+              >
+                {t('imprimir')}
+              </Button>
             </Box>
-          ) : (
-            <TableContainer>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>{t('nome')}</TableCell>
-                    <TableCell>{t('cargo')}</TableCell>
-                    <TableCell>{t('departamento')}</TableCell>
-                    <TableCell>{t('dataContratacao')}</TableCell>
-                    <TableCell>{t('salario')}</TableCell>
-                    <TableCell>{t('status')}</TableCell>
-                    <TableCell align="center">{t('acoes')}</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {funcionariosFiltrados.map((funcionario) => (
-                    <TableRow key={funcionario.id}>
-                      <TableCell>{funcionario.nome}</TableCell>
-                      <TableCell>{funcionario.cargo}</TableCell>
-                      <TableCell>{funcionario.departamento}</TableCell>
-                      <TableCell>{formatarData(funcionario.dataContratacao)}</TableCell>
-                      <TableCell>{formatarMoeda(funcionario.salario)}</TableCell>
-                      <TableCell>{renderizarStatus(funcionario.status)}</TableCell>
-                      <TableCell align="center">
-                        <Tooltip title={t('editar')}>
-                          <IconButton onClick={() => handleEditarFuncionario(funcionario)}>
-                            <EditIcon />
-                          </IconButton>
-                        </Tooltip>
-                        <Tooltip title={t('excluir')}>
-                          <IconButton color="error" onClick={() => handleExcluirFuncionario(funcionario.id)}>
-                            <DeleteIcon />
-                          </IconButton>
-                        </Tooltip>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          )}
-        </TabPanel>
-
-        <TabPanel value={tabValue} index={1}>
-          <Typography variant="h6" gutterBottom>
-            {t('estatisticas')}
-          </Typography>
-          <Box sx={{ p: 5, textAlign: 'center' }}>
-            <Typography color="textSecondary">
-              {t('funcionalidadeEmDesenvolvimento')}
-            </Typography>
           </Box>
-        </TabPanel>
 
-        <TabPanel value={tabValue} index={2}>
-          <Typography variant="h6" gutterBottom>
-            {t('folhaPagamento')}
-          </Typography>
-          <Box sx={{ p: 5, textAlign: 'center' }}>
-            <Typography color="textSecondary">
-              {t('funcionalidadeEmDesenvolvimento')}
-            </Typography>
-          </Box>
-        </TabPanel>
+          {/* KPIs */}
+          <Grid container spacing={3} sx={{ mb: 4 }}>
+            <Grid item xs={12} sm={6} md={3}>
+              <Card elevation={2}>
+                <CardContent>
+                  <Typography color="textSecondary" gutterBottom>
+                    {t('funcionariosAtivos')}
+                  </Typography>
+                  <Typography variant="h4" component="div">
+                    {funcionariosAtivos}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    <PersonIcon sx={{ fontSize: 16, verticalAlign: 'middle', mr: 0.5 }} />
+                    {t('totalFuncionarios')}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item xs={12} sm={6} md={3}>
+              <Card elevation={2}>
+                <CardContent>
+                  <Typography color="textSecondary" gutterBottom>
+                    {t('horasTrabalhadasMes')}
+                  </Typography>
+                  <Typography variant="h4" component="div">
+                    {totalHorasTrabalhadas}h
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    <AccessTimeIcon sx={{ fontSize: 16, verticalAlign: 'middle', mr: 0.5 }} />
+                    {periodoEstatisticas}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item xs={12} sm={6} md={3}>
+              <Card elevation={2}>
+                <CardContent>
+                  <Typography color="textSecondary" gutterBottom>
+                    {t('custoTotalFuncionarios')}
+                  </Typography>
+                  <Typography variant="h4" component="div">
+                    {formatarMoeda(custoTotalFuncionarios)}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    <MoneyIcon sx={{ fontSize: 16, verticalAlign: 'middle', mr: 0.5 }} />
+                    {periodoEstatisticas}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item xs={12} sm={6} md={3}>
+              <Card elevation={2}>
+                <CardContent>
+                  <Typography color="textSecondary" gutterBottom>
+                    {t('funcionarioMaisHoras')}
+                  </Typography>
+                  <Typography variant="h4" component="div">
+                    {funcionarioMaisHoras.horas}h
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    <StarIcon sx={{ fontSize: 16, verticalAlign: 'middle', mr: 0.5 }} />
+                    {funcionarioMaisHoras.nome}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grid>
 
-        <TabPanel value={tabValue} index={3}>
-          <Typography variant="h6" gutterBottom>
-            {t('pontosFerias')}
-          </Typography>
-          <Box sx={{ p: 5, textAlign: 'center' }}>
-            <Typography color="textSecondary">
-              {t('funcionalidadeEmDesenvolvimento')}
-            </Typography>
-          </Box>
-        </TabPanel>
-      </Paper>
+          {/* Gráficos */}
+          <Grid container spacing={3}>
+            {/* Gráfico de Horas por Funcionário */}
+            <Grid item xs={12} md={6}>
+              <Paper elevation={2} sx={{ p: 2, height: '100%' }}>
+                <Typography variant="h6" gutterBottom>
+                  {t('horasPorFuncionario')}
+                </Typography>
+                <Box sx={{ height: 300 }}>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart
+                      layout="vertical"
+                      data={dadosHorasPorFuncionario}
+                      margin={{ top: 5, right: 30, left: 50, bottom: 5 }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis type="number" />
+                      <YAxis 
+                        dataKey="nome" 
+                        type="category"
+                        width={100}
+                        tick={{ fontSize: 12 }}
+                      />
+                      <ChartTooltip />
+                      <Bar dataKey="horas" fill={theme.palette.primary.main} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </Box>
+              </Paper>
+            </Grid>
+
+            {/* Gráfico de Custo por Funcionário */}
+            <Grid item xs={12} md={6}>
+              <Paper elevation={2} sx={{ p: 2, height: '100%' }}>
+                <Typography variant="h6" gutterBottom>
+                  {t('custoPorFuncionario')}
+                </Typography>
+                <Box sx={{ height: 300 }}>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart
+                      data={dadosCustoPorFuncionario}
+                      margin={{ top: 5, right: 30, left: 20, bottom: 30 }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis 
+                        dataKey="nome"
+                        tick={(props) => {
+                          const { x, y, payload } = props;
+                          return (
+                            <g transform={`translate(${x},${y})`}>
+                              <text 
+                                x={0} 
+                                y={0} 
+                                dy={16} 
+                                textAnchor="end" 
+                                fill="#666"
+                                fontSize={12}
+                                transform="rotate(-45)"
+                              >
+                                {payload.value}
+                              </text>
+                            </g>
+                          );
+                        }}
+                        height={70}
+                      />
+                      <YAxis />
+                      <ChartTooltip formatter={(value) => formatarMoeda(Number(value))} />
+                      <Bar dataKey="custo" fill={theme.palette.secondary.main} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </Box>
+              </Paper>
+            </Grid>
+
+            {/* Gráfico de Horas Extras vs Regulares */}
+            <Grid item xs={12}>
+              <Paper elevation={2} sx={{ p: 2 }}>
+                <Typography variant="h6" gutterBottom>
+                  {t('horasExtrasVsRegulares')}
+                </Typography>
+                <Box sx={{ height: 300, display: 'flex', justifyContent: 'center' }}>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={dadosHorasExtrasRegulares}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={false}
+                        label={renderCustomizedLabel}
+                        outerRadius={120}
+                        fill="#8884d8"
+                        dataKey="value"
+                      >
+                        {dadosHorasExtrasRegulares.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={CORES_GRAFICO_PIZZA[index % CORES_GRAFICO_PIZZA.length]} />
+                        ))}
+                      </Pie>
+                      <ChartTooltip />
+                      <Legend />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </Box>
+              </Paper>
+            </Grid>
+          </Grid>
+        </Box>
+      </TabPanel>
+
+      <TabPanel value={tabValue} index={2}>
+        <PayrollPage />
+      </TabPanel>
 
       {/* Modal para adicionar/editar funcionário */}
       <Dialog open={modalAberto} onClose={handleFecharModal} maxWidth="md" fullWidth>
