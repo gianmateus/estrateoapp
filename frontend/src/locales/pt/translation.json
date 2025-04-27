@@ -376,5 +376,23 @@
   "recorrencia_semanal": "Semanal",
   "recorrencia_quinzenal": "Quinzenal",
   "recorrencia_mensal": "Mensal",
-  "recorrencia_trimestral": "Trimestral"
+  "recorrencia_trimestral": "Trimestral",
+  
+  "percentual": "Percentual",
+  "graficoReceitasDespesas": "Receitas vs Despesas",
+  "graficoReceitasDespesasInfo": "Este gráfico mostra a comparação entre receitas e despesas para os últimos 6 meses.",
+  "distribuicaoDespesas": "Distribuição de Despesas",
+  "distribuicaoDespesasInfo": "Este gráfico mostra como as despesas estão distribuídas entre as diferentes categorias.",
+  "visaoGeralEmpresa": "Visão Geral da Empresa",
+  "dadosMockadosAviso": "Atenção: Dados de demonstração estão sendo exibidos. Para dados reais, conecte-se à API.",
+  "dashboardGraficos": "Gráficos e Indicadores",
+  
+  "salarios": "Salários",
+  "estoque": "Estoque",
+  "infraestrutura": "Infraestrutura",
+  "marketing": "Marketing",
+  "outros": "Outros",
+  
+  "crescimentoFuncionarios": "Evolução do Quadro de Funcionários",
+  "crescimentoFuncionariosInfo": "Este gráfico mostra a evolução do número de funcionários ao longo do tempo."
 } 

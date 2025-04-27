@@ -42,4 +42,19 @@ export const formatNumber = (value: number, decimals: number = 2): string => {
     minimumFractionDigits: decimals,
     maximumFractionDigits: decimals
   }).format(value);
+};
+
+/**
+ * Formata um valor como percentual
+ * @param value Valor numérico a ser formatado (0.1 = 10%)
+ * @returns String formatada como percentual (ex: 10%)
+ */
+export const formatPercentage = (value: number): string => {
+  // Usar i18n.language quando disponível ou usar locale padrão
+  const language = i18n?.language || 'de-DE';
+  return new Intl.NumberFormat(language, {
+    style: 'percent',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 1
+  }).format(value);
 }; 
