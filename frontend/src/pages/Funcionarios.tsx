@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   Box,
   Typography,
@@ -111,6 +111,7 @@ const Funcionarios = () => {
   const { t } = useTranslation();
   const theme = useTheme();
   const navigate = useNavigate();
+  const location = useLocation();
   
   // Estados
   const [funcionarios, setFuncionarios] = useState<Funcionario[]>([]);
@@ -124,6 +125,15 @@ const Funcionarios = () => {
   const [periodoEstatisticas, setPeriodoEstatisticas] = useState(new Date().getMonth() + '/' + new Date().getFullYear());
   const [mesAnoFiltro, setMesAnoFiltro] = useState(`${new Date().getMonth() + 1}/${new Date().getFullYear()}`);
   
+  // Extrair a tab da query string na inicialização
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const tabParam = params.get('tab');
+    if (tabParam) {
+      setTabValue(parseInt(tabParam, 10));
+    }
+  }, [location.search]);
+
   // Mock de dados para desenvolvimento
   const mockFuncionarios: Funcionario[] = [
     {
@@ -264,6 +274,8 @@ const Funcionarios = () => {
   // Manipulador para mudança de aba
   const handleChangeTab = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
+    // Atualizar a URL para refletir a tab selecionada sem recarregar a página
+    navigate(`/dashboard/funcionarios${newValue > 0 ? `?tab=${newValue}` : ''}`, { replace: true });
   };
 
   // Manipulador para abrir modal de novo funcionário

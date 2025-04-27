@@ -37,7 +37,12 @@ import {
   WhatsApp as WhatsAppIcon,
   DateRange as CalendarioIcon,
   People as PeopleIcon,
-  Assessment as ContadorIcon
+  Assessment as ContadorIcon,
+  KeyboardArrowUp as KeyboardArrowUpIcon,
+  KeyboardArrowDown as KeyboardArrowDownIcon,
+  BarChart as ChartIcon,
+  Money as MoneyIcon,
+  AccessTime as AccessTimeIcon
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
@@ -84,6 +89,10 @@ interface MenuItem {
                            // Caminho de navegação quando o item é clicado
   permission: string | null; // Required permission to access/view this item (null means no permission required)
                            // Permissão necessária para acessar/visualizar este item (null significa que não é necessária permissão)
+  subItems?: MenuItem[];    // Optional list of sub-items for nested menu
+                           // Lista opcional de sub-itens para menu aninhado
+  isExpanded?: boolean;     // Whether the submenu is expanded (only applicable for items with subItems)
+                           // Se o submenu está expandido (aplicável apenas para itens com subItems)
 }
 
 /**
@@ -100,6 +109,17 @@ const Navigation = ({}: NavigationProps) => {
   const { user, logout, hasPermission } = useAuth();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const { t } = useTranslation();
+  
+  // Estado para controlar quais submenus estão expandidos
+  const [expandedMenus, setExpandedMenus] = React.useState<Record<string, boolean>>({});
+
+  // Toggle para expandir/recolher submenu
+  const toggleSubmenu = (itemText: string) => {
+    setExpandedMenus(prev => ({
+      ...prev,
+      [itemText]: !prev[itemText]
+    }));
+  };
 
   /**
    * Handler to open the user menu
@@ -177,7 +197,33 @@ const Navigation = ({}: NavigationProps) => {
       text: t('funcionarios'), 
       icon: <PeopleIcon />, 
       path: '/dashboard/funcionarios',
-      permission: 'funcionarios.visualizar'
+      permission: 'funcionarios.visualizar',
+      subItems: [
+        {
+          text: t('visaoGeral'),
+          icon: <PersonIcon />,
+          path: '/dashboard/funcionarios',
+          permission: 'funcionarios.visualizar',
+        },
+        {
+          text: t('estatisticas'),
+          icon: <ChartIcon />,
+          path: '/dashboard/funcionarios?tab=1',
+          permission: 'funcionarios.visualizar',
+        },
+        {
+          text: t('folhaPagamento'),
+          icon: <MoneyIcon />,
+          path: '/dashboard/funcionarios?tab=2',
+          permission: 'funcionarios.visualizar',
+        },
+        {
+          text: t('tempoFerias'),
+          icon: <AccessTimeIcon />,
+          path: '/dashboard/funcionarios/time-vacations',
+          permission: 'funcionarios.visualizar',
+        }
+      ]
     },
     { 
       text: t('contador'), 
@@ -251,32 +297,79 @@ const Navigation = ({}: NavigationProps) => {
             // Only display menu items if user has the required permission
             // (or if the item doesn't require a permission)
             (!item.permission || hasPermission(item.permission)) && (
-              <ListItem key={item.text} disablePadding>
-                <ListItemButton
-                  onClick={() => navigate(item.path)}
-                  selected={location.pathname === item.path}
-                  sx={{
-                    borderLeft: location.pathname === item.path 
-                      ? `4px solid ${muiTheme.palette.primary.main}` 
-                      : '4px solid transparent',
-                    '&.Mui-selected': {
-                      backgroundColor: muiTheme.palette.mode === 'dark' 
-                        ? 'rgba(255, 255, 255, 0.08)' 
-                        : 'rgba(0, 0, 0, 0.04)',
-                    },
-                    '&:hover': {
-                      backgroundColor: muiTheme.palette.mode === 'dark' 
-                        ? 'rgba(255, 255, 255, 0.12)' 
-                        : 'rgba(0, 0, 0, 0.07)',
-                    },
-                  }}
-                >
-                  <ListItemIcon>
-                    {item.icon}
-                  </ListItemIcon>
-                  <ListItemText primary={item.text} />
-                </ListItemButton>
-              </ListItem>
+              <React.Fragment key={item.text}>
+                <ListItem disablePadding>
+                  <ListItemButton
+                    onClick={() => item.subItems ? toggleSubmenu(item.text) : navigate(item.path)}
+                    selected={!item.subItems && location.pathname === item.path}
+                    sx={{
+                      borderLeft: (!item.subItems && location.pathname === item.path) || 
+                                  (item.subItems && location.pathname.startsWith(item.path))
+                        ? `4px solid ${muiTheme.palette.primary.main}` 
+                        : '4px solid transparent',
+                      '&.Mui-selected': {
+                        backgroundColor: muiTheme.palette.mode === 'dark' 
+                          ? 'rgba(255, 255, 255, 0.08)' 
+                          : 'rgba(0, 0, 0, 0.04)',
+                      },
+                      '&:hover': {
+                        backgroundColor: muiTheme.palette.mode === 'dark' 
+                          ? 'rgba(255, 255, 255, 0.12)' 
+                          : 'rgba(0, 0, 0, 0.07)',
+                      },
+                    }}
+                  >
+                    <ListItemIcon>
+                      {item.icon}
+                    </ListItemIcon>
+                    <ListItemText primary={item.text} />
+                    {item.subItems && (
+                      expandedMenus[item.text] ? 
+                        <KeyboardArrowUpIcon /> : 
+                        <KeyboardArrowDownIcon />
+                    )}
+                  </ListItemButton>
+                </ListItem>
+                
+                {/* Render submenu items if they exist and the parent menu is expanded */}
+                {item.subItems && expandedMenus[item.text] && (
+                  <List component="div" disablePadding>
+                    {item.subItems.map(subItem => (
+                      (!subItem.permission || hasPermission(subItem.permission)) && (
+                        <ListItem key={subItem.text} disablePadding>
+                          <ListItemButton
+                            onClick={() => navigate(subItem.path)}
+                            selected={location.pathname === subItem.path || 
+                                    (location.pathname === item.path && subItem.path.includes('?tab='))}
+                            sx={{
+                              pl: 4,
+                              borderLeft: (location.pathname === subItem.path || 
+                                        (location.pathname === item.path && subItem.path.includes('?tab=')))
+                                ? `4px solid ${muiTheme.palette.primary.main}` 
+                                : '4px solid transparent',
+                              '&.Mui-selected': {
+                                backgroundColor: muiTheme.palette.mode === 'dark' 
+                                  ? 'rgba(255, 255, 255, 0.08)' 
+                                  : 'rgba(0, 0, 0, 0.04)',
+                              },
+                              '&:hover': {
+                                backgroundColor: muiTheme.palette.mode === 'dark' 
+                                  ? 'rgba(255, 255, 255, 0.12)' 
+                                  : 'rgba(0, 0, 0, 0.07)',
+                              },
+                            }}
+                          >
+                            <ListItemIcon>
+                              {subItem.icon}
+                            </ListItemIcon>
+                            <ListItemText primary={subItem.text} />
+                          </ListItemButton>
+                        </ListItem>
+                      )
+                    ))}
+                  </List>
+                )}
+              </React.Fragment>
             )
           ))}
         </List>

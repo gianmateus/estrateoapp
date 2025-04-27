@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Tab, Tabs, Container } from '@mui/material';
-import { AccessTime as AccessTimeIcon } from '@mui/icons-material';
+import { Box, Typography, Tab, Tabs, Container, Breadcrumbs, Link } from '@mui/material';
+import { AccessTime as AccessTimeIcon, NavigateNext as NavigateNextIcon } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import TimeVacationsTable from './TimeVacationsTable';
 import CalendarView from './CalendarView';
 import AddVacationModal from './AddVacationModal';
@@ -36,6 +37,7 @@ export interface DailyDetail {
 
 const TimeVacationsPage: React.FC = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [tabValue, setTabValue] = useState(0);
   const [attendanceData, setAttendanceData] = useState<AttendanceData[]>([]);
   const [filteredData, setFilteredData] = useState<AttendanceData[]>([]);
@@ -257,6 +259,31 @@ const TimeVacationsPage: React.FC = () => {
   return (
     <Container maxWidth="lg">
       <Box sx={{ flexGrow: 1, p: 3 }}>
+        <Breadcrumbs 
+          separator={<NavigateNextIcon fontSize="small" />} 
+          aria-label="breadcrumb"
+          sx={{ mb: 2 }}
+        >
+          <Link 
+            color="inherit" 
+            onClick={() => navigate('/dashboard')}
+            sx={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+          >
+            {t('dashboard')}
+          </Link>
+          <Link 
+            color="inherit" 
+            onClick={() => navigate('/dashboard/funcionarios')}
+            sx={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+          >
+            {t('funcionarios')}
+          </Link>
+          <Typography color="text.primary" sx={{ display: 'flex', alignItems: 'center' }}>
+            <AccessTimeIcon sx={{ mr: 0.5, fontSize: '1.1rem' }} />
+            {t('tempoFerias')}
+          </Typography>
+        </Breadcrumbs>
+
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
           <Typography variant="h5" component="h1">
             <AccessTimeIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
