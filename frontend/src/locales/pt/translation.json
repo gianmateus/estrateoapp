@@ -11,6 +11,8 @@
   "transacoesRecentes": "Transações Recentes",
   "verTudo": "Ver tudo",
   "proximosPagamentos": "Próximos Pagamentos",
+  "pagamentos": "pagamentos",
+  "pagamentosTexto": "pagamentos",
   "nenhumPagamento": "Nenhum pagamento programado",
   "recomendacoesIA": "Recomendações da IA",
   "analiseMensal": "Análise Mensal",
@@ -51,20 +53,24 @@
   
   "novaEntrada": "Nova Entrada",
   "novaSaida": "Nova Saída",
-  "valor": "Valor",
+  "valor": "Valor (€)",
   "data": "Data",
   "cancelar": "Cancelar",
   "confirmar": "Confirmar",
   "fechar": "Fechar",
   
   "novoPagamento": "Novo Pagamento",
+  "editarPagamento": "Editar Pagamento",
   "relatorioGastos": "Relatório de Gastos",
   "gastosPorDescricao": "Gastos por Descrição",
   "dataVencimento": "Data de Vencimento",
   "recorrencia": "Recorrência",
-  "pago": "Pago",
+  "pago": "Marcar como Pago",
   "adicionar": "Adicionar",
   "pagamentosCadastrados": "Pagamentos Cadastrados",
+  "mostrarPagamentosAnteriores": "Mostrar pagamentos anteriores",
+  "maisAntigosPrimeiro": "Mais antigos primeiro",
+  "maisRecentesPrimeiro": "Mais recentes primeiro",
   
   "entrada": "Entrada",
   "saida": "Saída",
@@ -127,6 +133,7 @@
   
   "relatorioGeradoComSucesso": "Relatório gerado com sucesso!",
   "erroAoGerarRelatorio": "Erro ao gerar relatório. Tente novamente.",
+  "gerandoRelatorio": "Gerando relatório...",
   
   "valorInvalido": "Valor inválido",
   "dataInvalida": "Data inválida",
@@ -180,6 +187,7 @@
   "editarItem": "Editar Item",
   "confirmarExclusao": "Confirmar Exclusão",
   "confirmarExclusaoItem": "Tem certeza que deseja excluir este item?",
+  "confirmarExclusaoPagamento": "Tem certeza que deseja excluir este pagamento?",
   "itemExcluidoComSucesso": "Item excluído com sucesso!",
   "erroAoExcluirItem": "Erro ao excluir item. Tente novamente.",
   "itemAtualizadoComSucesso": "Item atualizado com sucesso!",
@@ -358,5 +366,15 @@
     "valorPago": "Valor Pago",
     "selecioneMes": "Selecione o mês",
     "gerarRelatorio": "Gerar relatório para o contador (PDF)"
-  }
+  },
+  
+  "nomePagamento": "Nome do Pagamento",
+  "notaFiscal": "Nota Fiscal (opcional)",
+  "campoOpcional": "Este campo é opcional",
+  
+  "recorrencia_nenhuma": "Nenhuma Recorrência",
+  "recorrencia_semanal": "Semanal",
+  "recorrencia_quinzenal": "Quinzenal",
+  "recorrencia_mensal": "Mensal",
+  "recorrencia_trimestral": "Trimestral"
 } 

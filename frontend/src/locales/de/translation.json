@@ -47,24 +47,25 @@
   "ultimasTransacoes": "Neueste Transaktionen",
   "pagamentosProximos": "Anstehende Zahlungen",
   
-  "novaEntrada": "Neue Einnahme",
+  "novaEntrada": "Neuer Eingang",
   "novaSaida": "Neue Ausgabe",
-  "valor": "Wert",
+  "valor": "Betrag (€)",
   "data": "Datum",
   "cancelar": "Abbrechen",
   "confirmar": "Bestätigen",
   "fechar": "Schließen",
   
   "novoPagamento": "Neue Zahlung",
+  "editarPagamento": "Zahlung bearbeiten",
   "relatorioGastos": "Ausgabenbericht",
   "gastosPorDescricao": "Ausgaben nach Beschreibung",
   "dataVencimento": "Fälligkeitsdatum",
   "recorrencia": "Wiederholung",
-  "pago": "Bezahlt",
+  "pago": "Als bezahlt markieren",
   "adicionar": "Hinzufügen",
   "pagamentosCadastrados": "Registrierte Zahlungen",
   
-  "entrada": "Einnahme",
+  "entrada": "Einkommen",
   "saida": "Ausgabe",
   
   "criarConta": "Konto erstellen",
@@ -175,6 +176,7 @@
   "editarItem": "Artikel bearbeiten",
   "confirmarExclusao": "Löschen bestätigen",
   "confirmarExclusaoItem": "Sind Sie sicher, dass Sie diesen Artikel löschen möchten?",
+  "confirmarExclusaoPagamento": "Sind Sie sicher, dass Sie diese Zahlung löschen möchten?",
   "itemExcluidoComSucesso": "Artikel erfolgreich gelöscht!",
   "erroAoExcluirItem": "Fehler beim Löschen des Artikels. Bitte versuchen Sie es erneut.",
   "itemAtualizadoComSucesso": "Artikel erfolgreich aktualisiert!",
@@ -292,5 +294,15 @@
   "finance_month": "Monat",
   "finance_year": "Jahr",
   
-  "acoes": "Aktionen"
+  "acoes": "Aktionen",
+  
+  "nomePagamento": "Zahlungsname",
+  "notaFiscal": "Rechnung (optional)",
+  "campoOpcional": "Dieses Feld ist optional",
+  
+  "recorrencia_nenhuma": "Keine Wiederholung",
+  "recorrencia_semanal": "Wöchentlich",
+  "recorrencia_quinzenal": "Zweiwöchentlich",
+  "recorrencia_mensal": "Monatlich",
+  "recorrencia_trimestral": "Vierteljährlich"
 } 

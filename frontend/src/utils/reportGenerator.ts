@@ -45,7 +45,7 @@ export const generateDashboardReport = async (data: ReportData, t: TFunction): P
   // Adicionar título
   pdf.setFontSize(titleFontSize);
   pdf.setFont('helvetica', 'bold');
-  const title = t('titulo');
+  const title = String(t('titulo'));
   pdf.text(title, pdf.internal.pageSize.getWidth() / 2, currentY, { align: 'center' });
   
   // Adicionar data
@@ -62,7 +62,7 @@ export const generateDashboardReport = async (data: ReportData, t: TFunction): P
   }).format(data.currentDate);
   
   pdf.text(
-    `${t('data')}: ${dateFormatted}`, 
+    `${String(t('data'))}: ${dateFormatted}`, 
     pdf.internal.pageSize.getWidth() / 2, 
     currentY, 
     { align: 'center' }
@@ -82,61 +82,61 @@ export const generateDashboardReport = async (data: ReportData, t: TFunction): P
   currentY += 15;
   pdf.setFontSize(subtitleFontSize);
   pdf.setFont('helvetica', 'bold');
-  pdf.text(t('financeiro'), 20, currentY);
+  pdf.text(String(t('financeiro')), 20, currentY);
   
   // Dados financeiros
   currentY += lineHeight * 1.5;
   pdf.setFontSize(normalFontSize);
   pdf.setFont('helvetica', 'normal');
-  pdf.text(`${t('balanco_atual')}: ${formatCurrency(data.balance)}`, 20, currentY);
+  pdf.text(`${String(t('balanco_atual'))}: ${formatCurrency(data.balance)}`, 20, currentY);
   
   currentY += lineHeight;
-  pdf.text(`${t('entrada_hoje')}: ${formatCurrency(data.todayIncome)}`, 20, currentY);
+  pdf.text(`${String(t('entrada_hoje'))}: ${formatCurrency(data.todayIncome)}`, 20, currentY);
   
   currentY += lineHeight;
-  pdf.text(`${t('saida_hoje')}: ${formatCurrency(data.todayExpenses)}`, 20, currentY);
+  pdf.text(`${String(t('saida_hoje'))}: ${formatCurrency(data.todayExpenses)}`, 20, currentY);
   
   // Seção de Pagamentos
   currentY += lineHeight * 2;
   pdf.setFontSize(subtitleFontSize);
   pdf.setFont('helvetica', 'bold');
-  pdf.text(t('pagamentos'), 20, currentY);
+  pdf.text(String(t('pagamentos')), 20, currentY);
   
   // Dados de pagamentos
   currentY += lineHeight * 1.5;
   pdf.setFontSize(normalFontSize);
   pdf.setFont('helvetica', 'normal');
-  pdf.text(`${t('pagamentos')} ${t('total')}: ${data.payments.total}`, 20, currentY);
+  pdf.text(`${String(t('pagamentos'))} ${String(t('total'))}: ${data.payments.total}`, 20, currentY);
   
   currentY += lineHeight;
-  pdf.text(`${t('pagos')}: ${data.payments.paid}`, 20, currentY);
+  pdf.text(`${String(t('pagos'))}: ${data.payments.paid}`, 20, currentY);
   
   currentY += lineHeight;
-  pdf.text(`${t('pendentes')}: ${data.payments.pending}`, 20, currentY);
+  pdf.text(`${String(t('pendentes'))}: ${data.payments.pending}`, 20, currentY);
   
   // Seção de Inventário
   currentY += lineHeight * 2;
   pdf.setFontSize(subtitleFontSize);
   pdf.setFont('helvetica', 'bold');
-  pdf.text(t('inventario'), 20, currentY);
+  pdf.text(String(t('inventario')), 20, currentY);
   
   // Dados de inventário
   currentY += lineHeight * 1.5;
   pdf.setFontSize(normalFontSize);
   pdf.setFont('helvetica', 'normal');
-  pdf.text(`${t('itensTotal')}: ${data.inventory.totalItems}`, 20, currentY);
+  pdf.text(`${String(t('itensTotal'))}: ${data.inventory.totalItems}`, 20, currentY);
   
   currentY += lineHeight;
-  pdf.text(`${t('itens_criticos')}: ${data.inventory.criticalItems}`, 20, currentY);
+  pdf.text(`${String(t('itens_criticos'))}: ${data.inventory.criticalItems}`, 20, currentY);
   
   currentY += lineHeight;
-  pdf.text(`${t('valor_total')}: ${formatCurrency(data.inventory.totalValue)}`, 20, currentY);
+  pdf.text(`${String(t('valor_total'))}: ${formatCurrency(data.inventory.totalValue)}`, 20, currentY);
   
   // Seção de Sugestões de IA
   currentY += lineHeight * 2;
   pdf.setFontSize(subtitleFontSize);
   pdf.setFont('helvetica', 'bold');
-  pdf.text(t('sugestoes_ia'), 20, currentY);
+  pdf.text(String(t('sugestoes_ia')), 20, currentY);
   
   // Listar sugestões
   currentY += lineHeight * 1.5;
@@ -159,7 +159,7 @@ export const generateDashboardReport = async (data: ReportData, t: TFunction): P
   pdf.setFontSize(8);
   pdf.setTextColor(150, 150, 150);
   pdf.text(
-    `Estrateo ${new Date().getFullYear()} - ${t('geradoHoje')}`,
+    `Estrateo ${new Date().getFullYear()} - ${String(t('geradoHoje'))}`,
     pdf.internal.pageSize.getWidth() / 2,
     currentY,
     { align: 'center' }
@@ -226,7 +226,7 @@ export const generateDashboardReportFromDOM = async (
   // Adicionar título
   pdf.setFontSize(18);
   pdf.setFont('helvetica', 'bold');
-  const title = t('titulo');
+  const title = String(t('titulo'));
   pdf.text(title, pdf.internal.pageSize.getWidth() / 2, 20, { align: 'center' });
   
   // Adicionar data
@@ -241,7 +241,7 @@ export const generateDashboardReportFromDOM = async (
   }).format(new Date());
   
   pdf.text(
-    `${t('data')}: ${dateFormatted}`, 
+    `${String(t('data'))}: ${dateFormatted}`, 
     pdf.internal.pageSize.getWidth() / 2, 
     30, 
     { align: 'center' }
@@ -275,7 +275,7 @@ export const generateDashboardReportFromDOM = async (
   pdf.setFontSize(8);
   pdf.setTextColor(150, 150, 150);
   pdf.text(
-    `Estrateo ${new Date().getFullYear()} - ${t('geradoHoje')}`,
+    `Estrateo ${new Date().getFullYear()} - ${String(t('geradoHoje'))}`,
     pdf.internal.pageSize.getWidth() / 2,
     footerY,
     { align: 'center' }

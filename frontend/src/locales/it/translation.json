@@ -49,19 +49,20 @@
   
   "novaEntrada": "Nuova Entrata",
   "novaSaida": "Nuova Uscita",
-  "valor": "Valore",
+  "valor": "Importo (€)",
   "data": "Data",
   "cancelar": "Annulla",
   "confirmar": "Conferma",
   "fechar": "Chiudi",
   
   "novoPagamento": "Nuovo Pagamento",
+  "editarPagamento": "Modifica Pagamento",
   "relatorioGastos": "Rapporto Spese",
   "gastosPorDescricao": "Spese per Descrizione",
-  "dataVencimento": "Data Scadenza",
+  "dataVencimento": "Data di Scadenza",
   "recorrencia": "Ricorrenza",
-  "pago": "Pagato",
-  "adicionar": "Aggiungi",
+  "pago": "Segna come Pagato",
+  "adicionar": "Aggiungere",
   "pagamentosCadastrados": "Pagamenti Registrati",
   
   "entrada": "Entrata",
@@ -90,5 +91,16 @@
   "geradoHoje": "Generato Oggi",
   "sugestao1": "Le tue scorte di patate sono sotto il minimo, considera di rifornire",
   "sugestao2": "Le vendite tendono ad aumentare del 20% nei fine settimana, prepara le tue scorte",
-  "sugestao3": "Le tue spese per i fornitori sono aumentate del 15% questo mese"
+  "sugestao3": "Le tue spese per i fornitori sono aumentate del 15% questo mese",
+  "nomePagamento": "Nome del Pagamento",
+  "notaFiscal": "Fattura (opzionale)",
+  "campoOpcional": "Questo campo è opzionale",
+  "recorrencia_nenhuma": "Nessuna Ricorrenza",
+  "recorrencia_semanal": "Settimanale",
+  "recorrencia_quinzenal": "Bisettimanale",
+  "recorrencia_mensal": "Mensile",
+  "recorrencia_trimestral": "Trimestrale",
+  "confirmarExclusao": "Conferma eliminazione",
+  "confirmarExclusaoItem": "Sei sicuro di voler eliminare questo articolo?",
+  "confirmarExclusaoPagamento": "Sei sicuro di voler eliminare questo pagamento?"
 } 

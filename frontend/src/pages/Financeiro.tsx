@@ -1028,8 +1028,8 @@ const Financeiro = () => {
                       <YAxis />
                       <Tooltip formatter={(value) => formatCurrency(Number(value))} />
                       <Legend />
-                      <Bar dataKey="entrada" fill="#4caf50" name={t('finance_inputs')} />
-                      <Bar dataKey="saida" fill="#f44336" name={t('finance_outputs')} />
+                      <Bar dataKey="entrada" fill="#4caf50" name={t('finance_inputs') || "Entradas"} />
+                      <Bar dataKey="saida" fill="#f44336" name={t('finance_outputs') || "Saídas"} />
                     </BarChart>
                   </ResponsiveContainer>
                 </Paper>
@@ -1049,7 +1049,7 @@ const Financeiro = () => {
                       <YAxis />
                       <Tooltip formatter={(value) => formatCurrency(Number(value))} />
                       <Legend />
-                      <Bar dataKey="valor" fill="#4caf50" name={t('finance_inputs')} />
+                      <Bar dataKey="valor" fill="#4caf50" name={t('finance_inputs') || "Entradas"} />
                     </BarChart>
                   </ResponsiveContainer>
                 </Paper>

@@ -115,13 +115,13 @@ const GraficoReceitasDespesas: React.FC<GraficoReceitasDespesasProps> = ({ data 
           <Legend />
           <Bar 
             dataKey="receitas" 
-            name={t('contador.tabelaEntradas')} 
+            name={t('contador.tabelaEntradas') || "Entradas"} 
             fill="#4caf50" 
             radius={[5, 5, 0, 0]} 
           />
           <Bar 
             dataKey="despesas" 
-            name={t('contador.tabelaSaidas')} 
+            name={t('contador.tabelaSaidas') || "Saídas"} 
             fill="#f44336" 
             radius={[5, 5, 0, 0]} 
           />

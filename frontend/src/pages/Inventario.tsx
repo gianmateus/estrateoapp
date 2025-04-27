@@ -487,7 +487,7 @@ const Inventario = () => {
       
       // Título
       doc.setFontSize(18);
-      doc.text(t('inventario_buyReport'), 105, 15, { align: 'center' });
+      doc.text(String(t('inventario_buyReport')), 105, 15, { align: 'center' });
       
       // Data
       doc.setFontSize(12);

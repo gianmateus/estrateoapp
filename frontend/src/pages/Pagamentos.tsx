@@ -28,7 +28,8 @@ import {
   CircularProgress,
   Tooltip,
   Divider,
-  FormHelperText
+  FormHelperText,
+  Switch
 } from '@mui/material';
 import { 
   Add as AddIcon, 
@@ -36,11 +37,15 @@ import {
   Delete as DeleteIcon,
   Edit as EditIcon,
   EventNote as EventIcon,
-  Info as InfoIcon
+  Info as InfoIcon,
+  PictureAsPdf as PdfIcon
 } from '@mui/icons-material';
 import { format, parseISO, isToday, addDays, isSameDay } from 'date-fns';
 import { ptBR, enUS, de } from 'date-fns/locale';
 import { useTheme } from '@mui/material/styles';
+// Importando jsPDF de forma simples
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 // Interface para representar um pagamento no sistema
 interface Pagamento {
@@ -143,6 +148,10 @@ const Pagamentos = () => {
   const [filtroAno, setFiltroAno] = useState(anoAtual);
   const [filtroMes, setFiltroMes] = useState(mesAtual);
   
+  // Após as declarações de estado
+  const [ordenacaoCrescente, setOrdenacaoCrescente] = useState(true);
+  const [mostrarAnteriores, setMostrarAnteriores] = useState(true);
+
   // Função para calcular próxima data com base na recorrência
   const calcularProximaData = (data: Date, recorrencia: string): Date => {
     const novaData = new Date(data);
@@ -508,6 +517,7 @@ const Pagamentos = () => {
     const date = parseISO(dateString);
     const locale = getDateLocale(i18n.language);
     
+    // Formato: "sexta-feira, 25 abril 2025"
     return format(date, 'EEEE, dd MMMM yyyy', { locale });
   };
 
@@ -519,15 +529,295 @@ const Pagamentos = () => {
   // Gerar relatório de pagamentos
   const handleGerarRelatorio = () => {
     setOpenRelatorio(true);
-    // Aqui implementaria a lógica de gerar o PDF
-    setTimeout(() => {
+    
+    try {
+      // Obtém os pagamentos filtrados do mês atual
+      const pagamentosFiltrados = Object.values(pagamentosAgrupados())
+        .flat()
+        .sort((a, b) => new Date(a.vencimento).getTime() - new Date(b.vencimento).getTime());
+      
+      // Verificar se há pagamentos para gerar o relatório
+      if (pagamentosFiltrados.length === 0) {
+        setTimeout(() => {
+          setOpenRelatorio(false);
+          setSnackbar({
+            open: true,
+            message: t('nenhumPagamentoRegistrado'),
+            severity: 'info'
+          });
+        }, 1000);
+        return;
+      }
+      
+      setTimeout(() => {
+        try {
+          // Criar novo documento PDF
+          const doc = new jsPDF({
+            orientation: 'landscape',
+            unit: 'mm',
+            format: 'a4'
+          });
+          
+          // Configurar título
+          const mesAtual = getNomesMeses[filtroMes];
+          const titulo = `${t('relatorioGastos')} - ${mesAtual} ${filtroAno}`;
+          doc.setFontSize(18);
+          doc.text(titulo, 105, 15, { align: 'center' });
+          
+          // Data de geração
+          doc.setFontSize(12);
+          const dataGerado = new Intl.DateTimeFormat(i18n.language, {
+            year: 'numeric',
+            month: 'numeric',
+            day: 'numeric'
+          }).format(new Date());
+          doc.text(`${t('data')}: ${dataGerado}`, 105, 25, { align: 'center' });
+          
+          // Definir cabeçalhos da tabela
+          const headers = [[
+            t('nomePagamento'),
+            t('valor'),
+            t('dataVencimento'),
+            t('categoria'),
+            t('recorrencia'),
+            t('pago'),
+            t('notaFiscal'),
+            t('descricao')
+          ]];
+          
+          // Preparar dados para a tabela
+          const data = pagamentosFiltrados.map(pagamento => {
+            const categoria = getCategorias(i18n.language).find(c => c.value === pagamento.categoria)?.label || '';
+            const recorrenciaLabel = (() => {
+              switch(pagamento.recorrencia) {
+                case 'nenhuma': return t('recorrencia_nenhuma');
+                case 'semanal': return t('recorrencia_semanal');
+                case 'quinzenal': return t('recorrencia_quinzenal');
+                case 'mensal': return t('recorrencia_mensal');
+                case 'trimestral': return t('recorrencia_trimestral');
+                default: return '';
+              }
+            })();
+            
+            // Formatar valor com símbolo de Euro
+            const valorFormatado = new Intl.NumberFormat(i18n.language, {
+              style: 'currency',
+              currency: 'EUR'
+            }).format(pagamento.valor);
+            
+            // Formatar data
+            const dataFormatada = new Date(pagamento.vencimento).toLocaleDateString(i18n.language);
+            
+            return [
+              pagamento.nome || '-',
+              valorFormatado || '€0',
+              dataFormatada || '-',
+              categoria || '-',
+              recorrenciaLabel || '-',
+              pagamento.pago ? t('pago') : t('pendente'),
+              pagamento.notaFiscal || '-',
+              pagamento.descricao || '-'
+            ];
+          });
+          
+          try {
+            // Verificar se o método autoTable está disponível
+            // @ts-ignore - Adicionando autoTable (extensão de jsPDF)
+            if (typeof doc.autoTable === 'function') {
+              // Gerar tabela
+              // @ts-ignore - Adicionando autoTable (extensão de jsPDF)
+              doc.autoTable({
+                head: headers,
+                body: data,
+                startY: 35,
+                margin: { top: 30 },
+                styles: { overflow: 'linebreak', fontSize: 8 },
+                headStyles: { fillColor: [41, 128, 185], textColor: 255 },
+                alternateRowStyles: { fillColor: [240, 240, 240] }
+              });
+            } else {
+              // Método alternativo: desenhar uma tabela simples
+              console.warn('autoTable não está disponível, usando método alternativo');
+              
+              const startY = 35;
+              const rowHeight = 8;
+              const colWidth = 30;
+              
+              // Desenhar cabeçalho
+              doc.setFillColor(41, 128, 185);
+              doc.setTextColor(255, 255, 255);
+              doc.rect(10, startY, colWidth * headers[0].length, rowHeight, 'F');
+              
+              headers[0].forEach((header, index) => {
+                doc.text(header, 10 + colWidth * index + 5, startY + 5);
+              });
+              
+              // Desenhar linhas de dados
+              doc.setTextColor(0, 0, 0);
+              data.forEach((row, rowIndex) => {
+                const y = startY + (rowIndex + 1) * rowHeight;
+                
+                // Alternar cores de fundo
+                if (rowIndex % 2 === 0) {
+                  doc.setFillColor(240, 240, 240);
+                  doc.rect(10, y, colWidth * row.length, rowHeight, 'F');
+                }
+                
+                row.forEach((cell, cellIndex) => {
+                  doc.text(cell.toString(), 10 + colWidth * cellIndex + 5, y + 5);
+                });
+              });
+            }
+          } catch (tableError) {
+            console.error('Erro ao gerar tabela:', tableError);
+            // Ainda podemos salvar um PDF básico com apenas o título
+            doc.text('Erro ao gerar tabela de dados', 105, 50, { align: 'center' });
+          }
+          
+          // Adicionar resumo no final
+          const totalPagamentos = pagamentosFiltrados.length;
+          const totalValor = pagamentosFiltrados.reduce((acc, p) => acc + p.valor, 0);
+          const totalPagos = pagamentosFiltrados.filter(p => p.pago).length;
+          const totalPendentes = totalPagamentos - totalPagos;
+          
+          // Posição Y após a tabela
+          // @ts-ignore - Propriedade adicionada pela extensão autoTable
+          const finalY = doc.lastAutoTable?.finalY || 220;
+          
+          doc.setFontSize(12);
+          doc.setTextColor(0, 0, 0);
+          
+          try {
+            doc.text(`${t('total')}: ${totalPagamentos} ${t('pagamentosTexto')}`, 14, finalY + 15);
+            doc.text(`${t('pagos')}: ${totalPagos}`, 14, finalY + 25);
+            doc.text(`${t('pendentes')}: ${totalPendentes}`, 14, finalY + 35);
+            doc.text(`${t('valor_total')}: ${new Intl.NumberFormat(i18n.language, {
+              style: 'currency',
+              currency: 'EUR'
+            }).format(totalValor)}`, 14, finalY + 45);
+          } catch (summaryError) {
+            console.error('Erro ao adicionar resumo:', summaryError);
+          }
+          
+          // Salvar o PDF
+          try {
+            const nomeArquivo = `relatorio-pagamentos-${mesAtual.toLowerCase()}-${filtroAno}.pdf`;
+            doc.save(nomeArquivo);
+            
+            // Fechar modal e mostrar mensagem de sucesso
+            setOpenRelatorio(false);
+            setSnackbar({
+              open: true,
+              message: t('relatorioGeradoComSucesso'),
+              severity: 'success'
+            });
+          } catch (saveError) {
+            console.error('Erro ao salvar PDF:', saveError);
+            throw saveError;
+          }
+        } catch (pdfError) {
+          console.error('Erro ao gerar PDF:', pdfError);
+          
+          // Verificar se é um erro de jsPDF não definido
+          if (typeof pdfError === 'object' && pdfError !== null) {
+            const errorStr = String(pdfError);
+            if (errorStr.includes('undefined') || errorStr.includes('not a function')) {
+              console.error('Possível erro de importação ou inicialização do jsPDF');
+            }
+          }
+          
+          // FALLBACK: Gerar CSV como alternativa
+          try {
+            console.log('Tentando gerar CSV como alternativa...');
+            const mesAtual = getNomesMeses[filtroMes];
+            
+            // Preparar dados para CSV
+            const headers = [
+              t('nomePagamento'),
+              t('valor'),
+              t('dataVencimento'),
+              t('categoria'),
+              t('recorrencia'),
+              t('pago'),
+              t('notaFiscal'),
+              t('descricao')
+            ].join(',');
+            
+            const rows = pagamentosFiltrados.map(pagamento => {
+              const categoria = getCategorias(i18n.language).find(c => c.value === pagamento.categoria)?.label || '';
+              const recorrenciaLabel = (() => {
+                switch(pagamento.recorrencia) {
+                  case 'nenhuma': return t('recorrencia_nenhuma');
+                  case 'semanal': return t('recorrencia_semanal');
+                  case 'quinzenal': return t('recorrencia_quinzenal');
+                  case 'mensal': return t('recorrencia_mensal');
+                  case 'trimestral': return t('recorrencia_trimestral');
+                  default: return '';
+                }
+              })();
+              
+              // Formatar valor 
+              const valor = pagamento.valor.toString().replace('.', ',');
+              
+              // Formatar data
+              const data = new Date(pagamento.vencimento).toLocaleDateString(i18n.language);
+              
+              // Preparar valores, escapando vírgulas para não quebrar o CSV
+              const valores = [
+                `"${pagamento.nome || '-'}"`,
+                `"€${valor}"`,
+                `"${data}"`,
+                `"${categoria}"`,
+                `"${recorrenciaLabel}"`,
+                `"${pagamento.pago ? t('pago') : t('pendente')}"`,
+                `"${pagamento.notaFiscal || '-'}"`,
+                `"${pagamento.descricao || '-'}"`
+              ];
+              
+              return valores.join(',');
+            }).join('\n');
+            
+            // Montar CSV
+            const csv = `${headers}\n${rows}`;
+            
+            // Gerar um link para download
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.setAttribute('href', url);
+            link.setAttribute('download', `relatorio-pagamentos-${mesAtual.toLowerCase()}-${filtroAno}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            setOpenRelatorio(false);
+            setSnackbar({
+              open: true,
+              message: t('relatorioGeradoComSucesso'),
+              severity: 'success'
+            });
+          } catch (csvError) {
+            console.error('Erro ao gerar CSV:', csvError);
+            setOpenRelatorio(false);
+            setSnackbar({
+              open: true,
+              message: t('erroAoGerarRelatorio'),
+              severity: 'error'
+            });
+          }
+        }
+      }, 1000); // Delay para mostrar o modal de carregamento
+      
+    } catch (error) {
+      console.error('Erro ao processar dados para relatório:', error);
       setOpenRelatorio(false);
       setSnackbar({
         open: true,
-        message: t('relatorioGeradoComSucesso'),
-        severity: 'success'
+        message: t('erroAoGerarRelatorio'),
+        severity: 'error'
       });
-    }, 1500);
+    }
   };
 
   // Função para expandir pagamentos recorrentes
@@ -577,9 +867,22 @@ const Pagamentos = () => {
       return data.getFullYear() === filtroAno && data.getMonth() === filtroMes;
     });
     
-    // Ordenar cronologicamente
-    const pagamentosOrdenados = [...pagamentosFiltrados].sort(
-      (a, b) => new Date(a.vencimento).getTime() - new Date(b.vencimento).getTime()
+    // Filtrar pagamentos anteriores se a opção não estiver ativada
+    const pagamentosParaExibir = mostrarAnteriores 
+      ? pagamentosFiltrados 
+      : pagamentosFiltrados.filter((pagamento: Pagamento) => {
+          const dataVencimento = new Date(pagamento.vencimento);
+          const hoje = new Date();
+          return dataVencimento >= new Date(hoje.setHours(0, 0, 0, 0));
+        });
+    
+    // Ordenar cronologicamente (crescente ou decrescente conforme configuração)
+    const pagamentosOrdenados = [...pagamentosParaExibir].sort(
+      (a, b) => {
+        const timeA = new Date(a.vencimento).getTime();
+        const timeB = new Date(b.vencimento).getTime();
+        return ordenacaoCrescente ? timeA - timeB : timeB - timeA;
+      }
     );
     
     // Agrupar por data
@@ -613,11 +916,12 @@ const Pagamentos = () => {
     
     const getRecorrenciaLabel = (recorrencia: string) => {
       switch(recorrencia) {
+        case 'nenhuma': return t('recorrencia_nenhuma');
         case 'semanal': return t('recorrencia_semanal');
         case 'quinzenal': return t('recorrencia_quinzenal');
         case 'mensal': return t('recorrencia_mensal');
         case 'trimestral': return t('recorrencia_trimestral');
-        default: return null;
+        default: return t('recorrencia_nenhuma');
       }
     };
     
@@ -684,7 +988,7 @@ const Pagamentos = () => {
             
             <Grid item xs={12} sm={12} md={3} sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 1 }}>
               <Chip 
-                label={pagamento.pago ? 'Pago' : 'Pendente'}
+                label={pagamento.pago ? t('pago') : t('pendente')}
                 color={pagamento.pago ? 'success' : 'error'}
                 size="small"
                 onClick={() => onToggle(pagamento)}
@@ -742,7 +1046,7 @@ const Pagamentos = () => {
         
         <Button
           variant="contained"
-          startIcon={<ChartIcon />}
+          startIcon={<PdfIcon />}
           onClick={handleGerarRelatorio}
           sx={{
             bgcolor: 'primary.main',
@@ -815,6 +1119,48 @@ const Pagamentos = () => {
         ))}
       </Box>
 
+      {/* Controles de visualização e ordenação */}
+      <Box sx={{ 
+        display: 'flex', 
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        mb: 2,
+        gap: 2
+      }}>
+        <FormControlLabel
+          control={
+            <Switch
+              checked={mostrarAnteriores}
+              onChange={(e) => setMostrarAnteriores(e.target.checked)}
+              color="primary"
+            />
+          }
+          label={
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <Typography variant="body2" color="text.secondary">
+                {mostrarAnteriores ? '🔼' : '🔽'} {t('mostrarPagamentosAnteriores')}
+              </Typography>
+            </Box>
+          }
+        />
+        <FormControlLabel
+          control={
+            <Switch
+              checked={ordenacaoCrescente}
+              onChange={(e) => setOrdenacaoCrescente(e.target.checked)}
+              color="primary"
+            />
+          }
+          label={
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <Typography variant="body2" color="text.secondary">
+                {ordenacaoCrescente ? '↑' : '↓'} {ordenacaoCrescente ? t('maisAntigosPrimeiro') : t('maisRecentesPrimeiro')}
+              </Typography>
+            </Box>
+          }
+        />
+      </Box>
+
       {/* Listagem de pagamentos agrupados por data */}
       <Box sx={{ mt: 2 }}>
         {loading ? (
@@ -825,6 +1171,9 @@ const Pagamentos = () => {
           <Paper sx={{ p: 3, textAlign: 'center' }}>
             <Typography variant="body1">
               {t('nenhumPagamento')}
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+              {getNomesMeses[filtroMes]} {filtroAno}
             </Typography>
           </Paper>
         ) : (
@@ -840,7 +1189,11 @@ const Pagamentos = () => {
                     textAlign: 'center', 
                     mb: 2,
                     color: isHoje ? 'primary.main' : 'text.primary',
-                    fontWeight: isHoje ? 'bold' : 'medium'
+                    fontWeight: isHoje ? 'bold' : 'medium',
+                    padding: '8px',
+                    borderRadius: '4px',
+                    bgcolor: isHoje ? 'rgba(25, 118, 210, 0.08)' : 'rgba(0, 0, 0, 0.03)',
+                    textTransform: 'capitalize'
                   }}
                 >
                   {formatFullDate(data)}

@@ -534,12 +534,12 @@ const Dashboard: React.FC = () => {
                     formatter={(value) => formatCurrency(Number(value))} 
                   />
                   <Bar 
-                    name={t('entradas')} 
+                    name={t('entradas') || "Entradas"} 
                     dataKey="income" 
                     fill="#4caf50" 
                   />
                   <Bar 
-                    name={t('saidas')} 
+                    name={t('saidas') || "Saídas"} 
                     dataKey="expenses" 
                     fill="#f44336" 
                   />

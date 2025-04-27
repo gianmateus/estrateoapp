@@ -36,6 +36,7 @@ import {
 import { AuthProvider } from './contexts/AuthContext';
 import Calendario from './pages/Calendario';
 import Funcionarios from './pages/Funcionarios';
+import TimeVacationsPage from './pages/employees/time-vacations/TimeVacationsPage';
 import NotFound from './pages/NotFound';
 import ResetPassword from './pages/ResetPassword';
 import Loading from './components/Loading';
@@ -137,6 +138,14 @@ function App() {
                       element={
                         <PermissionGuard permission="funcionarios.visualizar">
                           <Funcionarios />
+                        </PermissionGuard>
+                      } 
+                    />
+                    <Route 
+                      path="/dashboard/funcionarios/time-vacations" 
+                      element={
+                        <PermissionGuard permission="funcionarios.visualizar">
+                          <TimeVacationsPage />
                         </PermissionGuard>
                       } 
                     />
