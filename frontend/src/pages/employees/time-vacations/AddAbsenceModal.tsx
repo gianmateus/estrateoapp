@@ -24,6 +24,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { ptBR } from 'date-fns/locale';
 import { useTranslation } from 'react-i18next';
 import { differenceInDays, isAfter, isBefore, addDays } from 'date-fns';
+import { EventBus } from '../../../services/EventBus';
 
 interface Employee {
   id: string;
@@ -177,17 +178,44 @@ const AddAbsenceModal: React.FC<AddAbsenceModalProps> = ({
   // Handler para salvar
   const handleSave = () => {
     if (validateForm()) {
-      const data = {
+      const selectedEmployee = employees.find(e => e.id === employee);
+      
+      if (type === 'ausencia') {
+        const ausenciaDados = {
+          id: `ausencia-${Date.now()}`, // Gera um ID único
+          funcionarioId: employee,
+          funcionarioNome: selectedEmployee ? selectedEmployee.name : 'Desconhecido',
+          dataInicio: startDate!,
+          dataFim: endDate!,
+          motivo: reason,
+          dias: calculateDays()
+        };
+        
+        // Emitir evento de ausência registrada
+        EventBus.emit('ausencia.registrada', ausenciaDados);
+      } else {
+        const folgaDados = {
+          id: `folga-${Date.now()}`, // Gera um ID único
+          funcionarioId: employee,
+          funcionarioNome: selectedEmployee ? selectedEmployee.name : 'Desconhecido',
+          dataFolga: startDate!,
+          motivo: reason
+        };
+        
+        // Emitir evento de folga registrada
+        EventBus.emit('folga.registrada', folgaDados);
+      }
+      
+      // Chamar o callback original
+      onSave({
         employeeId: employee,
-        employeeName: employees.find(e => e.id === employee)?.name || '',
+        employeeName: selectedEmployee ? selectedEmployee.name : '',
         type,
         startDate: startDate?.toISOString(),
         endDate: endDate?.toISOString(),
         days: calculateDays(),
         reason
-      };
-      
-      onSave(data);
+      });
     }
   };
 

@@ -22,6 +22,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { ptBR } from 'date-fns/locale';
 import { useTranslation } from 'react-i18next';
 import { differenceInDays, isAfter, isBefore, addDays } from 'date-fns';
+import { EventBus } from '../../../services/EventBus';
 
 interface Employee {
   id: string;
@@ -153,17 +154,31 @@ const AddVacationModal: React.FC<AddVacationModalProps> = ({
   // Handler para salvar
   const handleSave = () => {
     if (validateForm()) {
-      const data = {
+      const selectedEmployee = employees.find(e => e.id === employee);
+      
+      const feriasDados = {
+        id: `ferias-${Date.now()}`, // Gera um ID único
+        funcionarioId: employee,
+        funcionarioNome: selectedEmployee ? selectedEmployee.name : 'Desconhecido',
+        dataInicio: startDate!,
+        dataFim: endDate!,
+        observacoes: observations,
+        dias: calculateDays()
+      };
+      
+      // Emitir evento de férias registradas
+      EventBus.emit('ferias.registradas', feriasDados);
+      
+      // Chamar o callback original
+      onSave({
         employeeId: employee,
-        employeeName: employees.find(e => e.id === employee)?.name || '',
+        employeeName: selectedEmployee ? selectedEmployee.name : '',
         startDate: startDate?.toISOString(),
         endDate: endDate?.toISOString(),
         days: calculateDays(),
         observations,
         type: 'ferias'
-      };
-      
-      onSave(data);
+      });
     }
   };
 

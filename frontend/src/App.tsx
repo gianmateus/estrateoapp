@@ -43,6 +43,7 @@ import Loading from './components/Loading';
 import Contador from './pages/Contador';
 import PermissionGuard from './components/PermissionGuard';
 import { ThemeProvider } from './contexts/ThemeContext';
+import { initializeAllListeners } from './services/sincronizacao';
 
 /**
  * Main application component that configures routes and providers
@@ -78,6 +79,9 @@ function App() {
       translations
     };
   }, [i18n.language, changeLanguage]);
+
+  // Inicializar os listeners do EventBus
+  initializeAllListeners();
 
   return (
     <ThemeProvider>
