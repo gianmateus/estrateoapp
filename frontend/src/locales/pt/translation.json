@@ -476,5 +476,16 @@
     "valorPago": "Valor Pago",
     "selecioneMes": "Selecione o mês",
     "gerarRelatorio": "Gerar relatório para o contador (PDF)"
-  }
+  },
+  
+  "funcionarios_em_ferias": "Funcionários em Férias",
+  "nenhum_funcionario_em_ferias": "Nenhum funcionário em férias no momento",
+  "retorna_em": "Retorna em",
+  "inicia_em": "Inicia em",
+  "dias_restantes": "Dias restantes",
+  "em_ferias": "Em férias",
+  "ferias_agendadas": "Férias agendadas",
+  "ver_todos_funcionarios": "Ver todos os funcionários",
+  "funcionariosFerias": "Em Férias",
+  "funcionariosAtivos": "Ativos"
 } 

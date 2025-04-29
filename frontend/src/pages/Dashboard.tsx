@@ -34,7 +34,13 @@ import {
   SmartToy as AIIcon,
   SmartToy,
   Insights as InsightsIcon,
-  PictureAsPdf as PdfIcon
+  PictureAsPdf as PdfIcon,
+  Receipt as ReceiptIcon,
+  Payments as PaymentsIcon,
+  AssignmentInd as AssignmentIndIcon,
+  BeachAccess as BeachAccessIcon,
+  Event as EventIcon,
+  Person as PersonIcon,
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
@@ -88,6 +94,15 @@ interface ChartDataItem {
   expenses: number;
 }
 
+// Interface para funcionários em férias
+interface FuncionarioFerias {
+  id: string;
+  nome: string;
+  dataInicio: string;
+  dataFim: string;
+  diasRestantes: number;
+}
+
 const Dashboard: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -127,6 +142,9 @@ const Dashboard: React.FC = () => {
     message: '',
     severity: 'success' as 'success' | 'error' | 'info' | 'warning'
   });
+
+  const [funcionariosEmFerias, setFuncionariosEmFerias] = useState<FuncionarioFerias[]>([]);
+  const [carregandoFerias, setCarregandoFerias] = useState<boolean>(false);
 
   // Fetch data from the dashboard API endpoint
   // Buscar dados do endpoint da API do dashboard
@@ -312,6 +330,62 @@ const Dashboard: React.FC = () => {
   
   const handleCloseSnackbar = () => {
     setSnackbar({ ...snackbar, open: false });
+  };
+
+  // Buscar funcionários em férias
+  useEffect(() => {
+    const fetchFuncionariosEmFerias = async () => {
+      setCarregandoFerias(true);
+      try {
+        // Simulação de chamada à API
+        await new Promise(resolve => setTimeout(resolve, 600));
+        
+        // Dados simulados de funcionários em férias
+        const mockFuncionariosFerias: FuncionarioFerias[] = [
+          {
+            id: '1',
+            nome: 'Ana Silva',
+            dataInicio: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(), // 5 dias atrás
+            dataFim: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString(), // 10 dias no futuro
+            diasRestantes: 10
+          },
+          {
+            id: '2',
+            nome: 'Pedro Santos',
+            dataInicio: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), // 2 dias atrás
+            dataFim: new Date(Date.now() + 12 * 24 * 60 * 60 * 1000).toISOString(), // 12 dias no futuro
+            diasRestantes: 12
+          },
+          {
+            id: '3',
+            nome: 'Carla Oliveira',
+            dataInicio: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(), // 5 dias no futuro
+            dataFim: new Date(Date.now() + 20 * 24 * 60 * 60 * 1000).toISOString(), // 20 dias no futuro
+            diasRestantes: 0 // Ainda não começou
+          }
+        ];
+        
+        setFuncionariosEmFerias(mockFuncionariosFerias);
+      } catch (error) {
+        console.error('Erro ao buscar funcionários em férias:', error);
+      } finally {
+        setCarregandoFerias(false);
+      }
+    };
+    
+    fetchFuncionariosEmFerias();
+  }, []);
+
+  // Formatar data
+  const formatarData = (dataString: string): string => {
+    return new Date(dataString).toLocaleDateString('pt-BR');
+  };
+
+  // Verificar se as férias já começaram
+  const feriasJaComecaram = (dataInicio: string): boolean => {
+    const hoje = new Date();
+    const inicio = new Date(dataInicio);
+    return inicio <= hoje;
   };
 
   // Show loading indicator while data is being fetched
@@ -624,6 +698,88 @@ const Dashboard: React.FC = () => {
                 {t('registrarTransacao')}
               </Button>
             </Stack>
+          </Paper>
+        </Grid>
+      </Grid>
+      
+      {/* Seção de Funcionários em Férias */}
+      <Grid container spacing={3} sx={{ mt: 2 }}>
+        <Grid item xs={12}>
+          <Paper elevation={2} sx={{ p: 2, borderRadius: 2 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <BeachAccessIcon color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6">{t('funcionarios_em_ferias')}</Typography>
+              </Box>
+              <IconButton 
+                size="small" 
+                color="primary" 
+                onClick={() => navigate('/funcionarios/time-vacations')}
+              >
+                <EventIcon />
+              </IconButton>
+            </Box>
+            
+            {carregandoFerias ? (
+              <Box sx={{ display: 'flex', justifyContent: 'center', p: 2 }}>
+                <CircularProgress size={24} />
+              </Box>
+            ) : funcionariosEmFerias.length === 0 ? (
+              <Typography variant="body2" color="text.secondary" sx={{ p: 2, textAlign: 'center' }}>
+                {t('nenhum_funcionario_em_ferias')}
+              </Typography>
+            ) : (
+              <List sx={{ width: '100%' }}>
+                {funcionariosEmFerias.map((funcionario) => (
+                  <React.Fragment key={funcionario.id}>
+                    <ListItem alignItems="flex-start">
+                      <ListItemIcon>
+                        <PersonIcon color={feriasJaComecaram(funcionario.dataInicio) ? "primary" : "action"} />
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={funcionario.nome}
+                        secondary={
+                          <React.Fragment>
+                            <Typography
+                              component="span"
+                              variant="body2"
+                              color="text.primary"
+                            >
+                              {feriasJaComecaram(funcionario.dataInicio) ? 
+                                t('retorna_em') : t('inicia_em')}: {formatarData(feriasJaComecaram(funcionario.dataInicio) ? 
+                                  funcionario.dataFim : funcionario.dataInicio)}
+                            </Typography>
+                            {feriasJaComecaram(funcionario.dataInicio) && (
+                              <Typography component="span" variant="body2" sx={{ display: 'block' }}>
+                                {t('dias_restantes')}: {funcionario.diasRestantes}
+                              </Typography>
+                            )}
+                          </React.Fragment>
+                        }
+                      />
+                      <Chip 
+                        label={feriasJaComecaram(funcionario.dataInicio) ? t('em_ferias') : t('ferias_agendadas')} 
+                        color={feriasJaComecaram(funcionario.dataInicio) ? "primary" : "default"} 
+                        size="small" 
+                        variant="outlined" 
+                      />
+                    </ListItem>
+                    <Divider variant="inset" component="li" />
+                  </React.Fragment>
+                ))}
+              </List>
+            )}
+            
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 1 }}>
+              <Button 
+                size="small" 
+                color="primary" 
+                endIcon={<AssignmentIndIcon />}
+                onClick={() => navigate('/funcionarios')}
+              >
+                {t('ver_todos_funcionarios')}
+              </Button>
+            </Box>
           </Paper>
         </Grid>
       </Grid>
