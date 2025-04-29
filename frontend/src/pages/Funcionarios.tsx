@@ -130,7 +130,11 @@ const Funcionarios = () => {
     const params = new URLSearchParams(location.search);
     const tabParam = params.get('tab');
     if (tabParam) {
-      setTabValue(parseInt(tabParam, 10));
+      const tabIndex = parseInt(tabParam, 10);
+      setTabValue(tabIndex);
+      
+      // Garantir que quaisquer animações e estados específicos de tab sejam aplicados corretamente
+      // Isso garantirá uma transição suave mesmo se o usuário acessar diretamente por URL
     }
   }, [location.search]);
 
@@ -356,11 +360,6 @@ const Funcionarios = () => {
     setMesAnoFiltro(event.target.value);
   };
 
-  // Manipulador para navegação para a página de Time & Vacations
-  const handleNavigateToTimeVacations = () => {
-    navigate('/dashboard/funcionarios/time-vacations');
-  };
-
   // Renderizar as abas e seus conteúdos
   const renderizarAbas = () => {
     return (
@@ -376,15 +375,7 @@ const Funcionarios = () => {
             <Tab label={t('visaoGeral')} icon={<PersonIcon />} iconPosition="start" />
             <Tab label={t('estatisticas')} icon={<ChartIcon />} iconPosition="start" />
             <Tab label={t('folhaPagamento')} icon={<MoneyIcon />} iconPosition="start" />
-            <Tab 
-              label={t('tempoFerias')} 
-              icon={<AccessTimeIcon />} 
-              iconPosition="start"
-              onClick={(e) => {
-                e.preventDefault();
-                handleNavigateToTimeVacations();
-              }}
-            />
+            <Tab label={t('tempoFerias')} icon={<AccessTimeIcon />} iconPosition="start" />
           </Tabs>
         </Box>
 
@@ -407,9 +398,11 @@ const Funcionarios = () => {
           <PayrollPage />
         </TabPanel>
 
-        {/* A aba de Tempo e Férias redireciona para a página separada */}
+        {/* Conteúdo da aba Tempo e Férias */}
         <TabPanel value={tabValue} index={3}>
-          {/* Conteúdo não será exibido pois redirecionamos na aba */}
+          {tabValue === 3 && (
+            <TimeVacationsPage />
+          )}
         </TabPanel>
       </Box>
     );
