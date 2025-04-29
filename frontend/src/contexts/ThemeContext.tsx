@@ -5,9 +5,9 @@ import CssBaseline from '@mui/material/CssBaseline';
 // Paleta de cores para o tema claro
 const lightPalette = {
   primary: {
-    main: '#1D3557', // Cor de ação principal (azul escuro) 
-    dark: '#142639', // Versão mais escura para hover
-    light: '#2C4A74', // Versão mais clara
+    main: '#1a365d', // Azul escuro para ações principais (mais profissional)
+    dark: '#102a4c', // Versão mais escura para hover
+    light: '#4a6fa5', // Versão mais clara
     contrastText: '#FFFFFF',
   },
   secondary: {
@@ -22,9 +22,9 @@ const lightPalette = {
     dark: '#C62828',
   },
   warning: {
-    main: '#ED6C02',
-    light: '#FF9800',
-    dark: '#E65100',
+    main: '#FF9800',
+    light: '#FFB74D',
+    dark: '#F57C00',
   },
   info: {
     main: '#0288D1',
@@ -32,9 +32,9 @@ const lightPalette = {
     dark: '#01579B',
   },
   success: {
-    main: '#2E7D32',
-    light: '#4CAF50',
-    dark: '#1B5E20',
+    main: '#4caf50',
+    light: '#81C784',
+    dark: '#388E3C',
   },
   background: {
     default: '#FFFFFF', // Fundo branco puro
@@ -45,14 +45,26 @@ const lightPalette = {
     secondary: '#86868B', // Texto cinza (Apple-like)
     disabled: '#AEAEB2',
   },
+  grey: {
+    50: '#f7f7f7',
+    100: '#e6e6e6',
+    200: '#d1d1d1',
+    300: '#ababab',
+    400: '#808080',
+    500: '#595959',
+    600: '#383838',
+    700: '#1f1f1f',
+    800: '#141414',
+    900: '#0a0a0a',
+  }
 };
 
 // Paleta de cores para o tema escuro
 const darkPalette = {
   primary: {
-    main: '#1D3557',     // Mantém a mesma cor principal
-    dark: '#142639',
-    light: '#2C4A74',
+    main: '#1a365d',     // Mantém a mesma cor principal
+    dark: '#102a4c',
+    light: '#4a6fa5',
     contrastText: '#FFFFFF',
   },
   secondary: {
@@ -90,6 +102,18 @@ const darkPalette = {
     secondary: '#9CA3AF', // Cinza médio
     disabled: '#68686E',
   },
+  grey: {
+    50: '#f7f7f7',
+    100: '#e6e6e6',
+    200: '#d1d1d1',
+    300: '#ababab',
+    400: '#808080',
+    500: '#595959',
+    600: '#383838',
+    700: '#1f1f1f',
+    800: '#141414',
+    900: '#0a0a0a',
+  }
 };
 
 // Interface para o valor do contexto do tema
@@ -160,54 +184,82 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     },
     typography: {
       fontFamily: '"Inter", "SF Pro Text", "Helvetica", "Arial", sans-serif',
+      // Implementação da hierarquia tipográfica padronizada
       h1: {
-        fontWeight: 700,
-        fontSize: '2.5rem',
+        fontWeight: 700,         // Bold
+        fontSize: '32px',        // 32px Bold
         letterSpacing: '-0.015em',
+        lineHeight: 1.2,
       },
       h2: {
-        fontWeight: 700,
-        fontSize: '2rem',
+        fontWeight: 600,         // Semibold
+        fontSize: '24px',        // 24px Semibold
         letterSpacing: '-0.01em',
+        lineHeight: 1.3,
       },
       h3: {
-        fontWeight: 600,
-        fontSize: '1.75rem',
-        letterSpacing: '-0.01em',
+        fontWeight: 500,         // Medium
+        fontSize: '18px',        // 18px Medium
+        letterSpacing: '-0.005em',
+        lineHeight: 1.4,
       },
       h4: {
-        fontWeight: 600,
-        fontSize: '1.5rem',
-        letterSpacing: '-0.008em',
+        fontWeight: 500,
+        fontSize: '16px',
+        letterSpacing: '-0.005em',
+        lineHeight: 1.4,
       },
       h5: {
-        fontWeight: 600,
-        fontSize: '1.25rem',
+        fontWeight: 500,
+        fontSize: '15px',
         letterSpacing: '-0.005em',
+        lineHeight: 1.4,
       },
       h6: {
-        fontWeight: 600,
-        fontSize: '1rem',
+        fontWeight: 500,
+        fontSize: '14px',
         letterSpacing: '-0.005em',
+        lineHeight: 1.4,
       },
       body1: {
-        fontSize: '1rem',
+        fontSize: '14px',        // 14px Regular
+        fontWeight: 400,
         letterSpacing: '-0.003em',
+        lineHeight: 1.5,
       },
       body2: {
-        fontSize: '0.875rem',
+        fontSize: '14px',
+        fontWeight: 400,
         letterSpacing: '-0.003em',
+        lineHeight: 1.5,
+      },
+      caption: {
+        fontSize: '12px',        // 12px Medium
+        fontWeight: 500,
+        letterSpacing: '-0.003em',
+        lineHeight: 1.5,
       },
       button: {
         textTransform: 'none',
         fontWeight: 600,
         letterSpacing: '-0.003em',
+        fontSize: '14px',
       },
     },
     shape: {
       borderRadius: 12,
     },
-    spacing: (factor: number) => `${8 * factor}px`, // Base em múltiplos de 8px
+    // Sistema de espaçamento baseado na escala proposta (4, 8, 16, 32, 64)
+    spacing: (factor: number) => {
+      const baseSpacing = 4;
+      if (factor <= 0) return '0px';
+      if (factor === 1) return `${baseSpacing}px`;     // 4px
+      if (factor === 2) return `${baseSpacing * 2}px`; // 8px
+      if (factor === 4) return `${baseSpacing * 4}px`; // 16px
+      if (factor === 8) return `${baseSpacing * 8}px`; // 32px
+      if (factor === 16) return `${baseSpacing * 16}px`; // 64px
+      return `${baseSpacing * factor}px`;
+    },
     components: {
       MuiButton: {
         styleOverrides: {
@@ -217,7 +269,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
             fontWeight: 600,
             boxShadow: 'none',
             padding: '10px 20px',
-            transition: 'all 0.3s ease',
+            transition: 'all 0.2s ease',
             '&:hover': {
               transform: 'translateY(-1px)',
               boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
@@ -225,7 +277,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
           },
           containedPrimary: {
             '&:hover': {
-              backgroundColor: mode === 'light' ? '#142639' : '#2C4A74',
+              backgroundColor: mode === 'light' ? '#102a4c' : '#4a6fa5',
             },
           },
           containedSecondary: {
@@ -249,10 +301,10 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
             borderRadius: 8,
             transition: 'all 0.2s ease',
             '&.Mui-focused': {
-              boxShadow: '0 0 0 4px rgba(29, 53, 87, 0.1)',
+              boxShadow: '0 0 0 4px rgba(26, 54, 93, 0.1)',
             },
             '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-              borderColor: '#1D3557',
+              borderColor: '#1a365d',
               borderWidth: '1px',
             },
             '&:hover .MuiOutlinedInput-notchedOutline': {
@@ -268,7 +320,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
         styleOverrides: {
           root: {
             '&.Mui-focused': {
-              color: '#1D3557',
+              color: '#1a365d',
             },
           },
         },
@@ -278,7 +330,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
           root: {
             color: mode === 'light' ? '#86868B' : '#98989D',
             '&.Mui-checked': {
-              color: '#1D3557',
+              color: '#1a365d',
             },
           },
         },
@@ -286,17 +338,13 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
       MuiCard: {
         styleOverrides: {
           root: {
-            borderRadius: 16,
-            boxShadow: mode === 'light' 
-              ? '0px 2px 12px rgba(0, 0, 0, 0.04)' 
-              : '0px 2px 12px rgba(0, 0, 0, 0.2)',
+            borderRadius: 12, // Card com arredondamento padronizado
+            boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.06)', // Sombra padronizada conforme especificado
             overflow: 'hidden',
-            transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+            transition: 'transform 0.2s ease, box-shadow 0.2s ease',
             '&:hover': {
               transform: 'translateY(-2px)',
-              boxShadow: mode === 'light'
-                ? '0px 4px 20px rgba(0, 0, 0, 0.08)'
-                : '0px 4px 20px rgba(0, 0, 0, 0.3)',
+              boxShadow: '0px 6px 16px rgba(0, 0, 0, 0.08)',
             },
           },
         },
@@ -304,14 +352,14 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
       MuiPaper: {
         styleOverrides: {
           root: {
-            borderRadius: 16,
+            borderRadius: 12,
           },
         },
       },
       MuiTableCell: {
         styleOverrides: {
           root: {
-            padding: '16px 16px',
+            padding: '16px',
             borderBottom: `1px solid ${mode === 'light' ? '#F2F2F2' : '#374151'}`,
           },
           head: {
@@ -355,14 +403,31 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
             borderRadius: 8,
             '&.Mui-selected': {
               backgroundColor: mode === 'light' 
-                ? 'rgba(29, 53, 87, 0.08)' 
-                : 'rgba(29, 53, 87, 0.15)',
+                ? 'rgba(26, 54, 93, 0.08)' 
+                : 'rgba(26, 54, 93, 0.15)',
             },
             '&:hover': {
               backgroundColor: mode === 'light' 
                 ? 'rgba(0, 0, 0, 0.04)' 
                 : 'rgba(255, 255, 255, 0.08)',
             },
+          },
+        },
+      },
+      MuiChip: {
+        styleOverrides: {
+          root: {
+            borderRadius: 8,
+            transition: 'all 0.2s ease',
+          },
+        },
+      },
+      MuiTab: {
+        styleOverrides: {
+          root: {
+            textTransform: 'none',
+            fontWeight: 500,
+            transition: 'all 0.2s ease',
           },
         },
       },
