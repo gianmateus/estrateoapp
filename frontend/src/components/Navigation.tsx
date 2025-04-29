@@ -339,12 +339,10 @@ const Navigation = ({}: NavigationProps) => {
                         <ListItem key={subItem.text} disablePadding>
                           <ListItemButton
                             onClick={() => navigate(subItem.path)}
-                            selected={location.pathname === subItem.path || 
-                                    (location.pathname === item.path && subItem.path.includes('?tab='))}
+                            selected={location.pathname + location.search === subItem.path}
                             sx={{
                               pl: 4,
-                              borderLeft: (location.pathname === subItem.path || 
-                                        (location.pathname === item.path && subItem.path.includes('?tab=')))
+                              borderLeft: location.pathname + location.search === subItem.path
                                 ? `4px solid ${muiTheme.palette.primary.main}` 
                                 : '4px solid transparent',
                               '&.Mui-selected': {

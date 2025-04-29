@@ -92,7 +92,7 @@ const TabelaEntradas: React.FC<TabelaEntradasProps> = ({ data }) => {
           <TableHead>
             <TableRow sx={{ backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.02)' }}>
               <TableCell sx={{ fontWeight: 'bold' }}>{t('data')}</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>{t('contador.cliente')}</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>{t('contadorData.cliente')}</TableCell>
               <TableCell sx={{ fontWeight: 'bold' }}>{t('descricao')}</TableCell>
               <TableCell align="right" sx={{ fontWeight: 'bold' }}>{t('valor')}</TableCell>
             </TableRow>

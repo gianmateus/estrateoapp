@@ -184,16 +184,16 @@ const Contador: React.FC = () => {
       {/* Header with title and month selection */}
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Typography variant="h4" component="h1" fontWeight="bold" color="primary">
-          {t('relatorioContador.titulo')}
+          {t('contadorData.titulo')}
         </Typography>
         
         <FormControl sx={{ minWidth: 200 }}>
-          <InputLabel id="month-select-label">{t('relatorioContador.selecioneMes')}</InputLabel>
+          <InputLabel id="month-select-label">{t('contadorData.selecioneMes')}</InputLabel>
           <Select
             labelId="month-select-label"
             id="month-select"
             value={selectedMonth}
-            label={t('relatorioContador.selecioneMes')}
+            label={t('contadorData.selecioneMes')}
             onChange={handleMonthChange}
             disabled={loading}
           >
@@ -209,7 +209,7 @@ const Contador: React.FC = () => {
       {/* Introduction text */}
       <Paper sx={{ p: 2, mb: 3 }}>
         <Typography variant="body1">
-          {t('relatorioContador.introducao')}
+          {t('contadorData.introducao')}
         </Typography>
       </Paper>
       
@@ -217,13 +217,13 @@ const Contador: React.FC = () => {
         <>
           {/* Summary Cards */}
           <Typography variant="h5" sx={{ mb: 2, fontWeight: 'medium' }}>
-            {t('relatorioContador.resumoGeral')}
+            {t('contadorData.resumoGeral')}
           </Typography>
           
           <Grid container spacing={3} sx={{ mb: 4 }}>
             <Grid item xs={12} sm={6} md={3}>
               <ResumoMensalCard 
-                title={t('relatorioContador.receitaTotal')}
+                title={t('contadorData.receitaTotal')}
                 value={contadorData.resumo.receita}
                 icon={<AttachMoney fontSize="large" />}
                 color="#4caf50"
@@ -231,7 +231,7 @@ const Contador: React.FC = () => {
             </Grid>
             <Grid item xs={12} sm={6} md={3}>
               <ResumoMensalCard 
-                title={t('relatorioContador.despesasTotal')}
+                title={t('contadorData.despesasTotal')}
                 value={contadorData.resumo.despesas}
                 icon={<Money fontSize="large" />}
                 color="#f44336"
@@ -239,7 +239,7 @@ const Contador: React.FC = () => {
             </Grid>
             <Grid item xs={12} sm={6} md={3}>
               <ResumoMensalCard 
-                title={t('relatorioContador.saldoFinal')}
+                title={t('contadorData.saldoFinal')}
                 value={contadorData.resumo.saldo}
                 icon={<AccountBalance fontSize="large" />}
                 color="#2196f3"
@@ -247,7 +247,7 @@ const Contador: React.FC = () => {
             </Grid>
             <Grid item xs={12} sm={6} md={3}>
               <ResumoMensalCard 
-                title={t('relatorioContador.totalFuncionarios')}
+                title={t('contadorData.totalFuncionarios')}
                 value={contadorData.resumo.funcionariosPagos}
                 icon={<People fontSize="large" />}
                 color="#ff9800"
@@ -258,17 +258,16 @@ const Contador: React.FC = () => {
           
           {/* Revenue vs Expenses Chart */}
           <Typography variant="h5" sx={{ mb: 2, fontWeight: 'medium' }}>
-            {t('relatorioContador.graficoReceitas')}
+            {t('contadorData.graficoReceitas')}
           </Typography>
           
           <Paper sx={{ p: 3, mb: 4 }}>
             <GraficoReceitasDespesas data={contadorData.graficoData} />
           </Paper>
           
-          {/* Detailed Tables */}
           {/* Income Table */}
           <Typography variant="h5" sx={{ mb: 2, fontWeight: 'medium' }}>
-            {t('relatorioContador.tabelaEntradas')}
+            {t('contadorData.tabelaEntradas')}
           </Typography>
           
           <Paper sx={{ mb: 4, overflow: 'hidden' }}>
@@ -277,7 +276,7 @@ const Contador: React.FC = () => {
           
           {/* Expenses Table */}
           <Typography variant="h5" sx={{ mb: 2, fontWeight: 'medium' }}>
-            {t('relatorioContador.tabelaSaidas')}
+            {t('contadorData.tabelaSaidas')}
           </Typography>
           
           <Paper sx={{ mb: 4, overflow: 'hidden' }}>
@@ -286,7 +285,7 @@ const Contador: React.FC = () => {
           
           {/* Employees Table */}
           <Typography variant="h5" sx={{ mb: 2, fontWeight: 'medium' }}>
-            {t('relatorioContador.tabelaFuncionarios')}
+            {t('contadorData.tabelaFuncionarios')}
           </Typography>
           
           <Paper sx={{ mb: 4, overflow: 'hidden' }}>

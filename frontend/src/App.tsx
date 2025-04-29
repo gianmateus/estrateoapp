@@ -6,7 +6,7 @@
  * Gerencia configuração de tema, rotas e provedores de contexto globais
  */
 import React, { Suspense } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Navigation from './components/Navigation';
@@ -149,7 +149,7 @@ function App() {
                       path="/dashboard/funcionarios/time-vacations" 
                       element={
                         <PermissionGuard permission="funcionarios.visualizar">
-                          <TimeVacationsPage />
+                          <Navigate to="/dashboard/funcionarios?tab=3" replace />
                         </PermissionGuard>
                       } 
                     />

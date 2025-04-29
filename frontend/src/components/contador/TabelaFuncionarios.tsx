@@ -101,9 +101,9 @@ const TabelaFuncionarios: React.FC<TabelaFuncionariosProps> = ({ data }) => {
           <TableHead>
             <TableRow sx={{ backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.02)' }}>
               <TableCell sx={{ fontWeight: 'bold' }}>{t('nome')}</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>{t('contador.tipoContrato')}</TableCell>
-              <TableCell align="center" sx={{ fontWeight: 'bold' }}>{t('contador.horasTrabalhadas')}</TableCell>
-              <TableCell align="right" sx={{ fontWeight: 'bold' }}>{t('contador.valorPago')}</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>{t('contadorData.tipoContrato')}</TableCell>
+              <TableCell align="center" sx={{ fontWeight: 'bold' }}>{t('contadorData.horasTrabalhadas')}</TableCell>
+              <TableCell align="right" sx={{ fontWeight: 'bold' }}>{t('contadorData.valorPago')}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
