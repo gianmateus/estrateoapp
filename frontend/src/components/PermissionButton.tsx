@@ -7,7 +7,7 @@
  */
 import React, { ElementType } from 'react';
 import { Button, ButtonProps } from '@mui/material';
-import { useAuth } from '../contexts/AuthContext';
+import { usePermission } from '../hooks/usePermission';
 
 /**
  * Props interface extending Material-UI ButtonProps with permission features
@@ -37,13 +37,11 @@ const PermissionButton = ({
   component: Component = Button,
   ...props
 }: PermissionButtonProps) => {
-  const { checkUserPermission } = useAuth();
+  const { hasPermission } = usePermission();
   
-  // Check if user has at least one of the required permissions
-  // Verifica se o usuário tem pelo menos uma das permissões necessárias
-  const userHasRequiredPermission = Array.isArray(permission)
-    ? permission.some(perm => checkUserPermission(perm))
-    : checkUserPermission(permission);
+  // Check if user has the required permission
+  // Verifica se o usuário tem a permissão necessária
+  const userHasRequiredPermission = hasPermission(permission);
   
   // If user doesn't have permission, render the fallback or nothing
   // Se o usuário não tiver permissão, renderiza o fallback ou nada

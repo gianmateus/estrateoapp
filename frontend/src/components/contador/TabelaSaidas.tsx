@@ -18,8 +18,7 @@ import {
   useTheme
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { format } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
+import { formatCurrency, formatDate } from '../../utils/formatters';
 
 // Interface for expense entry data
 // Interface para dados de saídas financeiras
@@ -45,36 +44,6 @@ const TabelaSaidas: React.FC<TabelaSaidasProps> = ({ data }) => {
   const theme = useTheme();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  
-  /**
-   * Formats currency value in Euro format
-   * @param value Number to format
-   * @returns Formatted string
-   * 
-   * Formata valor monetário no formato Euro
-   * @param value Número a formatar
-   * @returns String formatada
-   */
-  const formatCurrency = (value: number): string => {
-    return new Intl.NumberFormat('pt-PT', {
-      style: 'currency',
-      currency: 'EUR'
-    }).format(value);
-  };
-  
-  /**
-   * Formats date from YYYY-MM-DD to localized date
-   * @param dateString Date string in YYYY-MM-DD format
-   * @returns Formatted date string
-   * 
-   * Formata data de AAAA-MM-DD para data localizada
-   * @param dateString String de data no formato AAAA-MM-DD
-   * @returns String de data formatada
-   */
-  const formatDate = (dateString: string): string => {
-    const date = new Date(dateString);
-    return format(date, 'dd/MM/yyyy', { locale: ptBR });
-  };
   
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -102,7 +71,7 @@ const TabelaSaidas: React.FC<TabelaSaidasProps> = ({ data }) => {
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row) => (
                 <TableRow key={row.id} hover>
-                  <TableCell>{formatDate(row.data)}</TableCell>
+                  <TableCell>{formatDate(new Date(row.data))}</TableCell>
                   <TableCell>{row.fornecedor}</TableCell>
                   <TableCell>{row.tipo}</TableCell>
                   <TableCell align="right" sx={{ color: '#f44336', fontWeight: 'medium' }}>

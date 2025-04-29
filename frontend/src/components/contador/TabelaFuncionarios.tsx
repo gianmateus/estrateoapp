@@ -19,6 +19,7 @@ import {
   Chip
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { formatCurrency } from '../../utils/formatters';
 
 // Interface for employee data
 // Interface para dados de funcionários
@@ -44,22 +45,6 @@ const TabelaFuncionarios: React.FC<TabelaFuncionariosProps> = ({ data }) => {
   const theme = useTheme();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  
-  /**
-   * Formats currency value in Euro format
-   * @param value Number to format
-   * @returns Formatted string
-   * 
-   * Formata valor monetário no formato Euro
-   * @param value Número a formatar
-   * @returns String formatada
-   */
-  const formatCurrency = (value: number): string => {
-    return new Intl.NumberFormat('pt-PT', {
-      style: 'currency',
-      currency: 'EUR'
-    }).format(value);
-  };
   
   /**
    * Returns color for contract type chip
