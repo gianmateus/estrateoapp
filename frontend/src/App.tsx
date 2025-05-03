@@ -22,6 +22,7 @@ import InteligenciaArtificial from './pages/InteligenciaArtificial';
 import Dashboard from './pages/Dashboard';
 import Whatsapp from './pages/Whatsapp';
 import TodoPage from './pages/TodoPage';
+import Impostos from './pages/Impostos';
 import ProtectedRoute from './components/ProtectedRoute';
 import { DataProvider } from './contexts/DataProvider';
 import { useTranslation } from 'react-i18next';
@@ -44,6 +45,8 @@ import Contador from './pages/Contador';
 import PermissionGuard from './components/PermissionGuard';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { initializeAllListeners } from './services/sincronizacao';
+import CardDemo from './components/CardDemo';
+import ColorDemo from './components/ColorDemo';
 
 /**
  * Main application component that configures routes and providers
@@ -122,6 +125,14 @@ function App() {
                       } 
                     />
                     <Route 
+                      path="/dashboard/impostos" 
+                      element={
+                        <PermissionGuard permission="financeiro.visualizar">
+                          <Impostos />
+                        </PermissionGuard>
+                      } 
+                    />
+                    <Route 
                       path="/dashboard/pagamentos" 
                       element={
                         <PermissionGuard permission="pagamentos.visualizar">
@@ -175,6 +186,8 @@ function App() {
                   </Route>
                   {/* Redirects for routes not found
                        Redirecionamentos para rotas não encontradas */}
+                  <Route path="/colors" element={<ColorDemo />} />
+                  <Route path="/cards" element={<CardDemo />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </Suspense>

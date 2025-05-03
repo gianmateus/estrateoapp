@@ -34,6 +34,72 @@ export interface EstoqueAtualizadoPayload {
 }
 
 /**
+ * Payload para evento de item abaixo do mínimo
+ */
+export interface EstoqueItemAbaixoMinimoPayload {
+  id: string;
+  nome: string;
+  quantidade: number;
+  minimo: number;
+  categoria?: string;
+  dataOcorrencia?: string;
+}
+
+/**
+ * Payload para evento de item próximo do vencimento
+ */
+export interface EstoqueItemProximoVencimentoPayload {
+  id: string;
+  nome: string;
+  dataValidade: string;
+  diasRestantes: number;
+  categoria?: string;
+  dataOcorrencia?: string;
+}
+
+/**
+ * Payload para evento de item vencido
+ */
+export interface EstoqueItemVencidoPayload {
+  id: string;
+  nome: string;
+  dataValidade: string;
+  diasVencido?: number;
+  categoria?: string;
+  dataOcorrencia?: string;
+}
+
+/**
+ * Payload para evento de item de estoque adicionado
+ */
+export interface EstoqueItemAdicionadoPayload {
+  id: string;
+  nome: string;
+  quantidade: number;
+  categoria?: string;
+  dataOcorrencia?: string;
+}
+
+/**
+ * Payload para evento de item de estoque atualizado
+ */
+export interface EstoqueItemAtualizadoPayload {
+  id: string;
+  anterior: any;
+  atual: any;
+  dataOcorrencia?: string;
+}
+
+/**
+ * Payload para evento de item de estoque removido
+ */
+export interface EstoqueItemRemovidoPayload {
+  id: string;
+  nome: string;
+  dataOcorrencia?: string;
+}
+
+/**
  * Payload para evento de ausência registrada
  */
 export interface AusenciaRegistradaPayload {
@@ -65,12 +131,77 @@ export interface SincronizacaoPayload {
 }
 
 /**
+ * Payload para evento de declaração de imposto pendente
+ */
+export interface ImpostoDeclaracaoPendentePayload {
+  id: string;
+  tipo: string;
+  nome: string;
+  dataVencimento: string;
+  diasRestantes: number;
+  valor: number;
+  paisAplicacao: string;
+  dataOcorrencia?: string;
+}
+
+/**
+ * Payload para evento de imposto com vencimento próximo
+ */
+export interface ImpostoVencimentoProximoPayload {
+  id: string;
+  tipo: string;
+  nome: string;
+  dataVencimento: string;
+  diasRestantes: number;
+  valor: number;
+  paisAplicacao: string;
+  dataOcorrencia?: string;
+}
+
+/**
+ * Payload para evento de novo imposto registrado
+ */
+export interface ImpostoNovoRegistradoPayload {
+  id: string;
+  tipo: string;
+  nome: string;
+  aliquota: number;
+  periodicidade: string;
+  paisAplicacao: string;
+  dataOcorrencia?: string;
+}
+
+/**
+ * Payload para evento de imposto pago
+ */
+export interface ImpostoPagoPayload {
+  id: string;
+  tipo: string;
+  nome: string;
+  valorPago: number;
+  dataPagamento: string;
+  referencia: string;
+  paisAplicacao: string;
+  dataOcorrencia?: string;
+}
+
+/**
  * Union type com todos os tipos de payload possíveis
  */
 export type EventPayload = 
   | FeriasRegistradasPayload
   | PagamentoCriadoPayload
   | EstoqueAtualizadoPayload
+  | EstoqueItemAbaixoMinimoPayload
+  | EstoqueItemProximoVencimentoPayload
+  | EstoqueItemVencidoPayload
+  | EstoqueItemAdicionadoPayload
+  | EstoqueItemAtualizadoPayload
+  | EstoqueItemRemovidoPayload
   | AusenciaRegistradaPayload
   | FolgaRegistradaPayload
-  | SincronizacaoPayload; 
+  | SincronizacaoPayload
+  | ImpostoDeclaracaoPendentePayload
+  | ImpostoVencimentoProximoPayload
+  | ImpostoNovoRegistradoPayload
+  | ImpostoPagoPayload; 

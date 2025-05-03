@@ -40,6 +40,11 @@ export class FuncionarioService {
           status: 'ativo',
           observacoes: data.observacoes,
           contratoUploadUrl: data.contratoUploadUrl,
+          // Novos campos
+          formaPagamento: data.formaPagamento,
+          situacaoAtual: data.situacaoAtual || 'ativo',
+          telefone: data.telefone,
+          email: data.email,
         },
       });
     } catch (error) {
@@ -114,6 +119,16 @@ export class FuncionarioService {
         
         if (filters.status) {
           where.status = filters.status;
+        }
+
+        // Adicionar filtro para situação atual se fornecido
+        if (filters.situacaoAtual) {
+          where.situacaoAtual = filters.situacaoAtual;
+        }
+
+        // Adicionar filtro para forma de pagamento se fornecido
+        if (filters.formaPagamento) {
+          where.formaPagamento = filters.formaPagamento;
         }
       }
       
@@ -193,6 +208,40 @@ export class FuncionarioService {
     } catch (error) {
       console.error('Erro ao buscar funcionários MiniJob:', error);
       throw new Error('Não foi possível buscar os funcionários MiniJob');
+    }
+  }
+
+  /**
+   * Conta funcionários por situação atual
+   * Counts employees by current situation
+   * @returns Contagem por situação
+   */
+  async countBySituacao(): Promise<Record<string, number>> {
+    try {
+      const funcionarios = await this.prisma.funcionario.findMany({
+        select: { situacaoAtual: true },
+      });
+
+      const result: Record<string, number> = {
+        ativo: 0,
+        ferias: 0,
+        afastado: 0,
+        desligado: 0,
+      };
+
+      funcionarios.forEach((funcionario: any) => {
+        if (funcionario.situacaoAtual) {
+          result[funcionario.situacaoAtual] += 1;
+        } else {
+          // Se não tiver situação, considerar como ativo (para compatibilidade)
+          result['ativo'] += 1;
+        }
+      });
+
+      return result;
+    } catch (error) {
+      console.error('Erro ao contar funcionários por situação:', error);
+      throw new Error('Não foi possível contar os funcionários por situação');
     }
   }
 } 

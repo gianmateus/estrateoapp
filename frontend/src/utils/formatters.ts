@@ -23,10 +23,14 @@ export const formatCurrency = (value: number): string => {
  * @param date Data a ser formatada
  * @returns String formatada de acordo com o idioma atual
  */
-export const formatDate = (date: Date): string => {
+export const formatDate = (date: Date | string): string => {
   // Usar i18n.language quando disponível ou usar locale padrão
   const language = i18n?.language || 'de-DE';
-  return date.toLocaleDateString(language);
+  
+  // Converter para objeto Date se for string
+  const dateObj = typeof date === 'string' ? new Date(date) : date;
+  
+  return dateObj.toLocaleDateString(language);
 };
 
 /**

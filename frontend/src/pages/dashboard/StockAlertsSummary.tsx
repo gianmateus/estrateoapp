@@ -11,14 +11,23 @@ import {
   Button,
   LinearProgress,
   Stack,
-  Alert
+  Alert,
+  Chip,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemIcon,
+  Divider
 } from '@mui/material';
 import { 
   Inventory as InventoryIcon,
   Info as InfoIcon,
   ArrowForward as ArrowIcon,
   Warning as WarningIcon,
-  BarChart as ChartIcon
+  BarChart as ChartIcon,
+  ErrorOutline as ErrorIcon,
+  Timer as TimerIcon,
+  Event as EventIcon
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -27,12 +36,23 @@ interface StockAlertsSummaryProps {
   isLoading: boolean;
   totalItens: number;
   itensCriticos: number;
+  itensProximosVencimento?: number;
+  itensVencidos?: number;
+  alertasProdutos?: Array<{
+    id: string;
+    nome: string;
+    tipo: 'estoque_baixo' | 'proxim_vencimento' | 'vencido';
+    mensagem: string;
+  }>;
 }
 
 const StockAlertsSummary: React.FC<StockAlertsSummaryProps> = ({
   isLoading,
   totalItens,
-  itensCriticos
+  itensCriticos,
+  itensProximosVencimento = 0,
+  itensVencidos = 0,
+  alertasProdutos = []
 }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -50,12 +70,15 @@ const StockAlertsSummary: React.FC<StockAlertsSummaryProps> = ({
   
   // Determinar nível de alerta
   const getAlertLevel = (): 'success' | 'warning' | 'error' => {
-    if (percentualCritico <= 5) return 'success';
-    if (percentualCritico <= 15) return 'warning';
+    if (percentualCritico <= 5 && itensVencidos === 0) return 'success';
+    if (percentualCritico <= 15 && itensVencidos === 0) return 'warning';
     return 'error';
   };
   
   const alertLevel = getAlertLevel();
+  
+  // Total de alertas
+  const totalAlertas = itensCriticos + itensProximosVencimento + itensVencidos;
 
   return (
     <Card 
@@ -64,17 +87,25 @@ const StockAlertsSummary: React.FC<StockAlertsSummaryProps> = ({
         display: 'flex', 
         flexDirection: 'column',
         borderTop: '4px solid',
-        borderColor: 'error.main' 
+        borderColor: totalAlertas > 0 ? 'error.main' : 'success.main' 
       }}
       elevation={2}
     >
       <CardHeader
         title={
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <InventoryIcon sx={{ mr: 1, color: 'error.main' }} />
+            <InventoryIcon sx={{ mr: 1, color: totalAlertas > 0 ? 'error.main' : 'success.main' }} />
             <Typography variant="h6" component="div">
               {t('controleEstoque')}
             </Typography>
+            {totalAlertas > 0 && (
+              <Chip 
+                label={totalAlertas} 
+                color="error" 
+                size="small" 
+                sx={{ ml: 1 }}
+              />
+            )}
           </Box>
         }
         action={
@@ -116,13 +147,28 @@ const StockAlertsSummary: React.FC<StockAlertsSummaryProps> = ({
             </Box>
             
             <Box sx={{ mb: 2 }}>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5 }}>
                 <Typography variant="caption" color="text.secondary">
                   {t('statusEstoque')}
                 </Typography>
-                <Typography variant="caption" color={`${alertLevel}.main`} fontWeight="bold">
-                  {percentualCritico}% {t('critico')}
-                </Typography>
+                <Box sx={{ display: 'flex', gap: 1 }}>
+                  {itensVencidos > 0 && (
+                    <Chip 
+                      icon={<ErrorIcon fontSize="small" />} 
+                      label={`${itensVencidos} ${t('vencidos')}`} 
+                      size="small" 
+                      color="error" 
+                    />
+                  )}
+                  {itensProximosVencimento > 0 && (
+                    <Chip 
+                      icon={<TimerIcon fontSize="small" />} 
+                      label={`${itensProximosVencimento} ${t('proximosVencimento')}`} 
+                      size="small" 
+                      color="warning" 
+                    />
+                  )}
+                </Box>
               </Box>
               <LinearProgress 
                 variant="determinate"
@@ -139,14 +185,65 @@ const StockAlertsSummary: React.FC<StockAlertsSummaryProps> = ({
               />
             </Box>
             
-            {itensCriticos > 0 ? (
-              <Alert 
-                severity={alertLevel === 'success' ? 'info' : alertLevel} 
-                icon={<WarningIcon />}
-                sx={{ mb: 2 }}
-              >
-                {t('alertaItensBaixoEstoque', { count: itensCriticos })}
-              </Alert>
+            {totalAlertas > 0 ? (
+              <>
+                <Alert 
+                  severity={itensVencidos > 0 ? 'error' : (itensProximosVencimento > 0 ? 'warning' : 'info')} 
+                  icon={itensVencidos > 0 ? <ErrorIcon /> : <WarningIcon />}
+                  sx={{ mb: 2 }}
+                >
+                  {itensVencidos > 0 
+                    ? t('alertaProdutosVencidos', { count: itensVencidos })
+                    : (itensProximosVencimento > 0 
+                      ? t('alertaProdutosProximosVencimento', { count: itensProximosVencimento })
+                      : t('alertaItensBaixoEstoque', { count: itensCriticos }))
+                  }
+                </Alert>
+                
+                {alertasProdutos.length > 0 && (
+                  <List dense sx={{ 
+                    mb: 2, 
+                    maxHeight: 150, 
+                    overflow: 'auto',
+                    bgcolor: 'background.paper',
+                    borderRadius: 1,
+                    border: '1px solid',
+                    borderColor: 'divider'
+                  }}>
+                    {alertasProdutos.slice(0, 3).map((alerta, index) => (
+                      <React.Fragment key={alerta.id}>
+                        <ListItem>
+                          <ListItemIcon sx={{ minWidth: 36 }}>
+                            {alerta.tipo === 'vencido' && <ErrorIcon color="error" />}
+                            {alerta.tipo === 'proxim_vencimento' && <TimerIcon color="warning" />}
+                            {alerta.tipo === 'estoque_baixo' && <WarningIcon color="info" />}
+                          </ListItemIcon>
+                          <ListItemText
+                            primary={alerta.nome}
+                            secondary={alerta.mensagem}
+                            primaryTypographyProps={{ fontWeight: 'medium', fontSize: '0.9rem' }}
+                            secondaryTypographyProps={{ fontSize: '0.8rem' }}
+                          />
+                        </ListItem>
+                        {index < alertasProdutos.length - 1 && <Divider component="li" />}
+                      </React.Fragment>
+                    ))}
+                    {alertasProdutos.length > 3 && (
+                      <ListItem button onClick={handleNavigateToInventory}>
+                        <ListItemText 
+                          primary={t('verTodosAlertas', { count: alertasProdutos.length - 3 })}
+                          primaryTypographyProps={{ 
+                            align: 'center', 
+                            color: 'primary', 
+                            fontWeight: 'medium', 
+                            fontSize: '0.8rem' 
+                          }}
+                        />
+                      </ListItem>
+                    )}
+                  </List>
+                )}
+              </>
             ) : (
               <Alert 
                 severity="success" 
@@ -174,7 +271,7 @@ const StockAlertsSummary: React.FC<StockAlertsSummaryProps> = ({
       <Box sx={{ p: 2, pt: 0, mt: 'auto' }}>
         <Button 
           variant="text" 
-          color="error" 
+          color={totalAlertas > 0 ? "error" : "primary"} 
           fullWidth 
           onClick={handleNavigateToInventory}
           endIcon={<ArrowIcon />}

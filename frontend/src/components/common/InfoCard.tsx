@@ -13,11 +13,12 @@
  * - loading: Estado de carregamento
  * - onClick: Função opcional para tornar o card clicável
  * - size: Tamanho do card (small, medium, large)
+ * - index: Índice para animações sequenciais
  */
 
 import React from 'react';
-import { Box, Card, CircularProgress, Typography, useTheme } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import { Box, CircularProgress, Typography, useTheme } from '@mui/material';
+import { AnimatedCard } from '../animations';
 
 export type InfoCardVariation = 'default' | 'success' | 'warning' | 'danger';
 export type InfoCardSize = 'small' | 'medium' | 'large';
@@ -31,25 +32,8 @@ export interface InfoCardProps {
   loading?: boolean;
   onClick?: () => void;
   size?: InfoCardSize;
+  index?: number; // Para stagger animations
 }
-
-const StyledCard = styled(Card, {
-  shouldForwardProp: (prop) => prop !== 'clickable' && prop !== 'cardSize'
-})<{ clickable: boolean; cardSize: InfoCardSize }>(({ theme, clickable, cardSize }) => ({
-  padding: cardSize === 'small' ? theme.spacing(3) : theme.spacing(4),
-  borderRadius: 12,
-  boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.06)',
-  height: '100%',
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'space-between',
-  transition: 'all 0.2s ease',
-  cursor: clickable ? 'pointer' : 'default',
-  '&:hover': clickable ? {
-    transform: 'translateY(-2px)',
-    boxShadow: '0px 8px 16px rgba(0, 0, 0, 0.08)'
-  } : {}
-}));
 
 const InfoCard: React.FC<InfoCardProps> = ({
   title,
@@ -59,7 +43,8 @@ const InfoCard: React.FC<InfoCardProps> = ({
   subtitle,
   loading = false,
   onClick,
-  size = 'medium'
+  size = 'medium',
+  index = 0
 }) => {
   const theme = useTheme();
   
@@ -99,10 +84,16 @@ const InfoCard: React.FC<InfoCardProps> = ({
   };
 
   return (
-    <StyledCard 
-      clickable={!!onClick} 
-      cardSize={size}
+    <AnimatedCard
+      index={index}
+      clickable={!!onClick}
       onClick={onClick}
+      sx={{
+        padding: size === 'small' ? theme.spacing(3) : theme.spacing(4),
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+      }}
     >
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: size === 'small' ? 2 : 3 }}>
         <Typography variant={getTitleSize()} color="text.secondary">
@@ -136,7 +127,7 @@ const InfoCard: React.FC<InfoCardProps> = ({
           )}
         </>
       )}
-    </StyledCard>
+    </AnimatedCard>
   );
 };
 

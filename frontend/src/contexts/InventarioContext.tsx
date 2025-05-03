@@ -1,14 +1,25 @@
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
+import { EventBus } from '../services/EventBus';
 
 // Interfaces
 export interface ItemInventario {
   id: string;
   nome: string;
   quantidade: number;
-  unidade: 'kg' | 'unidade' | 'caixa';
+  unidade: 'kg' | 'unidade' | 'caixa' | 'g' | 'ml' | 'litro';
   precoUnitario: number;
   categoria: string;
-  fornecedor?: string;
+  
+  // Novos campos
+  codigoSKU?: string;            // Código de barras / SKU
+  fornecedor?: string;           // Fornecedor do produto
+  precoCusto?: number;           // Preço de custo
+  precoVenda?: number;           // Preço de venda
+  dataValidade?: string;         // Data de validade para perecíveis
+  quantidadeMinima?: number;     // Quantidade mínima para alertas
+  localArmazenamento?: string;   // Local de armazenamento
+  
+  // Campos existentes
   estoqueMinimo?: number;
   estoqueMaximo?: number;
   localizacao?: string;
@@ -29,6 +40,8 @@ export interface ResumoInventario {
   totalItens: number;
   valorTotal: number;
   itensAbaixoMinimo: number;
+  itensProximosVencimento: number; // Novo campo para contar itens próximos do vencimento
+  itensVencidos: number;          // Novo campo para contar itens vencidos
   ultimaAtualizacao: string;
 }
 
@@ -57,6 +70,8 @@ const resumoInicial: ResumoInventario = {
   totalItens: 0,
   valorTotal: 0,
   itensAbaixoMinimo: 0,
+  itensProximosVencimento: 0,
+  itensVencidos: 0,
   ultimaAtualizacao: new Date().toISOString()
 };
 
@@ -77,13 +92,36 @@ export const InventarioProvider: React.FC<InventarioProviderProps> = ({ children
 
   // Função para calcular o resumo com base nos itens atuais
   const calcularResumo = (itensInventario: ItemInventario[]): ResumoInventario => {
-    const valorTotal = itensInventario.reduce((total, item) => total + (item.quantidade * item.precoUnitario), 0);
-    const itensAbaixoMinimo = itensInventario.filter(item => item.estoqueMinimo !== undefined && item.quantidade < item.estoqueMinimo).length;
+    const valorTotal = itensInventario.reduce((total, item) => total + (item.quantidade * (item.precoVenda || item.precoUnitario)), 0);
+    const itensAbaixoMinimo = itensInventario.filter(
+      item => (item.quantidadeMinima !== undefined && item.quantidade < item.quantidadeMinima) || 
+              (item.estoqueMinimo !== undefined && item.quantidade < item.estoqueMinimo)
+    ).length;
+    
+    // Verificar itens próximos do vencimento (7 dias antes da data de validade)
+    const hoje = new Date();
+    const seteDiasDepois = new Date();
+    seteDiasDepois.setDate(hoje.getDate() + 7);
+    
+    const itensProximosVencimento = itensInventario.filter(item => {
+      if (!item.dataValidade) return false;
+      const dataValidade = new Date(item.dataValidade);
+      return dataValidade > hoje && dataValidade <= seteDiasDepois;
+    }).length;
+    
+    // Verificar itens vencidos
+    const itensVencidos = itensInventario.filter(item => {
+      if (!item.dataValidade) return false;
+      const dataValidade = new Date(item.dataValidade);
+      return dataValidade < hoje;
+    }).length;
 
     return {
       totalItens: itensInventario.length,
       valorTotal,
       itensAbaixoMinimo,
+      itensProximosVencimento,
+      itensVencidos,
       ultimaAtualizacao: new Date().toISOString()
     };
   };
@@ -137,17 +175,77 @@ export const InventarioProvider: React.FC<InventarioProviderProps> = ({ children
     // Persistir no localStorage
     localStorage.setItem(STORAGE_KEYS.itens, JSON.stringify(novosItens));
     localStorage.setItem(STORAGE_KEYS.resumo, JSON.stringify(novoResumo));
+    
+    // Verificar se o item está abaixo do mínimo e emitir evento
+    if ((item.quantidadeMinima !== undefined && item.quantidade < item.quantidadeMinima) ||
+        (item.estoqueMinimo !== undefined && item.quantidade < item.estoqueMinimo)) {
+      EventBus.emit('estoque.item.abaixo.minimo', {
+        id: item.id,
+        nome: item.nome,
+        quantidade: item.quantidade,
+        minimo: item.quantidadeMinima || item.estoqueMinimo
+      });
+    }
+    
+    // Emitir evento de adição de item
+    EventBus.emit('estoque.item.adicionado', item);
   };
 
   // Função para atualizar um item existente
   const atualizarItem = (id: string, dadosAtualizados: Partial<Omit<ItemInventario, 'id' | 'dataAtualizacao'>>) => {
+    const itemAnterior = itens.find(item => item.id === id);
     const novosItens = itens.map(item => {
       if (item.id === id) {
-        return {
+        const itemAtualizado = {
           ...item,
           ...dadosAtualizados,
           dataAtualizacao: new Date().toISOString()
         };
+        
+        // Verificar se o item está abaixo do mínimo depois da atualização
+        if ((itemAtualizado.quantidadeMinima !== undefined && itemAtualizado.quantidade < itemAtualizado.quantidadeMinima) ||
+            (itemAtualizado.estoqueMinimo !== undefined && itemAtualizado.quantidade < itemAtualizado.estoqueMinimo)) {
+          EventBus.emit('estoque.item.abaixo.minimo', {
+            id: itemAtualizado.id,
+            nome: itemAtualizado.nome,
+            quantidade: itemAtualizado.quantidade,
+            minimo: itemAtualizado.quantidadeMinima || itemAtualizado.estoqueMinimo
+          });
+        }
+        
+        // Verificar se o item está próximo da data de validade
+        if (itemAtualizado.dataValidade) {
+          const hoje = new Date();
+          const dataValidade = new Date(itemAtualizado.dataValidade);
+          const seteDiasDepois = new Date();
+          seteDiasDepois.setDate(hoje.getDate() + 7);
+          
+          if (dataValidade <= hoje) {
+            // Item vencido
+            EventBus.emit('estoque.item.vencido', {
+              id: itemAtualizado.id,
+              nome: itemAtualizado.nome,
+              dataValidade: itemAtualizado.dataValidade
+            });
+          } else if (dataValidade <= seteDiasDepois) {
+            // Item próximo do vencimento
+            EventBus.emit('estoque.item.proxim.vencimento', {
+              id: itemAtualizado.id,
+              nome: itemAtualizado.nome,
+              dataValidade: itemAtualizado.dataValidade,
+              diasRestantes: Math.floor((dataValidade.getTime() - hoje.getTime()) / (1000 * 60 * 60 * 24))
+            });
+          }
+        }
+        
+        // Emitir evento de atualização
+        EventBus.emit('estoque.item.atualizado', {
+          id: itemAtualizado.id,
+          anterior: itemAnterior,
+          atual: itemAtualizado
+        });
+        
+        return itemAtualizado;
       }
       return item;
     });
@@ -165,6 +263,7 @@ export const InventarioProvider: React.FC<InventarioProviderProps> = ({ children
 
   // Função para remover um item
   const removerItem = (id: string) => {
+    const itemRemovido = itens.find(item => item.id === id);
     const novosItens = itens.filter(item => item.id !== id);
     setItens(novosItens);
 
@@ -175,6 +274,11 @@ export const InventarioProvider: React.FC<InventarioProviderProps> = ({ children
     // Persistir no localStorage
     localStorage.setItem(STORAGE_KEYS.itens, JSON.stringify(novosItens));
     localStorage.setItem(STORAGE_KEYS.resumo, JSON.stringify(novoResumo));
+    
+    // Emitir evento de remoção
+    if (itemRemovido) {
+      EventBus.emit('estoque.item.removido', itemRemovido);
+    }
   };
 
   // Função para registrar uma movimentação de inventário e atualizar o item

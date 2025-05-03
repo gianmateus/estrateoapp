@@ -23,6 +23,7 @@ funcionarioRoutes.get('/funcionarios/:id', funcionarioController.findById.bind(f
 funcionarioRoutes.put('/funcionarios/:id', funcionarioController.update.bind(funcionarioController));
 funcionarioRoutes.delete('/funcionarios/:id', funcionarioController.delete.bind(funcionarioController));
 funcionarioRoutes.get('/funcionarios-por-tipo', funcionarioController.countByContractType.bind(funcionarioController));
+funcionarioRoutes.get('/funcionarios-por-situacao', funcionarioController.countBySituacao.bind(funcionarioController));
 funcionarioRoutes.post('/funcionarios/:id/contrato', upload.single('contrato'), funcionarioController.uploadContrato.bind(funcionarioController));
 funcionarioRoutes.get('/funcionarios/:id/exportar-pdf', funcionarioController.generatePDF.bind(funcionarioController));
 

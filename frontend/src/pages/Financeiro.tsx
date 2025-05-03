@@ -25,6 +25,8 @@ import {
   ListItem,
   Divider,
   Chip,
+  Tab,
+  Tabs,
 } from '@mui/material';
 import { Add as AddIcon, Remove as RemoveIcon, BarChart as ChartIcon, Edit as EditIcon, Close as CloseIcon, FilterList as FilterListIcon, Clear as ClearIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import { format, differenceInDays } from 'date-fns';
@@ -36,6 +38,10 @@ import { generateSecureId } from '../utils/security';
 import { validateTextField, validateNumberField, validateDateField } from '../utils/validation';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
+import FormularioEntrada from '../components/financeiro/FormularioEntrada';
+import FormularioSaida from '../components/financeiro/FormularioSaida';
+import { EventBus } from '../services/EventBus';
+import { Transacao, TipoEntrada, StatusRecebimento, TipoDespesa, FormaPagamento } from '../contexts/FinanceiroContext';
 
 interface PagamentoProgramado {
   id: string;
@@ -48,6 +54,67 @@ interface PagamentoProgramado {
 
 const categoriasSaida = ['Salário', 'Compras', 'Pagamentos'];
 
+interface TabPanelProps {
+  children?: React.ReactNode;
+  index: number;
+  value: number;
+}
+
+function TabPanel(props: TabPanelProps) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`financeiro-tabpanel-${index}`}
+      aria-labelledby={`financeiro-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 0 }}>
+          {children}
+        </Box>
+      )}
+    </div>
+  );
+}
+
+// Adicionar uma interface FormData que inclui todos os campos usados no componente, incluindo os novos campos
+interface FormData {
+  valor: string;
+  data: string;
+  descricao: string;
+  categoria: string;
+  observacao: string;
+  recorrencia: string;
+  // Campos de parcelamento
+  parcelamento?: {
+    habilitado: boolean;
+    quantidadeParcelas: number;
+    parcelas: Array<{
+      numero: number;
+      valorParcela: number;
+      dataPrevista: string;
+      pago: boolean;
+      dataPagamento?: string;
+    }>;
+  };
+  // Campos específicos para entradas
+  tipoEntrada?: TipoEntrada;
+  statusRecebimento?: StatusRecebimento;
+  dataPrevistaRecebimento?: string;
+  cliente?: string;
+  // Campos específicos para saídas
+  tipoDespesa?: TipoDespesa;
+  dataPrevistaPagamento?: string;
+  fornecedor?: string;
+  // Campos comuns adicionais
+  formaPagamento?: FormaPagamento;
+  numeroDocumento?: string;
+  categoriaPersonalizada?: string;
+}
+
 const Financeiro = () => {
   const { t, i18n } = useTranslation();
   const { hasPermission } = useAuth();
@@ -58,6 +125,7 @@ const Financeiro = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [openGraficos, setOpenGraficos] = useState(false);
   const [tipoTransacao, setTipoTransacao] = useState<'entrada' | 'saida'>('entrada');
+  const [tabValue, setTabValue] = useState(0);
   const [filtroDialogAberto, setFiltroDialogAberto] = useState(false);
   const [filtros, setFiltros] = useState({
     descricao: '',
@@ -76,7 +144,7 @@ const Financeiro = () => {
 
   const [filtrosAtivos, setFiltrosAtivos] = useState<FiltroAtivo[]>([]);
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     valor: '',
     data: format(new Date(), 'yyyy-MM-dd'),
     descricao: '',
@@ -124,6 +192,17 @@ const Financeiro = () => {
       observacao: '',
       recorrencia: 'nenhuma'
     });
+    setFormErrors({
+      valor: '',
+      data: '',
+      descricao: '',
+      categoria: '',
+      observacao: ''
+    });
+  };
+
+  const handleChangeTab = (event: React.SyntheticEvent, newValue: number) => {
+    setTabValue(newValue);
   };
 
   const handleSubmit = async () => {
@@ -145,16 +224,47 @@ const Financeiro = () => {
     try {
       await new Promise(resolve => setTimeout(resolve, 500));
       
-      await adicionarTransacao({
+      // Transformar o formData em uma transação
+      const novaTransacao = {
         tipo: tipoTransacao,
         valor: parseFloat(formData.valor),
         data: new Date(formData.data).toISOString(),
         descricao: formData.descricao,
         categoria: formData.categoria || t('finance_noCategory'),
-        metodoPagamento: formData.observacao || undefined,
+        // Incluir campos do parcelamento se estiver habilitado
+        ...(formData.parcelamento?.habilitado ? {
+          parcelamento: {
+            quantidadeParcelas: formData.parcelamento.quantidadeParcelas,
+            parcelas: formData.parcelamento.parcelas
+          }
+        } : {}),
+        // Campos específicos para entradas
+        ...(tipoTransacao === 'entrada' ? {
+          tipoEntrada: formData.tipoEntrada,
+          statusRecebimento: formData.statusRecebimento,
+          dataPrevistaRecebimento: formData.dataPrevistaRecebimento,
+          cliente: formData.cliente,
+        } : {}),
+        // Campos específicos para saídas
+        ...(tipoTransacao === 'saida' ? {
+          tipoDespesa: formData.tipoDespesa,
+          dataPrevistaPagamento: formData.dataPrevistaPagamento,
+          fornecedor: formData.fornecedor,
+        } : {}),
+        // Campos comuns
+        formaPagamento: formData.formaPagamento,
+        numeroDocumento: formData.numeroDocumento,
         observacao: formData.observacao
-      });
+      };
+      
+      // Adicionar transação
+      await adicionarTransacao(novaTransacao);
 
+      // Emitir evento apropriado
+      const eventName = tipoTransacao === 'entrada' ? 'entrada.criada' : 'pagamento.criado';
+      EventBus.emit(eventName, novaTransacao);
+
+      // Antigo sistema de pagamentos programados (pode ser removido posteriormente)
       if (formData.recorrencia !== 'nenhuma' && tipoTransacao === 'saida') {
         const novoPagamento: PagamentoProgramado = {
           id: generateSecureId('pagamento'),
@@ -198,24 +308,23 @@ const Financeiro = () => {
       observacao: ''
     };
     
-    const valorValidation = validateNumberField(formData.valor, t('valor'), { required: true, min: 0.01 });
-    if (!valorValidation.isValid) {
-      errors.valor = valorValidation.message || t('valorInvalido');
+    if (!validateNumberField(formData.valor, true)) {
+      errors.valor = t('validator_required');
+    } else if (parseFloat(formData.valor) <= 0) {
+      errors.valor = t('validator_positiveNumber');
     }
     
-    const dataValidation = validateDateField(formData.data, t('data'), { required: true });
-    if (!dataValidation.isValid) {
-      errors.data = dataValidation.message || t('dataInvalida');
+    if (!validateDateField(formData.data, true)) {
+      errors.data = t('validator_required');
     }
     
-    const descricaoValidation = validateTextField(formData.descricao, t('descricao'), { required: true, minLength: 3, maxLength: 100 });
-    if (!descricaoValidation.isValid) {
-      errors.descricao = descricaoValidation.message || t('descricaoInvalida');
+    if (!validateTextField(formData.descricao, true)) {
+      errors.descricao = t('validator_required');
     }
     
+    // Definir erros e verificar se há algum erro
     setFormErrors(errors);
-    
-    return !Object.values(errors).some(error => error !== '');
+    return !Object.values(errors).some(error => error);
   };
 
   const filtrarTransacoes = () => {
@@ -880,111 +989,147 @@ const Financeiro = () => {
         </Grid>
       </Grid>
 
-      <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
-        <DialogTitle>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            {tipoTransacao === 'entrada' ? <AddIcon sx={{ mr: 1 }} /> : <RemoveIcon sx={{ mr: 1 }} />}
-            {tipoTransacao === 'entrada' ? t('novaEntrada') : t('novaSaida')}
-          </Box>
+      <Dialog 
+        open={openDialog} 
+        onClose={handleCloseDialog}
+        maxWidth="md"
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 2,
+            boxShadow: 8,
+            overflow: 'hidden'
+          }
+        }}
+      >
+        <DialogTitle sx={{ 
+          borderBottom: 1, 
+          borderColor: 'divider', 
+          py: 2,
+          mb: 0,
+          bgcolor: tipoTransacao === 'entrada' ? 'success.light' : 'error.light',
+          color: 'white',
+          fontWeight: 'bold',
+          fontSize: '1.1rem'
+        }}>
+          {tipoTransacao === 'entrada' 
+            ? t('registrarNovaEntrada') 
+            : t('registrarNovaSaida')}
         </DialogTitle>
-        <DialogContent>
-          <Box sx={{ mt: 1 }}>
-            <TextField
-              autoFocus
-              margin="dense"
-              label={t('valor')}
-              type="number"
-              fullWidth
-              value={formData.valor}
-              onChange={(e) => setFormData({ ...formData, valor: e.target.value })}
-              error={!!formErrors.valor}
-              helperText={formErrors.valor}
-              InputProps={{
-                startAdornment: <InputAdornment position="start">€</InputAdornment>,
-                inputProps: { min: 0.01, step: 0.01 }
-              }}
-            />
-            <TextField
-              margin="dense"
-              label={t('data')}
-              type="date"
-              fullWidth
-              value={formData.data}
-              onChange={(e) => setFormData({ ...formData, data: e.target.value })}
-              error={!!formErrors.data}
-              helperText={formErrors.data}
-              InputLabelProps={{ shrink: true }}
-            />
-            <TextField
-              margin="dense"
-              label={t('descricao')}
-              fullWidth
-              value={formData.descricao}
-              onChange={(e) => setFormData({ ...formData, descricao: e.target.value })}
-              error={!!formErrors.descricao}
-              helperText={formErrors.descricao}
-              InputProps={{
-                inputProps: { maxLength: 100 }
-              }}
-            />
-            {tipoTransacao === 'saida' && (
-              <>
-                <TextField
-                  margin="dense"
-                  label={t('categoria')}
-                  select
-                  fullWidth
-                  value={formData.categoria}
-                  onChange={(e) => setFormData({ ...formData, categoria: e.target.value })}
-                  error={!!formErrors.categoria}
-                  helperText={formErrors.categoria}
-                >
-                  {getCategoriasSaida().map((categoria) => (
-                    <MenuItem key={categoria} value={categoria}>
-                      {categoria}
-                    </MenuItem>
-                  ))}
-                </TextField>
-                <FormControl fullWidth margin="dense">
-                  <InputLabel>{t('finance_recurrence')}</InputLabel>
-                  <Select
-                    value={formData.recorrencia}
-                    onChange={(e) => setFormData({ ...formData, recorrencia: e.target.value })}
-                    label={t('finance_recurrence')}
-                  >
-                    <MenuItem value="nenhuma">{t('finance_recurrence_none')}</MenuItem>
-                    <MenuItem value="quinzenal">{t('finance_recurrence_biweekly')}</MenuItem>
-                    <MenuItem value="mensal">{t('finance_recurrence_monthly')}</MenuItem>
-                    <MenuItem value="trimestral">{t('finance_recurrence_quarterly')}</MenuItem>
-                  </Select>
-                </FormControl>
-              </>
-            )}
-            <TextField
-              margin="dense"
-              label={t('observacao')}
-              fullWidth
-              multiline
-              rows={2}
-              value={formData.observacao}
-              onChange={(e) => setFormData({ ...formData, observacao: e.target.value })}
-              error={!!formErrors.observacao}
-              helperText={formErrors.observacao}
-              InputProps={{
-                inputProps: { maxLength: 200 }
-              }}
-            />
-          </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog} disabled={isSubmitting}>{t('cancelar')}</Button>
-          <Button 
-            onClick={handleSubmit} 
-            variant="contained" 
-            color={tipoTransacao === 'entrada' ? 'primary' : 'error'}
-            disabled={isSubmitting}
+
+        <Box 
+          sx={{ 
+            borderBottom: 1,
+            borderColor: 'divider',
+            bgcolor: 'background.paper'
+          }}
+        >
+          <Tabs
+            value={tabValue}
+            onChange={handleChangeTab}
+            aria-label="formulário de transação"
+            variant="fullWidth"
+            sx={{ 
+              '& .MuiTabs-indicator': {
+                height: 3,
+                backgroundColor: theme.palette.primary.main
+              },
+              '& .MuiTab-root': {
+                fontWeight: 'bold',
+                fontSize: '0.9rem',
+                py: 1.5,
+                '&.Mui-selected': {
+                  color: 'primary.main',
+                }
+              }
+            }}
           >
-            {isSubmitting ? <CircularProgress size={24} /> : t('confirmar')}
+            <Tab 
+              label={t('informacoesBasicas')} 
+              id="tab-0" 
+              aria-controls="tabpanel-0"
+              sx={{
+                borderRight: '1px solid',
+                borderColor: 'divider',
+              }}
+            />
+            {tipoTransacao === 'entrada' ? (
+              <Tab 
+                label={t('detalhesEntrada')} 
+                id="tab-1" 
+                aria-controls="tabpanel-1"
+              />
+            ) : (
+              <Tab 
+                label={t('detalhesSaida')} 
+                id="tab-1" 
+                aria-controls="tabpanel-1"
+              />
+            )}
+          </Tabs>
+        </Box>
+        
+        <DialogContent 
+          sx={{ 
+            p: 0,
+            '&.MuiDialogContent-root': {
+              pt: 0,
+              pb: 2
+            }
+          }}
+        >
+          <TabPanel value={tabValue} index={0}>
+            {tipoTransacao === 'entrada' ? (
+              <FormularioEntrada
+                formData={formData}
+                setFormData={setFormData}
+                formErrors={formErrors}
+                setFormErrors={setFormErrors}
+                onSubmit={handleSubmit}
+                isSubmitting={isSubmitting}
+              />
+            ) : (
+              <FormularioSaida
+                formData={formData}
+                setFormData={setFormData}
+                formErrors={formErrors}
+                setFormErrors={setFormErrors}
+                onSubmit={handleSubmit}
+                isSubmitting={isSubmitting}
+              />
+            )}
+          </TabPanel>
+          
+          <TabPanel value={tabValue} index={1}>
+            {tipoTransacao === 'entrada' ? (
+              <FormularioEntrada
+                formData={formData}
+                setFormData={setFormData}
+                formErrors={formErrors}
+                setFormErrors={setFormErrors}
+                onSubmit={handleSubmit}
+                isSubmitting={isSubmitting}
+              />
+            ) : (
+              <FormularioSaida
+                formData={formData}
+                setFormData={setFormData}
+                formErrors={formErrors}
+                setFormErrors={setFormErrors}
+                onSubmit={handleSubmit}
+                isSubmitting={isSubmitting}
+              />
+            )}
+          </TabPanel>
+        </DialogContent>
+        
+        <DialogActions sx={{ borderTop: 1, borderColor: 'divider', py: 1.5 }}>
+          <Button 
+            onClick={handleCloseDialog}
+            variant="outlined"
+            sx={{ mx: 2 }}
+          >
+            {t('cancelar')}
           </Button>
         </DialogActions>
       </Dialog>

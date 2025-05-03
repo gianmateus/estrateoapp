@@ -6,7 +6,8 @@
  * Exibe uma métrica financeira com ícone e valor formatado
  */
 import React from 'react';
-import { Card, CardContent, Typography, Box, SvgIconProps } from '@mui/material';
+import { CardContent, Typography, Box, SvgIconProps } from '@mui/material';
+import { AnimatedCard } from '../animations';
 
 interface ResumoMensalCardProps {
   title: string;           // Card title / Título do card
@@ -14,6 +15,7 @@ interface ResumoMensalCardProps {
   icon: React.ReactElement<SvgIconProps>; // Icon component / Componente de ícone
   color: string;           // Accent color / Cor de destaque
   isCount?: boolean;       // Whether the value is a count (not currency) / Se o valor é uma contagem (não moeda)
+  index?: number;          // Index for stagger animations / Índice para animações sequenciais
 }
 
 /**
@@ -26,7 +28,8 @@ const ResumoMensalCard: React.FC<ResumoMensalCardProps> = ({
   value, 
   icon, 
   color,
-  isCount = false 
+  isCount = false,
+  index = 0
 }) => {
   
   /**
@@ -46,7 +49,8 @@ const ResumoMensalCard: React.FC<ResumoMensalCardProps> = ({
   };
   
   return (
-    <Card 
+    <AnimatedCard
+      index={index}
       sx={{ 
         height: '100%',
         position: 'relative',
@@ -54,7 +58,6 @@ const ResumoMensalCard: React.FC<ResumoMensalCardProps> = ({
         transition: 'transform 0.3s',
         '&:hover': {
           transform: 'translateY(-5px)',
-          boxShadow: 6
         }
       }}
     >
@@ -84,7 +87,7 @@ const ResumoMensalCard: React.FC<ResumoMensalCardProps> = ({
           </Box>
         </Box>
       </CardContent>
-    </Card>
+    </AnimatedCard>
   );
 };
 

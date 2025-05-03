@@ -28,6 +28,21 @@ export type Pagamento = $Result.DefaultSelection<Prisma.$PagamentoPayload>
  * 
  */
 export type Inventario = $Result.DefaultSelection<Prisma.$InventarioPayload>
+/**
+ * Model Funcionario
+ * 
+ */
+export type Funcionario = $Result.DefaultSelection<Prisma.$FuncionarioPayload>
+/**
+ * Model ControleJornada
+ * 
+ */
+export type ControleJornada = $Result.DefaultSelection<Prisma.$ControleJornadaPayload>
+/**
+ * Model ResumoPagamento
+ * 
+ */
+export type ResumoPagamento = $Result.DefaultSelection<Prisma.$ResumoPagamentoPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -183,6 +198,36 @@ export class PrismaClient<
     * ```
     */
   get inventario(): Prisma.InventarioDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.funcionario`: Exposes CRUD operations for the **Funcionario** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Funcionarios
+    * const funcionarios = await prisma.funcionario.findMany()
+    * ```
+    */
+  get funcionario(): Prisma.FuncionarioDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.controleJornada`: Exposes CRUD operations for the **ControleJornada** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ControleJornadas
+    * const controleJornadas = await prisma.controleJornada.findMany()
+    * ```
+    */
+  get controleJornada(): Prisma.ControleJornadaDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.resumoPagamento`: Exposes CRUD operations for the **ResumoPagamento** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ResumoPagamentos
+    * const resumoPagamentos = await prisma.resumoPagamento.findMany()
+    * ```
+    */
+  get resumoPagamento(): Prisma.ResumoPagamentoDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -625,7 +670,10 @@ export namespace Prisma {
   export const ModelName: {
     User: 'User',
     Pagamento: 'Pagamento',
-    Inventario: 'Inventario'
+    Inventario: 'Inventario',
+    Funcionario: 'Funcionario',
+    ControleJornada: 'ControleJornada',
+    ResumoPagamento: 'ResumoPagamento'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -644,7 +692,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "pagamento" | "inventario"
+      modelProps: "user" | "pagamento" | "inventario" | "funcionario" | "controleJornada" | "resumoPagamento"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -870,6 +918,228 @@ export namespace Prisma {
           }
         }
       }
+      Funcionario: {
+        payload: Prisma.$FuncionarioPayload<ExtArgs>
+        fields: Prisma.FuncionarioFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.FuncionarioFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FuncionarioPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.FuncionarioFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FuncionarioPayload>
+          }
+          findFirst: {
+            args: Prisma.FuncionarioFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FuncionarioPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.FuncionarioFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FuncionarioPayload>
+          }
+          findMany: {
+            args: Prisma.FuncionarioFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FuncionarioPayload>[]
+          }
+          create: {
+            args: Prisma.FuncionarioCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FuncionarioPayload>
+          }
+          createMany: {
+            args: Prisma.FuncionarioCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.FuncionarioCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FuncionarioPayload>[]
+          }
+          delete: {
+            args: Prisma.FuncionarioDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FuncionarioPayload>
+          }
+          update: {
+            args: Prisma.FuncionarioUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FuncionarioPayload>
+          }
+          deleteMany: {
+            args: Prisma.FuncionarioDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.FuncionarioUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.FuncionarioUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FuncionarioPayload>[]
+          }
+          upsert: {
+            args: Prisma.FuncionarioUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FuncionarioPayload>
+          }
+          aggregate: {
+            args: Prisma.FuncionarioAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateFuncionario>
+          }
+          groupBy: {
+            args: Prisma.FuncionarioGroupByArgs<ExtArgs>
+            result: $Utils.Optional<FuncionarioGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.FuncionarioCountArgs<ExtArgs>
+            result: $Utils.Optional<FuncionarioCountAggregateOutputType> | number
+          }
+        }
+      }
+      ControleJornada: {
+        payload: Prisma.$ControleJornadaPayload<ExtArgs>
+        fields: Prisma.ControleJornadaFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ControleJornadaFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ControleJornadaPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ControleJornadaFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ControleJornadaPayload>
+          }
+          findFirst: {
+            args: Prisma.ControleJornadaFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ControleJornadaPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ControleJornadaFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ControleJornadaPayload>
+          }
+          findMany: {
+            args: Prisma.ControleJornadaFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ControleJornadaPayload>[]
+          }
+          create: {
+            args: Prisma.ControleJornadaCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ControleJornadaPayload>
+          }
+          createMany: {
+            args: Prisma.ControleJornadaCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ControleJornadaCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ControleJornadaPayload>[]
+          }
+          delete: {
+            args: Prisma.ControleJornadaDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ControleJornadaPayload>
+          }
+          update: {
+            args: Prisma.ControleJornadaUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ControleJornadaPayload>
+          }
+          deleteMany: {
+            args: Prisma.ControleJornadaDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ControleJornadaUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ControleJornadaUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ControleJornadaPayload>[]
+          }
+          upsert: {
+            args: Prisma.ControleJornadaUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ControleJornadaPayload>
+          }
+          aggregate: {
+            args: Prisma.ControleJornadaAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateControleJornada>
+          }
+          groupBy: {
+            args: Prisma.ControleJornadaGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ControleJornadaGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ControleJornadaCountArgs<ExtArgs>
+            result: $Utils.Optional<ControleJornadaCountAggregateOutputType> | number
+          }
+        }
+      }
+      ResumoPagamento: {
+        payload: Prisma.$ResumoPagamentoPayload<ExtArgs>
+        fields: Prisma.ResumoPagamentoFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ResumoPagamentoFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ResumoPagamentoPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ResumoPagamentoFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ResumoPagamentoPayload>
+          }
+          findFirst: {
+            args: Prisma.ResumoPagamentoFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ResumoPagamentoPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ResumoPagamentoFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ResumoPagamentoPayload>
+          }
+          findMany: {
+            args: Prisma.ResumoPagamentoFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ResumoPagamentoPayload>[]
+          }
+          create: {
+            args: Prisma.ResumoPagamentoCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ResumoPagamentoPayload>
+          }
+          createMany: {
+            args: Prisma.ResumoPagamentoCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ResumoPagamentoCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ResumoPagamentoPayload>[]
+          }
+          delete: {
+            args: Prisma.ResumoPagamentoDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ResumoPagamentoPayload>
+          }
+          update: {
+            args: Prisma.ResumoPagamentoUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ResumoPagamentoPayload>
+          }
+          deleteMany: {
+            args: Prisma.ResumoPagamentoDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ResumoPagamentoUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ResumoPagamentoUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ResumoPagamentoPayload>[]
+          }
+          upsert: {
+            args: Prisma.ResumoPagamentoUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ResumoPagamentoPayload>
+          }
+          aggregate: {
+            args: Prisma.ResumoPagamentoAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateResumoPagamento>
+          }
+          groupBy: {
+            args: Prisma.ResumoPagamentoGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ResumoPagamentoGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ResumoPagamentoCountArgs<ExtArgs>
+            result: $Utils.Optional<ResumoPagamentoCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -957,6 +1227,9 @@ export namespace Prisma {
     user?: UserOmit
     pagamento?: PagamentoOmit
     inventario?: InventarioOmit
+    funcionario?: FuncionarioOmit
+    controleJornada?: ControleJornadaOmit
+    resumoPagamento?: ResumoPagamentoOmit
   }
 
   /* Types for Logging */
@@ -1087,6 +1360,46 @@ export namespace Prisma {
 
 
   /**
+   * Count Type FuncionarioCountOutputType
+   */
+
+  export type FuncionarioCountOutputType = {
+    controleJornada: number
+    resumoPagamento: number
+  }
+
+  export type FuncionarioCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    controleJornada?: boolean | FuncionarioCountOutputTypeCountControleJornadaArgs
+    resumoPagamento?: boolean | FuncionarioCountOutputTypeCountResumoPagamentoArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * FuncionarioCountOutputType without action
+   */
+  export type FuncionarioCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FuncionarioCountOutputType
+     */
+    select?: FuncionarioCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * FuncionarioCountOutputType without action
+   */
+  export type FuncionarioCountOutputTypeCountControleJornadaArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ControleJornadaWhereInput
+  }
+
+  /**
+   * FuncionarioCountOutputType without action
+   */
+  export type FuncionarioCountOutputTypeCountResumoPagamentoArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ResumoPagamentoWhereInput
+  }
+
+
+  /**
    * Models
    */
 
@@ -1121,6 +1434,8 @@ export namespace Prisma {
     permissoes: string | null
     tipoNegocio: string | null
     numeroFuncionarios: number | null
+    passwordResetToken: string | null
+    passwordResetExpires: Date | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -1136,6 +1451,8 @@ export namespace Prisma {
     permissoes: string | null
     tipoNegocio: string | null
     numeroFuncionarios: number | null
+    passwordResetToken: string | null
+    passwordResetExpires: Date | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -1151,6 +1468,8 @@ export namespace Prisma {
     permissoes: number
     tipoNegocio: number
     numeroFuncionarios: number
+    passwordResetToken: number
+    passwordResetExpires: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -1176,6 +1495,8 @@ export namespace Prisma {
     permissoes?: true
     tipoNegocio?: true
     numeroFuncionarios?: true
+    passwordResetToken?: true
+    passwordResetExpires?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -1191,6 +1512,8 @@ export namespace Prisma {
     permissoes?: true
     tipoNegocio?: true
     numeroFuncionarios?: true
+    passwordResetToken?: true
+    passwordResetExpires?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -1206,6 +1529,8 @@ export namespace Prisma {
     permissoes?: true
     tipoNegocio?: true
     numeroFuncionarios?: true
+    passwordResetToken?: true
+    passwordResetExpires?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -1308,6 +1633,8 @@ export namespace Prisma {
     permissoes: string
     tipoNegocio: string | null
     numeroFuncionarios: number | null
+    passwordResetToken: string | null
+    passwordResetExpires: Date | null
     createdAt: Date
     updatedAt: Date
     _count: UserCountAggregateOutputType | null
@@ -1342,6 +1669,8 @@ export namespace Prisma {
     permissoes?: boolean
     tipoNegocio?: boolean
     numeroFuncionarios?: boolean
+    passwordResetToken?: boolean
+    passwordResetExpires?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     pagamentos?: boolean | User$pagamentosArgs<ExtArgs>
@@ -1360,6 +1689,8 @@ export namespace Prisma {
     permissoes?: boolean
     tipoNegocio?: boolean
     numeroFuncionarios?: boolean
+    passwordResetToken?: boolean
+    passwordResetExpires?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["user"]>
@@ -1375,6 +1706,8 @@ export namespace Prisma {
     permissoes?: boolean
     tipoNegocio?: boolean
     numeroFuncionarios?: boolean
+    passwordResetToken?: boolean
+    passwordResetExpires?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["user"]>
@@ -1390,11 +1723,13 @@ export namespace Prisma {
     permissoes?: boolean
     tipoNegocio?: boolean
     numeroFuncionarios?: boolean
+    passwordResetToken?: boolean
+    passwordResetExpires?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nome" | "email" | "cargo" | "telefone" | "setor" | "password" | "permissoes" | "tipoNegocio" | "numeroFuncionarios" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nome" | "email" | "cargo" | "telefone" | "setor" | "password" | "permissoes" | "tipoNegocio" | "numeroFuncionarios" | "passwordResetToken" | "passwordResetExpires" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     pagamentos?: boolean | User$pagamentosArgs<ExtArgs>
     inventario?: boolean | User$inventarioArgs<ExtArgs>
@@ -1420,6 +1755,8 @@ export namespace Prisma {
       permissoes: string
       tipoNegocio: string | null
       numeroFuncionarios: number | null
+      passwordResetToken: string | null
+      passwordResetExpires: Date | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["user"]>
@@ -1857,6 +2194,8 @@ export namespace Prisma {
     readonly permissoes: FieldRef<"User", 'String'>
     readonly tipoNegocio: FieldRef<"User", 'String'>
     readonly numeroFuncionarios: FieldRef<"User", 'Int'>
+    readonly passwordResetToken: FieldRef<"User", 'String'>
+    readonly passwordResetExpires: FieldRef<"User", 'DateTime'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
   }
@@ -2088,6 +2427,7 @@ export namespace Prisma {
      * The data used to create many Users.
      */
     data: UserCreateManyInput | UserCreateManyInput[]
+    skipDuplicates?: boolean
   }
 
   /**
@@ -2106,6 +2446,7 @@ export namespace Prisma {
      * The data used to create many Users.
      */
     data: UserCreateManyInput | UserCreateManyInput[]
+    skipDuplicates?: boolean
   }
 
   /**
@@ -3257,6 +3598,7 @@ export namespace Prisma {
      * The data used to create many Pagamentos.
      */
     data: PagamentoCreateManyInput | PagamentoCreateManyInput[]
+    skipDuplicates?: boolean
   }
 
   /**
@@ -3275,6 +3617,7 @@ export namespace Prisma {
      * The data used to create many Pagamentos.
      */
     data: PagamentoCreateManyInput | PagamentoCreateManyInput[]
+    skipDuplicates?: boolean
     /**
      * Choose, which related nodes to fetch as well
      */
@@ -4377,6 +4720,7 @@ export namespace Prisma {
      * The data used to create many Inventarios.
      */
     data: InventarioCreateManyInput | InventarioCreateManyInput[]
+    skipDuplicates?: boolean
   }
 
   /**
@@ -4395,6 +4739,7 @@ export namespace Prisma {
      * The data used to create many Inventarios.
      */
     data: InventarioCreateManyInput | InventarioCreateManyInput[]
+    skipDuplicates?: boolean
     /**
      * Choose, which related nodes to fetch as well
      */
@@ -4561,10 +4906,3631 @@ export namespace Prisma {
 
 
   /**
+   * Model Funcionario
+   */
+
+  export type AggregateFuncionario = {
+    _count: FuncionarioCountAggregateOutputType | null
+    _avg: FuncionarioAvgAggregateOutputType | null
+    _sum: FuncionarioSumAggregateOutputType | null
+    _min: FuncionarioMinAggregateOutputType | null
+    _max: FuncionarioMaxAggregateOutputType | null
+  }
+
+  export type FuncionarioAvgAggregateOutputType = {
+    salarioBruto: number | null
+    horasSemana: number | null
+  }
+
+  export type FuncionarioSumAggregateOutputType = {
+    salarioBruto: number | null
+    horasSemana: number | null
+  }
+
+  export type FuncionarioMinAggregateOutputType = {
+    id: string | null
+    nome: string | null
+    cargo: string | null
+    tipoContrato: string | null
+    dataAdmissao: Date | null
+    salarioBruto: number | null
+    pagamentoPorHora: boolean | null
+    horasSemana: number | null
+    iban: string | null
+    status: string | null
+    observacoes: string | null
+    contratoUploadUrl: string | null
+    dataCriacao: Date | null
+    dataAtualizacao: Date | null
+  }
+
+  export type FuncionarioMaxAggregateOutputType = {
+    id: string | null
+    nome: string | null
+    cargo: string | null
+    tipoContrato: string | null
+    dataAdmissao: Date | null
+    salarioBruto: number | null
+    pagamentoPorHora: boolean | null
+    horasSemana: number | null
+    iban: string | null
+    status: string | null
+    observacoes: string | null
+    contratoUploadUrl: string | null
+    dataCriacao: Date | null
+    dataAtualizacao: Date | null
+  }
+
+  export type FuncionarioCountAggregateOutputType = {
+    id: number
+    nome: number
+    cargo: number
+    tipoContrato: number
+    dataAdmissao: number
+    salarioBruto: number
+    pagamentoPorHora: number
+    horasSemana: number
+    diasTrabalho: number
+    iban: number
+    status: number
+    observacoes: number
+    contratoUploadUrl: number
+    dataCriacao: number
+    dataAtualizacao: number
+    _all: number
+  }
+
+
+  export type FuncionarioAvgAggregateInputType = {
+    salarioBruto?: true
+    horasSemana?: true
+  }
+
+  export type FuncionarioSumAggregateInputType = {
+    salarioBruto?: true
+    horasSemana?: true
+  }
+
+  export type FuncionarioMinAggregateInputType = {
+    id?: true
+    nome?: true
+    cargo?: true
+    tipoContrato?: true
+    dataAdmissao?: true
+    salarioBruto?: true
+    pagamentoPorHora?: true
+    horasSemana?: true
+    iban?: true
+    status?: true
+    observacoes?: true
+    contratoUploadUrl?: true
+    dataCriacao?: true
+    dataAtualizacao?: true
+  }
+
+  export type FuncionarioMaxAggregateInputType = {
+    id?: true
+    nome?: true
+    cargo?: true
+    tipoContrato?: true
+    dataAdmissao?: true
+    salarioBruto?: true
+    pagamentoPorHora?: true
+    horasSemana?: true
+    iban?: true
+    status?: true
+    observacoes?: true
+    contratoUploadUrl?: true
+    dataCriacao?: true
+    dataAtualizacao?: true
+  }
+
+  export type FuncionarioCountAggregateInputType = {
+    id?: true
+    nome?: true
+    cargo?: true
+    tipoContrato?: true
+    dataAdmissao?: true
+    salarioBruto?: true
+    pagamentoPorHora?: true
+    horasSemana?: true
+    diasTrabalho?: true
+    iban?: true
+    status?: true
+    observacoes?: true
+    contratoUploadUrl?: true
+    dataCriacao?: true
+    dataAtualizacao?: true
+    _all?: true
+  }
+
+  export type FuncionarioAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Funcionario to aggregate.
+     */
+    where?: FuncionarioWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Funcionarios to fetch.
+     */
+    orderBy?: FuncionarioOrderByWithRelationInput | FuncionarioOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: FuncionarioWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Funcionarios from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Funcionarios.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Funcionarios
+    **/
+    _count?: true | FuncionarioCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: FuncionarioAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: FuncionarioSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: FuncionarioMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: FuncionarioMaxAggregateInputType
+  }
+
+  export type GetFuncionarioAggregateType<T extends FuncionarioAggregateArgs> = {
+        [P in keyof T & keyof AggregateFuncionario]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateFuncionario[P]>
+      : GetScalarType<T[P], AggregateFuncionario[P]>
+  }
+
+
+
+
+  export type FuncionarioGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FuncionarioWhereInput
+    orderBy?: FuncionarioOrderByWithAggregationInput | FuncionarioOrderByWithAggregationInput[]
+    by: FuncionarioScalarFieldEnum[] | FuncionarioScalarFieldEnum
+    having?: FuncionarioScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: FuncionarioCountAggregateInputType | true
+    _avg?: FuncionarioAvgAggregateInputType
+    _sum?: FuncionarioSumAggregateInputType
+    _min?: FuncionarioMinAggregateInputType
+    _max?: FuncionarioMaxAggregateInputType
+  }
+
+  export type FuncionarioGroupByOutputType = {
+    id: string
+    nome: string
+    cargo: string
+    tipoContrato: string
+    dataAdmissao: Date
+    salarioBruto: number
+    pagamentoPorHora: boolean
+    horasSemana: number
+    diasTrabalho: string[]
+    iban: string | null
+    status: string
+    observacoes: string | null
+    contratoUploadUrl: string | null
+    dataCriacao: Date
+    dataAtualizacao: Date
+    _count: FuncionarioCountAggregateOutputType | null
+    _avg: FuncionarioAvgAggregateOutputType | null
+    _sum: FuncionarioSumAggregateOutputType | null
+    _min: FuncionarioMinAggregateOutputType | null
+    _max: FuncionarioMaxAggregateOutputType | null
+  }
+
+  type GetFuncionarioGroupByPayload<T extends FuncionarioGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<FuncionarioGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof FuncionarioGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], FuncionarioGroupByOutputType[P]>
+            : GetScalarType<T[P], FuncionarioGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type FuncionarioSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    nome?: boolean
+    cargo?: boolean
+    tipoContrato?: boolean
+    dataAdmissao?: boolean
+    salarioBruto?: boolean
+    pagamentoPorHora?: boolean
+    horasSemana?: boolean
+    diasTrabalho?: boolean
+    iban?: boolean
+    status?: boolean
+    observacoes?: boolean
+    contratoUploadUrl?: boolean
+    dataCriacao?: boolean
+    dataAtualizacao?: boolean
+    controleJornada?: boolean | Funcionario$controleJornadaArgs<ExtArgs>
+    resumoPagamento?: boolean | Funcionario$resumoPagamentoArgs<ExtArgs>
+    _count?: boolean | FuncionarioCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["funcionario"]>
+
+  export type FuncionarioSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    nome?: boolean
+    cargo?: boolean
+    tipoContrato?: boolean
+    dataAdmissao?: boolean
+    salarioBruto?: boolean
+    pagamentoPorHora?: boolean
+    horasSemana?: boolean
+    diasTrabalho?: boolean
+    iban?: boolean
+    status?: boolean
+    observacoes?: boolean
+    contratoUploadUrl?: boolean
+    dataCriacao?: boolean
+    dataAtualizacao?: boolean
+  }, ExtArgs["result"]["funcionario"]>
+
+  export type FuncionarioSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    nome?: boolean
+    cargo?: boolean
+    tipoContrato?: boolean
+    dataAdmissao?: boolean
+    salarioBruto?: boolean
+    pagamentoPorHora?: boolean
+    horasSemana?: boolean
+    diasTrabalho?: boolean
+    iban?: boolean
+    status?: boolean
+    observacoes?: boolean
+    contratoUploadUrl?: boolean
+    dataCriacao?: boolean
+    dataAtualizacao?: boolean
+  }, ExtArgs["result"]["funcionario"]>
+
+  export type FuncionarioSelectScalar = {
+    id?: boolean
+    nome?: boolean
+    cargo?: boolean
+    tipoContrato?: boolean
+    dataAdmissao?: boolean
+    salarioBruto?: boolean
+    pagamentoPorHora?: boolean
+    horasSemana?: boolean
+    diasTrabalho?: boolean
+    iban?: boolean
+    status?: boolean
+    observacoes?: boolean
+    contratoUploadUrl?: boolean
+    dataCriacao?: boolean
+    dataAtualizacao?: boolean
+  }
+
+  export type FuncionarioOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nome" | "cargo" | "tipoContrato" | "dataAdmissao" | "salarioBruto" | "pagamentoPorHora" | "horasSemana" | "diasTrabalho" | "iban" | "status" | "observacoes" | "contratoUploadUrl" | "dataCriacao" | "dataAtualizacao", ExtArgs["result"]["funcionario"]>
+  export type FuncionarioInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    controleJornada?: boolean | Funcionario$controleJornadaArgs<ExtArgs>
+    resumoPagamento?: boolean | Funcionario$resumoPagamentoArgs<ExtArgs>
+    _count?: boolean | FuncionarioCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type FuncionarioIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type FuncionarioIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $FuncionarioPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Funcionario"
+    objects: {
+      controleJornada: Prisma.$ControleJornadaPayload<ExtArgs>[]
+      resumoPagamento: Prisma.$ResumoPagamentoPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      nome: string
+      cargo: string
+      tipoContrato: string
+      dataAdmissao: Date
+      salarioBruto: number
+      pagamentoPorHora: boolean
+      horasSemana: number
+      diasTrabalho: string[]
+      iban: string | null
+      status: string
+      observacoes: string | null
+      contratoUploadUrl: string | null
+      dataCriacao: Date
+      dataAtualizacao: Date
+    }, ExtArgs["result"]["funcionario"]>
+    composites: {}
+  }
+
+  type FuncionarioGetPayload<S extends boolean | null | undefined | FuncionarioDefaultArgs> = $Result.GetResult<Prisma.$FuncionarioPayload, S>
+
+  type FuncionarioCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<FuncionarioFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: FuncionarioCountAggregateInputType | true
+    }
+
+  export interface FuncionarioDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Funcionario'], meta: { name: 'Funcionario' } }
+    /**
+     * Find zero or one Funcionario that matches the filter.
+     * @param {FuncionarioFindUniqueArgs} args - Arguments to find a Funcionario
+     * @example
+     * // Get one Funcionario
+     * const funcionario = await prisma.funcionario.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends FuncionarioFindUniqueArgs>(args: SelectSubset<T, FuncionarioFindUniqueArgs<ExtArgs>>): Prisma__FuncionarioClient<$Result.GetResult<Prisma.$FuncionarioPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Funcionario that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {FuncionarioFindUniqueOrThrowArgs} args - Arguments to find a Funcionario
+     * @example
+     * // Get one Funcionario
+     * const funcionario = await prisma.funcionario.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends FuncionarioFindUniqueOrThrowArgs>(args: SelectSubset<T, FuncionarioFindUniqueOrThrowArgs<ExtArgs>>): Prisma__FuncionarioClient<$Result.GetResult<Prisma.$FuncionarioPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Funcionario that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FuncionarioFindFirstArgs} args - Arguments to find a Funcionario
+     * @example
+     * // Get one Funcionario
+     * const funcionario = await prisma.funcionario.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends FuncionarioFindFirstArgs>(args?: SelectSubset<T, FuncionarioFindFirstArgs<ExtArgs>>): Prisma__FuncionarioClient<$Result.GetResult<Prisma.$FuncionarioPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Funcionario that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FuncionarioFindFirstOrThrowArgs} args - Arguments to find a Funcionario
+     * @example
+     * // Get one Funcionario
+     * const funcionario = await prisma.funcionario.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends FuncionarioFindFirstOrThrowArgs>(args?: SelectSubset<T, FuncionarioFindFirstOrThrowArgs<ExtArgs>>): Prisma__FuncionarioClient<$Result.GetResult<Prisma.$FuncionarioPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Funcionarios that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FuncionarioFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Funcionarios
+     * const funcionarios = await prisma.funcionario.findMany()
+     * 
+     * // Get first 10 Funcionarios
+     * const funcionarios = await prisma.funcionario.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const funcionarioWithIdOnly = await prisma.funcionario.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends FuncionarioFindManyArgs>(args?: SelectSubset<T, FuncionarioFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FuncionarioPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Funcionario.
+     * @param {FuncionarioCreateArgs} args - Arguments to create a Funcionario.
+     * @example
+     * // Create one Funcionario
+     * const Funcionario = await prisma.funcionario.create({
+     *   data: {
+     *     // ... data to create a Funcionario
+     *   }
+     * })
+     * 
+     */
+    create<T extends FuncionarioCreateArgs>(args: SelectSubset<T, FuncionarioCreateArgs<ExtArgs>>): Prisma__FuncionarioClient<$Result.GetResult<Prisma.$FuncionarioPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Funcionarios.
+     * @param {FuncionarioCreateManyArgs} args - Arguments to create many Funcionarios.
+     * @example
+     * // Create many Funcionarios
+     * const funcionario = await prisma.funcionario.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends FuncionarioCreateManyArgs>(args?: SelectSubset<T, FuncionarioCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Funcionarios and returns the data saved in the database.
+     * @param {FuncionarioCreateManyAndReturnArgs} args - Arguments to create many Funcionarios.
+     * @example
+     * // Create many Funcionarios
+     * const funcionario = await prisma.funcionario.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Funcionarios and only return the `id`
+     * const funcionarioWithIdOnly = await prisma.funcionario.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends FuncionarioCreateManyAndReturnArgs>(args?: SelectSubset<T, FuncionarioCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FuncionarioPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Funcionario.
+     * @param {FuncionarioDeleteArgs} args - Arguments to delete one Funcionario.
+     * @example
+     * // Delete one Funcionario
+     * const Funcionario = await prisma.funcionario.delete({
+     *   where: {
+     *     // ... filter to delete one Funcionario
+     *   }
+     * })
+     * 
+     */
+    delete<T extends FuncionarioDeleteArgs>(args: SelectSubset<T, FuncionarioDeleteArgs<ExtArgs>>): Prisma__FuncionarioClient<$Result.GetResult<Prisma.$FuncionarioPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Funcionario.
+     * @param {FuncionarioUpdateArgs} args - Arguments to update one Funcionario.
+     * @example
+     * // Update one Funcionario
+     * const funcionario = await prisma.funcionario.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends FuncionarioUpdateArgs>(args: SelectSubset<T, FuncionarioUpdateArgs<ExtArgs>>): Prisma__FuncionarioClient<$Result.GetResult<Prisma.$FuncionarioPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Funcionarios.
+     * @param {FuncionarioDeleteManyArgs} args - Arguments to filter Funcionarios to delete.
+     * @example
+     * // Delete a few Funcionarios
+     * const { count } = await prisma.funcionario.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends FuncionarioDeleteManyArgs>(args?: SelectSubset<T, FuncionarioDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Funcionarios.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FuncionarioUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Funcionarios
+     * const funcionario = await prisma.funcionario.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends FuncionarioUpdateManyArgs>(args: SelectSubset<T, FuncionarioUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Funcionarios and returns the data updated in the database.
+     * @param {FuncionarioUpdateManyAndReturnArgs} args - Arguments to update many Funcionarios.
+     * @example
+     * // Update many Funcionarios
+     * const funcionario = await prisma.funcionario.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Funcionarios and only return the `id`
+     * const funcionarioWithIdOnly = await prisma.funcionario.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends FuncionarioUpdateManyAndReturnArgs>(args: SelectSubset<T, FuncionarioUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FuncionarioPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Funcionario.
+     * @param {FuncionarioUpsertArgs} args - Arguments to update or create a Funcionario.
+     * @example
+     * // Update or create a Funcionario
+     * const funcionario = await prisma.funcionario.upsert({
+     *   create: {
+     *     // ... data to create a Funcionario
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Funcionario we want to update
+     *   }
+     * })
+     */
+    upsert<T extends FuncionarioUpsertArgs>(args: SelectSubset<T, FuncionarioUpsertArgs<ExtArgs>>): Prisma__FuncionarioClient<$Result.GetResult<Prisma.$FuncionarioPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Funcionarios.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FuncionarioCountArgs} args - Arguments to filter Funcionarios to count.
+     * @example
+     * // Count the number of Funcionarios
+     * const count = await prisma.funcionario.count({
+     *   where: {
+     *     // ... the filter for the Funcionarios we want to count
+     *   }
+     * })
+    **/
+    count<T extends FuncionarioCountArgs>(
+      args?: Subset<T, FuncionarioCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], FuncionarioCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Funcionario.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FuncionarioAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends FuncionarioAggregateArgs>(args: Subset<T, FuncionarioAggregateArgs>): Prisma.PrismaPromise<GetFuncionarioAggregateType<T>>
+
+    /**
+     * Group by Funcionario.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FuncionarioGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends FuncionarioGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: FuncionarioGroupByArgs['orderBy'] }
+        : { orderBy?: FuncionarioGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, FuncionarioGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetFuncionarioGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Funcionario model
+   */
+  readonly fields: FuncionarioFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Funcionario.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__FuncionarioClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    controleJornada<T extends Funcionario$controleJornadaArgs<ExtArgs> = {}>(args?: Subset<T, Funcionario$controleJornadaArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ControleJornadaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    resumoPagamento<T extends Funcionario$resumoPagamentoArgs<ExtArgs> = {}>(args?: Subset<T, Funcionario$resumoPagamentoArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ResumoPagamentoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Funcionario model
+   */
+  interface FuncionarioFieldRefs {
+    readonly id: FieldRef<"Funcionario", 'String'>
+    readonly nome: FieldRef<"Funcionario", 'String'>
+    readonly cargo: FieldRef<"Funcionario", 'String'>
+    readonly tipoContrato: FieldRef<"Funcionario", 'String'>
+    readonly dataAdmissao: FieldRef<"Funcionario", 'DateTime'>
+    readonly salarioBruto: FieldRef<"Funcionario", 'Float'>
+    readonly pagamentoPorHora: FieldRef<"Funcionario", 'Boolean'>
+    readonly horasSemana: FieldRef<"Funcionario", 'Float'>
+    readonly diasTrabalho: FieldRef<"Funcionario", 'String[]'>
+    readonly iban: FieldRef<"Funcionario", 'String'>
+    readonly status: FieldRef<"Funcionario", 'String'>
+    readonly observacoes: FieldRef<"Funcionario", 'String'>
+    readonly contratoUploadUrl: FieldRef<"Funcionario", 'String'>
+    readonly dataCriacao: FieldRef<"Funcionario", 'DateTime'>
+    readonly dataAtualizacao: FieldRef<"Funcionario", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Funcionario findUnique
+   */
+  export type FuncionarioFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Funcionario
+     */
+    select?: FuncionarioSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Funcionario
+     */
+    omit?: FuncionarioOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FuncionarioInclude<ExtArgs> | null
+    /**
+     * Filter, which Funcionario to fetch.
+     */
+    where: FuncionarioWhereUniqueInput
+  }
+
+  /**
+   * Funcionario findUniqueOrThrow
+   */
+  export type FuncionarioFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Funcionario
+     */
+    select?: FuncionarioSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Funcionario
+     */
+    omit?: FuncionarioOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FuncionarioInclude<ExtArgs> | null
+    /**
+     * Filter, which Funcionario to fetch.
+     */
+    where: FuncionarioWhereUniqueInput
+  }
+
+  /**
+   * Funcionario findFirst
+   */
+  export type FuncionarioFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Funcionario
+     */
+    select?: FuncionarioSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Funcionario
+     */
+    omit?: FuncionarioOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FuncionarioInclude<ExtArgs> | null
+    /**
+     * Filter, which Funcionario to fetch.
+     */
+    where?: FuncionarioWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Funcionarios to fetch.
+     */
+    orderBy?: FuncionarioOrderByWithRelationInput | FuncionarioOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Funcionarios.
+     */
+    cursor?: FuncionarioWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Funcionarios from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Funcionarios.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Funcionarios.
+     */
+    distinct?: FuncionarioScalarFieldEnum | FuncionarioScalarFieldEnum[]
+  }
+
+  /**
+   * Funcionario findFirstOrThrow
+   */
+  export type FuncionarioFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Funcionario
+     */
+    select?: FuncionarioSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Funcionario
+     */
+    omit?: FuncionarioOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FuncionarioInclude<ExtArgs> | null
+    /**
+     * Filter, which Funcionario to fetch.
+     */
+    where?: FuncionarioWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Funcionarios to fetch.
+     */
+    orderBy?: FuncionarioOrderByWithRelationInput | FuncionarioOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Funcionarios.
+     */
+    cursor?: FuncionarioWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Funcionarios from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Funcionarios.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Funcionarios.
+     */
+    distinct?: FuncionarioScalarFieldEnum | FuncionarioScalarFieldEnum[]
+  }
+
+  /**
+   * Funcionario findMany
+   */
+  export type FuncionarioFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Funcionario
+     */
+    select?: FuncionarioSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Funcionario
+     */
+    omit?: FuncionarioOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FuncionarioInclude<ExtArgs> | null
+    /**
+     * Filter, which Funcionarios to fetch.
+     */
+    where?: FuncionarioWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Funcionarios to fetch.
+     */
+    orderBy?: FuncionarioOrderByWithRelationInput | FuncionarioOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Funcionarios.
+     */
+    cursor?: FuncionarioWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Funcionarios from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Funcionarios.
+     */
+    skip?: number
+    distinct?: FuncionarioScalarFieldEnum | FuncionarioScalarFieldEnum[]
+  }
+
+  /**
+   * Funcionario create
+   */
+  export type FuncionarioCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Funcionario
+     */
+    select?: FuncionarioSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Funcionario
+     */
+    omit?: FuncionarioOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FuncionarioInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Funcionario.
+     */
+    data: XOR<FuncionarioCreateInput, FuncionarioUncheckedCreateInput>
+  }
+
+  /**
+   * Funcionario createMany
+   */
+  export type FuncionarioCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Funcionarios.
+     */
+    data: FuncionarioCreateManyInput | FuncionarioCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Funcionario createManyAndReturn
+   */
+  export type FuncionarioCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Funcionario
+     */
+    select?: FuncionarioSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Funcionario
+     */
+    omit?: FuncionarioOmit<ExtArgs> | null
+    /**
+     * The data used to create many Funcionarios.
+     */
+    data: FuncionarioCreateManyInput | FuncionarioCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Funcionario update
+   */
+  export type FuncionarioUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Funcionario
+     */
+    select?: FuncionarioSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Funcionario
+     */
+    omit?: FuncionarioOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FuncionarioInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Funcionario.
+     */
+    data: XOR<FuncionarioUpdateInput, FuncionarioUncheckedUpdateInput>
+    /**
+     * Choose, which Funcionario to update.
+     */
+    where: FuncionarioWhereUniqueInput
+  }
+
+  /**
+   * Funcionario updateMany
+   */
+  export type FuncionarioUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Funcionarios.
+     */
+    data: XOR<FuncionarioUpdateManyMutationInput, FuncionarioUncheckedUpdateManyInput>
+    /**
+     * Filter which Funcionarios to update
+     */
+    where?: FuncionarioWhereInput
+    /**
+     * Limit how many Funcionarios to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Funcionario updateManyAndReturn
+   */
+  export type FuncionarioUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Funcionario
+     */
+    select?: FuncionarioSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Funcionario
+     */
+    omit?: FuncionarioOmit<ExtArgs> | null
+    /**
+     * The data used to update Funcionarios.
+     */
+    data: XOR<FuncionarioUpdateManyMutationInput, FuncionarioUncheckedUpdateManyInput>
+    /**
+     * Filter which Funcionarios to update
+     */
+    where?: FuncionarioWhereInput
+    /**
+     * Limit how many Funcionarios to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Funcionario upsert
+   */
+  export type FuncionarioUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Funcionario
+     */
+    select?: FuncionarioSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Funcionario
+     */
+    omit?: FuncionarioOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FuncionarioInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Funcionario to update in case it exists.
+     */
+    where: FuncionarioWhereUniqueInput
+    /**
+     * In case the Funcionario found by the `where` argument doesn't exist, create a new Funcionario with this data.
+     */
+    create: XOR<FuncionarioCreateInput, FuncionarioUncheckedCreateInput>
+    /**
+     * In case the Funcionario was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<FuncionarioUpdateInput, FuncionarioUncheckedUpdateInput>
+  }
+
+  /**
+   * Funcionario delete
+   */
+  export type FuncionarioDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Funcionario
+     */
+    select?: FuncionarioSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Funcionario
+     */
+    omit?: FuncionarioOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FuncionarioInclude<ExtArgs> | null
+    /**
+     * Filter which Funcionario to delete.
+     */
+    where: FuncionarioWhereUniqueInput
+  }
+
+  /**
+   * Funcionario deleteMany
+   */
+  export type FuncionarioDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Funcionarios to delete
+     */
+    where?: FuncionarioWhereInput
+    /**
+     * Limit how many Funcionarios to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Funcionario.controleJornada
+   */
+  export type Funcionario$controleJornadaArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ControleJornada
+     */
+    select?: ControleJornadaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ControleJornada
+     */
+    omit?: ControleJornadaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ControleJornadaInclude<ExtArgs> | null
+    where?: ControleJornadaWhereInput
+    orderBy?: ControleJornadaOrderByWithRelationInput | ControleJornadaOrderByWithRelationInput[]
+    cursor?: ControleJornadaWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ControleJornadaScalarFieldEnum | ControleJornadaScalarFieldEnum[]
+  }
+
+  /**
+   * Funcionario.resumoPagamento
+   */
+  export type Funcionario$resumoPagamentoArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ResumoPagamento
+     */
+    select?: ResumoPagamentoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ResumoPagamento
+     */
+    omit?: ResumoPagamentoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ResumoPagamentoInclude<ExtArgs> | null
+    where?: ResumoPagamentoWhereInput
+    orderBy?: ResumoPagamentoOrderByWithRelationInput | ResumoPagamentoOrderByWithRelationInput[]
+    cursor?: ResumoPagamentoWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ResumoPagamentoScalarFieldEnum | ResumoPagamentoScalarFieldEnum[]
+  }
+
+  /**
+   * Funcionario without action
+   */
+  export type FuncionarioDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Funcionario
+     */
+    select?: FuncionarioSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Funcionario
+     */
+    omit?: FuncionarioOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FuncionarioInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ControleJornada
+   */
+
+  export type AggregateControleJornada = {
+    _count: ControleJornadaCountAggregateOutputType | null
+    _avg: ControleJornadaAvgAggregateOutputType | null
+    _sum: ControleJornadaSumAggregateOutputType | null
+    _min: ControleJornadaMinAggregateOutputType | null
+    _max: ControleJornadaMaxAggregateOutputType | null
+  }
+
+  export type ControleJornadaAvgAggregateOutputType = {
+    horasTrabalhadas: number | null
+    horaExtra: number | null
+  }
+
+  export type ControleJornadaSumAggregateOutputType = {
+    horasTrabalhadas: number | null
+    horaExtra: number | null
+  }
+
+  export type ControleJornadaMinAggregateOutputType = {
+    id: string | null
+    funcionarioId: string | null
+    data: Date | null
+    horaEntrada: string | null
+    horaSaida: string | null
+    horasTrabalhadas: number | null
+    horaExtra: number | null
+    faltaJustificada: boolean | null
+    observacoes: string | null
+    dataCriacao: Date | null
+    dataAtualizacao: Date | null
+  }
+
+  export type ControleJornadaMaxAggregateOutputType = {
+    id: string | null
+    funcionarioId: string | null
+    data: Date | null
+    horaEntrada: string | null
+    horaSaida: string | null
+    horasTrabalhadas: number | null
+    horaExtra: number | null
+    faltaJustificada: boolean | null
+    observacoes: string | null
+    dataCriacao: Date | null
+    dataAtualizacao: Date | null
+  }
+
+  export type ControleJornadaCountAggregateOutputType = {
+    id: number
+    funcionarioId: number
+    data: number
+    horaEntrada: number
+    horaSaida: number
+    horasTrabalhadas: number
+    horaExtra: number
+    faltaJustificada: number
+    observacoes: number
+    dataCriacao: number
+    dataAtualizacao: number
+    _all: number
+  }
+
+
+  export type ControleJornadaAvgAggregateInputType = {
+    horasTrabalhadas?: true
+    horaExtra?: true
+  }
+
+  export type ControleJornadaSumAggregateInputType = {
+    horasTrabalhadas?: true
+    horaExtra?: true
+  }
+
+  export type ControleJornadaMinAggregateInputType = {
+    id?: true
+    funcionarioId?: true
+    data?: true
+    horaEntrada?: true
+    horaSaida?: true
+    horasTrabalhadas?: true
+    horaExtra?: true
+    faltaJustificada?: true
+    observacoes?: true
+    dataCriacao?: true
+    dataAtualizacao?: true
+  }
+
+  export type ControleJornadaMaxAggregateInputType = {
+    id?: true
+    funcionarioId?: true
+    data?: true
+    horaEntrada?: true
+    horaSaida?: true
+    horasTrabalhadas?: true
+    horaExtra?: true
+    faltaJustificada?: true
+    observacoes?: true
+    dataCriacao?: true
+    dataAtualizacao?: true
+  }
+
+  export type ControleJornadaCountAggregateInputType = {
+    id?: true
+    funcionarioId?: true
+    data?: true
+    horaEntrada?: true
+    horaSaida?: true
+    horasTrabalhadas?: true
+    horaExtra?: true
+    faltaJustificada?: true
+    observacoes?: true
+    dataCriacao?: true
+    dataAtualizacao?: true
+    _all?: true
+  }
+
+  export type ControleJornadaAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ControleJornada to aggregate.
+     */
+    where?: ControleJornadaWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ControleJornadas to fetch.
+     */
+    orderBy?: ControleJornadaOrderByWithRelationInput | ControleJornadaOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ControleJornadaWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ControleJornadas from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ControleJornadas.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ControleJornadas
+    **/
+    _count?: true | ControleJornadaCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ControleJornadaAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ControleJornadaSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ControleJornadaMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ControleJornadaMaxAggregateInputType
+  }
+
+  export type GetControleJornadaAggregateType<T extends ControleJornadaAggregateArgs> = {
+        [P in keyof T & keyof AggregateControleJornada]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateControleJornada[P]>
+      : GetScalarType<T[P], AggregateControleJornada[P]>
+  }
+
+
+
+
+  export type ControleJornadaGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ControleJornadaWhereInput
+    orderBy?: ControleJornadaOrderByWithAggregationInput | ControleJornadaOrderByWithAggregationInput[]
+    by: ControleJornadaScalarFieldEnum[] | ControleJornadaScalarFieldEnum
+    having?: ControleJornadaScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ControleJornadaCountAggregateInputType | true
+    _avg?: ControleJornadaAvgAggregateInputType
+    _sum?: ControleJornadaSumAggregateInputType
+    _min?: ControleJornadaMinAggregateInputType
+    _max?: ControleJornadaMaxAggregateInputType
+  }
+
+  export type ControleJornadaGroupByOutputType = {
+    id: string
+    funcionarioId: string
+    data: Date
+    horaEntrada: string
+    horaSaida: string
+    horasTrabalhadas: number
+    horaExtra: number | null
+    faltaJustificada: boolean
+    observacoes: string | null
+    dataCriacao: Date
+    dataAtualizacao: Date
+    _count: ControleJornadaCountAggregateOutputType | null
+    _avg: ControleJornadaAvgAggregateOutputType | null
+    _sum: ControleJornadaSumAggregateOutputType | null
+    _min: ControleJornadaMinAggregateOutputType | null
+    _max: ControleJornadaMaxAggregateOutputType | null
+  }
+
+  type GetControleJornadaGroupByPayload<T extends ControleJornadaGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ControleJornadaGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ControleJornadaGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ControleJornadaGroupByOutputType[P]>
+            : GetScalarType<T[P], ControleJornadaGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ControleJornadaSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    funcionarioId?: boolean
+    data?: boolean
+    horaEntrada?: boolean
+    horaSaida?: boolean
+    horasTrabalhadas?: boolean
+    horaExtra?: boolean
+    faltaJustificada?: boolean
+    observacoes?: boolean
+    dataCriacao?: boolean
+    dataAtualizacao?: boolean
+    funcionario?: boolean | FuncionarioDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["controleJornada"]>
+
+  export type ControleJornadaSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    funcionarioId?: boolean
+    data?: boolean
+    horaEntrada?: boolean
+    horaSaida?: boolean
+    horasTrabalhadas?: boolean
+    horaExtra?: boolean
+    faltaJustificada?: boolean
+    observacoes?: boolean
+    dataCriacao?: boolean
+    dataAtualizacao?: boolean
+    funcionario?: boolean | FuncionarioDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["controleJornada"]>
+
+  export type ControleJornadaSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    funcionarioId?: boolean
+    data?: boolean
+    horaEntrada?: boolean
+    horaSaida?: boolean
+    horasTrabalhadas?: boolean
+    horaExtra?: boolean
+    faltaJustificada?: boolean
+    observacoes?: boolean
+    dataCriacao?: boolean
+    dataAtualizacao?: boolean
+    funcionario?: boolean | FuncionarioDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["controleJornada"]>
+
+  export type ControleJornadaSelectScalar = {
+    id?: boolean
+    funcionarioId?: boolean
+    data?: boolean
+    horaEntrada?: boolean
+    horaSaida?: boolean
+    horasTrabalhadas?: boolean
+    horaExtra?: boolean
+    faltaJustificada?: boolean
+    observacoes?: boolean
+    dataCriacao?: boolean
+    dataAtualizacao?: boolean
+  }
+
+  export type ControleJornadaOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "funcionarioId" | "data" | "horaEntrada" | "horaSaida" | "horasTrabalhadas" | "horaExtra" | "faltaJustificada" | "observacoes" | "dataCriacao" | "dataAtualizacao", ExtArgs["result"]["controleJornada"]>
+  export type ControleJornadaInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    funcionario?: boolean | FuncionarioDefaultArgs<ExtArgs>
+  }
+  export type ControleJornadaIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    funcionario?: boolean | FuncionarioDefaultArgs<ExtArgs>
+  }
+  export type ControleJornadaIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    funcionario?: boolean | FuncionarioDefaultArgs<ExtArgs>
+  }
+
+  export type $ControleJornadaPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ControleJornada"
+    objects: {
+      funcionario: Prisma.$FuncionarioPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      funcionarioId: string
+      data: Date
+      horaEntrada: string
+      horaSaida: string
+      horasTrabalhadas: number
+      horaExtra: number | null
+      faltaJustificada: boolean
+      observacoes: string | null
+      dataCriacao: Date
+      dataAtualizacao: Date
+    }, ExtArgs["result"]["controleJornada"]>
+    composites: {}
+  }
+
+  type ControleJornadaGetPayload<S extends boolean | null | undefined | ControleJornadaDefaultArgs> = $Result.GetResult<Prisma.$ControleJornadaPayload, S>
+
+  type ControleJornadaCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ControleJornadaFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ControleJornadaCountAggregateInputType | true
+    }
+
+  export interface ControleJornadaDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ControleJornada'], meta: { name: 'ControleJornada' } }
+    /**
+     * Find zero or one ControleJornada that matches the filter.
+     * @param {ControleJornadaFindUniqueArgs} args - Arguments to find a ControleJornada
+     * @example
+     * // Get one ControleJornada
+     * const controleJornada = await prisma.controleJornada.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ControleJornadaFindUniqueArgs>(args: SelectSubset<T, ControleJornadaFindUniqueArgs<ExtArgs>>): Prisma__ControleJornadaClient<$Result.GetResult<Prisma.$ControleJornadaPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ControleJornada that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ControleJornadaFindUniqueOrThrowArgs} args - Arguments to find a ControleJornada
+     * @example
+     * // Get one ControleJornada
+     * const controleJornada = await prisma.controleJornada.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ControleJornadaFindUniqueOrThrowArgs>(args: SelectSubset<T, ControleJornadaFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ControleJornadaClient<$Result.GetResult<Prisma.$ControleJornadaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ControleJornada that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ControleJornadaFindFirstArgs} args - Arguments to find a ControleJornada
+     * @example
+     * // Get one ControleJornada
+     * const controleJornada = await prisma.controleJornada.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ControleJornadaFindFirstArgs>(args?: SelectSubset<T, ControleJornadaFindFirstArgs<ExtArgs>>): Prisma__ControleJornadaClient<$Result.GetResult<Prisma.$ControleJornadaPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ControleJornada that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ControleJornadaFindFirstOrThrowArgs} args - Arguments to find a ControleJornada
+     * @example
+     * // Get one ControleJornada
+     * const controleJornada = await prisma.controleJornada.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ControleJornadaFindFirstOrThrowArgs>(args?: SelectSubset<T, ControleJornadaFindFirstOrThrowArgs<ExtArgs>>): Prisma__ControleJornadaClient<$Result.GetResult<Prisma.$ControleJornadaPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ControleJornadas that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ControleJornadaFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ControleJornadas
+     * const controleJornadas = await prisma.controleJornada.findMany()
+     * 
+     * // Get first 10 ControleJornadas
+     * const controleJornadas = await prisma.controleJornada.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const controleJornadaWithIdOnly = await prisma.controleJornada.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ControleJornadaFindManyArgs>(args?: SelectSubset<T, ControleJornadaFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ControleJornadaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ControleJornada.
+     * @param {ControleJornadaCreateArgs} args - Arguments to create a ControleJornada.
+     * @example
+     * // Create one ControleJornada
+     * const ControleJornada = await prisma.controleJornada.create({
+     *   data: {
+     *     // ... data to create a ControleJornada
+     *   }
+     * })
+     * 
+     */
+    create<T extends ControleJornadaCreateArgs>(args: SelectSubset<T, ControleJornadaCreateArgs<ExtArgs>>): Prisma__ControleJornadaClient<$Result.GetResult<Prisma.$ControleJornadaPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ControleJornadas.
+     * @param {ControleJornadaCreateManyArgs} args - Arguments to create many ControleJornadas.
+     * @example
+     * // Create many ControleJornadas
+     * const controleJornada = await prisma.controleJornada.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ControleJornadaCreateManyArgs>(args?: SelectSubset<T, ControleJornadaCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ControleJornadas and returns the data saved in the database.
+     * @param {ControleJornadaCreateManyAndReturnArgs} args - Arguments to create many ControleJornadas.
+     * @example
+     * // Create many ControleJornadas
+     * const controleJornada = await prisma.controleJornada.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ControleJornadas and only return the `id`
+     * const controleJornadaWithIdOnly = await prisma.controleJornada.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ControleJornadaCreateManyAndReturnArgs>(args?: SelectSubset<T, ControleJornadaCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ControleJornadaPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ControleJornada.
+     * @param {ControleJornadaDeleteArgs} args - Arguments to delete one ControleJornada.
+     * @example
+     * // Delete one ControleJornada
+     * const ControleJornada = await prisma.controleJornada.delete({
+     *   where: {
+     *     // ... filter to delete one ControleJornada
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ControleJornadaDeleteArgs>(args: SelectSubset<T, ControleJornadaDeleteArgs<ExtArgs>>): Prisma__ControleJornadaClient<$Result.GetResult<Prisma.$ControleJornadaPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ControleJornada.
+     * @param {ControleJornadaUpdateArgs} args - Arguments to update one ControleJornada.
+     * @example
+     * // Update one ControleJornada
+     * const controleJornada = await prisma.controleJornada.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ControleJornadaUpdateArgs>(args: SelectSubset<T, ControleJornadaUpdateArgs<ExtArgs>>): Prisma__ControleJornadaClient<$Result.GetResult<Prisma.$ControleJornadaPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ControleJornadas.
+     * @param {ControleJornadaDeleteManyArgs} args - Arguments to filter ControleJornadas to delete.
+     * @example
+     * // Delete a few ControleJornadas
+     * const { count } = await prisma.controleJornada.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ControleJornadaDeleteManyArgs>(args?: SelectSubset<T, ControleJornadaDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ControleJornadas.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ControleJornadaUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ControleJornadas
+     * const controleJornada = await prisma.controleJornada.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ControleJornadaUpdateManyArgs>(args: SelectSubset<T, ControleJornadaUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ControleJornadas and returns the data updated in the database.
+     * @param {ControleJornadaUpdateManyAndReturnArgs} args - Arguments to update many ControleJornadas.
+     * @example
+     * // Update many ControleJornadas
+     * const controleJornada = await prisma.controleJornada.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ControleJornadas and only return the `id`
+     * const controleJornadaWithIdOnly = await prisma.controleJornada.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ControleJornadaUpdateManyAndReturnArgs>(args: SelectSubset<T, ControleJornadaUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ControleJornadaPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ControleJornada.
+     * @param {ControleJornadaUpsertArgs} args - Arguments to update or create a ControleJornada.
+     * @example
+     * // Update or create a ControleJornada
+     * const controleJornada = await prisma.controleJornada.upsert({
+     *   create: {
+     *     // ... data to create a ControleJornada
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ControleJornada we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ControleJornadaUpsertArgs>(args: SelectSubset<T, ControleJornadaUpsertArgs<ExtArgs>>): Prisma__ControleJornadaClient<$Result.GetResult<Prisma.$ControleJornadaPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ControleJornadas.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ControleJornadaCountArgs} args - Arguments to filter ControleJornadas to count.
+     * @example
+     * // Count the number of ControleJornadas
+     * const count = await prisma.controleJornada.count({
+     *   where: {
+     *     // ... the filter for the ControleJornadas we want to count
+     *   }
+     * })
+    **/
+    count<T extends ControleJornadaCountArgs>(
+      args?: Subset<T, ControleJornadaCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ControleJornadaCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ControleJornada.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ControleJornadaAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ControleJornadaAggregateArgs>(args: Subset<T, ControleJornadaAggregateArgs>): Prisma.PrismaPromise<GetControleJornadaAggregateType<T>>
+
+    /**
+     * Group by ControleJornada.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ControleJornadaGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ControleJornadaGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ControleJornadaGroupByArgs['orderBy'] }
+        : { orderBy?: ControleJornadaGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ControleJornadaGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetControleJornadaGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ControleJornada model
+   */
+  readonly fields: ControleJornadaFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ControleJornada.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ControleJornadaClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    funcionario<T extends FuncionarioDefaultArgs<ExtArgs> = {}>(args?: Subset<T, FuncionarioDefaultArgs<ExtArgs>>): Prisma__FuncionarioClient<$Result.GetResult<Prisma.$FuncionarioPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ControleJornada model
+   */
+  interface ControleJornadaFieldRefs {
+    readonly id: FieldRef<"ControleJornada", 'String'>
+    readonly funcionarioId: FieldRef<"ControleJornada", 'String'>
+    readonly data: FieldRef<"ControleJornada", 'DateTime'>
+    readonly horaEntrada: FieldRef<"ControleJornada", 'String'>
+    readonly horaSaida: FieldRef<"ControleJornada", 'String'>
+    readonly horasTrabalhadas: FieldRef<"ControleJornada", 'Float'>
+    readonly horaExtra: FieldRef<"ControleJornada", 'Float'>
+    readonly faltaJustificada: FieldRef<"ControleJornada", 'Boolean'>
+    readonly observacoes: FieldRef<"ControleJornada", 'String'>
+    readonly dataCriacao: FieldRef<"ControleJornada", 'DateTime'>
+    readonly dataAtualizacao: FieldRef<"ControleJornada", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ControleJornada findUnique
+   */
+  export type ControleJornadaFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ControleJornada
+     */
+    select?: ControleJornadaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ControleJornada
+     */
+    omit?: ControleJornadaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ControleJornadaInclude<ExtArgs> | null
+    /**
+     * Filter, which ControleJornada to fetch.
+     */
+    where: ControleJornadaWhereUniqueInput
+  }
+
+  /**
+   * ControleJornada findUniqueOrThrow
+   */
+  export type ControleJornadaFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ControleJornada
+     */
+    select?: ControleJornadaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ControleJornada
+     */
+    omit?: ControleJornadaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ControleJornadaInclude<ExtArgs> | null
+    /**
+     * Filter, which ControleJornada to fetch.
+     */
+    where: ControleJornadaWhereUniqueInput
+  }
+
+  /**
+   * ControleJornada findFirst
+   */
+  export type ControleJornadaFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ControleJornada
+     */
+    select?: ControleJornadaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ControleJornada
+     */
+    omit?: ControleJornadaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ControleJornadaInclude<ExtArgs> | null
+    /**
+     * Filter, which ControleJornada to fetch.
+     */
+    where?: ControleJornadaWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ControleJornadas to fetch.
+     */
+    orderBy?: ControleJornadaOrderByWithRelationInput | ControleJornadaOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ControleJornadas.
+     */
+    cursor?: ControleJornadaWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ControleJornadas from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ControleJornadas.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ControleJornadas.
+     */
+    distinct?: ControleJornadaScalarFieldEnum | ControleJornadaScalarFieldEnum[]
+  }
+
+  /**
+   * ControleJornada findFirstOrThrow
+   */
+  export type ControleJornadaFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ControleJornada
+     */
+    select?: ControleJornadaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ControleJornada
+     */
+    omit?: ControleJornadaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ControleJornadaInclude<ExtArgs> | null
+    /**
+     * Filter, which ControleJornada to fetch.
+     */
+    where?: ControleJornadaWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ControleJornadas to fetch.
+     */
+    orderBy?: ControleJornadaOrderByWithRelationInput | ControleJornadaOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ControleJornadas.
+     */
+    cursor?: ControleJornadaWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ControleJornadas from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ControleJornadas.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ControleJornadas.
+     */
+    distinct?: ControleJornadaScalarFieldEnum | ControleJornadaScalarFieldEnum[]
+  }
+
+  /**
+   * ControleJornada findMany
+   */
+  export type ControleJornadaFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ControleJornada
+     */
+    select?: ControleJornadaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ControleJornada
+     */
+    omit?: ControleJornadaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ControleJornadaInclude<ExtArgs> | null
+    /**
+     * Filter, which ControleJornadas to fetch.
+     */
+    where?: ControleJornadaWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ControleJornadas to fetch.
+     */
+    orderBy?: ControleJornadaOrderByWithRelationInput | ControleJornadaOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ControleJornadas.
+     */
+    cursor?: ControleJornadaWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ControleJornadas from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ControleJornadas.
+     */
+    skip?: number
+    distinct?: ControleJornadaScalarFieldEnum | ControleJornadaScalarFieldEnum[]
+  }
+
+  /**
+   * ControleJornada create
+   */
+  export type ControleJornadaCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ControleJornada
+     */
+    select?: ControleJornadaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ControleJornada
+     */
+    omit?: ControleJornadaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ControleJornadaInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ControleJornada.
+     */
+    data: XOR<ControleJornadaCreateInput, ControleJornadaUncheckedCreateInput>
+  }
+
+  /**
+   * ControleJornada createMany
+   */
+  export type ControleJornadaCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ControleJornadas.
+     */
+    data: ControleJornadaCreateManyInput | ControleJornadaCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ControleJornada createManyAndReturn
+   */
+  export type ControleJornadaCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ControleJornada
+     */
+    select?: ControleJornadaSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ControleJornada
+     */
+    omit?: ControleJornadaOmit<ExtArgs> | null
+    /**
+     * The data used to create many ControleJornadas.
+     */
+    data: ControleJornadaCreateManyInput | ControleJornadaCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ControleJornadaIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ControleJornada update
+   */
+  export type ControleJornadaUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ControleJornada
+     */
+    select?: ControleJornadaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ControleJornada
+     */
+    omit?: ControleJornadaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ControleJornadaInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ControleJornada.
+     */
+    data: XOR<ControleJornadaUpdateInput, ControleJornadaUncheckedUpdateInput>
+    /**
+     * Choose, which ControleJornada to update.
+     */
+    where: ControleJornadaWhereUniqueInput
+  }
+
+  /**
+   * ControleJornada updateMany
+   */
+  export type ControleJornadaUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ControleJornadas.
+     */
+    data: XOR<ControleJornadaUpdateManyMutationInput, ControleJornadaUncheckedUpdateManyInput>
+    /**
+     * Filter which ControleJornadas to update
+     */
+    where?: ControleJornadaWhereInput
+    /**
+     * Limit how many ControleJornadas to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ControleJornada updateManyAndReturn
+   */
+  export type ControleJornadaUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ControleJornada
+     */
+    select?: ControleJornadaSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ControleJornada
+     */
+    omit?: ControleJornadaOmit<ExtArgs> | null
+    /**
+     * The data used to update ControleJornadas.
+     */
+    data: XOR<ControleJornadaUpdateManyMutationInput, ControleJornadaUncheckedUpdateManyInput>
+    /**
+     * Filter which ControleJornadas to update
+     */
+    where?: ControleJornadaWhereInput
+    /**
+     * Limit how many ControleJornadas to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ControleJornadaIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ControleJornada upsert
+   */
+  export type ControleJornadaUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ControleJornada
+     */
+    select?: ControleJornadaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ControleJornada
+     */
+    omit?: ControleJornadaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ControleJornadaInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ControleJornada to update in case it exists.
+     */
+    where: ControleJornadaWhereUniqueInput
+    /**
+     * In case the ControleJornada found by the `where` argument doesn't exist, create a new ControleJornada with this data.
+     */
+    create: XOR<ControleJornadaCreateInput, ControleJornadaUncheckedCreateInput>
+    /**
+     * In case the ControleJornada was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ControleJornadaUpdateInput, ControleJornadaUncheckedUpdateInput>
+  }
+
+  /**
+   * ControleJornada delete
+   */
+  export type ControleJornadaDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ControleJornada
+     */
+    select?: ControleJornadaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ControleJornada
+     */
+    omit?: ControleJornadaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ControleJornadaInclude<ExtArgs> | null
+    /**
+     * Filter which ControleJornada to delete.
+     */
+    where: ControleJornadaWhereUniqueInput
+  }
+
+  /**
+   * ControleJornada deleteMany
+   */
+  export type ControleJornadaDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ControleJornadas to delete
+     */
+    where?: ControleJornadaWhereInput
+    /**
+     * Limit how many ControleJornadas to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ControleJornada without action
+   */
+  export type ControleJornadaDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ControleJornada
+     */
+    select?: ControleJornadaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ControleJornada
+     */
+    omit?: ControleJornadaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ControleJornadaInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ResumoPagamento
+   */
+
+  export type AggregateResumoPagamento = {
+    _count: ResumoPagamentoCountAggregateOutputType | null
+    _avg: ResumoPagamentoAvgAggregateOutputType | null
+    _sum: ResumoPagamentoSumAggregateOutputType | null
+    _min: ResumoPagamentoMinAggregateOutputType | null
+    _max: ResumoPagamentoMaxAggregateOutputType | null
+  }
+
+  export type ResumoPagamentoAvgAggregateOutputType = {
+    salarioPrevisto: number | null
+    salarioReal: number | null
+    extras: number | null
+    descontos: number | null
+  }
+
+  export type ResumoPagamentoSumAggregateOutputType = {
+    salarioPrevisto: number | null
+    salarioReal: number | null
+    extras: number | null
+    descontos: number | null
+  }
+
+  export type ResumoPagamentoMinAggregateOutputType = {
+    id: string | null
+    funcionarioId: string | null
+    mes: string | null
+    salarioPrevisto: number | null
+    salarioReal: number | null
+    extras: number | null
+    descontos: number | null
+    observacoes: string | null
+    enviadoParaContador: boolean | null
+    dataCriacao: Date | null
+    dataAtualizacao: Date | null
+  }
+
+  export type ResumoPagamentoMaxAggregateOutputType = {
+    id: string | null
+    funcionarioId: string | null
+    mes: string | null
+    salarioPrevisto: number | null
+    salarioReal: number | null
+    extras: number | null
+    descontos: number | null
+    observacoes: string | null
+    enviadoParaContador: boolean | null
+    dataCriacao: Date | null
+    dataAtualizacao: Date | null
+  }
+
+  export type ResumoPagamentoCountAggregateOutputType = {
+    id: number
+    funcionarioId: number
+    mes: number
+    salarioPrevisto: number
+    salarioReal: number
+    extras: number
+    descontos: number
+    observacoes: number
+    enviadoParaContador: number
+    dataCriacao: number
+    dataAtualizacao: number
+    _all: number
+  }
+
+
+  export type ResumoPagamentoAvgAggregateInputType = {
+    salarioPrevisto?: true
+    salarioReal?: true
+    extras?: true
+    descontos?: true
+  }
+
+  export type ResumoPagamentoSumAggregateInputType = {
+    salarioPrevisto?: true
+    salarioReal?: true
+    extras?: true
+    descontos?: true
+  }
+
+  export type ResumoPagamentoMinAggregateInputType = {
+    id?: true
+    funcionarioId?: true
+    mes?: true
+    salarioPrevisto?: true
+    salarioReal?: true
+    extras?: true
+    descontos?: true
+    observacoes?: true
+    enviadoParaContador?: true
+    dataCriacao?: true
+    dataAtualizacao?: true
+  }
+
+  export type ResumoPagamentoMaxAggregateInputType = {
+    id?: true
+    funcionarioId?: true
+    mes?: true
+    salarioPrevisto?: true
+    salarioReal?: true
+    extras?: true
+    descontos?: true
+    observacoes?: true
+    enviadoParaContador?: true
+    dataCriacao?: true
+    dataAtualizacao?: true
+  }
+
+  export type ResumoPagamentoCountAggregateInputType = {
+    id?: true
+    funcionarioId?: true
+    mes?: true
+    salarioPrevisto?: true
+    salarioReal?: true
+    extras?: true
+    descontos?: true
+    observacoes?: true
+    enviadoParaContador?: true
+    dataCriacao?: true
+    dataAtualizacao?: true
+    _all?: true
+  }
+
+  export type ResumoPagamentoAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ResumoPagamento to aggregate.
+     */
+    where?: ResumoPagamentoWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ResumoPagamentos to fetch.
+     */
+    orderBy?: ResumoPagamentoOrderByWithRelationInput | ResumoPagamentoOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ResumoPagamentoWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ResumoPagamentos from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ResumoPagamentos.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ResumoPagamentos
+    **/
+    _count?: true | ResumoPagamentoCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ResumoPagamentoAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ResumoPagamentoSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ResumoPagamentoMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ResumoPagamentoMaxAggregateInputType
+  }
+
+  export type GetResumoPagamentoAggregateType<T extends ResumoPagamentoAggregateArgs> = {
+        [P in keyof T & keyof AggregateResumoPagamento]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateResumoPagamento[P]>
+      : GetScalarType<T[P], AggregateResumoPagamento[P]>
+  }
+
+
+
+
+  export type ResumoPagamentoGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ResumoPagamentoWhereInput
+    orderBy?: ResumoPagamentoOrderByWithAggregationInput | ResumoPagamentoOrderByWithAggregationInput[]
+    by: ResumoPagamentoScalarFieldEnum[] | ResumoPagamentoScalarFieldEnum
+    having?: ResumoPagamentoScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ResumoPagamentoCountAggregateInputType | true
+    _avg?: ResumoPagamentoAvgAggregateInputType
+    _sum?: ResumoPagamentoSumAggregateInputType
+    _min?: ResumoPagamentoMinAggregateInputType
+    _max?: ResumoPagamentoMaxAggregateInputType
+  }
+
+  export type ResumoPagamentoGroupByOutputType = {
+    id: string
+    funcionarioId: string
+    mes: string
+    salarioPrevisto: number
+    salarioReal: number
+    extras: number | null
+    descontos: number | null
+    observacoes: string | null
+    enviadoParaContador: boolean
+    dataCriacao: Date
+    dataAtualizacao: Date
+    _count: ResumoPagamentoCountAggregateOutputType | null
+    _avg: ResumoPagamentoAvgAggregateOutputType | null
+    _sum: ResumoPagamentoSumAggregateOutputType | null
+    _min: ResumoPagamentoMinAggregateOutputType | null
+    _max: ResumoPagamentoMaxAggregateOutputType | null
+  }
+
+  type GetResumoPagamentoGroupByPayload<T extends ResumoPagamentoGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ResumoPagamentoGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ResumoPagamentoGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ResumoPagamentoGroupByOutputType[P]>
+            : GetScalarType<T[P], ResumoPagamentoGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ResumoPagamentoSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    funcionarioId?: boolean
+    mes?: boolean
+    salarioPrevisto?: boolean
+    salarioReal?: boolean
+    extras?: boolean
+    descontos?: boolean
+    observacoes?: boolean
+    enviadoParaContador?: boolean
+    dataCriacao?: boolean
+    dataAtualizacao?: boolean
+    funcionario?: boolean | FuncionarioDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["resumoPagamento"]>
+
+  export type ResumoPagamentoSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    funcionarioId?: boolean
+    mes?: boolean
+    salarioPrevisto?: boolean
+    salarioReal?: boolean
+    extras?: boolean
+    descontos?: boolean
+    observacoes?: boolean
+    enviadoParaContador?: boolean
+    dataCriacao?: boolean
+    dataAtualizacao?: boolean
+    funcionario?: boolean | FuncionarioDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["resumoPagamento"]>
+
+  export type ResumoPagamentoSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    funcionarioId?: boolean
+    mes?: boolean
+    salarioPrevisto?: boolean
+    salarioReal?: boolean
+    extras?: boolean
+    descontos?: boolean
+    observacoes?: boolean
+    enviadoParaContador?: boolean
+    dataCriacao?: boolean
+    dataAtualizacao?: boolean
+    funcionario?: boolean | FuncionarioDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["resumoPagamento"]>
+
+  export type ResumoPagamentoSelectScalar = {
+    id?: boolean
+    funcionarioId?: boolean
+    mes?: boolean
+    salarioPrevisto?: boolean
+    salarioReal?: boolean
+    extras?: boolean
+    descontos?: boolean
+    observacoes?: boolean
+    enviadoParaContador?: boolean
+    dataCriacao?: boolean
+    dataAtualizacao?: boolean
+  }
+
+  export type ResumoPagamentoOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "funcionarioId" | "mes" | "salarioPrevisto" | "salarioReal" | "extras" | "descontos" | "observacoes" | "enviadoParaContador" | "dataCriacao" | "dataAtualizacao", ExtArgs["result"]["resumoPagamento"]>
+  export type ResumoPagamentoInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    funcionario?: boolean | FuncionarioDefaultArgs<ExtArgs>
+  }
+  export type ResumoPagamentoIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    funcionario?: boolean | FuncionarioDefaultArgs<ExtArgs>
+  }
+  export type ResumoPagamentoIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    funcionario?: boolean | FuncionarioDefaultArgs<ExtArgs>
+  }
+
+  export type $ResumoPagamentoPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ResumoPagamento"
+    objects: {
+      funcionario: Prisma.$FuncionarioPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      funcionarioId: string
+      mes: string
+      salarioPrevisto: number
+      salarioReal: number
+      extras: number | null
+      descontos: number | null
+      observacoes: string | null
+      enviadoParaContador: boolean
+      dataCriacao: Date
+      dataAtualizacao: Date
+    }, ExtArgs["result"]["resumoPagamento"]>
+    composites: {}
+  }
+
+  type ResumoPagamentoGetPayload<S extends boolean | null | undefined | ResumoPagamentoDefaultArgs> = $Result.GetResult<Prisma.$ResumoPagamentoPayload, S>
+
+  type ResumoPagamentoCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ResumoPagamentoFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ResumoPagamentoCountAggregateInputType | true
+    }
+
+  export interface ResumoPagamentoDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ResumoPagamento'], meta: { name: 'ResumoPagamento' } }
+    /**
+     * Find zero or one ResumoPagamento that matches the filter.
+     * @param {ResumoPagamentoFindUniqueArgs} args - Arguments to find a ResumoPagamento
+     * @example
+     * // Get one ResumoPagamento
+     * const resumoPagamento = await prisma.resumoPagamento.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ResumoPagamentoFindUniqueArgs>(args: SelectSubset<T, ResumoPagamentoFindUniqueArgs<ExtArgs>>): Prisma__ResumoPagamentoClient<$Result.GetResult<Prisma.$ResumoPagamentoPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ResumoPagamento that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ResumoPagamentoFindUniqueOrThrowArgs} args - Arguments to find a ResumoPagamento
+     * @example
+     * // Get one ResumoPagamento
+     * const resumoPagamento = await prisma.resumoPagamento.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ResumoPagamentoFindUniqueOrThrowArgs>(args: SelectSubset<T, ResumoPagamentoFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ResumoPagamentoClient<$Result.GetResult<Prisma.$ResumoPagamentoPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ResumoPagamento that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ResumoPagamentoFindFirstArgs} args - Arguments to find a ResumoPagamento
+     * @example
+     * // Get one ResumoPagamento
+     * const resumoPagamento = await prisma.resumoPagamento.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ResumoPagamentoFindFirstArgs>(args?: SelectSubset<T, ResumoPagamentoFindFirstArgs<ExtArgs>>): Prisma__ResumoPagamentoClient<$Result.GetResult<Prisma.$ResumoPagamentoPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ResumoPagamento that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ResumoPagamentoFindFirstOrThrowArgs} args - Arguments to find a ResumoPagamento
+     * @example
+     * // Get one ResumoPagamento
+     * const resumoPagamento = await prisma.resumoPagamento.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ResumoPagamentoFindFirstOrThrowArgs>(args?: SelectSubset<T, ResumoPagamentoFindFirstOrThrowArgs<ExtArgs>>): Prisma__ResumoPagamentoClient<$Result.GetResult<Prisma.$ResumoPagamentoPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ResumoPagamentos that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ResumoPagamentoFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ResumoPagamentos
+     * const resumoPagamentos = await prisma.resumoPagamento.findMany()
+     * 
+     * // Get first 10 ResumoPagamentos
+     * const resumoPagamentos = await prisma.resumoPagamento.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const resumoPagamentoWithIdOnly = await prisma.resumoPagamento.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ResumoPagamentoFindManyArgs>(args?: SelectSubset<T, ResumoPagamentoFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ResumoPagamentoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ResumoPagamento.
+     * @param {ResumoPagamentoCreateArgs} args - Arguments to create a ResumoPagamento.
+     * @example
+     * // Create one ResumoPagamento
+     * const ResumoPagamento = await prisma.resumoPagamento.create({
+     *   data: {
+     *     // ... data to create a ResumoPagamento
+     *   }
+     * })
+     * 
+     */
+    create<T extends ResumoPagamentoCreateArgs>(args: SelectSubset<T, ResumoPagamentoCreateArgs<ExtArgs>>): Prisma__ResumoPagamentoClient<$Result.GetResult<Prisma.$ResumoPagamentoPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ResumoPagamentos.
+     * @param {ResumoPagamentoCreateManyArgs} args - Arguments to create many ResumoPagamentos.
+     * @example
+     * // Create many ResumoPagamentos
+     * const resumoPagamento = await prisma.resumoPagamento.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ResumoPagamentoCreateManyArgs>(args?: SelectSubset<T, ResumoPagamentoCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ResumoPagamentos and returns the data saved in the database.
+     * @param {ResumoPagamentoCreateManyAndReturnArgs} args - Arguments to create many ResumoPagamentos.
+     * @example
+     * // Create many ResumoPagamentos
+     * const resumoPagamento = await prisma.resumoPagamento.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ResumoPagamentos and only return the `id`
+     * const resumoPagamentoWithIdOnly = await prisma.resumoPagamento.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ResumoPagamentoCreateManyAndReturnArgs>(args?: SelectSubset<T, ResumoPagamentoCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ResumoPagamentoPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ResumoPagamento.
+     * @param {ResumoPagamentoDeleteArgs} args - Arguments to delete one ResumoPagamento.
+     * @example
+     * // Delete one ResumoPagamento
+     * const ResumoPagamento = await prisma.resumoPagamento.delete({
+     *   where: {
+     *     // ... filter to delete one ResumoPagamento
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ResumoPagamentoDeleteArgs>(args: SelectSubset<T, ResumoPagamentoDeleteArgs<ExtArgs>>): Prisma__ResumoPagamentoClient<$Result.GetResult<Prisma.$ResumoPagamentoPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ResumoPagamento.
+     * @param {ResumoPagamentoUpdateArgs} args - Arguments to update one ResumoPagamento.
+     * @example
+     * // Update one ResumoPagamento
+     * const resumoPagamento = await prisma.resumoPagamento.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ResumoPagamentoUpdateArgs>(args: SelectSubset<T, ResumoPagamentoUpdateArgs<ExtArgs>>): Prisma__ResumoPagamentoClient<$Result.GetResult<Prisma.$ResumoPagamentoPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ResumoPagamentos.
+     * @param {ResumoPagamentoDeleteManyArgs} args - Arguments to filter ResumoPagamentos to delete.
+     * @example
+     * // Delete a few ResumoPagamentos
+     * const { count } = await prisma.resumoPagamento.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ResumoPagamentoDeleteManyArgs>(args?: SelectSubset<T, ResumoPagamentoDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ResumoPagamentos.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ResumoPagamentoUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ResumoPagamentos
+     * const resumoPagamento = await prisma.resumoPagamento.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ResumoPagamentoUpdateManyArgs>(args: SelectSubset<T, ResumoPagamentoUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ResumoPagamentos and returns the data updated in the database.
+     * @param {ResumoPagamentoUpdateManyAndReturnArgs} args - Arguments to update many ResumoPagamentos.
+     * @example
+     * // Update many ResumoPagamentos
+     * const resumoPagamento = await prisma.resumoPagamento.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ResumoPagamentos and only return the `id`
+     * const resumoPagamentoWithIdOnly = await prisma.resumoPagamento.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ResumoPagamentoUpdateManyAndReturnArgs>(args: SelectSubset<T, ResumoPagamentoUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ResumoPagamentoPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ResumoPagamento.
+     * @param {ResumoPagamentoUpsertArgs} args - Arguments to update or create a ResumoPagamento.
+     * @example
+     * // Update or create a ResumoPagamento
+     * const resumoPagamento = await prisma.resumoPagamento.upsert({
+     *   create: {
+     *     // ... data to create a ResumoPagamento
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ResumoPagamento we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ResumoPagamentoUpsertArgs>(args: SelectSubset<T, ResumoPagamentoUpsertArgs<ExtArgs>>): Prisma__ResumoPagamentoClient<$Result.GetResult<Prisma.$ResumoPagamentoPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ResumoPagamentos.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ResumoPagamentoCountArgs} args - Arguments to filter ResumoPagamentos to count.
+     * @example
+     * // Count the number of ResumoPagamentos
+     * const count = await prisma.resumoPagamento.count({
+     *   where: {
+     *     // ... the filter for the ResumoPagamentos we want to count
+     *   }
+     * })
+    **/
+    count<T extends ResumoPagamentoCountArgs>(
+      args?: Subset<T, ResumoPagamentoCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ResumoPagamentoCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ResumoPagamento.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ResumoPagamentoAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ResumoPagamentoAggregateArgs>(args: Subset<T, ResumoPagamentoAggregateArgs>): Prisma.PrismaPromise<GetResumoPagamentoAggregateType<T>>
+
+    /**
+     * Group by ResumoPagamento.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ResumoPagamentoGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ResumoPagamentoGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ResumoPagamentoGroupByArgs['orderBy'] }
+        : { orderBy?: ResumoPagamentoGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ResumoPagamentoGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetResumoPagamentoGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ResumoPagamento model
+   */
+  readonly fields: ResumoPagamentoFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ResumoPagamento.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ResumoPagamentoClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    funcionario<T extends FuncionarioDefaultArgs<ExtArgs> = {}>(args?: Subset<T, FuncionarioDefaultArgs<ExtArgs>>): Prisma__FuncionarioClient<$Result.GetResult<Prisma.$FuncionarioPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ResumoPagamento model
+   */
+  interface ResumoPagamentoFieldRefs {
+    readonly id: FieldRef<"ResumoPagamento", 'String'>
+    readonly funcionarioId: FieldRef<"ResumoPagamento", 'String'>
+    readonly mes: FieldRef<"ResumoPagamento", 'String'>
+    readonly salarioPrevisto: FieldRef<"ResumoPagamento", 'Float'>
+    readonly salarioReal: FieldRef<"ResumoPagamento", 'Float'>
+    readonly extras: FieldRef<"ResumoPagamento", 'Float'>
+    readonly descontos: FieldRef<"ResumoPagamento", 'Float'>
+    readonly observacoes: FieldRef<"ResumoPagamento", 'String'>
+    readonly enviadoParaContador: FieldRef<"ResumoPagamento", 'Boolean'>
+    readonly dataCriacao: FieldRef<"ResumoPagamento", 'DateTime'>
+    readonly dataAtualizacao: FieldRef<"ResumoPagamento", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ResumoPagamento findUnique
+   */
+  export type ResumoPagamentoFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ResumoPagamento
+     */
+    select?: ResumoPagamentoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ResumoPagamento
+     */
+    omit?: ResumoPagamentoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ResumoPagamentoInclude<ExtArgs> | null
+    /**
+     * Filter, which ResumoPagamento to fetch.
+     */
+    where: ResumoPagamentoWhereUniqueInput
+  }
+
+  /**
+   * ResumoPagamento findUniqueOrThrow
+   */
+  export type ResumoPagamentoFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ResumoPagamento
+     */
+    select?: ResumoPagamentoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ResumoPagamento
+     */
+    omit?: ResumoPagamentoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ResumoPagamentoInclude<ExtArgs> | null
+    /**
+     * Filter, which ResumoPagamento to fetch.
+     */
+    where: ResumoPagamentoWhereUniqueInput
+  }
+
+  /**
+   * ResumoPagamento findFirst
+   */
+  export type ResumoPagamentoFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ResumoPagamento
+     */
+    select?: ResumoPagamentoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ResumoPagamento
+     */
+    omit?: ResumoPagamentoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ResumoPagamentoInclude<ExtArgs> | null
+    /**
+     * Filter, which ResumoPagamento to fetch.
+     */
+    where?: ResumoPagamentoWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ResumoPagamentos to fetch.
+     */
+    orderBy?: ResumoPagamentoOrderByWithRelationInput | ResumoPagamentoOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ResumoPagamentos.
+     */
+    cursor?: ResumoPagamentoWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ResumoPagamentos from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ResumoPagamentos.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ResumoPagamentos.
+     */
+    distinct?: ResumoPagamentoScalarFieldEnum | ResumoPagamentoScalarFieldEnum[]
+  }
+
+  /**
+   * ResumoPagamento findFirstOrThrow
+   */
+  export type ResumoPagamentoFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ResumoPagamento
+     */
+    select?: ResumoPagamentoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ResumoPagamento
+     */
+    omit?: ResumoPagamentoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ResumoPagamentoInclude<ExtArgs> | null
+    /**
+     * Filter, which ResumoPagamento to fetch.
+     */
+    where?: ResumoPagamentoWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ResumoPagamentos to fetch.
+     */
+    orderBy?: ResumoPagamentoOrderByWithRelationInput | ResumoPagamentoOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ResumoPagamentos.
+     */
+    cursor?: ResumoPagamentoWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ResumoPagamentos from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ResumoPagamentos.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ResumoPagamentos.
+     */
+    distinct?: ResumoPagamentoScalarFieldEnum | ResumoPagamentoScalarFieldEnum[]
+  }
+
+  /**
+   * ResumoPagamento findMany
+   */
+  export type ResumoPagamentoFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ResumoPagamento
+     */
+    select?: ResumoPagamentoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ResumoPagamento
+     */
+    omit?: ResumoPagamentoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ResumoPagamentoInclude<ExtArgs> | null
+    /**
+     * Filter, which ResumoPagamentos to fetch.
+     */
+    where?: ResumoPagamentoWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ResumoPagamentos to fetch.
+     */
+    orderBy?: ResumoPagamentoOrderByWithRelationInput | ResumoPagamentoOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ResumoPagamentos.
+     */
+    cursor?: ResumoPagamentoWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ResumoPagamentos from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ResumoPagamentos.
+     */
+    skip?: number
+    distinct?: ResumoPagamentoScalarFieldEnum | ResumoPagamentoScalarFieldEnum[]
+  }
+
+  /**
+   * ResumoPagamento create
+   */
+  export type ResumoPagamentoCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ResumoPagamento
+     */
+    select?: ResumoPagamentoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ResumoPagamento
+     */
+    omit?: ResumoPagamentoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ResumoPagamentoInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ResumoPagamento.
+     */
+    data: XOR<ResumoPagamentoCreateInput, ResumoPagamentoUncheckedCreateInput>
+  }
+
+  /**
+   * ResumoPagamento createMany
+   */
+  export type ResumoPagamentoCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ResumoPagamentos.
+     */
+    data: ResumoPagamentoCreateManyInput | ResumoPagamentoCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ResumoPagamento createManyAndReturn
+   */
+  export type ResumoPagamentoCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ResumoPagamento
+     */
+    select?: ResumoPagamentoSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ResumoPagamento
+     */
+    omit?: ResumoPagamentoOmit<ExtArgs> | null
+    /**
+     * The data used to create many ResumoPagamentos.
+     */
+    data: ResumoPagamentoCreateManyInput | ResumoPagamentoCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ResumoPagamentoIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ResumoPagamento update
+   */
+  export type ResumoPagamentoUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ResumoPagamento
+     */
+    select?: ResumoPagamentoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ResumoPagamento
+     */
+    omit?: ResumoPagamentoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ResumoPagamentoInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ResumoPagamento.
+     */
+    data: XOR<ResumoPagamentoUpdateInput, ResumoPagamentoUncheckedUpdateInput>
+    /**
+     * Choose, which ResumoPagamento to update.
+     */
+    where: ResumoPagamentoWhereUniqueInput
+  }
+
+  /**
+   * ResumoPagamento updateMany
+   */
+  export type ResumoPagamentoUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ResumoPagamentos.
+     */
+    data: XOR<ResumoPagamentoUpdateManyMutationInput, ResumoPagamentoUncheckedUpdateManyInput>
+    /**
+     * Filter which ResumoPagamentos to update
+     */
+    where?: ResumoPagamentoWhereInput
+    /**
+     * Limit how many ResumoPagamentos to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ResumoPagamento updateManyAndReturn
+   */
+  export type ResumoPagamentoUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ResumoPagamento
+     */
+    select?: ResumoPagamentoSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ResumoPagamento
+     */
+    omit?: ResumoPagamentoOmit<ExtArgs> | null
+    /**
+     * The data used to update ResumoPagamentos.
+     */
+    data: XOR<ResumoPagamentoUpdateManyMutationInput, ResumoPagamentoUncheckedUpdateManyInput>
+    /**
+     * Filter which ResumoPagamentos to update
+     */
+    where?: ResumoPagamentoWhereInput
+    /**
+     * Limit how many ResumoPagamentos to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ResumoPagamentoIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ResumoPagamento upsert
+   */
+  export type ResumoPagamentoUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ResumoPagamento
+     */
+    select?: ResumoPagamentoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ResumoPagamento
+     */
+    omit?: ResumoPagamentoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ResumoPagamentoInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ResumoPagamento to update in case it exists.
+     */
+    where: ResumoPagamentoWhereUniqueInput
+    /**
+     * In case the ResumoPagamento found by the `where` argument doesn't exist, create a new ResumoPagamento with this data.
+     */
+    create: XOR<ResumoPagamentoCreateInput, ResumoPagamentoUncheckedCreateInput>
+    /**
+     * In case the ResumoPagamento was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ResumoPagamentoUpdateInput, ResumoPagamentoUncheckedUpdateInput>
+  }
+
+  /**
+   * ResumoPagamento delete
+   */
+  export type ResumoPagamentoDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ResumoPagamento
+     */
+    select?: ResumoPagamentoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ResumoPagamento
+     */
+    omit?: ResumoPagamentoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ResumoPagamentoInclude<ExtArgs> | null
+    /**
+     * Filter which ResumoPagamento to delete.
+     */
+    where: ResumoPagamentoWhereUniqueInput
+  }
+
+  /**
+   * ResumoPagamento deleteMany
+   */
+  export type ResumoPagamentoDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ResumoPagamentos to delete
+     */
+    where?: ResumoPagamentoWhereInput
+    /**
+     * Limit how many ResumoPagamentos to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ResumoPagamento without action
+   */
+  export type ResumoPagamentoDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ResumoPagamento
+     */
+    select?: ResumoPagamentoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ResumoPagamento
+     */
+    omit?: ResumoPagamentoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ResumoPagamentoInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
   export const TransactionIsolationLevel: {
+    ReadUncommitted: 'ReadUncommitted',
+    ReadCommitted: 'ReadCommitted',
+    RepeatableRead: 'RepeatableRead',
     Serializable: 'Serializable'
   };
 
@@ -4582,6 +8548,8 @@ export namespace Prisma {
     permissoes: 'permissoes',
     tipoNegocio: 'tipoNegocio',
     numeroFuncionarios: 'numeroFuncionarios',
+    passwordResetToken: 'passwordResetToken',
+    passwordResetExpires: 'passwordResetExpires',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -4616,12 +8584,75 @@ export namespace Prisma {
   export type InventarioScalarFieldEnum = (typeof InventarioScalarFieldEnum)[keyof typeof InventarioScalarFieldEnum]
 
 
+  export const FuncionarioScalarFieldEnum: {
+    id: 'id',
+    nome: 'nome',
+    cargo: 'cargo',
+    tipoContrato: 'tipoContrato',
+    dataAdmissao: 'dataAdmissao',
+    salarioBruto: 'salarioBruto',
+    pagamentoPorHora: 'pagamentoPorHora',
+    horasSemana: 'horasSemana',
+    diasTrabalho: 'diasTrabalho',
+    iban: 'iban',
+    status: 'status',
+    observacoes: 'observacoes',
+    contratoUploadUrl: 'contratoUploadUrl',
+    dataCriacao: 'dataCriacao',
+    dataAtualizacao: 'dataAtualizacao'
+  };
+
+  export type FuncionarioScalarFieldEnum = (typeof FuncionarioScalarFieldEnum)[keyof typeof FuncionarioScalarFieldEnum]
+
+
+  export const ControleJornadaScalarFieldEnum: {
+    id: 'id',
+    funcionarioId: 'funcionarioId',
+    data: 'data',
+    horaEntrada: 'horaEntrada',
+    horaSaida: 'horaSaida',
+    horasTrabalhadas: 'horasTrabalhadas',
+    horaExtra: 'horaExtra',
+    faltaJustificada: 'faltaJustificada',
+    observacoes: 'observacoes',
+    dataCriacao: 'dataCriacao',
+    dataAtualizacao: 'dataAtualizacao'
+  };
+
+  export type ControleJornadaScalarFieldEnum = (typeof ControleJornadaScalarFieldEnum)[keyof typeof ControleJornadaScalarFieldEnum]
+
+
+  export const ResumoPagamentoScalarFieldEnum: {
+    id: 'id',
+    funcionarioId: 'funcionarioId',
+    mes: 'mes',
+    salarioPrevisto: 'salarioPrevisto',
+    salarioReal: 'salarioReal',
+    extras: 'extras',
+    descontos: 'descontos',
+    observacoes: 'observacoes',
+    enviadoParaContador: 'enviadoParaContador',
+    dataCriacao: 'dataCriacao',
+    dataAtualizacao: 'dataAtualizacao'
+  };
+
+  export type ResumoPagamentoScalarFieldEnum = (typeof ResumoPagamentoScalarFieldEnum)[keyof typeof ResumoPagamentoScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
   };
 
   export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+  export const QueryMode: {
+    default: 'default',
+    insensitive: 'insensitive'
+  };
+
+  export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
 
 
   export const NullsOrder: {
@@ -4645,9 +8676,23 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'String[]'
+   */
+  export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String[]'>
+    
+
+
+  /**
    * Reference to a field of type 'Int'
    */
   export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+  /**
+   * Reference to a field of type 'Int[]'
+   */
+  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
     
 
 
@@ -4659,9 +8704,30 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'DateTime[]'
+   */
+  export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+  /**
    * Reference to a field of type 'Float'
    */
   export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float[]'
+   */
+  export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
   /**
    * Deep Input Types
@@ -4682,6 +8748,8 @@ export namespace Prisma {
     permissoes?: StringFilter<"User"> | string
     tipoNegocio?: StringNullableFilter<"User"> | string | null
     numeroFuncionarios?: IntNullableFilter<"User"> | number | null
+    passwordResetToken?: StringNullableFilter<"User"> | string | null
+    passwordResetExpires?: DateTimeNullableFilter<"User"> | Date | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     pagamentos?: PagamentoListRelationFilter
@@ -4699,6 +8767,8 @@ export namespace Prisma {
     permissoes?: SortOrder
     tipoNegocio?: SortOrderInput | SortOrder
     numeroFuncionarios?: SortOrderInput | SortOrder
+    passwordResetToken?: SortOrderInput | SortOrder
+    passwordResetExpires?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     pagamentos?: PagamentoOrderByRelationAggregateInput
@@ -4719,6 +8789,8 @@ export namespace Prisma {
     permissoes?: StringFilter<"User"> | string
     tipoNegocio?: StringNullableFilter<"User"> | string | null
     numeroFuncionarios?: IntNullableFilter<"User"> | number | null
+    passwordResetToken?: StringNullableFilter<"User"> | string | null
+    passwordResetExpires?: DateTimeNullableFilter<"User"> | Date | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     pagamentos?: PagamentoListRelationFilter
@@ -4736,6 +8808,8 @@ export namespace Prisma {
     permissoes?: SortOrder
     tipoNegocio?: SortOrderInput | SortOrder
     numeroFuncionarios?: SortOrderInput | SortOrder
+    passwordResetToken?: SortOrderInput | SortOrder
+    passwordResetExpires?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: UserCountOrderByAggregateInput
@@ -4759,6 +8833,8 @@ export namespace Prisma {
     permissoes?: StringWithAggregatesFilter<"User"> | string
     tipoNegocio?: StringNullableWithAggregatesFilter<"User"> | string | null
     numeroFuncionarios?: IntNullableWithAggregatesFilter<"User"> | number | null
+    passwordResetToken?: StringNullableWithAggregatesFilter<"User"> | string | null
+    passwordResetExpires?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
   }
@@ -4902,6 +8978,290 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"Inventario"> | Date | string
   }
 
+  export type FuncionarioWhereInput = {
+    AND?: FuncionarioWhereInput | FuncionarioWhereInput[]
+    OR?: FuncionarioWhereInput[]
+    NOT?: FuncionarioWhereInput | FuncionarioWhereInput[]
+    id?: StringFilter<"Funcionario"> | string
+    nome?: StringFilter<"Funcionario"> | string
+    cargo?: StringFilter<"Funcionario"> | string
+    tipoContrato?: StringFilter<"Funcionario"> | string
+    dataAdmissao?: DateTimeFilter<"Funcionario"> | Date | string
+    salarioBruto?: FloatFilter<"Funcionario"> | number
+    pagamentoPorHora?: BoolFilter<"Funcionario"> | boolean
+    horasSemana?: FloatFilter<"Funcionario"> | number
+    diasTrabalho?: StringNullableListFilter<"Funcionario">
+    iban?: StringNullableFilter<"Funcionario"> | string | null
+    status?: StringFilter<"Funcionario"> | string
+    observacoes?: StringNullableFilter<"Funcionario"> | string | null
+    contratoUploadUrl?: StringNullableFilter<"Funcionario"> | string | null
+    dataCriacao?: DateTimeFilter<"Funcionario"> | Date | string
+    dataAtualizacao?: DateTimeFilter<"Funcionario"> | Date | string
+    controleJornada?: ControleJornadaListRelationFilter
+    resumoPagamento?: ResumoPagamentoListRelationFilter
+  }
+
+  export type FuncionarioOrderByWithRelationInput = {
+    id?: SortOrder
+    nome?: SortOrder
+    cargo?: SortOrder
+    tipoContrato?: SortOrder
+    dataAdmissao?: SortOrder
+    salarioBruto?: SortOrder
+    pagamentoPorHora?: SortOrder
+    horasSemana?: SortOrder
+    diasTrabalho?: SortOrder
+    iban?: SortOrderInput | SortOrder
+    status?: SortOrder
+    observacoes?: SortOrderInput | SortOrder
+    contratoUploadUrl?: SortOrderInput | SortOrder
+    dataCriacao?: SortOrder
+    dataAtualizacao?: SortOrder
+    controleJornada?: ControleJornadaOrderByRelationAggregateInput
+    resumoPagamento?: ResumoPagamentoOrderByRelationAggregateInput
+  }
+
+  export type FuncionarioWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: FuncionarioWhereInput | FuncionarioWhereInput[]
+    OR?: FuncionarioWhereInput[]
+    NOT?: FuncionarioWhereInput | FuncionarioWhereInput[]
+    nome?: StringFilter<"Funcionario"> | string
+    cargo?: StringFilter<"Funcionario"> | string
+    tipoContrato?: StringFilter<"Funcionario"> | string
+    dataAdmissao?: DateTimeFilter<"Funcionario"> | Date | string
+    salarioBruto?: FloatFilter<"Funcionario"> | number
+    pagamentoPorHora?: BoolFilter<"Funcionario"> | boolean
+    horasSemana?: FloatFilter<"Funcionario"> | number
+    diasTrabalho?: StringNullableListFilter<"Funcionario">
+    iban?: StringNullableFilter<"Funcionario"> | string | null
+    status?: StringFilter<"Funcionario"> | string
+    observacoes?: StringNullableFilter<"Funcionario"> | string | null
+    contratoUploadUrl?: StringNullableFilter<"Funcionario"> | string | null
+    dataCriacao?: DateTimeFilter<"Funcionario"> | Date | string
+    dataAtualizacao?: DateTimeFilter<"Funcionario"> | Date | string
+    controleJornada?: ControleJornadaListRelationFilter
+    resumoPagamento?: ResumoPagamentoListRelationFilter
+  }, "id">
+
+  export type FuncionarioOrderByWithAggregationInput = {
+    id?: SortOrder
+    nome?: SortOrder
+    cargo?: SortOrder
+    tipoContrato?: SortOrder
+    dataAdmissao?: SortOrder
+    salarioBruto?: SortOrder
+    pagamentoPorHora?: SortOrder
+    horasSemana?: SortOrder
+    diasTrabalho?: SortOrder
+    iban?: SortOrderInput | SortOrder
+    status?: SortOrder
+    observacoes?: SortOrderInput | SortOrder
+    contratoUploadUrl?: SortOrderInput | SortOrder
+    dataCriacao?: SortOrder
+    dataAtualizacao?: SortOrder
+    _count?: FuncionarioCountOrderByAggregateInput
+    _avg?: FuncionarioAvgOrderByAggregateInput
+    _max?: FuncionarioMaxOrderByAggregateInput
+    _min?: FuncionarioMinOrderByAggregateInput
+    _sum?: FuncionarioSumOrderByAggregateInput
+  }
+
+  export type FuncionarioScalarWhereWithAggregatesInput = {
+    AND?: FuncionarioScalarWhereWithAggregatesInput | FuncionarioScalarWhereWithAggregatesInput[]
+    OR?: FuncionarioScalarWhereWithAggregatesInput[]
+    NOT?: FuncionarioScalarWhereWithAggregatesInput | FuncionarioScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Funcionario"> | string
+    nome?: StringWithAggregatesFilter<"Funcionario"> | string
+    cargo?: StringWithAggregatesFilter<"Funcionario"> | string
+    tipoContrato?: StringWithAggregatesFilter<"Funcionario"> | string
+    dataAdmissao?: DateTimeWithAggregatesFilter<"Funcionario"> | Date | string
+    salarioBruto?: FloatWithAggregatesFilter<"Funcionario"> | number
+    pagamentoPorHora?: BoolWithAggregatesFilter<"Funcionario"> | boolean
+    horasSemana?: FloatWithAggregatesFilter<"Funcionario"> | number
+    diasTrabalho?: StringNullableListFilter<"Funcionario">
+    iban?: StringNullableWithAggregatesFilter<"Funcionario"> | string | null
+    status?: StringWithAggregatesFilter<"Funcionario"> | string
+    observacoes?: StringNullableWithAggregatesFilter<"Funcionario"> | string | null
+    contratoUploadUrl?: StringNullableWithAggregatesFilter<"Funcionario"> | string | null
+    dataCriacao?: DateTimeWithAggregatesFilter<"Funcionario"> | Date | string
+    dataAtualizacao?: DateTimeWithAggregatesFilter<"Funcionario"> | Date | string
+  }
+
+  export type ControleJornadaWhereInput = {
+    AND?: ControleJornadaWhereInput | ControleJornadaWhereInput[]
+    OR?: ControleJornadaWhereInput[]
+    NOT?: ControleJornadaWhereInput | ControleJornadaWhereInput[]
+    id?: StringFilter<"ControleJornada"> | string
+    funcionarioId?: StringFilter<"ControleJornada"> | string
+    data?: DateTimeFilter<"ControleJornada"> | Date | string
+    horaEntrada?: StringFilter<"ControleJornada"> | string
+    horaSaida?: StringFilter<"ControleJornada"> | string
+    horasTrabalhadas?: FloatFilter<"ControleJornada"> | number
+    horaExtra?: FloatNullableFilter<"ControleJornada"> | number | null
+    faltaJustificada?: BoolFilter<"ControleJornada"> | boolean
+    observacoes?: StringNullableFilter<"ControleJornada"> | string | null
+    dataCriacao?: DateTimeFilter<"ControleJornada"> | Date | string
+    dataAtualizacao?: DateTimeFilter<"ControleJornada"> | Date | string
+    funcionario?: XOR<FuncionarioScalarRelationFilter, FuncionarioWhereInput>
+  }
+
+  export type ControleJornadaOrderByWithRelationInput = {
+    id?: SortOrder
+    funcionarioId?: SortOrder
+    data?: SortOrder
+    horaEntrada?: SortOrder
+    horaSaida?: SortOrder
+    horasTrabalhadas?: SortOrder
+    horaExtra?: SortOrderInput | SortOrder
+    faltaJustificada?: SortOrder
+    observacoes?: SortOrderInput | SortOrder
+    dataCriacao?: SortOrder
+    dataAtualizacao?: SortOrder
+    funcionario?: FuncionarioOrderByWithRelationInput
+  }
+
+  export type ControleJornadaWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: ControleJornadaWhereInput | ControleJornadaWhereInput[]
+    OR?: ControleJornadaWhereInput[]
+    NOT?: ControleJornadaWhereInput | ControleJornadaWhereInput[]
+    funcionarioId?: StringFilter<"ControleJornada"> | string
+    data?: DateTimeFilter<"ControleJornada"> | Date | string
+    horaEntrada?: StringFilter<"ControleJornada"> | string
+    horaSaida?: StringFilter<"ControleJornada"> | string
+    horasTrabalhadas?: FloatFilter<"ControleJornada"> | number
+    horaExtra?: FloatNullableFilter<"ControleJornada"> | number | null
+    faltaJustificada?: BoolFilter<"ControleJornada"> | boolean
+    observacoes?: StringNullableFilter<"ControleJornada"> | string | null
+    dataCriacao?: DateTimeFilter<"ControleJornada"> | Date | string
+    dataAtualizacao?: DateTimeFilter<"ControleJornada"> | Date | string
+    funcionario?: XOR<FuncionarioScalarRelationFilter, FuncionarioWhereInput>
+  }, "id">
+
+  export type ControleJornadaOrderByWithAggregationInput = {
+    id?: SortOrder
+    funcionarioId?: SortOrder
+    data?: SortOrder
+    horaEntrada?: SortOrder
+    horaSaida?: SortOrder
+    horasTrabalhadas?: SortOrder
+    horaExtra?: SortOrderInput | SortOrder
+    faltaJustificada?: SortOrder
+    observacoes?: SortOrderInput | SortOrder
+    dataCriacao?: SortOrder
+    dataAtualizacao?: SortOrder
+    _count?: ControleJornadaCountOrderByAggregateInput
+    _avg?: ControleJornadaAvgOrderByAggregateInput
+    _max?: ControleJornadaMaxOrderByAggregateInput
+    _min?: ControleJornadaMinOrderByAggregateInput
+    _sum?: ControleJornadaSumOrderByAggregateInput
+  }
+
+  export type ControleJornadaScalarWhereWithAggregatesInput = {
+    AND?: ControleJornadaScalarWhereWithAggregatesInput | ControleJornadaScalarWhereWithAggregatesInput[]
+    OR?: ControleJornadaScalarWhereWithAggregatesInput[]
+    NOT?: ControleJornadaScalarWhereWithAggregatesInput | ControleJornadaScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ControleJornada"> | string
+    funcionarioId?: StringWithAggregatesFilter<"ControleJornada"> | string
+    data?: DateTimeWithAggregatesFilter<"ControleJornada"> | Date | string
+    horaEntrada?: StringWithAggregatesFilter<"ControleJornada"> | string
+    horaSaida?: StringWithAggregatesFilter<"ControleJornada"> | string
+    horasTrabalhadas?: FloatWithAggregatesFilter<"ControleJornada"> | number
+    horaExtra?: FloatNullableWithAggregatesFilter<"ControleJornada"> | number | null
+    faltaJustificada?: BoolWithAggregatesFilter<"ControleJornada"> | boolean
+    observacoes?: StringNullableWithAggregatesFilter<"ControleJornada"> | string | null
+    dataCriacao?: DateTimeWithAggregatesFilter<"ControleJornada"> | Date | string
+    dataAtualizacao?: DateTimeWithAggregatesFilter<"ControleJornada"> | Date | string
+  }
+
+  export type ResumoPagamentoWhereInput = {
+    AND?: ResumoPagamentoWhereInput | ResumoPagamentoWhereInput[]
+    OR?: ResumoPagamentoWhereInput[]
+    NOT?: ResumoPagamentoWhereInput | ResumoPagamentoWhereInput[]
+    id?: StringFilter<"ResumoPagamento"> | string
+    funcionarioId?: StringFilter<"ResumoPagamento"> | string
+    mes?: StringFilter<"ResumoPagamento"> | string
+    salarioPrevisto?: FloatFilter<"ResumoPagamento"> | number
+    salarioReal?: FloatFilter<"ResumoPagamento"> | number
+    extras?: FloatNullableFilter<"ResumoPagamento"> | number | null
+    descontos?: FloatNullableFilter<"ResumoPagamento"> | number | null
+    observacoes?: StringNullableFilter<"ResumoPagamento"> | string | null
+    enviadoParaContador?: BoolFilter<"ResumoPagamento"> | boolean
+    dataCriacao?: DateTimeFilter<"ResumoPagamento"> | Date | string
+    dataAtualizacao?: DateTimeFilter<"ResumoPagamento"> | Date | string
+    funcionario?: XOR<FuncionarioScalarRelationFilter, FuncionarioWhereInput>
+  }
+
+  export type ResumoPagamentoOrderByWithRelationInput = {
+    id?: SortOrder
+    funcionarioId?: SortOrder
+    mes?: SortOrder
+    salarioPrevisto?: SortOrder
+    salarioReal?: SortOrder
+    extras?: SortOrderInput | SortOrder
+    descontos?: SortOrderInput | SortOrder
+    observacoes?: SortOrderInput | SortOrder
+    enviadoParaContador?: SortOrder
+    dataCriacao?: SortOrder
+    dataAtualizacao?: SortOrder
+    funcionario?: FuncionarioOrderByWithRelationInput
+  }
+
+  export type ResumoPagamentoWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: ResumoPagamentoWhereInput | ResumoPagamentoWhereInput[]
+    OR?: ResumoPagamentoWhereInput[]
+    NOT?: ResumoPagamentoWhereInput | ResumoPagamentoWhereInput[]
+    funcionarioId?: StringFilter<"ResumoPagamento"> | string
+    mes?: StringFilter<"ResumoPagamento"> | string
+    salarioPrevisto?: FloatFilter<"ResumoPagamento"> | number
+    salarioReal?: FloatFilter<"ResumoPagamento"> | number
+    extras?: FloatNullableFilter<"ResumoPagamento"> | number | null
+    descontos?: FloatNullableFilter<"ResumoPagamento"> | number | null
+    observacoes?: StringNullableFilter<"ResumoPagamento"> | string | null
+    enviadoParaContador?: BoolFilter<"ResumoPagamento"> | boolean
+    dataCriacao?: DateTimeFilter<"ResumoPagamento"> | Date | string
+    dataAtualizacao?: DateTimeFilter<"ResumoPagamento"> | Date | string
+    funcionario?: XOR<FuncionarioScalarRelationFilter, FuncionarioWhereInput>
+  }, "id">
+
+  export type ResumoPagamentoOrderByWithAggregationInput = {
+    id?: SortOrder
+    funcionarioId?: SortOrder
+    mes?: SortOrder
+    salarioPrevisto?: SortOrder
+    salarioReal?: SortOrder
+    extras?: SortOrderInput | SortOrder
+    descontos?: SortOrderInput | SortOrder
+    observacoes?: SortOrderInput | SortOrder
+    enviadoParaContador?: SortOrder
+    dataCriacao?: SortOrder
+    dataAtualizacao?: SortOrder
+    _count?: ResumoPagamentoCountOrderByAggregateInput
+    _avg?: ResumoPagamentoAvgOrderByAggregateInput
+    _max?: ResumoPagamentoMaxOrderByAggregateInput
+    _min?: ResumoPagamentoMinOrderByAggregateInput
+    _sum?: ResumoPagamentoSumOrderByAggregateInput
+  }
+
+  export type ResumoPagamentoScalarWhereWithAggregatesInput = {
+    AND?: ResumoPagamentoScalarWhereWithAggregatesInput | ResumoPagamentoScalarWhereWithAggregatesInput[]
+    OR?: ResumoPagamentoScalarWhereWithAggregatesInput[]
+    NOT?: ResumoPagamentoScalarWhereWithAggregatesInput | ResumoPagamentoScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ResumoPagamento"> | string
+    funcionarioId?: StringWithAggregatesFilter<"ResumoPagamento"> | string
+    mes?: StringWithAggregatesFilter<"ResumoPagamento"> | string
+    salarioPrevisto?: FloatWithAggregatesFilter<"ResumoPagamento"> | number
+    salarioReal?: FloatWithAggregatesFilter<"ResumoPagamento"> | number
+    extras?: FloatNullableWithAggregatesFilter<"ResumoPagamento"> | number | null
+    descontos?: FloatNullableWithAggregatesFilter<"ResumoPagamento"> | number | null
+    observacoes?: StringNullableWithAggregatesFilter<"ResumoPagamento"> | string | null
+    enviadoParaContador?: BoolWithAggregatesFilter<"ResumoPagamento"> | boolean
+    dataCriacao?: DateTimeWithAggregatesFilter<"ResumoPagamento"> | Date | string
+    dataAtualizacao?: DateTimeWithAggregatesFilter<"ResumoPagamento"> | Date | string
+  }
+
   export type UserCreateInput = {
     id?: string
     nome: string
@@ -4913,6 +9273,8 @@ export namespace Prisma {
     permissoes?: string
     tipoNegocio?: string | null
     numeroFuncionarios?: number | null
+    passwordResetToken?: string | null
+    passwordResetExpires?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     pagamentos?: PagamentoCreateNestedManyWithoutUserInput
@@ -4930,6 +9292,8 @@ export namespace Prisma {
     permissoes?: string
     tipoNegocio?: string | null
     numeroFuncionarios?: number | null
+    passwordResetToken?: string | null
+    passwordResetExpires?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     pagamentos?: PagamentoUncheckedCreateNestedManyWithoutUserInput
@@ -4947,6 +9311,8 @@ export namespace Prisma {
     permissoes?: StringFieldUpdateOperationsInput | string
     tipoNegocio?: NullableStringFieldUpdateOperationsInput | string | null
     numeroFuncionarios?: NullableIntFieldUpdateOperationsInput | number | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     pagamentos?: PagamentoUpdateManyWithoutUserNestedInput
@@ -4964,6 +9330,8 @@ export namespace Prisma {
     permissoes?: StringFieldUpdateOperationsInput | string
     tipoNegocio?: NullableStringFieldUpdateOperationsInput | string | null
     numeroFuncionarios?: NullableIntFieldUpdateOperationsInput | number | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     pagamentos?: PagamentoUncheckedUpdateManyWithoutUserNestedInput
@@ -4981,6 +9349,8 @@ export namespace Prisma {
     permissoes?: string
     tipoNegocio?: string | null
     numeroFuncionarios?: number | null
+    passwordResetToken?: string | null
+    passwordResetExpires?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -4996,6 +9366,8 @@ export namespace Prisma {
     permissoes?: StringFieldUpdateOperationsInput | string
     tipoNegocio?: NullableStringFieldUpdateOperationsInput | string | null
     numeroFuncionarios?: NullableIntFieldUpdateOperationsInput | number | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -5011,6 +9383,8 @@ export namespace Prisma {
     permissoes?: StringFieldUpdateOperationsInput | string
     tipoNegocio?: NullableStringFieldUpdateOperationsInput | string | null
     numeroFuncionarios?: NullableIntFieldUpdateOperationsInput | number | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -5160,10 +9534,338 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type FuncionarioCreateInput = {
+    id?: string
+    nome: string
+    cargo: string
+    tipoContrato: string
+    dataAdmissao: Date | string
+    salarioBruto: number
+    pagamentoPorHora: boolean
+    horasSemana: number
+    diasTrabalho?: FuncionarioCreatediasTrabalhoInput | string[]
+    iban?: string | null
+    status: string
+    observacoes?: string | null
+    contratoUploadUrl?: string | null
+    dataCriacao?: Date | string
+    dataAtualizacao?: Date | string
+    controleJornada?: ControleJornadaCreateNestedManyWithoutFuncionarioInput
+    resumoPagamento?: ResumoPagamentoCreateNestedManyWithoutFuncionarioInput
+  }
+
+  export type FuncionarioUncheckedCreateInput = {
+    id?: string
+    nome: string
+    cargo: string
+    tipoContrato: string
+    dataAdmissao: Date | string
+    salarioBruto: number
+    pagamentoPorHora: boolean
+    horasSemana: number
+    diasTrabalho?: FuncionarioCreatediasTrabalhoInput | string[]
+    iban?: string | null
+    status: string
+    observacoes?: string | null
+    contratoUploadUrl?: string | null
+    dataCriacao?: Date | string
+    dataAtualizacao?: Date | string
+    controleJornada?: ControleJornadaUncheckedCreateNestedManyWithoutFuncionarioInput
+    resumoPagamento?: ResumoPagamentoUncheckedCreateNestedManyWithoutFuncionarioInput
+  }
+
+  export type FuncionarioUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nome?: StringFieldUpdateOperationsInput | string
+    cargo?: StringFieldUpdateOperationsInput | string
+    tipoContrato?: StringFieldUpdateOperationsInput | string
+    dataAdmissao?: DateTimeFieldUpdateOperationsInput | Date | string
+    salarioBruto?: FloatFieldUpdateOperationsInput | number
+    pagamentoPorHora?: BoolFieldUpdateOperationsInput | boolean
+    horasSemana?: FloatFieldUpdateOperationsInput | number
+    diasTrabalho?: FuncionarioUpdatediasTrabalhoInput | string[]
+    iban?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    observacoes?: NullableStringFieldUpdateOperationsInput | string | null
+    contratoUploadUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    dataCriacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    dataAtualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    controleJornada?: ControleJornadaUpdateManyWithoutFuncionarioNestedInput
+    resumoPagamento?: ResumoPagamentoUpdateManyWithoutFuncionarioNestedInput
+  }
+
+  export type FuncionarioUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nome?: StringFieldUpdateOperationsInput | string
+    cargo?: StringFieldUpdateOperationsInput | string
+    tipoContrato?: StringFieldUpdateOperationsInput | string
+    dataAdmissao?: DateTimeFieldUpdateOperationsInput | Date | string
+    salarioBruto?: FloatFieldUpdateOperationsInput | number
+    pagamentoPorHora?: BoolFieldUpdateOperationsInput | boolean
+    horasSemana?: FloatFieldUpdateOperationsInput | number
+    diasTrabalho?: FuncionarioUpdatediasTrabalhoInput | string[]
+    iban?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    observacoes?: NullableStringFieldUpdateOperationsInput | string | null
+    contratoUploadUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    dataCriacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    dataAtualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    controleJornada?: ControleJornadaUncheckedUpdateManyWithoutFuncionarioNestedInput
+    resumoPagamento?: ResumoPagamentoUncheckedUpdateManyWithoutFuncionarioNestedInput
+  }
+
+  export type FuncionarioCreateManyInput = {
+    id?: string
+    nome: string
+    cargo: string
+    tipoContrato: string
+    dataAdmissao: Date | string
+    salarioBruto: number
+    pagamentoPorHora: boolean
+    horasSemana: number
+    diasTrabalho?: FuncionarioCreatediasTrabalhoInput | string[]
+    iban?: string | null
+    status: string
+    observacoes?: string | null
+    contratoUploadUrl?: string | null
+    dataCriacao?: Date | string
+    dataAtualizacao?: Date | string
+  }
+
+  export type FuncionarioUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nome?: StringFieldUpdateOperationsInput | string
+    cargo?: StringFieldUpdateOperationsInput | string
+    tipoContrato?: StringFieldUpdateOperationsInput | string
+    dataAdmissao?: DateTimeFieldUpdateOperationsInput | Date | string
+    salarioBruto?: FloatFieldUpdateOperationsInput | number
+    pagamentoPorHora?: BoolFieldUpdateOperationsInput | boolean
+    horasSemana?: FloatFieldUpdateOperationsInput | number
+    diasTrabalho?: FuncionarioUpdatediasTrabalhoInput | string[]
+    iban?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    observacoes?: NullableStringFieldUpdateOperationsInput | string | null
+    contratoUploadUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    dataCriacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    dataAtualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FuncionarioUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nome?: StringFieldUpdateOperationsInput | string
+    cargo?: StringFieldUpdateOperationsInput | string
+    tipoContrato?: StringFieldUpdateOperationsInput | string
+    dataAdmissao?: DateTimeFieldUpdateOperationsInput | Date | string
+    salarioBruto?: FloatFieldUpdateOperationsInput | number
+    pagamentoPorHora?: BoolFieldUpdateOperationsInput | boolean
+    horasSemana?: FloatFieldUpdateOperationsInput | number
+    diasTrabalho?: FuncionarioUpdatediasTrabalhoInput | string[]
+    iban?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    observacoes?: NullableStringFieldUpdateOperationsInput | string | null
+    contratoUploadUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    dataCriacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    dataAtualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ControleJornadaCreateInput = {
+    id?: string
+    data: Date | string
+    horaEntrada: string
+    horaSaida: string
+    horasTrabalhadas: number
+    horaExtra?: number | null
+    faltaJustificada: boolean
+    observacoes?: string | null
+    dataCriacao?: Date | string
+    dataAtualizacao?: Date | string
+    funcionario: FuncionarioCreateNestedOneWithoutControleJornadaInput
+  }
+
+  export type ControleJornadaUncheckedCreateInput = {
+    id?: string
+    funcionarioId: string
+    data: Date | string
+    horaEntrada: string
+    horaSaida: string
+    horasTrabalhadas: number
+    horaExtra?: number | null
+    faltaJustificada: boolean
+    observacoes?: string | null
+    dataCriacao?: Date | string
+    dataAtualizacao?: Date | string
+  }
+
+  export type ControleJornadaUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    data?: DateTimeFieldUpdateOperationsInput | Date | string
+    horaEntrada?: StringFieldUpdateOperationsInput | string
+    horaSaida?: StringFieldUpdateOperationsInput | string
+    horasTrabalhadas?: FloatFieldUpdateOperationsInput | number
+    horaExtra?: NullableFloatFieldUpdateOperationsInput | number | null
+    faltaJustificada?: BoolFieldUpdateOperationsInput | boolean
+    observacoes?: NullableStringFieldUpdateOperationsInput | string | null
+    dataCriacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    dataAtualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    funcionario?: FuncionarioUpdateOneRequiredWithoutControleJornadaNestedInput
+  }
+
+  export type ControleJornadaUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    funcionarioId?: StringFieldUpdateOperationsInput | string
+    data?: DateTimeFieldUpdateOperationsInput | Date | string
+    horaEntrada?: StringFieldUpdateOperationsInput | string
+    horaSaida?: StringFieldUpdateOperationsInput | string
+    horasTrabalhadas?: FloatFieldUpdateOperationsInput | number
+    horaExtra?: NullableFloatFieldUpdateOperationsInput | number | null
+    faltaJustificada?: BoolFieldUpdateOperationsInput | boolean
+    observacoes?: NullableStringFieldUpdateOperationsInput | string | null
+    dataCriacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    dataAtualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ControleJornadaCreateManyInput = {
+    id?: string
+    funcionarioId: string
+    data: Date | string
+    horaEntrada: string
+    horaSaida: string
+    horasTrabalhadas: number
+    horaExtra?: number | null
+    faltaJustificada: boolean
+    observacoes?: string | null
+    dataCriacao?: Date | string
+    dataAtualizacao?: Date | string
+  }
+
+  export type ControleJornadaUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    data?: DateTimeFieldUpdateOperationsInput | Date | string
+    horaEntrada?: StringFieldUpdateOperationsInput | string
+    horaSaida?: StringFieldUpdateOperationsInput | string
+    horasTrabalhadas?: FloatFieldUpdateOperationsInput | number
+    horaExtra?: NullableFloatFieldUpdateOperationsInput | number | null
+    faltaJustificada?: BoolFieldUpdateOperationsInput | boolean
+    observacoes?: NullableStringFieldUpdateOperationsInput | string | null
+    dataCriacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    dataAtualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ControleJornadaUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    funcionarioId?: StringFieldUpdateOperationsInput | string
+    data?: DateTimeFieldUpdateOperationsInput | Date | string
+    horaEntrada?: StringFieldUpdateOperationsInput | string
+    horaSaida?: StringFieldUpdateOperationsInput | string
+    horasTrabalhadas?: FloatFieldUpdateOperationsInput | number
+    horaExtra?: NullableFloatFieldUpdateOperationsInput | number | null
+    faltaJustificada?: BoolFieldUpdateOperationsInput | boolean
+    observacoes?: NullableStringFieldUpdateOperationsInput | string | null
+    dataCriacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    dataAtualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ResumoPagamentoCreateInput = {
+    id?: string
+    mes: string
+    salarioPrevisto: number
+    salarioReal: number
+    extras?: number | null
+    descontos?: number | null
+    observacoes?: string | null
+    enviadoParaContador?: boolean
+    dataCriacao?: Date | string
+    dataAtualizacao?: Date | string
+    funcionario: FuncionarioCreateNestedOneWithoutResumoPagamentoInput
+  }
+
+  export type ResumoPagamentoUncheckedCreateInput = {
+    id?: string
+    funcionarioId: string
+    mes: string
+    salarioPrevisto: number
+    salarioReal: number
+    extras?: number | null
+    descontos?: number | null
+    observacoes?: string | null
+    enviadoParaContador?: boolean
+    dataCriacao?: Date | string
+    dataAtualizacao?: Date | string
+  }
+
+  export type ResumoPagamentoUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    mes?: StringFieldUpdateOperationsInput | string
+    salarioPrevisto?: FloatFieldUpdateOperationsInput | number
+    salarioReal?: FloatFieldUpdateOperationsInput | number
+    extras?: NullableFloatFieldUpdateOperationsInput | number | null
+    descontos?: NullableFloatFieldUpdateOperationsInput | number | null
+    observacoes?: NullableStringFieldUpdateOperationsInput | string | null
+    enviadoParaContador?: BoolFieldUpdateOperationsInput | boolean
+    dataCriacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    dataAtualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    funcionario?: FuncionarioUpdateOneRequiredWithoutResumoPagamentoNestedInput
+  }
+
+  export type ResumoPagamentoUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    funcionarioId?: StringFieldUpdateOperationsInput | string
+    mes?: StringFieldUpdateOperationsInput | string
+    salarioPrevisto?: FloatFieldUpdateOperationsInput | number
+    salarioReal?: FloatFieldUpdateOperationsInput | number
+    extras?: NullableFloatFieldUpdateOperationsInput | number | null
+    descontos?: NullableFloatFieldUpdateOperationsInput | number | null
+    observacoes?: NullableStringFieldUpdateOperationsInput | string | null
+    enviadoParaContador?: BoolFieldUpdateOperationsInput | boolean
+    dataCriacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    dataAtualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ResumoPagamentoCreateManyInput = {
+    id?: string
+    funcionarioId: string
+    mes: string
+    salarioPrevisto: number
+    salarioReal: number
+    extras?: number | null
+    descontos?: number | null
+    observacoes?: string | null
+    enviadoParaContador?: boolean
+    dataCriacao?: Date | string
+    dataAtualizacao?: Date | string
+  }
+
+  export type ResumoPagamentoUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    mes?: StringFieldUpdateOperationsInput | string
+    salarioPrevisto?: FloatFieldUpdateOperationsInput | number
+    salarioReal?: FloatFieldUpdateOperationsInput | number
+    extras?: NullableFloatFieldUpdateOperationsInput | number | null
+    descontos?: NullableFloatFieldUpdateOperationsInput | number | null
+    observacoes?: NullableStringFieldUpdateOperationsInput | string | null
+    enviadoParaContador?: BoolFieldUpdateOperationsInput | boolean
+    dataCriacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    dataAtualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ResumoPagamentoUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    funcionarioId?: StringFieldUpdateOperationsInput | string
+    mes?: StringFieldUpdateOperationsInput | string
+    salarioPrevisto?: FloatFieldUpdateOperationsInput | number
+    salarioReal?: FloatFieldUpdateOperationsInput | number
+    extras?: NullableFloatFieldUpdateOperationsInput | number | null
+    descontos?: NullableFloatFieldUpdateOperationsInput | number | null
+    observacoes?: NullableStringFieldUpdateOperationsInput | string | null
+    enviadoParaContador?: BoolFieldUpdateOperationsInput | boolean
+    dataCriacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    dataAtualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
-    in?: string[]
-    notIn?: string[]
+    in?: string[] | ListStringFieldRefInput<$PrismaModel>
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel>
     lt?: string | StringFieldRefInput<$PrismaModel>
     lte?: string | StringFieldRefInput<$PrismaModel>
     gt?: string | StringFieldRefInput<$PrismaModel>
@@ -5171,13 +9873,14 @@ export namespace Prisma {
     contains?: string | StringFieldRefInput<$PrismaModel>
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
   export type StringNullableFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | null
-    notIn?: string[] | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
     lt?: string | StringFieldRefInput<$PrismaModel>
     lte?: string | StringFieldRefInput<$PrismaModel>
     gt?: string | StringFieldRefInput<$PrismaModel>
@@ -5185,13 +9888,14 @@ export namespace Prisma {
     contains?: string | StringFieldRefInput<$PrismaModel>
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
   export type IntNullableFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | null
-    notIn?: number[] | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
     lt?: number | IntFieldRefInput<$PrismaModel>
     lte?: number | IntFieldRefInput<$PrismaModel>
     gt?: number | IntFieldRefInput<$PrismaModel>
@@ -5199,10 +9903,21 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
   export type DateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[]
-    notIn?: Date[] | string[]
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
     lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
@@ -5246,6 +9961,8 @@ export namespace Prisma {
     permissoes?: SortOrder
     tipoNegocio?: SortOrder
     numeroFuncionarios?: SortOrder
+    passwordResetToken?: SortOrder
+    passwordResetExpires?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -5265,6 +9982,8 @@ export namespace Prisma {
     permissoes?: SortOrder
     tipoNegocio?: SortOrder
     numeroFuncionarios?: SortOrder
+    passwordResetToken?: SortOrder
+    passwordResetExpires?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -5280,6 +9999,8 @@ export namespace Prisma {
     permissoes?: SortOrder
     tipoNegocio?: SortOrder
     numeroFuncionarios?: SortOrder
+    passwordResetToken?: SortOrder
+    passwordResetExpires?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -5290,8 +10011,8 @@ export namespace Prisma {
 
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
-    in?: string[]
-    notIn?: string[]
+    in?: string[] | ListStringFieldRefInput<$PrismaModel>
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel>
     lt?: string | StringFieldRefInput<$PrismaModel>
     lte?: string | StringFieldRefInput<$PrismaModel>
     gt?: string | StringFieldRefInput<$PrismaModel>
@@ -5299,6 +10020,7 @@ export namespace Prisma {
     contains?: string | StringFieldRefInput<$PrismaModel>
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
     not?: NestedStringWithAggregatesFilter<$PrismaModel> | string
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedStringFilter<$PrismaModel>
@@ -5307,8 +10029,8 @@ export namespace Prisma {
 
   export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | null
-    notIn?: string[] | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
     lt?: string | StringFieldRefInput<$PrismaModel>
     lte?: string | StringFieldRefInput<$PrismaModel>
     gt?: string | StringFieldRefInput<$PrismaModel>
@@ -5316,6 +10038,7 @@ export namespace Prisma {
     contains?: string | StringFieldRefInput<$PrismaModel>
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
     not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedStringNullableFilter<$PrismaModel>
@@ -5324,8 +10047,8 @@ export namespace Prisma {
 
   export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | null
-    notIn?: number[] | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
     lt?: number | IntFieldRefInput<$PrismaModel>
     lte?: number | IntFieldRefInput<$PrismaModel>
     gt?: number | IntFieldRefInput<$PrismaModel>
@@ -5338,10 +10061,24 @@ export namespace Prisma {
     _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
   export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[]
-    notIn?: Date[] | string[]
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
     lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
@@ -5354,8 +10091,8 @@ export namespace Prisma {
 
   export type FloatFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[]
-    notIn?: number[]
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
     lt?: number | FloatFieldRefInput<$PrismaModel>
     lte?: number | FloatFieldRefInput<$PrismaModel>
     gt?: number | FloatFieldRefInput<$PrismaModel>
@@ -5411,8 +10148,8 @@ export namespace Prisma {
 
   export type FloatWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[]
-    notIn?: number[]
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
     lt?: number | FloatFieldRefInput<$PrismaModel>
     lte?: number | FloatFieldRefInput<$PrismaModel>
     gt?: number | FloatFieldRefInput<$PrismaModel>
@@ -5427,8 +10164,8 @@ export namespace Prisma {
 
   export type IntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[]
-    notIn?: number[]
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
     lt?: number | IntFieldRefInput<$PrismaModel>
     lte?: number | IntFieldRefInput<$PrismaModel>
     gt?: number | IntFieldRefInput<$PrismaModel>
@@ -5478,8 +10215,8 @@ export namespace Prisma {
 
   export type IntWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[]
-    notIn?: number[]
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
     lt?: number | IntFieldRefInput<$PrismaModel>
     lte?: number | IntFieldRefInput<$PrismaModel>
     gt?: number | IntFieldRefInput<$PrismaModel>
@@ -5490,6 +10227,249 @@ export namespace Prisma {
     _sum?: NestedIntFilter<$PrismaModel>
     _min?: NestedIntFilter<$PrismaModel>
     _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type StringNullableListFilter<$PrismaModel = never> = {
+    equals?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    has?: string | StringFieldRefInput<$PrismaModel> | null
+    hasEvery?: string[] | ListStringFieldRefInput<$PrismaModel>
+    hasSome?: string[] | ListStringFieldRefInput<$PrismaModel>
+    isEmpty?: boolean
+  }
+
+  export type ControleJornadaListRelationFilter = {
+    every?: ControleJornadaWhereInput
+    some?: ControleJornadaWhereInput
+    none?: ControleJornadaWhereInput
+  }
+
+  export type ResumoPagamentoListRelationFilter = {
+    every?: ResumoPagamentoWhereInput
+    some?: ResumoPagamentoWhereInput
+    none?: ResumoPagamentoWhereInput
+  }
+
+  export type ControleJornadaOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ResumoPagamentoOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type FuncionarioCountOrderByAggregateInput = {
+    id?: SortOrder
+    nome?: SortOrder
+    cargo?: SortOrder
+    tipoContrato?: SortOrder
+    dataAdmissao?: SortOrder
+    salarioBruto?: SortOrder
+    pagamentoPorHora?: SortOrder
+    horasSemana?: SortOrder
+    diasTrabalho?: SortOrder
+    iban?: SortOrder
+    status?: SortOrder
+    observacoes?: SortOrder
+    contratoUploadUrl?: SortOrder
+    dataCriacao?: SortOrder
+    dataAtualizacao?: SortOrder
+  }
+
+  export type FuncionarioAvgOrderByAggregateInput = {
+    salarioBruto?: SortOrder
+    horasSemana?: SortOrder
+  }
+
+  export type FuncionarioMaxOrderByAggregateInput = {
+    id?: SortOrder
+    nome?: SortOrder
+    cargo?: SortOrder
+    tipoContrato?: SortOrder
+    dataAdmissao?: SortOrder
+    salarioBruto?: SortOrder
+    pagamentoPorHora?: SortOrder
+    horasSemana?: SortOrder
+    iban?: SortOrder
+    status?: SortOrder
+    observacoes?: SortOrder
+    contratoUploadUrl?: SortOrder
+    dataCriacao?: SortOrder
+    dataAtualizacao?: SortOrder
+  }
+
+  export type FuncionarioMinOrderByAggregateInput = {
+    id?: SortOrder
+    nome?: SortOrder
+    cargo?: SortOrder
+    tipoContrato?: SortOrder
+    dataAdmissao?: SortOrder
+    salarioBruto?: SortOrder
+    pagamentoPorHora?: SortOrder
+    horasSemana?: SortOrder
+    iban?: SortOrder
+    status?: SortOrder
+    observacoes?: SortOrder
+    contratoUploadUrl?: SortOrder
+    dataCriacao?: SortOrder
+    dataAtualizacao?: SortOrder
+  }
+
+  export type FuncionarioSumOrderByAggregateInput = {
+    salarioBruto?: SortOrder
+    horasSemana?: SortOrder
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type FloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type FuncionarioScalarRelationFilter = {
+    is?: FuncionarioWhereInput
+    isNot?: FuncionarioWhereInput
+  }
+
+  export type ControleJornadaCountOrderByAggregateInput = {
+    id?: SortOrder
+    funcionarioId?: SortOrder
+    data?: SortOrder
+    horaEntrada?: SortOrder
+    horaSaida?: SortOrder
+    horasTrabalhadas?: SortOrder
+    horaExtra?: SortOrder
+    faltaJustificada?: SortOrder
+    observacoes?: SortOrder
+    dataCriacao?: SortOrder
+    dataAtualizacao?: SortOrder
+  }
+
+  export type ControleJornadaAvgOrderByAggregateInput = {
+    horasTrabalhadas?: SortOrder
+    horaExtra?: SortOrder
+  }
+
+  export type ControleJornadaMaxOrderByAggregateInput = {
+    id?: SortOrder
+    funcionarioId?: SortOrder
+    data?: SortOrder
+    horaEntrada?: SortOrder
+    horaSaida?: SortOrder
+    horasTrabalhadas?: SortOrder
+    horaExtra?: SortOrder
+    faltaJustificada?: SortOrder
+    observacoes?: SortOrder
+    dataCriacao?: SortOrder
+    dataAtualizacao?: SortOrder
+  }
+
+  export type ControleJornadaMinOrderByAggregateInput = {
+    id?: SortOrder
+    funcionarioId?: SortOrder
+    data?: SortOrder
+    horaEntrada?: SortOrder
+    horaSaida?: SortOrder
+    horasTrabalhadas?: SortOrder
+    horaExtra?: SortOrder
+    faltaJustificada?: SortOrder
+    observacoes?: SortOrder
+    dataCriacao?: SortOrder
+    dataAtualizacao?: SortOrder
+  }
+
+  export type ControleJornadaSumOrderByAggregateInput = {
+    horasTrabalhadas?: SortOrder
+    horaExtra?: SortOrder
+  }
+
+  export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
+  }
+
+  export type ResumoPagamentoCountOrderByAggregateInput = {
+    id?: SortOrder
+    funcionarioId?: SortOrder
+    mes?: SortOrder
+    salarioPrevisto?: SortOrder
+    salarioReal?: SortOrder
+    extras?: SortOrder
+    descontos?: SortOrder
+    observacoes?: SortOrder
+    enviadoParaContador?: SortOrder
+    dataCriacao?: SortOrder
+    dataAtualizacao?: SortOrder
+  }
+
+  export type ResumoPagamentoAvgOrderByAggregateInput = {
+    salarioPrevisto?: SortOrder
+    salarioReal?: SortOrder
+    extras?: SortOrder
+    descontos?: SortOrder
+  }
+
+  export type ResumoPagamentoMaxOrderByAggregateInput = {
+    id?: SortOrder
+    funcionarioId?: SortOrder
+    mes?: SortOrder
+    salarioPrevisto?: SortOrder
+    salarioReal?: SortOrder
+    extras?: SortOrder
+    descontos?: SortOrder
+    observacoes?: SortOrder
+    enviadoParaContador?: SortOrder
+    dataCriacao?: SortOrder
+    dataAtualizacao?: SortOrder
+  }
+
+  export type ResumoPagamentoMinOrderByAggregateInput = {
+    id?: SortOrder
+    funcionarioId?: SortOrder
+    mes?: SortOrder
+    salarioPrevisto?: SortOrder
+    salarioReal?: SortOrder
+    extras?: SortOrder
+    descontos?: SortOrder
+    observacoes?: SortOrder
+    enviadoParaContador?: SortOrder
+    dataCriacao?: SortOrder
+    dataAtualizacao?: SortOrder
+  }
+
+  export type ResumoPagamentoSumOrderByAggregateInput = {
+    salarioPrevisto?: SortOrder
+    salarioReal?: SortOrder
+    extras?: SortOrder
+    descontos?: SortOrder
   }
 
   export type PagamentoCreateNestedManyWithoutUserInput = {
@@ -5534,6 +10514,10 @@ export namespace Prisma {
     decrement?: number
     multiply?: number
     divide?: number
+  }
+
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
   }
 
   export type DateTimeFieldUpdateOperationsInput = {
@@ -5640,10 +10624,143 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutInventarioInput, UserUpdateWithoutInventarioInput>, UserUncheckedUpdateWithoutInventarioInput>
   }
 
+  export type FuncionarioCreatediasTrabalhoInput = {
+    set: string[]
+  }
+
+  export type ControleJornadaCreateNestedManyWithoutFuncionarioInput = {
+    create?: XOR<ControleJornadaCreateWithoutFuncionarioInput, ControleJornadaUncheckedCreateWithoutFuncionarioInput> | ControleJornadaCreateWithoutFuncionarioInput[] | ControleJornadaUncheckedCreateWithoutFuncionarioInput[]
+    connectOrCreate?: ControleJornadaCreateOrConnectWithoutFuncionarioInput | ControleJornadaCreateOrConnectWithoutFuncionarioInput[]
+    createMany?: ControleJornadaCreateManyFuncionarioInputEnvelope
+    connect?: ControleJornadaWhereUniqueInput | ControleJornadaWhereUniqueInput[]
+  }
+
+  export type ResumoPagamentoCreateNestedManyWithoutFuncionarioInput = {
+    create?: XOR<ResumoPagamentoCreateWithoutFuncionarioInput, ResumoPagamentoUncheckedCreateWithoutFuncionarioInput> | ResumoPagamentoCreateWithoutFuncionarioInput[] | ResumoPagamentoUncheckedCreateWithoutFuncionarioInput[]
+    connectOrCreate?: ResumoPagamentoCreateOrConnectWithoutFuncionarioInput | ResumoPagamentoCreateOrConnectWithoutFuncionarioInput[]
+    createMany?: ResumoPagamentoCreateManyFuncionarioInputEnvelope
+    connect?: ResumoPagamentoWhereUniqueInput | ResumoPagamentoWhereUniqueInput[]
+  }
+
+  export type ControleJornadaUncheckedCreateNestedManyWithoutFuncionarioInput = {
+    create?: XOR<ControleJornadaCreateWithoutFuncionarioInput, ControleJornadaUncheckedCreateWithoutFuncionarioInput> | ControleJornadaCreateWithoutFuncionarioInput[] | ControleJornadaUncheckedCreateWithoutFuncionarioInput[]
+    connectOrCreate?: ControleJornadaCreateOrConnectWithoutFuncionarioInput | ControleJornadaCreateOrConnectWithoutFuncionarioInput[]
+    createMany?: ControleJornadaCreateManyFuncionarioInputEnvelope
+    connect?: ControleJornadaWhereUniqueInput | ControleJornadaWhereUniqueInput[]
+  }
+
+  export type ResumoPagamentoUncheckedCreateNestedManyWithoutFuncionarioInput = {
+    create?: XOR<ResumoPagamentoCreateWithoutFuncionarioInput, ResumoPagamentoUncheckedCreateWithoutFuncionarioInput> | ResumoPagamentoCreateWithoutFuncionarioInput[] | ResumoPagamentoUncheckedCreateWithoutFuncionarioInput[]
+    connectOrCreate?: ResumoPagamentoCreateOrConnectWithoutFuncionarioInput | ResumoPagamentoCreateOrConnectWithoutFuncionarioInput[]
+    createMany?: ResumoPagamentoCreateManyFuncionarioInputEnvelope
+    connect?: ResumoPagamentoWhereUniqueInput | ResumoPagamentoWhereUniqueInput[]
+  }
+
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
+  }
+
+  export type FuncionarioUpdatediasTrabalhoInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type ControleJornadaUpdateManyWithoutFuncionarioNestedInput = {
+    create?: XOR<ControleJornadaCreateWithoutFuncionarioInput, ControleJornadaUncheckedCreateWithoutFuncionarioInput> | ControleJornadaCreateWithoutFuncionarioInput[] | ControleJornadaUncheckedCreateWithoutFuncionarioInput[]
+    connectOrCreate?: ControleJornadaCreateOrConnectWithoutFuncionarioInput | ControleJornadaCreateOrConnectWithoutFuncionarioInput[]
+    upsert?: ControleJornadaUpsertWithWhereUniqueWithoutFuncionarioInput | ControleJornadaUpsertWithWhereUniqueWithoutFuncionarioInput[]
+    createMany?: ControleJornadaCreateManyFuncionarioInputEnvelope
+    set?: ControleJornadaWhereUniqueInput | ControleJornadaWhereUniqueInput[]
+    disconnect?: ControleJornadaWhereUniqueInput | ControleJornadaWhereUniqueInput[]
+    delete?: ControleJornadaWhereUniqueInput | ControleJornadaWhereUniqueInput[]
+    connect?: ControleJornadaWhereUniqueInput | ControleJornadaWhereUniqueInput[]
+    update?: ControleJornadaUpdateWithWhereUniqueWithoutFuncionarioInput | ControleJornadaUpdateWithWhereUniqueWithoutFuncionarioInput[]
+    updateMany?: ControleJornadaUpdateManyWithWhereWithoutFuncionarioInput | ControleJornadaUpdateManyWithWhereWithoutFuncionarioInput[]
+    deleteMany?: ControleJornadaScalarWhereInput | ControleJornadaScalarWhereInput[]
+  }
+
+  export type ResumoPagamentoUpdateManyWithoutFuncionarioNestedInput = {
+    create?: XOR<ResumoPagamentoCreateWithoutFuncionarioInput, ResumoPagamentoUncheckedCreateWithoutFuncionarioInput> | ResumoPagamentoCreateWithoutFuncionarioInput[] | ResumoPagamentoUncheckedCreateWithoutFuncionarioInput[]
+    connectOrCreate?: ResumoPagamentoCreateOrConnectWithoutFuncionarioInput | ResumoPagamentoCreateOrConnectWithoutFuncionarioInput[]
+    upsert?: ResumoPagamentoUpsertWithWhereUniqueWithoutFuncionarioInput | ResumoPagamentoUpsertWithWhereUniqueWithoutFuncionarioInput[]
+    createMany?: ResumoPagamentoCreateManyFuncionarioInputEnvelope
+    set?: ResumoPagamentoWhereUniqueInput | ResumoPagamentoWhereUniqueInput[]
+    disconnect?: ResumoPagamentoWhereUniqueInput | ResumoPagamentoWhereUniqueInput[]
+    delete?: ResumoPagamentoWhereUniqueInput | ResumoPagamentoWhereUniqueInput[]
+    connect?: ResumoPagamentoWhereUniqueInput | ResumoPagamentoWhereUniqueInput[]
+    update?: ResumoPagamentoUpdateWithWhereUniqueWithoutFuncionarioInput | ResumoPagamentoUpdateWithWhereUniqueWithoutFuncionarioInput[]
+    updateMany?: ResumoPagamentoUpdateManyWithWhereWithoutFuncionarioInput | ResumoPagamentoUpdateManyWithWhereWithoutFuncionarioInput[]
+    deleteMany?: ResumoPagamentoScalarWhereInput | ResumoPagamentoScalarWhereInput[]
+  }
+
+  export type ControleJornadaUncheckedUpdateManyWithoutFuncionarioNestedInput = {
+    create?: XOR<ControleJornadaCreateWithoutFuncionarioInput, ControleJornadaUncheckedCreateWithoutFuncionarioInput> | ControleJornadaCreateWithoutFuncionarioInput[] | ControleJornadaUncheckedCreateWithoutFuncionarioInput[]
+    connectOrCreate?: ControleJornadaCreateOrConnectWithoutFuncionarioInput | ControleJornadaCreateOrConnectWithoutFuncionarioInput[]
+    upsert?: ControleJornadaUpsertWithWhereUniqueWithoutFuncionarioInput | ControleJornadaUpsertWithWhereUniqueWithoutFuncionarioInput[]
+    createMany?: ControleJornadaCreateManyFuncionarioInputEnvelope
+    set?: ControleJornadaWhereUniqueInput | ControleJornadaWhereUniqueInput[]
+    disconnect?: ControleJornadaWhereUniqueInput | ControleJornadaWhereUniqueInput[]
+    delete?: ControleJornadaWhereUniqueInput | ControleJornadaWhereUniqueInput[]
+    connect?: ControleJornadaWhereUniqueInput | ControleJornadaWhereUniqueInput[]
+    update?: ControleJornadaUpdateWithWhereUniqueWithoutFuncionarioInput | ControleJornadaUpdateWithWhereUniqueWithoutFuncionarioInput[]
+    updateMany?: ControleJornadaUpdateManyWithWhereWithoutFuncionarioInput | ControleJornadaUpdateManyWithWhereWithoutFuncionarioInput[]
+    deleteMany?: ControleJornadaScalarWhereInput | ControleJornadaScalarWhereInput[]
+  }
+
+  export type ResumoPagamentoUncheckedUpdateManyWithoutFuncionarioNestedInput = {
+    create?: XOR<ResumoPagamentoCreateWithoutFuncionarioInput, ResumoPagamentoUncheckedCreateWithoutFuncionarioInput> | ResumoPagamentoCreateWithoutFuncionarioInput[] | ResumoPagamentoUncheckedCreateWithoutFuncionarioInput[]
+    connectOrCreate?: ResumoPagamentoCreateOrConnectWithoutFuncionarioInput | ResumoPagamentoCreateOrConnectWithoutFuncionarioInput[]
+    upsert?: ResumoPagamentoUpsertWithWhereUniqueWithoutFuncionarioInput | ResumoPagamentoUpsertWithWhereUniqueWithoutFuncionarioInput[]
+    createMany?: ResumoPagamentoCreateManyFuncionarioInputEnvelope
+    set?: ResumoPagamentoWhereUniqueInput | ResumoPagamentoWhereUniqueInput[]
+    disconnect?: ResumoPagamentoWhereUniqueInput | ResumoPagamentoWhereUniqueInput[]
+    delete?: ResumoPagamentoWhereUniqueInput | ResumoPagamentoWhereUniqueInput[]
+    connect?: ResumoPagamentoWhereUniqueInput | ResumoPagamentoWhereUniqueInput[]
+    update?: ResumoPagamentoUpdateWithWhereUniqueWithoutFuncionarioInput | ResumoPagamentoUpdateWithWhereUniqueWithoutFuncionarioInput[]
+    updateMany?: ResumoPagamentoUpdateManyWithWhereWithoutFuncionarioInput | ResumoPagamentoUpdateManyWithWhereWithoutFuncionarioInput[]
+    deleteMany?: ResumoPagamentoScalarWhereInput | ResumoPagamentoScalarWhereInput[]
+  }
+
+  export type FuncionarioCreateNestedOneWithoutControleJornadaInput = {
+    create?: XOR<FuncionarioCreateWithoutControleJornadaInput, FuncionarioUncheckedCreateWithoutControleJornadaInput>
+    connectOrCreate?: FuncionarioCreateOrConnectWithoutControleJornadaInput
+    connect?: FuncionarioWhereUniqueInput
+  }
+
+  export type NullableFloatFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type FuncionarioUpdateOneRequiredWithoutControleJornadaNestedInput = {
+    create?: XOR<FuncionarioCreateWithoutControleJornadaInput, FuncionarioUncheckedCreateWithoutControleJornadaInput>
+    connectOrCreate?: FuncionarioCreateOrConnectWithoutControleJornadaInput
+    upsert?: FuncionarioUpsertWithoutControleJornadaInput
+    connect?: FuncionarioWhereUniqueInput
+    update?: XOR<XOR<FuncionarioUpdateToOneWithWhereWithoutControleJornadaInput, FuncionarioUpdateWithoutControleJornadaInput>, FuncionarioUncheckedUpdateWithoutControleJornadaInput>
+  }
+
+  export type FuncionarioCreateNestedOneWithoutResumoPagamentoInput = {
+    create?: XOR<FuncionarioCreateWithoutResumoPagamentoInput, FuncionarioUncheckedCreateWithoutResumoPagamentoInput>
+    connectOrCreate?: FuncionarioCreateOrConnectWithoutResumoPagamentoInput
+    connect?: FuncionarioWhereUniqueInput
+  }
+
+  export type FuncionarioUpdateOneRequiredWithoutResumoPagamentoNestedInput = {
+    create?: XOR<FuncionarioCreateWithoutResumoPagamentoInput, FuncionarioUncheckedCreateWithoutResumoPagamentoInput>
+    connectOrCreate?: FuncionarioCreateOrConnectWithoutResumoPagamentoInput
+    upsert?: FuncionarioUpsertWithoutResumoPagamentoInput
+    connect?: FuncionarioWhereUniqueInput
+    update?: XOR<XOR<FuncionarioUpdateToOneWithWhereWithoutResumoPagamentoInput, FuncionarioUpdateWithoutResumoPagamentoInput>, FuncionarioUncheckedUpdateWithoutResumoPagamentoInput>
+  }
+
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
-    in?: string[]
-    notIn?: string[]
+    in?: string[] | ListStringFieldRefInput<$PrismaModel>
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel>
     lt?: string | StringFieldRefInput<$PrismaModel>
     lte?: string | StringFieldRefInput<$PrismaModel>
     gt?: string | StringFieldRefInput<$PrismaModel>
@@ -5656,8 +10773,8 @@ export namespace Prisma {
 
   export type NestedStringNullableFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | null
-    notIn?: string[] | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
     lt?: string | StringFieldRefInput<$PrismaModel>
     lte?: string | StringFieldRefInput<$PrismaModel>
     gt?: string | StringFieldRefInput<$PrismaModel>
@@ -5670,8 +10787,8 @@ export namespace Prisma {
 
   export type NestedIntNullableFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | null
-    notIn?: number[] | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
     lt?: number | IntFieldRefInput<$PrismaModel>
     lte?: number | IntFieldRefInput<$PrismaModel>
     gt?: number | IntFieldRefInput<$PrismaModel>
@@ -5679,10 +10796,21 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
   export type NestedDateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[]
-    notIn?: Date[] | string[]
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
     lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
@@ -5692,8 +10820,8 @@ export namespace Prisma {
 
   export type NestedStringWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
-    in?: string[]
-    notIn?: string[]
+    in?: string[] | ListStringFieldRefInput<$PrismaModel>
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel>
     lt?: string | StringFieldRefInput<$PrismaModel>
     lte?: string | StringFieldRefInput<$PrismaModel>
     gt?: string | StringFieldRefInput<$PrismaModel>
@@ -5709,8 +10837,8 @@ export namespace Prisma {
 
   export type NestedIntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[]
-    notIn?: number[]
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
     lt?: number | IntFieldRefInput<$PrismaModel>
     lte?: number | IntFieldRefInput<$PrismaModel>
     gt?: number | IntFieldRefInput<$PrismaModel>
@@ -5720,8 +10848,8 @@ export namespace Prisma {
 
   export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | null
-    notIn?: string[] | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
     lt?: string | StringFieldRefInput<$PrismaModel>
     lte?: string | StringFieldRefInput<$PrismaModel>
     gt?: string | StringFieldRefInput<$PrismaModel>
@@ -5737,8 +10865,8 @@ export namespace Prisma {
 
   export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | null
-    notIn?: number[] | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
     lt?: number | IntFieldRefInput<$PrismaModel>
     lte?: number | IntFieldRefInput<$PrismaModel>
     gt?: number | IntFieldRefInput<$PrismaModel>
@@ -5753,8 +10881,8 @@ export namespace Prisma {
 
   export type NestedFloatNullableFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | null
-    notIn?: number[] | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
     lt?: number | FloatFieldRefInput<$PrismaModel>
     lte?: number | FloatFieldRefInput<$PrismaModel>
     gt?: number | FloatFieldRefInput<$PrismaModel>
@@ -5762,10 +10890,24 @@ export namespace Prisma {
     not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
+  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
   export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[]
-    notIn?: Date[] | string[]
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
     lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
@@ -5778,8 +10920,8 @@ export namespace Prisma {
 
   export type NestedFloatFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[]
-    notIn?: number[]
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
     lt?: number | FloatFieldRefInput<$PrismaModel>
     lte?: number | FloatFieldRefInput<$PrismaModel>
     gt?: number | FloatFieldRefInput<$PrismaModel>
@@ -5789,8 +10931,8 @@ export namespace Prisma {
 
   export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[]
-    notIn?: number[]
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
     lt?: number | FloatFieldRefInput<$PrismaModel>
     lte?: number | FloatFieldRefInput<$PrismaModel>
     gt?: number | FloatFieldRefInput<$PrismaModel>
@@ -5805,8 +10947,8 @@ export namespace Prisma {
 
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[]
-    notIn?: number[]
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
     lt?: number | IntFieldRefInput<$PrismaModel>
     lte?: number | IntFieldRefInput<$PrismaModel>
     gt?: number | IntFieldRefInput<$PrismaModel>
@@ -5817,6 +10959,35 @@ export namespace Prisma {
     _sum?: NestedIntFilter<$PrismaModel>
     _min?: NestedIntFilter<$PrismaModel>
     _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
   export type PagamentoCreateWithoutUserInput = {
@@ -5846,6 +11017,7 @@ export namespace Prisma {
 
   export type PagamentoCreateManyUserInputEnvelope = {
     data: PagamentoCreateManyUserInput | PagamentoCreateManyUserInput[]
+    skipDuplicates?: boolean
   }
 
   export type InventarioCreateWithoutUserInput = {
@@ -5873,6 +11045,7 @@ export namespace Prisma {
 
   export type InventarioCreateManyUserInputEnvelope = {
     data: InventarioCreateManyUserInput | InventarioCreateManyUserInput[]
+    skipDuplicates?: boolean
   }
 
   export type PagamentoUpsertWithWhereUniqueWithoutUserInput = {
@@ -5945,6 +11118,8 @@ export namespace Prisma {
     permissoes?: string
     tipoNegocio?: string | null
     numeroFuncionarios?: number | null
+    passwordResetToken?: string | null
+    passwordResetExpires?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     inventario?: InventarioCreateNestedManyWithoutUserInput
@@ -5961,6 +11136,8 @@ export namespace Prisma {
     permissoes?: string
     tipoNegocio?: string | null
     numeroFuncionarios?: number | null
+    passwordResetToken?: string | null
+    passwordResetExpires?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     inventario?: InventarioUncheckedCreateNestedManyWithoutUserInput
@@ -5993,6 +11170,8 @@ export namespace Prisma {
     permissoes?: StringFieldUpdateOperationsInput | string
     tipoNegocio?: NullableStringFieldUpdateOperationsInput | string | null
     numeroFuncionarios?: NullableIntFieldUpdateOperationsInput | number | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     inventario?: InventarioUpdateManyWithoutUserNestedInput
@@ -6009,6 +11188,8 @@ export namespace Prisma {
     permissoes?: StringFieldUpdateOperationsInput | string
     tipoNegocio?: NullableStringFieldUpdateOperationsInput | string | null
     numeroFuncionarios?: NullableIntFieldUpdateOperationsInput | number | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     inventario?: InventarioUncheckedUpdateManyWithoutUserNestedInput
@@ -6025,6 +11206,8 @@ export namespace Prisma {
     permissoes?: string
     tipoNegocio?: string | null
     numeroFuncionarios?: number | null
+    passwordResetToken?: string | null
+    passwordResetExpires?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     pagamentos?: PagamentoCreateNestedManyWithoutUserInput
@@ -6041,6 +11224,8 @@ export namespace Prisma {
     permissoes?: string
     tipoNegocio?: string | null
     numeroFuncionarios?: number | null
+    passwordResetToken?: string | null
+    passwordResetExpires?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     pagamentos?: PagamentoUncheckedCreateNestedManyWithoutUserInput
@@ -6073,6 +11258,8 @@ export namespace Prisma {
     permissoes?: StringFieldUpdateOperationsInput | string
     tipoNegocio?: NullableStringFieldUpdateOperationsInput | string | null
     numeroFuncionarios?: NullableIntFieldUpdateOperationsInput | number | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     pagamentos?: PagamentoUpdateManyWithoutUserNestedInput
@@ -6089,9 +11276,333 @@ export namespace Prisma {
     permissoes?: StringFieldUpdateOperationsInput | string
     tipoNegocio?: NullableStringFieldUpdateOperationsInput | string | null
     numeroFuncionarios?: NullableIntFieldUpdateOperationsInput | number | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     pagamentos?: PagamentoUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type ControleJornadaCreateWithoutFuncionarioInput = {
+    id?: string
+    data: Date | string
+    horaEntrada: string
+    horaSaida: string
+    horasTrabalhadas: number
+    horaExtra?: number | null
+    faltaJustificada: boolean
+    observacoes?: string | null
+    dataCriacao?: Date | string
+    dataAtualizacao?: Date | string
+  }
+
+  export type ControleJornadaUncheckedCreateWithoutFuncionarioInput = {
+    id?: string
+    data: Date | string
+    horaEntrada: string
+    horaSaida: string
+    horasTrabalhadas: number
+    horaExtra?: number | null
+    faltaJustificada: boolean
+    observacoes?: string | null
+    dataCriacao?: Date | string
+    dataAtualizacao?: Date | string
+  }
+
+  export type ControleJornadaCreateOrConnectWithoutFuncionarioInput = {
+    where: ControleJornadaWhereUniqueInput
+    create: XOR<ControleJornadaCreateWithoutFuncionarioInput, ControleJornadaUncheckedCreateWithoutFuncionarioInput>
+  }
+
+  export type ControleJornadaCreateManyFuncionarioInputEnvelope = {
+    data: ControleJornadaCreateManyFuncionarioInput | ControleJornadaCreateManyFuncionarioInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ResumoPagamentoCreateWithoutFuncionarioInput = {
+    id?: string
+    mes: string
+    salarioPrevisto: number
+    salarioReal: number
+    extras?: number | null
+    descontos?: number | null
+    observacoes?: string | null
+    enviadoParaContador?: boolean
+    dataCriacao?: Date | string
+    dataAtualizacao?: Date | string
+  }
+
+  export type ResumoPagamentoUncheckedCreateWithoutFuncionarioInput = {
+    id?: string
+    mes: string
+    salarioPrevisto: number
+    salarioReal: number
+    extras?: number | null
+    descontos?: number | null
+    observacoes?: string | null
+    enviadoParaContador?: boolean
+    dataCriacao?: Date | string
+    dataAtualizacao?: Date | string
+  }
+
+  export type ResumoPagamentoCreateOrConnectWithoutFuncionarioInput = {
+    where: ResumoPagamentoWhereUniqueInput
+    create: XOR<ResumoPagamentoCreateWithoutFuncionarioInput, ResumoPagamentoUncheckedCreateWithoutFuncionarioInput>
+  }
+
+  export type ResumoPagamentoCreateManyFuncionarioInputEnvelope = {
+    data: ResumoPagamentoCreateManyFuncionarioInput | ResumoPagamentoCreateManyFuncionarioInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ControleJornadaUpsertWithWhereUniqueWithoutFuncionarioInput = {
+    where: ControleJornadaWhereUniqueInput
+    update: XOR<ControleJornadaUpdateWithoutFuncionarioInput, ControleJornadaUncheckedUpdateWithoutFuncionarioInput>
+    create: XOR<ControleJornadaCreateWithoutFuncionarioInput, ControleJornadaUncheckedCreateWithoutFuncionarioInput>
+  }
+
+  export type ControleJornadaUpdateWithWhereUniqueWithoutFuncionarioInput = {
+    where: ControleJornadaWhereUniqueInput
+    data: XOR<ControleJornadaUpdateWithoutFuncionarioInput, ControleJornadaUncheckedUpdateWithoutFuncionarioInput>
+  }
+
+  export type ControleJornadaUpdateManyWithWhereWithoutFuncionarioInput = {
+    where: ControleJornadaScalarWhereInput
+    data: XOR<ControleJornadaUpdateManyMutationInput, ControleJornadaUncheckedUpdateManyWithoutFuncionarioInput>
+  }
+
+  export type ControleJornadaScalarWhereInput = {
+    AND?: ControleJornadaScalarWhereInput | ControleJornadaScalarWhereInput[]
+    OR?: ControleJornadaScalarWhereInput[]
+    NOT?: ControleJornadaScalarWhereInput | ControleJornadaScalarWhereInput[]
+    id?: StringFilter<"ControleJornada"> | string
+    funcionarioId?: StringFilter<"ControleJornada"> | string
+    data?: DateTimeFilter<"ControleJornada"> | Date | string
+    horaEntrada?: StringFilter<"ControleJornada"> | string
+    horaSaida?: StringFilter<"ControleJornada"> | string
+    horasTrabalhadas?: FloatFilter<"ControleJornada"> | number
+    horaExtra?: FloatNullableFilter<"ControleJornada"> | number | null
+    faltaJustificada?: BoolFilter<"ControleJornada"> | boolean
+    observacoes?: StringNullableFilter<"ControleJornada"> | string | null
+    dataCriacao?: DateTimeFilter<"ControleJornada"> | Date | string
+    dataAtualizacao?: DateTimeFilter<"ControleJornada"> | Date | string
+  }
+
+  export type ResumoPagamentoUpsertWithWhereUniqueWithoutFuncionarioInput = {
+    where: ResumoPagamentoWhereUniqueInput
+    update: XOR<ResumoPagamentoUpdateWithoutFuncionarioInput, ResumoPagamentoUncheckedUpdateWithoutFuncionarioInput>
+    create: XOR<ResumoPagamentoCreateWithoutFuncionarioInput, ResumoPagamentoUncheckedCreateWithoutFuncionarioInput>
+  }
+
+  export type ResumoPagamentoUpdateWithWhereUniqueWithoutFuncionarioInput = {
+    where: ResumoPagamentoWhereUniqueInput
+    data: XOR<ResumoPagamentoUpdateWithoutFuncionarioInput, ResumoPagamentoUncheckedUpdateWithoutFuncionarioInput>
+  }
+
+  export type ResumoPagamentoUpdateManyWithWhereWithoutFuncionarioInput = {
+    where: ResumoPagamentoScalarWhereInput
+    data: XOR<ResumoPagamentoUpdateManyMutationInput, ResumoPagamentoUncheckedUpdateManyWithoutFuncionarioInput>
+  }
+
+  export type ResumoPagamentoScalarWhereInput = {
+    AND?: ResumoPagamentoScalarWhereInput | ResumoPagamentoScalarWhereInput[]
+    OR?: ResumoPagamentoScalarWhereInput[]
+    NOT?: ResumoPagamentoScalarWhereInput | ResumoPagamentoScalarWhereInput[]
+    id?: StringFilter<"ResumoPagamento"> | string
+    funcionarioId?: StringFilter<"ResumoPagamento"> | string
+    mes?: StringFilter<"ResumoPagamento"> | string
+    salarioPrevisto?: FloatFilter<"ResumoPagamento"> | number
+    salarioReal?: FloatFilter<"ResumoPagamento"> | number
+    extras?: FloatNullableFilter<"ResumoPagamento"> | number | null
+    descontos?: FloatNullableFilter<"ResumoPagamento"> | number | null
+    observacoes?: StringNullableFilter<"ResumoPagamento"> | string | null
+    enviadoParaContador?: BoolFilter<"ResumoPagamento"> | boolean
+    dataCriacao?: DateTimeFilter<"ResumoPagamento"> | Date | string
+    dataAtualizacao?: DateTimeFilter<"ResumoPagamento"> | Date | string
+  }
+
+  export type FuncionarioCreateWithoutControleJornadaInput = {
+    id?: string
+    nome: string
+    cargo: string
+    tipoContrato: string
+    dataAdmissao: Date | string
+    salarioBruto: number
+    pagamentoPorHora: boolean
+    horasSemana: number
+    diasTrabalho?: FuncionarioCreatediasTrabalhoInput | string[]
+    iban?: string | null
+    status: string
+    observacoes?: string | null
+    contratoUploadUrl?: string | null
+    dataCriacao?: Date | string
+    dataAtualizacao?: Date | string
+    resumoPagamento?: ResumoPagamentoCreateNestedManyWithoutFuncionarioInput
+  }
+
+  export type FuncionarioUncheckedCreateWithoutControleJornadaInput = {
+    id?: string
+    nome: string
+    cargo: string
+    tipoContrato: string
+    dataAdmissao: Date | string
+    salarioBruto: number
+    pagamentoPorHora: boolean
+    horasSemana: number
+    diasTrabalho?: FuncionarioCreatediasTrabalhoInput | string[]
+    iban?: string | null
+    status: string
+    observacoes?: string | null
+    contratoUploadUrl?: string | null
+    dataCriacao?: Date | string
+    dataAtualizacao?: Date | string
+    resumoPagamento?: ResumoPagamentoUncheckedCreateNestedManyWithoutFuncionarioInput
+  }
+
+  export type FuncionarioCreateOrConnectWithoutControleJornadaInput = {
+    where: FuncionarioWhereUniqueInput
+    create: XOR<FuncionarioCreateWithoutControleJornadaInput, FuncionarioUncheckedCreateWithoutControleJornadaInput>
+  }
+
+  export type FuncionarioUpsertWithoutControleJornadaInput = {
+    update: XOR<FuncionarioUpdateWithoutControleJornadaInput, FuncionarioUncheckedUpdateWithoutControleJornadaInput>
+    create: XOR<FuncionarioCreateWithoutControleJornadaInput, FuncionarioUncheckedCreateWithoutControleJornadaInput>
+    where?: FuncionarioWhereInput
+  }
+
+  export type FuncionarioUpdateToOneWithWhereWithoutControleJornadaInput = {
+    where?: FuncionarioWhereInput
+    data: XOR<FuncionarioUpdateWithoutControleJornadaInput, FuncionarioUncheckedUpdateWithoutControleJornadaInput>
+  }
+
+  export type FuncionarioUpdateWithoutControleJornadaInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nome?: StringFieldUpdateOperationsInput | string
+    cargo?: StringFieldUpdateOperationsInput | string
+    tipoContrato?: StringFieldUpdateOperationsInput | string
+    dataAdmissao?: DateTimeFieldUpdateOperationsInput | Date | string
+    salarioBruto?: FloatFieldUpdateOperationsInput | number
+    pagamentoPorHora?: BoolFieldUpdateOperationsInput | boolean
+    horasSemana?: FloatFieldUpdateOperationsInput | number
+    diasTrabalho?: FuncionarioUpdatediasTrabalhoInput | string[]
+    iban?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    observacoes?: NullableStringFieldUpdateOperationsInput | string | null
+    contratoUploadUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    dataCriacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    dataAtualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    resumoPagamento?: ResumoPagamentoUpdateManyWithoutFuncionarioNestedInput
+  }
+
+  export type FuncionarioUncheckedUpdateWithoutControleJornadaInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nome?: StringFieldUpdateOperationsInput | string
+    cargo?: StringFieldUpdateOperationsInput | string
+    tipoContrato?: StringFieldUpdateOperationsInput | string
+    dataAdmissao?: DateTimeFieldUpdateOperationsInput | Date | string
+    salarioBruto?: FloatFieldUpdateOperationsInput | number
+    pagamentoPorHora?: BoolFieldUpdateOperationsInput | boolean
+    horasSemana?: FloatFieldUpdateOperationsInput | number
+    diasTrabalho?: FuncionarioUpdatediasTrabalhoInput | string[]
+    iban?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    observacoes?: NullableStringFieldUpdateOperationsInput | string | null
+    contratoUploadUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    dataCriacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    dataAtualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    resumoPagamento?: ResumoPagamentoUncheckedUpdateManyWithoutFuncionarioNestedInput
+  }
+
+  export type FuncionarioCreateWithoutResumoPagamentoInput = {
+    id?: string
+    nome: string
+    cargo: string
+    tipoContrato: string
+    dataAdmissao: Date | string
+    salarioBruto: number
+    pagamentoPorHora: boolean
+    horasSemana: number
+    diasTrabalho?: FuncionarioCreatediasTrabalhoInput | string[]
+    iban?: string | null
+    status: string
+    observacoes?: string | null
+    contratoUploadUrl?: string | null
+    dataCriacao?: Date | string
+    dataAtualizacao?: Date | string
+    controleJornada?: ControleJornadaCreateNestedManyWithoutFuncionarioInput
+  }
+
+  export type FuncionarioUncheckedCreateWithoutResumoPagamentoInput = {
+    id?: string
+    nome: string
+    cargo: string
+    tipoContrato: string
+    dataAdmissao: Date | string
+    salarioBruto: number
+    pagamentoPorHora: boolean
+    horasSemana: number
+    diasTrabalho?: FuncionarioCreatediasTrabalhoInput | string[]
+    iban?: string | null
+    status: string
+    observacoes?: string | null
+    contratoUploadUrl?: string | null
+    dataCriacao?: Date | string
+    dataAtualizacao?: Date | string
+    controleJornada?: ControleJornadaUncheckedCreateNestedManyWithoutFuncionarioInput
+  }
+
+  export type FuncionarioCreateOrConnectWithoutResumoPagamentoInput = {
+    where: FuncionarioWhereUniqueInput
+    create: XOR<FuncionarioCreateWithoutResumoPagamentoInput, FuncionarioUncheckedCreateWithoutResumoPagamentoInput>
+  }
+
+  export type FuncionarioUpsertWithoutResumoPagamentoInput = {
+    update: XOR<FuncionarioUpdateWithoutResumoPagamentoInput, FuncionarioUncheckedUpdateWithoutResumoPagamentoInput>
+    create: XOR<FuncionarioCreateWithoutResumoPagamentoInput, FuncionarioUncheckedCreateWithoutResumoPagamentoInput>
+    where?: FuncionarioWhereInput
+  }
+
+  export type FuncionarioUpdateToOneWithWhereWithoutResumoPagamentoInput = {
+    where?: FuncionarioWhereInput
+    data: XOR<FuncionarioUpdateWithoutResumoPagamentoInput, FuncionarioUncheckedUpdateWithoutResumoPagamentoInput>
+  }
+
+  export type FuncionarioUpdateWithoutResumoPagamentoInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nome?: StringFieldUpdateOperationsInput | string
+    cargo?: StringFieldUpdateOperationsInput | string
+    tipoContrato?: StringFieldUpdateOperationsInput | string
+    dataAdmissao?: DateTimeFieldUpdateOperationsInput | Date | string
+    salarioBruto?: FloatFieldUpdateOperationsInput | number
+    pagamentoPorHora?: BoolFieldUpdateOperationsInput | boolean
+    horasSemana?: FloatFieldUpdateOperationsInput | number
+    diasTrabalho?: FuncionarioUpdatediasTrabalhoInput | string[]
+    iban?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    observacoes?: NullableStringFieldUpdateOperationsInput | string | null
+    contratoUploadUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    dataCriacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    dataAtualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    controleJornada?: ControleJornadaUpdateManyWithoutFuncionarioNestedInput
+  }
+
+  export type FuncionarioUncheckedUpdateWithoutResumoPagamentoInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nome?: StringFieldUpdateOperationsInput | string
+    cargo?: StringFieldUpdateOperationsInput | string
+    tipoContrato?: StringFieldUpdateOperationsInput | string
+    dataAdmissao?: DateTimeFieldUpdateOperationsInput | Date | string
+    salarioBruto?: FloatFieldUpdateOperationsInput | number
+    pagamentoPorHora?: BoolFieldUpdateOperationsInput | boolean
+    horasSemana?: FloatFieldUpdateOperationsInput | number
+    diasTrabalho?: FuncionarioUpdatediasTrabalhoInput | string[]
+    iban?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    observacoes?: NullableStringFieldUpdateOperationsInput | string | null
+    contratoUploadUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    dataCriacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    dataAtualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    controleJornada?: ControleJornadaUncheckedUpdateManyWithoutFuncionarioNestedInput
   }
 
   export type PagamentoCreateManyUserInput = {
@@ -6168,6 +11679,110 @@ export namespace Prisma {
     preco?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ControleJornadaCreateManyFuncionarioInput = {
+    id?: string
+    data: Date | string
+    horaEntrada: string
+    horaSaida: string
+    horasTrabalhadas: number
+    horaExtra?: number | null
+    faltaJustificada: boolean
+    observacoes?: string | null
+    dataCriacao?: Date | string
+    dataAtualizacao?: Date | string
+  }
+
+  export type ResumoPagamentoCreateManyFuncionarioInput = {
+    id?: string
+    mes: string
+    salarioPrevisto: number
+    salarioReal: number
+    extras?: number | null
+    descontos?: number | null
+    observacoes?: string | null
+    enviadoParaContador?: boolean
+    dataCriacao?: Date | string
+    dataAtualizacao?: Date | string
+  }
+
+  export type ControleJornadaUpdateWithoutFuncionarioInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    data?: DateTimeFieldUpdateOperationsInput | Date | string
+    horaEntrada?: StringFieldUpdateOperationsInput | string
+    horaSaida?: StringFieldUpdateOperationsInput | string
+    horasTrabalhadas?: FloatFieldUpdateOperationsInput | number
+    horaExtra?: NullableFloatFieldUpdateOperationsInput | number | null
+    faltaJustificada?: BoolFieldUpdateOperationsInput | boolean
+    observacoes?: NullableStringFieldUpdateOperationsInput | string | null
+    dataCriacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    dataAtualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ControleJornadaUncheckedUpdateWithoutFuncionarioInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    data?: DateTimeFieldUpdateOperationsInput | Date | string
+    horaEntrada?: StringFieldUpdateOperationsInput | string
+    horaSaida?: StringFieldUpdateOperationsInput | string
+    horasTrabalhadas?: FloatFieldUpdateOperationsInput | number
+    horaExtra?: NullableFloatFieldUpdateOperationsInput | number | null
+    faltaJustificada?: BoolFieldUpdateOperationsInput | boolean
+    observacoes?: NullableStringFieldUpdateOperationsInput | string | null
+    dataCriacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    dataAtualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ControleJornadaUncheckedUpdateManyWithoutFuncionarioInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    data?: DateTimeFieldUpdateOperationsInput | Date | string
+    horaEntrada?: StringFieldUpdateOperationsInput | string
+    horaSaida?: StringFieldUpdateOperationsInput | string
+    horasTrabalhadas?: FloatFieldUpdateOperationsInput | number
+    horaExtra?: NullableFloatFieldUpdateOperationsInput | number | null
+    faltaJustificada?: BoolFieldUpdateOperationsInput | boolean
+    observacoes?: NullableStringFieldUpdateOperationsInput | string | null
+    dataCriacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    dataAtualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ResumoPagamentoUpdateWithoutFuncionarioInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    mes?: StringFieldUpdateOperationsInput | string
+    salarioPrevisto?: FloatFieldUpdateOperationsInput | number
+    salarioReal?: FloatFieldUpdateOperationsInput | number
+    extras?: NullableFloatFieldUpdateOperationsInput | number | null
+    descontos?: NullableFloatFieldUpdateOperationsInput | number | null
+    observacoes?: NullableStringFieldUpdateOperationsInput | string | null
+    enviadoParaContador?: BoolFieldUpdateOperationsInput | boolean
+    dataCriacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    dataAtualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ResumoPagamentoUncheckedUpdateWithoutFuncionarioInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    mes?: StringFieldUpdateOperationsInput | string
+    salarioPrevisto?: FloatFieldUpdateOperationsInput | number
+    salarioReal?: FloatFieldUpdateOperationsInput | number
+    extras?: NullableFloatFieldUpdateOperationsInput | number | null
+    descontos?: NullableFloatFieldUpdateOperationsInput | number | null
+    observacoes?: NullableStringFieldUpdateOperationsInput | string | null
+    enviadoParaContador?: BoolFieldUpdateOperationsInput | boolean
+    dataCriacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    dataAtualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ResumoPagamentoUncheckedUpdateManyWithoutFuncionarioInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    mes?: StringFieldUpdateOperationsInput | string
+    salarioPrevisto?: FloatFieldUpdateOperationsInput | number
+    salarioReal?: FloatFieldUpdateOperationsInput | number
+    extras?: NullableFloatFieldUpdateOperationsInput | number | null
+    descontos?: NullableFloatFieldUpdateOperationsInput | number | null
+    observacoes?: NullableStringFieldUpdateOperationsInput | string | null
+    enviadoParaContador?: BoolFieldUpdateOperationsInput | boolean
+    dataCriacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    dataAtualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 

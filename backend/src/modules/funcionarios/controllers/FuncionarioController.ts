@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { FuncionarioService } from '../services/FuncionarioService';
 import { PDFGenerator } from '../utils/pdfGenerator';
+import { EventBus } from '../../../lib/EventBus';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
@@ -67,6 +68,10 @@ export class FuncionarioController {
   async create(req: Request, res: Response): Promise<void> {
     try {
       const funcionario = await this.funcionarioService.create(req.body);
+      
+      // Emitir evento de funcionário cadastrado
+      EventBus.emit('funcionario.cadastrado', funcionario);
+      
       res.status(201).json(funcionario);
     } catch (error) {
       console.error('Erro ao criar funcionário:', error);
@@ -85,10 +90,31 @@ export class FuncionarioController {
   async update(req: Request, res: Response): Promise<void> {
     try {
       const { id } = req.params;
+      
+      // Buscar dados atuais do funcionário para comparação
+      const funcionarioAnterior = await this.funcionarioService.findById(id);
+      
       const funcionario = await this.funcionarioService.update({
         id,
         ...req.body
       });
+      
+      // Emitir evento de funcionário atualizado
+      EventBus.emit('funcionario.atualizado', {
+        anterior: funcionarioAnterior,
+        atual: funcionario
+      });
+      
+      // Verificar se houve alteração na situação atual
+      if (req.body.situacaoAtual && funcionarioAnterior.situacaoAtual !== req.body.situacaoAtual) {
+        EventBus.emit('funcionario.status.alterado', {
+          funcionarioId: id,
+          situacaoAnterior: funcionarioAnterior.situacaoAtual,
+          situacaoNova: req.body.situacaoAtual,
+          dataMudanca: new Date()
+        });
+      }
+      
       res.json(funcionario);
     } catch (error) {
       console.error('Erro ao atualizar funcionário:', error);
@@ -249,6 +275,26 @@ export class FuncionarioController {
       console.error('Erro ao gerar PDF:', error);
       res.status(400).json({
         message: error instanceof Error ? error.message : 'Erro ao gerar PDF'
+      });
+    }
+  }
+
+  /**
+   * Busca estatísticas de funcionários por situação atual
+   * Get employee statistics by current situation
+   * @param req Express Request
+   * @param res Express Response
+   */
+  async countBySituacao(req: Request, res: Response): Promise<void> {
+    try {
+      const contagem = await this.funcionarioService.countBySituacao();
+      res.json(contagem);
+    } catch (error) {
+      console.error('Erro ao contar funcionários por situação:', error);
+      res.status(400).json({
+        message: error instanceof Error 
+          ? error.message 
+          : 'Erro ao contar funcionários por situação'
       });
     }
   }

@@ -14,13 +14,13 @@ export interface ValidationResult {
 /**
  * Valida campos de texto genéricos
  * @param value Valor a ser validado
- * @param fieldName Nome do campo para mensagem de erro
+ * @param fieldName Nome do campo para mensagem de erro ou booleano para indicar se é obrigatório
  * @param options Opções de validação
  * @returns Resultado da validação
  */
 export const validateTextField = (
   value: string,
-  fieldName: string,
+  fieldName: string | boolean,
   options: {
     required?: boolean;
     minLength?: number;
@@ -29,34 +29,43 @@ export const validateTextField = (
     patternMessage?: string;
   } = {}
 ): ValidationResult => {
-  const { required = true, minLength, maxLength, pattern, patternMessage } = options;
+  // Se fieldName for booleano, é o parâmetro 'required'
+  const isRequired = typeof fieldName === 'boolean' ? fieldName : options.required ?? true;
+  const fieldNameStr = typeof fieldName === 'string' ? fieldName : 'Este campo';
+  
+  // Ajustando as opções se fieldName for booleano
+  const updatedOptions = typeof fieldName === 'boolean' 
+    ? { ...options, required: isRequired }
+    : options;
+  
+  const { required = true, minLength, maxLength, pattern, patternMessage } = updatedOptions;
   
   // Sanitizar entrada
   const sanitizedValue = sanitizeInput(value);
   
   // Verificar se é obrigatório
   if (required && (!sanitizedValue || sanitizedValue.trim() === '')) {
-    return { isValid: false, message: `O campo ${fieldName} é obrigatório` };
+    return { isValid: false, message: `O campo ${fieldNameStr} é obrigatório` };
   }
   
   // Verificar comprimento mínimo
   if (minLength !== undefined && sanitizedValue.length < minLength) {
-    return { isValid: false, message: `O campo ${fieldName} deve ter pelo menos ${minLength} caracteres` };
+    return { isValid: false, message: `O campo ${fieldNameStr} deve ter pelo menos ${minLength} caracteres` };
   }
   
   // Verificar comprimento máximo
   if (maxLength !== undefined && sanitizedValue.length > maxLength) {
-    return { isValid: false, message: `O campo ${fieldName} deve ter no máximo ${maxLength} caracteres` };
+    return { isValid: false, message: `O campo ${fieldNameStr} deve ter no máximo ${maxLength} caracteres` };
   }
   
   // Verificar padrão
   if (pattern && !pattern.test(sanitizedValue)) {
-    return { isValid: false, message: patternMessage || `O campo ${fieldName} não está no formato correto` };
+    return { isValid: false, message: patternMessage || `O campo ${fieldNameStr} não está no formato correto` };
   }
   
   // Verificar código malicioso
   if (containsMaliciousCode(sanitizedValue)) {
-    return { isValid: false, message: `O campo ${fieldName} contém caracteres não permitidos` };
+    return { isValid: false, message: `O campo ${fieldNameStr} contém caracteres não permitidos` };
   }
   
   return { isValid: true, message: '' };
@@ -90,13 +99,13 @@ export const validateEmailField = (email: string, required: boolean = true): Val
 /**
  * Valida campos numéricos
  * @param value Valor a ser validado
- * @param fieldName Nome do campo para mensagem de erro
+ * @param fieldName Nome do campo para mensagem de erro ou booleano para indicar se é obrigatório
  * @param options Opções de validação
  * @returns Resultado da validação
  */
 export const validateNumberField = (
   value: string | number,
-  fieldName: string,
+  fieldName: string | boolean,
   options: {
     required?: boolean;
     min?: number;
@@ -104,11 +113,20 @@ export const validateNumberField = (
     integer?: boolean;
   } = {}
 ): ValidationResult => {
-  const { required = true, min, max, integer = false } = options;
+  // Se fieldName for booleano, é o parâmetro 'required'
+  const isRequired = typeof fieldName === 'boolean' ? fieldName : options.required ?? true;
+  const fieldNameStr = typeof fieldName === 'string' ? fieldName : 'Este campo';
+  
+  // Ajustando as opções se fieldName for booleano
+  const updatedOptions = typeof fieldName === 'boolean' 
+    ? { ...options, required: isRequired }
+    : options;
+  
+  const { required = true, min, max, integer = false } = updatedOptions;
   
   // Verificar se é obrigatório
   if (required && (value === undefined || value === null || value === '')) {
-    return { isValid: false, message: `O campo ${fieldName} é obrigatório` };
+    return { isValid: false, message: `O campo ${fieldNameStr} é obrigatório` };
   }
   
   // Se não for obrigatório e estiver vazio, é válido
@@ -121,22 +139,22 @@ export const validateNumberField = (
   
   // Verificar se é um número válido
   if (isNaN(numValue)) {
-    return { isValid: false, message: `O campo ${fieldName} deve ser um número válido` };
+    return { isValid: false, message: `O campo ${fieldNameStr} deve ser um número válido` };
   }
   
   // Verificar se é inteiro quando necessário
   if (integer && !Number.isInteger(numValue)) {
-    return { isValid: false, message: `O campo ${fieldName} deve ser um número inteiro` };
+    return { isValid: false, message: `O campo ${fieldNameStr} deve ser um número inteiro` };
   }
   
   // Verificar valor mínimo
   if (min !== undefined && numValue < min) {
-    return { isValid: false, message: `O campo ${fieldName} deve ser maior ou igual a ${min}` };
+    return { isValid: false, message: `O campo ${fieldNameStr} deve ser maior ou igual a ${min}` };
   }
   
   // Verificar valor máximo
   if (max !== undefined && numValue > max) {
-    return { isValid: false, message: `O campo ${fieldName} deve ser menor ou igual a ${max}` };
+    return { isValid: false, message: `O campo ${fieldNameStr} deve ser menor ou igual a ${max}` };
   }
   
   return { isValid: true, message: '' };
@@ -145,24 +163,33 @@ export const validateNumberField = (
 /**
  * Valida campos de data
  * @param date Data a ser validada
- * @param fieldName Nome do campo para mensagem de erro
+ * @param fieldName Nome do campo para mensagem de erro ou booleano para indicar se é obrigatório
  * @param options Opções de validação
  * @returns Resultado da validação
  */
 export const validateDateField = (
   date: Date | string,
-  fieldName: string,
+  fieldName: string | boolean,
   options: {
     required?: boolean;
     minDate?: Date;
     maxDate?: Date;
   } = {}
 ): ValidationResult => {
-  const { required = true, minDate, maxDate } = options;
+  // Se fieldName for booleano, é o parâmetro 'required'
+  const isRequired = typeof fieldName === 'boolean' ? fieldName : options.required ?? true;
+  const fieldNameStr = typeof fieldName === 'string' ? fieldName : 'Este campo';
+  
+  // Ajustando as opções se fieldName for booleano
+  const updatedOptions = typeof fieldName === 'boolean' 
+    ? { ...options, required: isRequired }
+    : options;
+  
+  const { required = true, minDate, maxDate } = updatedOptions;
   
   // Verificar se é obrigatório
   if (required && !date) {
-    return { isValid: false, message: `O campo ${fieldName} é obrigatório` };
+    return { isValid: false, message: `O campo ${fieldNameStr} é obrigatório` };
   }
   
   // Se não for obrigatório e estiver vazio, é válido
@@ -175,17 +202,17 @@ export const validateDateField = (
   
   // Verificar se é uma data válida
   if (!validateDate(dateObj)) {
-    return { isValid: false, message: `O campo ${fieldName} deve ser uma data válida` };
+    return { isValid: false, message: `O campo ${fieldNameStr} deve ser uma data válida` };
   }
   
   // Verificar data mínima
   if (minDate && dateObj < minDate) {
-    return { isValid: false, message: `O campo ${fieldName} deve ser posterior a ${minDate.toLocaleDateString()}` };
+    return { isValid: false, message: `O campo ${fieldNameStr} deve ser posterior a ${minDate.toLocaleDateString()}` };
   }
   
   // Verificar data máxima
   if (maxDate && dateObj > maxDate) {
-    return { isValid: false, message: `O campo ${fieldName} deve ser anterior a ${maxDate.toLocaleDateString()}` };
+    return { isValid: false, message: `O campo ${fieldNameStr} deve ser anterior a ${maxDate.toLocaleDateString()}` };
   }
   
   return { isValid: true, message: '' };

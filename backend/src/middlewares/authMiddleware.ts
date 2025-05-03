@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import prisma from '../lib/prisma';
+import { jwtConfig } from '../config';
 
 // Estender a interface Request para incluir o usuário autenticado
 declare global {
@@ -64,7 +65,7 @@ export default async function authMiddleware(
     }
     
     // Verificar se o token é válido
-    const secret = process.env.JWT_SECRET;
+    const secret = jwtConfig.secret;
     
     if (!secret) {
       console.error('JWT_SECRET não definido no ambiente');

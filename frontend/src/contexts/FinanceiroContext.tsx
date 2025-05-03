@@ -1,15 +1,56 @@
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 
 // Interfaces
+export interface Parcela {
+  numero: number; // número da parcela
+  valorParcela: number;
+  dataPrevista: string; // ISO format
+  pago: boolean;
+  dataPagamento?: string; // ISO format, se já foi pago
+}
+
+// Tipos de entrada financeira
+export type TipoEntrada = 'venda' | 'aluguel' | 'servico' | 'comissao' | 'outros';
+
+// Status de recebimento
+export type StatusRecebimento = 'recebido' | 'pendente' | 'parcialmente_recebido';
+
+// Tipos de despesa
+export type TipoDespesa = 'fornecedor' | 'aluguel' | 'salario' | 'imposto' | 'outros';
+
+// Formas de pagamento
+export type FormaPagamento = 'cartao' | 'transferencia' | 'boleto' | 'dinheiro' | 'pix' | 'outros';
+
 export interface Transacao {
   id: string;
-  data: string;
+  data: string; // Data da transação
   tipo: 'entrada' | 'saida';
   categoria: string;
   valor: number;
   descricao: string;
-  metodoPagamento?: string;
+  
+  // Campos comuns
+  parcelamento?: {
+    quantidadeParcelas: number;
+    parcelas: Parcela[];
+  };
+  formaPagamento?: FormaPagamento;
+  numeroDocumento?: string; // nota fiscal, recibo, contrato
   observacao?: string;
+  
+  // Campos específicos para entradas
+  tipoEntrada?: TipoEntrada;
+  statusRecebimento?: StatusRecebimento;
+  dataPrevistaRecebimento?: string; // ISO format
+  cliente?: string;
+  
+  // Campos específicos para saídas
+  tipoDespesa?: TipoDespesa;
+  dataPrevistaPagamento?: string; // ISO format
+  fornecedor?: string;
+  
+  // Campo antigo mantido para compatibilidade
+  metodoPagamento?: string;
 }
 
 export interface BalancoFinanceiro {

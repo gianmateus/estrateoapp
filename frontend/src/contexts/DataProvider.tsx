@@ -2,6 +2,7 @@ import React, { ReactNode } from 'react';
 import { AuthProvider } from './AuthContext';
 import { FinanceiroProvider } from './FinanceiroContext';
 import { InventarioProvider } from './InventarioContext';
+import { ImpostosProvider } from './ImpostosContext';
 
 /**
  * Props for the application context providers
@@ -20,7 +21,9 @@ export const ApplicationContextProvider: React.FC<ApplicationContextProviderProp
     <AuthProvider>
       <FinanceiroProvider>
         <InventarioProvider>
-          {children}
+          <ImpostosProvider>
+            {children}
+          </ImpostosProvider>
         </InventarioProvider>
       </FinanceiroProvider>
     </AuthProvider>

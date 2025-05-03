@@ -18,72 +18,111 @@ export type EventName =
   'entrada.criada' | 
   'entrada.atualizada' | 
   'entrada.excluida' |
+  'entrada.parcelada.criada' |
+  'entrada.parcela.paga' |
+  'saida.parcelada.criada' |
+  'saida.parcela.paga' |
+  'funcionario.cadastrado' |
+  'funcionario.atualizado' |
+  'funcionario.status.alterado' |
   'funcionario.pagamento.realizado' | 
   'funcionario.pagamento.cancelado' |
   'estoque.movimentado' |
-  'estoque.item.abaixo.minimo';
+  'estoque.item.abaixo.minimo' |
+  'estoque.item.adicionado' |
+  'estoque.item.atualizado' |
+  'estoque.item.removido' |
+  'estoque.item.proxim.vencimento' |
+  'estoque.item.vencido' |
+  'imposto.declaracao.pendente' |
+  'imposto.vencimento.proximo' |
+  'imposto.novo.registrado' |
+  'imposto.pago' |
+  // Eventos para o módulo de Clientes
+  'cliente.cadastrado' |
+  'cliente.atualizado' |
+  'cliente.removido' | 
+  'cliente.interacao.adicionada' |
+  'cliente.interacao.atualizada' |
+  'cliente.interacao.removida' |
+  'cliente.documento.adicionado' |
+  'cliente.documento.atualizado' |
+  'cliente.documento.removido' |
+  'cliente.status.alterado';
 
-// Sistema de eventos
-// Event system
-export class EventBus {
-  private static listeners = new Map<EventName, Function[]>();
+// Tipo para handlers de eventos
+// Type for event handlers
+type EventHandler = (data: any) => void;
 
-  /**
-   * Registra um ouvinte para um evento específico
-   * Registers a listener for a specific event
-   */
-  static on(event: EventName, callback: Function) {
-    if (!this.listeners.has(event)) this.listeners.set(event, []);
-    this.listeners.get(event)!.push(callback);
-    
-    console.log(`[EventBus] Listener registrado para o evento: ${event}`);
-  }
-
-  /**
-   * Emite um evento com uma carga útil para todos os ouvintes registrados
-   * Emits an event with a payload to all registered listeners
-   */
-  static emit(event: EventName, payload: any) {
-    const callbacks = this.listeners.get(event) || [];
-    
-    console.log(`[EventBus] Emitindo evento: ${event} com ${callbacks.length} ouvintes`);
-    
-    callbacks.forEach(cb => {
-      try {
-        cb(payload);
-      } catch (error) {
-        console.error(`[EventBus] Erro ao processar evento ${event}:`, error);
-      }
-    });
-  }
+// Classe do EventBus
+// EventBus class
+class EventBusService {
+  // Armazena os handlers registrados para cada tipo de evento
+  // Stores registered handlers for each event type
+  private handlers: { [key in EventName]?: EventHandler[] } = {};
 
   /**
-   * Remove um ouvinte específico para um evento
-   * Removes a specific listener for an event
+   * Registra um handler para um tipo de evento
+   * Registers a handler for an event type
    */
-  static off(event: EventName, callback: Function) {
-    if (!this.listeners.has(event)) return;
-    
-    const listeners = this.listeners.get(event)!;
-    const index = listeners.indexOf(callback);
-    
-    if (index !== -1) {
-      listeners.splice(index, 1);
-      console.log(`[EventBus] Listener removido do evento: ${event}`);
+  on(eventName: EventName, handler: EventHandler) {
+    if (!this.handlers[eventName]) {
+      this.handlers[eventName] = [];
     }
+    this.handlers[eventName]?.push(handler);
+    return this; // Para encadeamento (chaining)
   }
 
   /**
-   * Remove todos os ouvintes de um evento específico
-   * Removes all listeners for a specific event
+   * Remove um handler para um tipo de evento
+   * Removes a handler for an event type
    */
-  static removeAllListeners(event?: EventName) {
-    if (event) {
-      this.listeners.delete(event);
-      console.log(`[EventBus] Todos os listeners removidos do evento: ${event}`);
+  off(eventName: EventName, handler: EventHandler) {
+    if (this.handlers[eventName]) {
+      this.handlers[eventName] = this.handlers[eventName]?.filter(h => h !== handler);
+    }
+    return this;
+  }
+
+  /**
+   * Emite um evento com dados para todos os handlers registrados
+   * Emits an event with data to all registered handlers
+   */
+  emit(eventName: EventName, data: any) {
+    if (this.handlers[eventName]) {
+      console.log(`[EventBus] Emitindo evento: ${eventName}`);
+      this.handlers[eventName]?.forEach(handler => {
+        try {
+          handler(data);
+        } catch (error) {
+          console.error(`[EventBus] Erro ao processar evento ${eventName}:`, error);
+        }
+      });
     } else {
-      this.listeners.clear();
-      console.log(`[EventBus] Todos os listeners removidos de todos os eventos`);
+      console.log(`[EventBus] Evento emitido sem handlers: ${eventName}`);
     }
+    return this;
   }
-} 
+
+  /**
+   * Remove todos os handlers de um tipo de evento
+   * Removes all handlers for an event type
+   */
+  clear(eventName: EventName) {
+    this.handlers[eventName] = [];
+    return this;
+  }
+
+  /**
+   * Remove todos os handlers de todos os eventos
+   * Removes all handlers for all events
+   */
+  clearAll() {
+    this.handlers = {};
+    return this;
+  }
+}
+
+// Exporta uma instância única do EventBus (Singleton)
+// Exports a single instance of EventBus (Singleton)
+export const EventBus = new EventBusService(); 

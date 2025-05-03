@@ -3,5 +3,11 @@
 
 import authMiddleware from './authMiddleware';
 import permissionMiddleware from './permissionMiddleware';
+import { limiter, authLimiter } from './rateLimiter';
 
-export { authMiddleware, permissionMiddleware }; 
+export { 
+  authMiddleware, 
+  permissionMiddleware,
+  limiter,
+  authLimiter
+}; 

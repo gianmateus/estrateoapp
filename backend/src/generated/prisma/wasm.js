@@ -111,6 +111,9 @@ Prisma.NullTypes = {
  */
 
 exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
+  ReadUncommitted: 'ReadUncommitted',
+  ReadCommitted: 'ReadCommitted',
+  RepeatableRead: 'RepeatableRead',
   Serializable: 'Serializable'
 });
 
@@ -125,6 +128,8 @@ exports.Prisma.UserScalarFieldEnum = {
   permissoes: 'permissoes',
   tipoNegocio: 'tipoNegocio',
   numeroFuncionarios: 'numeroFuncionarios',
+  passwordResetToken: 'passwordResetToken',
+  passwordResetExpires: 'passwordResetExpires',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -150,9 +155,60 @@ exports.Prisma.InventarioScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.FuncionarioScalarFieldEnum = {
+  id: 'id',
+  nome: 'nome',
+  cargo: 'cargo',
+  tipoContrato: 'tipoContrato',
+  dataAdmissao: 'dataAdmissao',
+  salarioBruto: 'salarioBruto',
+  pagamentoPorHora: 'pagamentoPorHora',
+  horasSemana: 'horasSemana',
+  diasTrabalho: 'diasTrabalho',
+  iban: 'iban',
+  status: 'status',
+  observacoes: 'observacoes',
+  contratoUploadUrl: 'contratoUploadUrl',
+  dataCriacao: 'dataCriacao',
+  dataAtualizacao: 'dataAtualizacao'
+};
+
+exports.Prisma.ControleJornadaScalarFieldEnum = {
+  id: 'id',
+  funcionarioId: 'funcionarioId',
+  data: 'data',
+  horaEntrada: 'horaEntrada',
+  horaSaida: 'horaSaida',
+  horasTrabalhadas: 'horasTrabalhadas',
+  horaExtra: 'horaExtra',
+  faltaJustificada: 'faltaJustificada',
+  observacoes: 'observacoes',
+  dataCriacao: 'dataCriacao',
+  dataAtualizacao: 'dataAtualizacao'
+};
+
+exports.Prisma.ResumoPagamentoScalarFieldEnum = {
+  id: 'id',
+  funcionarioId: 'funcionarioId',
+  mes: 'mes',
+  salarioPrevisto: 'salarioPrevisto',
+  salarioReal: 'salarioReal',
+  extras: 'extras',
+  descontos: 'descontos',
+  observacoes: 'observacoes',
+  enviadoParaContador: 'enviadoParaContador',
+  dataCriacao: 'dataCriacao',
+  dataAtualizacao: 'dataAtualizacao'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
+};
+
+exports.Prisma.QueryMode = {
+  default: 'default',
+  insensitive: 'insensitive'
 };
 
 exports.Prisma.NullsOrder = {
@@ -164,7 +220,10 @@ exports.Prisma.NullsOrder = {
 exports.Prisma.ModelName = {
   User: 'User',
   Pagamento: 'Pagamento',
-  Inventario: 'Inventario'
+  Inventario: 'Inventario',
+  Funcionario: 'Funcionario',
+  ControleJornada: 'ControleJornada',
+  ResumoPagamento: 'ResumoPagamento'
 };
 
 /**

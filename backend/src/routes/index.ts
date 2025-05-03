@@ -1,29 +1,31 @@
 import { Router } from 'express';
-import authRoutes from './authRoutes';
-import userRoutes from './userRoutes';
-import pagamentoRoutes from './pagamentoRoutes';
-import inventarioRoutes from './inventarioRoutes';
-import dashboardRoutes from './dashboardRoutes';
-import { authMiddleware } from '../middlewares';
+import authRoutes from '../modules/auth/routes';
+import userRoutes from '../modules/user/routes';
 import funcionarioRoutes from '../modules/funcionarios/routes';
+import pagamentoRoutes from '../modules/pagamentos/routes';
+import financeiroRoutes from '../modules/financeiro/routes';
+import inventarioRoutes from '../modules/inventario/routes';
+import clienteRoutes from '../modules/clientes/routes';
+import { authMiddleware } from '../middlewares';
+import dashboardRoutes from './dashboardRoutes';
 import contadorRoutes from '../modules/contador/routes/contadorRoutes';
 
 const router = Router();
 
-// Rotas de autenticação (algumas são públicas)
+// Rotas públicas
 router.use('/auth', authRoutes);
 
-// Rotas de usuários (algumas são públicas)
+// Rotas protegidas
 router.use('/users', userRoutes);
+router.use('/funcionarios', funcionarioRoutes);
+router.use('/pagamentos', pagamentoRoutes);
+router.use('/financeiro', financeiroRoutes);
+router.use('/inventario', inventarioRoutes);
+router.use('/clientes', clienteRoutes);
 
 // Rotas protegidas por autenticação
 // O middleware de permissões é aplicado nas rotas específicas
-router.use('/pagamentos', authMiddleware, pagamentoRoutes);
-router.use('/inventario', authMiddleware, inventarioRoutes);
 router.use('/dashboard', authMiddleware, dashboardRoutes);
-
-// Rotas de gerenciamento de funcionários
-router.use('/funcionarios', authMiddleware, funcionarioRoutes);
 
 // Rotas de contador
 router.use('/contador', contadorRoutes);

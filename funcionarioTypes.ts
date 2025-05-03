@@ -11,6 +11,14 @@ export type TipoContrato = 'Minijob' | 'Teilzeit' | 'Vollzeit' | 'Freelancer';
 // Employee status
 export type Status = 'ativo' | 'inativo';
 
+// Situação atual do funcionário
+// Current employee situation
+export type SituacaoAtual = 'ativo' | 'ferias' | 'afastado' | 'desligado';
+
+// Forma de pagamento
+// Payment method
+export type FormaPagamento = 'mensal' | 'hora' | 'comissao';
+
 // Dias da semana
 // Days of the week
 export type DiaSemana = 'segunda' | 'terça' | 'quarta' | 'quinta' | 'sexta' | 'sábado' | 'domingo';
@@ -29,6 +37,11 @@ export interface CreateFuncionarioDTO {
   iban?: string;
   observacoes?: string;
   contratoUploadUrl?: string;
+  // Novos campos
+  formaPagamento?: FormaPagamento;
+  situacaoAtual?: SituacaoAtual;
+  telefone?: string;
+  email?: string;
 }
 
 // Interface para atualização de funcionário

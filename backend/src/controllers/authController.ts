@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import jwt, { SignOptions } from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import prisma from '../lib/prisma';
+import { jwtConfig } from '../config';
 
 // Interface para os dados do usuário
 interface User {
@@ -111,7 +112,7 @@ export class AuthController {
       }
 
       // Verificar se JWT_SECRET está definido
-      const jwtSecret = process.env.JWT_SECRET;
+      const jwtSecret = jwtConfig.secret;
       if (!jwtSecret) {
         console.error('JWT_SECRET não definido no ambiente');
         return res.status(500).json({ 
@@ -124,15 +125,23 @@ export class AuthController {
       const token = jwt.sign(
         { id: user.id, email: user.email, nome: user.nome },
         jwtSecret,
-        { expiresIn: process.env.JWT_EXPIRES_IN || "1d" } as SignOptions
+        { expiresIn: jwtConfig.expiresIn } as SignOptions
       );
 
       // Gerar refresh token
-      const refreshSecret = process.env.REFRESH_TOKEN_SECRET || jwtSecret;
+      const refreshSecret = jwtConfig.refreshSecret;
+      if (!refreshSecret) {
+        console.error('REFRESH_TOKEN_SECRET não definido no ambiente');
+        return res.status(500).json({ 
+          error: true,
+          message: 'Erro de configuração do servidor' 
+        });
+      }
+      
       const refreshToken = jwt.sign(
         { id: user.id },
         refreshSecret,
-        { expiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN || "7d" } as SignOptions
+        { expiresIn: jwtConfig.refreshExpiresIn } as SignOptions
       );
 
       return res.json({ 
@@ -203,8 +212,8 @@ export class AuthController {
       }
       
       // Verificar se os segredos estão definidos
-      const jwtSecret = process.env.JWT_SECRET;
-      const refreshSecret = process.env.REFRESH_TOKEN_SECRET || jwtSecret;
+      const jwtSecret = jwtConfig.secret;
+      const refreshSecret = jwtConfig.refreshSecret;
       
       if (!jwtSecret || !refreshSecret) {
         console.error('JWT_SECRET ou REFRESH_TOKEN_SECRET não definidos');
@@ -233,7 +242,7 @@ export class AuthController {
       const newToken = jwt.sign(
         { id: user.id, email: user.email, nome: user.nome },
         jwtSecret,
-        { expiresIn: process.env.JWT_EXPIRES_IN || "1d" } as SignOptions
+        { expiresIn: jwtConfig.expiresIn } as SignOptions
       );
       
       return res.json({

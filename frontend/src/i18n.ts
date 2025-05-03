@@ -56,8 +56,15 @@ i18n
   // Inicializar i18next
   .init({
     resources,
-    fallbackLng: 'en',
+    // Configuração de fallback - inglês como padrão global
+    fallbackLng: {
+      'pt': ['en'],
+      'de': ['en'],
+      'it': ['en'],
+      'default': ['en']
+    },
     lng: getSavedLanguage(), // Usar o idioma salvo ou detectado
+    supportedLngs: ['en', 'pt', 'de', 'it'],
     debug: process.env.NODE_ENV === 'development',
     
     interpolation: {
@@ -73,6 +80,20 @@ i18n
     // Configuração para carregar arquivos do diretório public/locales
     backend: {
       loadPath: '/locales/{{lng}}/translation.json',
+    },
+    
+    // Garantir que o fallback funcione corretamente
+    returnNull: false, // Não retornar null para chaves ausentes
+    returnEmptyString: false, // Não retornar string vazia para chaves ausentes
+    saveMissing: false, // Não salvar chaves ausentes (pode ser ativado em desenvolvimento)
+    missingKeyHandler: (lng, ns, key) => {
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`[i18n] Chave ausente: ${key} no idioma: ${lng}`);
+      }
+    },
+    parseMissingKeyHandler: (key) => {
+      // Isso garante que a chave ausente nunca aparece como [missing translation]
+      return undefined; // Força usar o fallback
     }
   });
 

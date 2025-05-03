@@ -42,7 +42,8 @@ import {
   KeyboardArrowDown as KeyboardArrowDownIcon,
   BarChart as ChartIcon,
   Money as MoneyIcon,
-  AccessTime as AccessTimeIcon
+  AccessTime as AccessTimeIcon,
+  Receipt as ImpostosIcon
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
@@ -180,6 +181,12 @@ const Navigation = ({}: NavigationProps) => {
       icon: <InventarioIcon />, 
       path: '/dashboard/inventario',
       permission: 'inventario.visualizar'
+    },
+    { 
+      text: t('impostos'), 
+      icon: <ImpostosIcon />, 
+      path: '/dashboard/impostos',
+      permission: 'financeiro.visualizar'
     },
     { 
       text: t('pagamentos'), 
