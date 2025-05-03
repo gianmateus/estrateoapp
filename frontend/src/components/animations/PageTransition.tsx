@@ -8,7 +8,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
-interface PageTransitionProps {
+export interface PageTransitionProps {
   children: React.ReactNode;
 }
 

@@ -1,9 +1,8 @@
 import React from 'react';
 import { Button, ButtonProps } from '@mui/material';
-import { motion } from 'framer-motion';
+import { motion, HTMLMotionProps } from 'framer-motion';
 
-const MotionButton = motion(Button);
-
+// Em vez de usar motion(Button), vamos usar o Box como wrapper
 interface ButtonWithAnimationProps extends ButtonProps {
   children: React.ReactNode;
 }
@@ -33,13 +32,25 @@ const ButtonWithAnimation: React.FC<ButtonWithAnimationProps> = ({
         }
       };
 
+  // Se o usuário preferir movimento reduzido, apenas renderiza o botão normal
+  if (prefersReducedMotion) {
+    return (
+      <Button {...props}>
+        {children}
+      </Button>
+    );
+  }
+
+  // Com movimento permitido, usa o motion.div como wrapper
   return (
-    <MotionButton
+    <motion.div
       {...buttonAnimation}
-      {...props}
+      style={{ display: 'inline-block' }}
     >
-      {children}
-    </MotionButton>
+      <Button {...props}>
+        {children}
+      </Button>
+    </motion.div>
   );
 };
 
