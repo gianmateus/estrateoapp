@@ -18,7 +18,10 @@
   "vencimento": "Due Date",
   "diasParaVencer": "Days to Due Date",
   
-  "dashboard": "Dashboard",
+  "dashboard": {
+    "title": "Dashboard",
+    "breadcrumb": "Dashboard"
+  },
   "financeiro": "Financial",
   "inventario": "Inventory",
   "pagamentos": "Payments",
@@ -130,6 +133,13 @@
   
   "gerarRelatorio": "Generate Report",
   "total": "Total",
+  
+  "receitaHoje": "Today's Revenue",
+  "despesaHoje": "Today's Expenses",
+  "itensEmEstoque": "Items in Stock",
+  "usuariosAtivos": "Active Users",
+  "funcionariosEmFerias": "Employees on Vacation",
+  "semDadosNoPeriodo": "No data for the selected period",
   
   "relatorioGeradoComSucesso": "Report generated successfully!",
   "erroAoGerarRelatorio": "Error generating report. Try again.",

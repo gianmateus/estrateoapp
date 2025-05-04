@@ -15,10 +15,13 @@
   "recomendacoesIA": "Raccomandazioni IA",
   "analiseMensal": "Analisi Mensile",
   "ultimosDias": "Ultimi 7 giorni",
-  "vencimento": "Scadenza",
-  "diasParaVencer": "Giorni alla Scadenza",
+  "vencimento": "Data di scadenza",
+  "diasParaVencer": "Giorni alla scadenza",
   
-  "dashboard": "Dashboard",
+  "dashboard": {
+    "title": "Dashboard",
+    "breadcrumb": "Dashboard"
+  },
   "financeiro": "Finanziario",
   "inventario": "Inventario",
   "pagamentos": "Pagamenti",
@@ -213,5 +216,12 @@
     "valorPago": "Importo Pagato",
     "selecioneMes": "Seleziona mese",
     "gerarRelatorio": "Genera rapporto per contabile (PDF)"
-  }
+  },
+  
+  "receitaHoje": "Entrate Oggi",
+  "despesaHoje": "Spese Oggi",
+  "itensEmEstoque": "Articoli in Magazzino",
+  "usuariosAtivos": "Utenti Attivi",
+  "funcionariosEmFerias": "Dipendenti in Ferie",
+  "semDadosNoPeriodo": "Nessun dato per il periodo selezionato"
 } 

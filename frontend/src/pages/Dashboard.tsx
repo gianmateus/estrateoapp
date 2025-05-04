@@ -18,8 +18,10 @@ import {
   Stack,
   CircularProgress,
   Alert,
-  Snackbar
+  Snackbar,
+  useTheme
 } from '@mui/material';
+import Masonry from '@mui/lab/Masonry';
 import {
   TrendingUp as TrendingUpIcon,
   TrendingDown as TrendingDownIcon,
@@ -46,7 +48,16 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useFinanceiro, Transacao } from '../contexts/FinanceiroContext';
 import { useInventario } from '../contexts/InventarioContext';
-import { BarChart, Bar, XAxis, YAxis, Tooltip as ChartTooltip, ResponsiveContainer } from 'recharts';
+import { 
+  BarChart, 
+  Bar, 
+  XAxis, 
+  YAxis, 
+  Tooltip as ChartTooltip, 
+  ResponsiveContainer,
+  CartesianGrid,
+  Legend
+} from 'recharts';
 import { useTranslation } from 'react-i18next';
 import apiClient from '../services/api';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
@@ -55,6 +66,12 @@ import { formatCurrency } from '../utils/formatters';
 import Currency from '../components/Currency';
 import { generateDashboardReport, generateDashboardReportFromDOM } from '../utils/reportGenerator';
 import ParcelamentosCard from '../components/dashboard/ParcelamentosCard';
+import ResponsiveGrid from '../components/common/ResponsiveGrid';
+import MotionButton from '../components/common/MotionButton';
+import { motion } from 'framer-motion';
+import MetricCard from '../components/ui/MetricCard';
+import EmptyState from '../components/ui/EmptyState';
+import FinanceCharts from '../components/dashboard/FinanceCharts';
 
 // Interfaces for the dashboard API response
 // Interfaces para a resposta da API do dashboard
@@ -138,6 +155,7 @@ const Dashboard: React.FC = () => {
   const { user } = useAuth();
   const { transacoes, balanco } = useFinanceiro();
   const { itens, resumo } = useInventario();
+  const theme = useTheme();
   
   // Estados para dados da API
   const [paymentSummary, setPaymentSummary] = useState<PaymentSummary | null>(null);
@@ -174,6 +192,23 @@ const Dashboard: React.FC = () => {
 
   const [funcionariosEmFerias, setFuncionariosEmFerias] = useState<FuncionarioFerias[]>([]);
   const [carregandoFerias, setCarregandoFerias] = useState<boolean>(false);
+
+  // Variantes de animação para fade-in
+  const fadeIn = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { duration: 0.6 } }
+  };
+
+  // Animação escalonada para cards
+  const staggerContainer = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
 
   // Fetch data from the dashboard API endpoint
   // Buscar dados do endpoint da API do dashboard
@@ -509,406 +544,211 @@ const Dashboard: React.FC = () => {
     );
   }
 
+  // Preparar os dados das métricas
+  const metrics = [
+    {
+      id: 'saldo',
+      title: t('saldoAtual'),
+      value: formatCurrency(dashboardData?.resumoFinanceiro?.saldoAtual || 0),
+      icon: <AttachMoneyIcon />,
+      iconBg: `${theme.palette.primary.main}15`
+    },
+    {
+      id: 'receitas',
+      title: t('receitaHoje'),
+      value: formatCurrency(getTodayIncome()),
+      icon: <TrendingUpIcon />,
+      iconBg: `${theme.palette.success.main}15`
+    },
+    {
+      id: 'despesas',
+      title: t('despesaHoje'),
+      value: formatCurrency(getTodayExpenses()),
+      icon: <TrendingDownIcon />,
+      iconBg: `${theme.palette.error.main}15`
+    },
+    {
+      id: 'estoque',
+      title: t('itensEmEstoque'),
+      value: dashboardData?.resumoInventario?.totalItens || 0,
+      icon: <InventoryIcon />,
+      iconBg: `${theme.palette.info.main}15`
+    },
+    {
+      id: 'usuarios',
+      title: t('usuariosAtivos'),
+      value: dashboardData?.estatisticasUso?.usuariosAtivosHoje || 0,
+      icon: <PersonIcon />,
+      iconBg: `${theme.palette.secondary.main}15`
+    },
+    {
+      id: 'ferias',
+      title: t('funcionariosEmFerias'),
+      value: funcionariosEmFerias.length,
+      icon: <BeachAccessIcon />,
+      iconBg: '#E6EBF1'
+    }
+  ];
+
   return (
-    <Box>
-      {error === 'mockdata_warning' && (
-        <Alert severity="warning" sx={{ mb: 2 }}>
-          {t('demoBanner')}
-        </Alert>
-      )}
-      
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Box>
-          <Typography variant="h4" gutterBottom>
-            {t('saudacao')}, {user?.nome || t('usuario')}
-          </Typography>
-          
-          <Typography variant="h5" sx={{ fontWeight: 'medium', color: 'text.secondary' }}>
-            {t('visaoGeral')}
-          </Typography>
-        </Box>
+    <Box sx={{ p: theme.spacing(4) }}>
+      <Box sx={{ 
+        display: 'flex', 
+        flexDirection: 'column', 
+        mb: 4,
+      }}>
+        <Typography variant="h4" fontWeight="bold" color="text.primary" mb={3}>
+          {t('dashboard.title')}
+        </Typography>
         
-        <Button
+        <MotionButton
           variant="contained"
           color="primary"
-          size="small"
           startIcon={<PdfIcon />}
           onClick={handleGenerateReport}
+          sx={{
+            mt: 2,
+            mr: 4,
+            alignSelf: 'flex-end',
+            width: 160,
+            boxShadow: theme.shadows[3]
+          }}
         >
           {t('gerarRelatorio')}
-        </Button>
+        </MotionButton>
       </Box>
-      
-      {/* Visão Geral Financeira */}
-      <Grid container spacing={3} sx={{ mb: 4 }} id="financial-overview" ref={financialSectionRef}>
-        <Grid item xs={12} md={4}>
-          <Paper elevation={2} sx={{ p: 2, height: '100%', borderRadius: 2 }}>
-            <Typography variant="subtitle1" color="text.secondary" gutterBottom>
-              {t('balanco_atual')}
-            </Typography>
-            <Box display="flex" alignItems="center">
-              <MoneyIcon sx={{ color: 'primary.main', mr: 1 }} />
-              <Currency 
-                value={Number(dashboardData?.resumoFinanceiro?.saldoAtual || balanco?.saldoAtual || 0)} 
-                variant="h4"
-              />
-            </Box>
-            <Box mt={2}>
-              <Grid container spacing={2}>
-                <Grid item xs={6}>
-                  <Typography variant="body2" color="text.secondary">
-                    {t('entrada_hoje')}
-                  </Typography>
-                  <Currency
-                    value={Number(getTodayIncome())}
-                    variant="body1"
-                    color="success.main"
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <Typography variant="body2" color="text.secondary">
-                    {t('saida_hoje')}
-                  </Typography>
-                  <Currency
-                    value={Number(getTodayExpenses())}
-                    variant="body1"
-                    color="error.main"
-                  />
-                </Grid>
-              </Grid>
-            </Box>
-          </Paper>
-        </Grid>
-        
-        <Grid item xs={12} md={4}>
-          <Paper elevation={2} sx={{ p: 2, height: '100%', borderRadius: 2 }}>
-            <Typography variant="subtitle1" color="text.secondary" gutterBottom>
-              {t('pagamentos')}
-            </Typography>
-            <Box display="flex" alignItems="center">
-              <PaymentIcon sx={{ color: 'primary.main', mr: 1 }} />
-              <Typography variant="h4">
-                {paymentSummary?.total || 0}
-              </Typography>
-            </Box>
-            <Box mt={2}>
-              <Grid container spacing={2}>
-                <Grid item xs={6}>
-                  <Chip 
-                    icon={<AttachMoneyIcon />} 
-                    label={`${t('pagos')}: ${paymentSummary?.pagos || 0}`} 
-                    color="success" 
-                    size="small" 
-                    variant="outlined"
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <Chip 
-                    icon={<ScheduleIcon />} 
-                    label={`${t('pendentes')}: ${paymentSummary?.pendentes || 0}`} 
-                    color="warning" 
-                    size="small" 
-                    variant="outlined"
-                  />
-                </Grid>
-              </Grid>
-            </Box>
-          </Paper>
-        </Grid>
-        
-        <Grid item xs={12} md={4}>
-          <Paper elevation={2} sx={{ p: 2, height: '100%', borderRadius: 2 }}>
-            <Typography variant="subtitle1" color="text.secondary" gutterBottom>
-              {t('inventario')}
-            </Typography>
-            <Box display="flex" alignItems="center">
-              <InventoryIcon sx={{ color: 'primary.main', mr: 1 }} />
-              <Typography variant="h4">
-                {dashboardData?.resumoInventario.totalItens || inventorySummaryData?.totalItens || 0}
-              </Typography>
-            </Box>
-            <Box mt={2}>
-              <Grid container spacing={2}>
-                <Grid item xs={6}>
-                  <Typography variant="body2" color="text.secondary">
-                    {t('valor_total')}
-                  </Typography>
-                  <Currency
-                    value={Number(inventorySummaryData?.valorTotal || 0)}
-                    variant="body1"
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <Chip 
-                    icon={<WarningIcon />} 
-                    label={`${t('itens_criticos')}: ${dashboardData?.resumoInventario.itensCriticos || criticalItemsCount}`} 
-                    color="error" 
-                    size="small" 
-                    variant="outlined"
-                  />
-                </Grid>
-              </Grid>
-            </Box>
-          </Paper>
-        </Grid>
-      </Grid>
-      
-      {/* Estatísticas de Uso - Nova Seção */}
-      {dashboardData?.estatisticasUso && (
-        <Grid container spacing={3} sx={{ mb: 4 }}>
-          <Grid item xs={12}>
-            <Paper elevation={2} sx={{ p: 2, borderRadius: 2 }}>
-              <Typography variant="h6" gutterBottom>{t('estatisticasUso')}</Typography>
-              <Grid container spacing={3}>
-                <Grid item xs={12} sm={6}>
-                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <Typography variant="body1" color="text.secondary" sx={{ mr: 1 }}>
-                      {t('usuariosAtivosHoje')}:
-                    </Typography>
-                    <Typography variant="body1" fontWeight="bold">
-                      {dashboardData.estatisticasUso.usuariosAtivosHoje}
-                    </Typography>
-                  </Box>
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <Typography variant="body1" color="text.secondary" sx={{ mr: 1 }}>
-                      {t('usuariosTotais')}:
-                    </Typography>
-                    <Typography variant="body1" fontWeight="bold">
-                      {dashboardData.estatisticasUso.usuariosTotais}
-                    </Typography>
-                  </Box>
-                </Grid>
-              </Grid>
-            </Paper>
-          </Grid>
-        </Grid>
-      )}
-      
-      {/* Gráfico Financeiro */}
-      <Grid container spacing={3} sx={{ mb: 4 }}>
-        <Grid item xs={12} md={8}>
-          <Paper elevation={2} sx={{ p: 2, height: '100%', borderRadius: 2 }} id="chart-container" ref={chartRef}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-              <Typography variant="h6">{t('movimentacoes_financeiras')}</Typography>
-              <IconButton size="small" color="primary" onClick={() => navigate('/dashboard/financeiro')}>
-                <ChartIcon />
-              </IconButton>
-            </Box>
-            
-            <Box sx={{ height: 270 }}>
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart
-                  data={chartData}
-                  margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                >
-                  <XAxis dataKey="date" />
-                  <YAxis />
-                  <ChartTooltip 
-                    formatter={(value) => formatCurrency(Number(value))} 
-                  />
-                  <Bar 
-                    name={t('entradas') || "Entradas"} 
-                    dataKey="income" 
-                    fill="#4caf50" 
-                  />
-                  <Bar 
-                    name={t('saidas') || "Saídas"} 
-                    dataKey="expenses" 
-                    fill="#f44336" 
-                  />
-                </BarChart>
-              </ResponsiveContainer>
-            </Box>
-          </Paper>
-        </Grid>
-        
-        {/* Cards com Sugestões da IA */}
-        <Grid item xs={12} md={4}>
-          <Paper elevation={2} sx={{ p: 2, height: '100%', borderRadius: 2 }} id="ai-suggestions" ref={aiSuggestionsRef}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-              <Typography variant="h6">{t('sugestoes_ia')}</Typography>
-              <AIIcon color="primary" />
-            </Box>
-            
-            <List dense>
-              {aiRecommendations.map((recommendation, index) => (
-                <ListItem key={index} alignItems="flex-start" sx={{ mb: 1 }}>
-                  <ListItemIcon sx={{ minWidth: '36px' }}>
-                    <SmartToy fontSize="small" color="primary" />
-                  </ListItemIcon>
-                  <ListItemText primary={recommendation} />
-                </ListItem>
-              ))}
-            </List>
-            
-            <Divider sx={{ my: 1.5 }} />
-            
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 1 }}>
-              <Button 
-                size="small" 
-                variant="outlined" 
-                color="primary" 
-                startIcon={<InsightsIcon />}
-              >
-                {t('verMaisInsights')}
-              </Button>
-              <Chip 
-                icon={<ScheduleIcon />} 
-                label={t('geradoHoje')}
-                color="primary"
-                size="small"
-              />
-            </Box>
-          </Paper>
-        </Grid>
-      </Grid>
-      
-      {/* Seção de Ações Rápidas */}
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
-          <Paper elevation={2} sx={{ p: 2, borderRadius: 2 }}>
-            <Typography variant="h6" gutterBottom>{t('acoes_rapidas')}</Typography>
-            
-            <Stack direction="row" spacing={2} sx={{ mt: 2, flexWrap: 'wrap', gap: 1 }}>
-              <Button 
-                variant="outlined" 
-                color="primary" 
-                startIcon={<AddIcon />}
-                onClick={() => navigate('/dashboard/pagamentos/novo')}
-              >
-                {t('registrarPagamento')}
-              </Button>
-              
-              <Button 
-                variant="outlined" 
-                color="primary" 
-                startIcon={<AddIcon />}
-                onClick={() => navigate('/dashboard/inventario/novo')}
-              >
-                {t('adicionarItem')}
-              </Button>
-              
-              <Button 
-                variant="outlined" 
-                color="primary" 
-                startIcon={<TrendingUpIcon />}
-                onClick={() => navigate('/dashboard/financeiro')}
-              >
-                {t('registrarTransacao')}
-              </Button>
-            </Stack>
-          </Paper>
-        </Grid>
-      </Grid>
-      
-      {/* Seção de Funcionários em Férias */}
-      <Grid container spacing={3} sx={{ mt: 2 }}>
-        <Grid item xs={12}>
-          <Paper elevation={2} sx={{ p: 2, borderRadius: 2 }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <BeachAccessIcon color="primary" sx={{ mr: 1 }} />
-                <Typography variant="h6">{t('funcionarios_em_ferias')}</Typography>
-              </Box>
-              <IconButton 
-                size="small" 
-                color="primary" 
-                onClick={() => navigate('/funcionarios/time-vacations')}
-              >
-                <EventIcon />
-              </IconButton>
-            </Box>
-            
-            {carregandoFerias ? (
-              <Box sx={{ display: 'flex', justifyContent: 'center', p: 2 }}>
-                <CircularProgress size={24} />
-              </Box>
-            ) : funcionariosEmFerias.length === 0 ? (
-              <Typography variant="body2" color="text.secondary" sx={{ p: 2, textAlign: 'center' }}>
-                {t('nenhum_funcionario_em_ferias')}
-              </Typography>
-            ) : (
-              <List sx={{ width: '100%' }}>
-                {funcionariosEmFerias.map((funcionario) => (
-                  <React.Fragment key={funcionario.id}>
-                    <ListItem alignItems="flex-start">
-                      <ListItemIcon>
-                        <PersonIcon color={feriasJaComecaram(funcionario.dataInicio) ? "primary" : "action"} />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary={funcionario.nome}
-                        secondary={
-                          <React.Fragment>
-                            <Typography
-                              component="span"
-                              variant="body2"
-                              color="text.primary"
-                            >
-                              {feriasJaComecaram(funcionario.dataInicio) ? 
-                                t('retorna_em') : t('inicia_em')}: {formatarData(feriasJaComecaram(funcionario.dataInicio) ? 
-                                  funcionario.dataFim : funcionario.dataInicio)}
-                            </Typography>
-                            {feriasJaComecaram(funcionario.dataInicio) && (
-                              <Typography component="span" variant="body2" sx={{ display: 'block' }}>
-                                {t('dias_restantes')}: {funcionario.diasRestantes}
-                              </Typography>
-                            )}
-                          </React.Fragment>
-                        }
-                      />
-                      <Chip 
-                        label={feriasJaComecaram(funcionario.dataInicio) ? t('em_ferias') : t('ferias_agendadas')} 
-                        color={feriasJaComecaram(funcionario.dataInicio) ? "primary" : "default"} 
-                        size="small" 
-                        variant="outlined" 
-                      />
-                    </ListItem>
-                    <Divider variant="inset" component="li" />
-                  </React.Fragment>
-                ))}
-              </List>
-            )}
-            
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 1 }}>
-              <Button 
-                size="small" 
-                color="primary" 
-                endIcon={<AssignmentIndIcon />}
-                onClick={() => navigate('/funcionarios')}
-              >
-                {t('ver_todos_funcionarios')}
-              </Button>
-            </Box>
-          </Paper>
-        </Grid>
-      </Grid>
-      
-      {/* Componente de Parcelamentos e Recebíveis */}
-      {dashboardData && (
-        <Grid container spacing={3} sx={{ mb: 4 }}>
-          <Grid item xs={12}>
-            <Typography variant="h6" gutterBottom sx={{ pl: 1 }}>
-              {t('parcelamentos_e_recebiveis')}
-            </Typography>
+
+      <Masonry columns={{ xs: 1, md: 2, lg: 3 }} spacing={4}>
+        {metrics.map(m => (
+          <MetricCard 
+            key={m.id} 
+            title={m.title} 
+            value={m.value} 
+            icon={m.icon} 
+            iconBg={m.iconBg} 
+          />
+        ))}
+      </Masonry>
+
+      {/* Gráficos Financeiros */}
+      <Box ref={chartRef} sx={{ mt: 6 }}>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.5 }}
+        >
+          <FinanceCharts chartData={chartData} formatCurrency={formatCurrency} />
+        </motion.div>
+      </Box>
+
+      {/* Parcelamentos e Recebíveis */}
+      <Box sx={{ mt: 4 }}>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5, duration: 0.5 }}
+        >
+          {dashboardData ? (
             <ParcelamentosCard
               recebiveisFuturos={dashboardData.recebiveisFuturos || []}
               parcelamentosAbertos={dashboardData.parcelamentosAbertos || []}
               totaisPorCategoria={dashboardData.totaisPorCategoria || []}
             />
-          </Grid>
-        </Grid>
-      )}
-      
-      {/* Snackbar de notificação */}
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={6000}
+          ) : (
+            <Card sx={{ boxShadow: theme.shadows[2] }}>
+              <CardContent>
+                <EmptyState message={String(t('semDadosNoPeriodo'))} />
+              </CardContent>
+            </Card>
+          )}
+        </motion.div>
+      </Box>
+
+      {/* Sugestões de IA */}
+      <Box ref={aiSuggestionsRef} sx={{ mt: 4 }}>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.6, duration: 0.5 }}
+        >
+          <Card sx={{ boxShadow: theme.shadows[2] }}>
+            <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+                <Box sx={{
+                  backgroundColor: `${theme.palette.primary.main}15`,
+                  width: 42,
+                  height: 42,
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  mr: 2
+                }}>
+                  <AIIcon sx={{ color: theme.palette.primary.main, fontSize: 24 }} />
+                </Box>
+                <Typography variant="h5" fontWeight="600">
+                  {t('sugestoesIA')}
+                </Typography>
+              </Box>
+              
+              {aiRecommendations.length > 0 ? (
+                <List>
+                  {aiRecommendations.map((suggestion, index) => (
+                    <ListItem
+                      key={index}
+                      sx={{
+                        borderBottom: index < aiRecommendations.length - 1 ? `1px solid ${theme.palette.divider}` : 'none',
+                        py: 2,
+                        borderRadius: 1,
+                        bgcolor: index % 2 === 1 ? `${theme.palette.primary.main}05` : 'transparent',
+                        transition: 'background-color 0.2s ease-in-out',
+                        '&:hover': {
+                          bgcolor: `${theme.palette.primary.main}08`
+                        }
+                      }}
+                    >
+                      <ListItemIcon sx={{ minWidth: 42 }}>
+                        <Box sx={{
+                          backgroundColor: `${theme.palette.info.main}15`,
+                          width: 32,
+                          height: 32,
+                          borderRadius: '50%',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center'
+                        }}>
+                          <InsightsIcon fontSize="small" sx={{ color: theme.palette.info.main }} />
+                        </Box>
+                      </ListItemIcon>
+                      <ListItemText 
+                        primary={
+                          <Typography variant="body1" color="text.primary">
+                            {suggestion}
+                          </Typography>
+                        } 
+                      />
+                    </ListItem>
+                  ))}
+                </List>
+              ) : (
+                <EmptyState message={String(t('semDadosNoPeriodo'))} />
+              )}
+            </CardContent>
+          </Card>
+        </motion.div>
+      </Box>
+
+      <Snackbar 
+        open={snackbar.open} 
+        autoHideDuration={6000} 
         onClose={handleCloseSnackbar}
-        message={snackbar.message}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
-        <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} sx={{ width: '100%' }}>
+        <Alert 
+          onClose={handleCloseSnackbar} 
+          severity={snackbar.severity}
+          sx={{ width: '100%', borderRadius: 2, boxShadow: theme.shadows[3] }}
+        >
           {snackbar.message}
         </Alert>
       </Snackbar>
@@ -916,4 +756,4 @@ const Dashboard: React.FC = () => {
   );
 };
 
-export default Dashboard; 
+export default Dashboard;

@@ -14,7 +14,6 @@ import {
   CardContent, 
   Typography, 
   Box, 
-  Grid,
   useTheme
 } from '@mui/material';
 import {
@@ -33,6 +32,9 @@ import {
   ResponsiveContainer
 } from 'recharts';
 import { formatCurrency, formatPercentage } from '../../utils/formatters';
+import { motion } from 'framer-motion';
+import ResponsiveGrid from '../common/ResponsiveGrid';
+import EmptyState from '../ui/EmptyState';
 
 // Dados de exemplo para os gráficos
 // Em produção, estes dados viriam das APIs correspondentes
@@ -62,20 +64,19 @@ const funcionariosData = [
   { month: 'Jun', ativos: 58 },
 ];
 
-// Cores para o gráfico de pizza
-const COLORS = ['#1a365d', '#4a6fa5', '#ff9800', '#4caf50', '#f44336'];
-
 // Componente de tooltip customizado para o gráfico de barras
 const CustomBarTooltip = ({ active, payload, label }: any) => {
+  const theme = useTheme();
+  
   if (active && payload && payload.length) {
     return (
       <Box
         sx={{
           bgcolor: 'background.paper',
           p: 2,
-          borderRadius: 1,
-          boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
-          border: '1px solid rgba(0, 0, 0, 0.05)'
+          borderRadius: 2,
+          boxShadow: theme.shadows[3],
+          border: 'none'
         }}
       >
         <Typography variant="caption" sx={{ fontWeight: 600 }}>{label}</Typography>
@@ -115,6 +116,8 @@ const CustomBarTooltip = ({ active, payload, label }: any) => {
 
 // Componente de tooltip customizado para o gráfico de pizza
 const CustomPieTooltip = ({ active, payload }: any) => {
+  const theme = useTheme();
+  
   if (active && payload && payload.length) {
     const data = payload[0];
     const total = gastosData.reduce((sum, item) => sum + item.value, 0);
@@ -125,9 +128,9 @@ const CustomPieTooltip = ({ active, payload }: any) => {
         sx={{
           bgcolor: 'background.paper',
           p: 2,
-          borderRadius: 1,
-          boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
-          border: '1px solid rgba(0, 0, 0, 0.05)'
+          borderRadius: 2,
+          boxShadow: theme.shadows[3],
+          border: 'none'
         }}
       >
         <Typography variant="caption" sx={{ fontWeight: 600 }}>{data.name}</Typography>
@@ -142,94 +145,156 @@ const CustomPieTooltip = ({ active, payload }: any) => {
   return null;
 };
 
-// Renderização personalizada para os labels do gráfico de pizza
-const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }: any) => {
-  const RADIAN = Math.PI / 180;
-  const radius = outerRadius * 1.1;
-  const x = cx + radius * Math.cos(-midAngle * RADIAN);
-  const y = cy + radius * Math.sin(-midAngle * RADIAN);
-
-  return (
-    <text
-      x={x}
-      y={y}
-      fill="#333333"
-      textAnchor={x > cx ? 'start' : 'end'}
-      dominantBaseline="central"
-      fontSize={12}
-    >
-      {gastosData[index].name} ({(percent * 100).toFixed(0)}%)
-    </text>
-  );
+// Variantes para animações
+const chartVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { 
+    opacity: 1, 
+    y: 0, 
+    transition: { duration: 0.5 } 
+  }
 };
 
-const FinanceCharts: React.FC = () => {
+export interface ChartDataItem {
+  date: string;
+  income: number;
+  expenses: number;
+}
+
+interface FinanceChartsProps {
+  chartData: ChartDataItem[];
+  formatCurrency: (value: number) => string;
+}
+
+const FinanceCharts: React.FC<FinanceChartsProps> = ({ chartData, formatCurrency }) => {
   const { t } = useTranslation();
   const theme = useTheme();
   
+  // Cores do tema para os gráficos
+  const chartColors = {
+    receita: theme.palette.primary.main,
+    despesa: theme.palette.error.main,
+    funcionarios: theme.palette.info.main
+  };
+  
+  // Cores para o gráfico de pizza baseadas na paleta do tema
+  const pieColors = [
+    theme.palette.primary.main,
+    theme.palette.primary.light,
+    theme.palette.secondary.main,
+    theme.palette.success.main,
+    theme.palette.warning.main
+  ];
+  
   return (
     <Box sx={{ mt: 4 }}>
-      <Typography variant="h2" gutterBottom sx={{ mb: 3 }}>
-        {t('graficos')}
+      <Typography variant="h4" gutterBottom sx={{ mb: 3 }}>
+        {t('graficos') || "Gráficos Financeiros"}
       </Typography>
       
-      <Grid container spacing={3}>
-        {/* Gráfico de Barras */}
-        <Grid item xs={12} md={6} lg={4}>
-          <Card sx={{ borderRadius: 3, boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.06)', height: '100%' }}>
-            <CardContent>
-              <Typography variant="h3" gutterBottom>
-                {t('finance.charts.monthlyIncome')}
+      <ResponsiveGrid spacing={4}>
+        {/* Gráfico de Barras - Receitas vs. Despesas */}
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={chartVariants}
+        >
+          <Card sx={{ boxShadow: theme.shadows[3], borderRadius: 2 }}>
+            <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
+              <Typography variant="h5" fontWeight="600" gutterBottom>
+                {t('graficosFinanceiros')}
               </Typography>
-              <Box sx={{ height: 300, pt: 2 }}>
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={monthlyData} margin={{ top: 10, right: 10, left: 0, bottom: 10 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'} />
-                    <XAxis 
-                      dataKey="month" 
-                      tick={{ fill: theme.palette.text.secondary, fontSize: 12 }}
-                    />
-                    <YAxis 
-                      tick={{ fill: theme.palette.text.secondary, fontSize: 12 }}
-                      tickFormatter={(value) => `€${value / 1000}k`}
-                    />
-                    <Tooltip content={<CustomBarTooltip />} />
-                    <Legend 
-                      wrapperStyle={{ paddingTop: 10 }}
-                      formatter={(value) => (
-                        <span style={{ color: theme.palette.text.primary, fontSize: 12 }}>
-                          {t(value === 'receita' ? 'receitas' : 'despesas')}
-                        </span>
-                      )}
-                    />
-                    <Bar 
-                      dataKey="receita" 
-                      name="receita" 
-                      fill={theme.palette.primary.main} 
-                      radius={[4, 4, 0, 0]}
-                      animationDuration={1500}
-                    />
-                    <Bar 
-                      dataKey="despesa" 
-                      name="despesa" 
-                      fill={theme.palette.error.main} 
-                      radius={[4, 4, 0, 0]}
-                      animationDuration={1500}
-                      animationBegin={300}
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
-              </Box>
+              
+              {chartData.length > 0 ? (
+                <Box sx={{ height: 350, mt: 3 }}>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart
+                      data={chartData}
+                      margin={{
+                        top: 20,
+                        right: 30,
+                        left: 20,
+                        bottom: 5,
+                      }}
+                    >
+                      <CartesianGrid 
+                        strokeDasharray="3 3" 
+                        stroke={theme.palette.divider} 
+                        opacity={0.3} 
+                      />
+                      <XAxis
+                        dataKey="date"
+                        axisLine={false}
+                        tickLine={false}
+                        tick={{ fill: theme.palette.text.secondary }}
+                      />
+                      <YAxis
+                        axisLine={false}
+                        tickLine={false}
+                        tickFormatter={(value) => `${value}€`}
+                        tick={{ fill: theme.palette.text.secondary }}
+                      />
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: theme.palette.background.paper,
+                          borderRadius: 8,
+                          boxShadow: theme.shadows[3],
+                          border: `1px solid ${theme.palette.divider}`,
+                          color: theme.palette.text.primary,
+                          padding: 16
+                        }}
+                        formatter={(value) => [formatCurrency(Number(value)), '']}
+                        labelStyle={{ 
+                          color: theme.palette.text.secondary, 
+                          fontWeight: 500 
+                        }}
+                      />
+                      <Legend 
+                        wrapperStyle={{ paddingTop: 20 }}
+                        formatter={(value) => (
+                          <span style={{ 
+                            color: theme.palette.text.primary, 
+                            fontWeight: 500 
+                          }}>
+                            {value}
+                          </span>
+                        )}
+                      />
+                      <Bar
+                        name={String(t('receitas'))}
+                        dataKey="income"
+                        fill={theme.palette.success.main}
+                        radius={[4, 4, 0, 0]}
+                        barSize={20}
+                      />
+                      <Bar
+                        name={String(t('despesas'))}
+                        dataKey="expenses"
+                        fill={theme.palette.error.main}
+                        radius={[4, 4, 0, 0]}
+                        barSize={20}
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </Box>
+              ) : (
+                <EmptyState message={t('semDadosNoPeriodo') as string} />
+              )}
             </CardContent>
           </Card>
-        </Grid>
+        </motion.div>
 
-        {/* Gráfico de Pizza */}
-        <Grid item xs={12} md={6} lg={4}>
-          <Card sx={{ borderRadius: 3, boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.06)', height: '100%' }}>
+        {/* Gráfico de Pizza - Distribuição de Gastos */}
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={chartVariants}
+          transition={{ delay: 0.1 }}
+        >
+          <Card>
             <CardContent>
-              <Typography variant="h3" gutterBottom>
-                {t('relatorioGastos')}
+              <Typography variant="h5" fontWeight="600" gutterBottom>
+                {t('relatorioGastos') || "Distribuição de Gastos"}
               </Typography>
               <Box sx={{ height: 300, pt: 2 }}>
                 <ResponsiveContainer width="100%" height="100%">
@@ -243,66 +308,82 @@ const FinanceCharts: React.FC = () => {
                       innerRadius={40}
                       fill="#8884d8"
                       dataKey="value"
-                      label={renderCustomizedLabel}
                       animationDuration={1500}
                       animationBegin={300}
                     >
                       {gastosData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        <Cell key={`cell-${index}`} fill={pieColors[index % pieColors.length]} />
                       ))}
                     </Pie>
                     <Tooltip content={<CustomPieTooltip />} />
+                    <Legend
+                      layout="vertical"
+                      align="right"
+                      verticalAlign="middle"
+                      formatter={(value, entry, index) => (
+                        <span style={{ color: theme.palette.text.primary, fontSize: 12 }}>
+                          {value} ({formatPercentage(gastosData[index].value / gastosData.reduce((sum, item) => sum + item.value, 0))})
+                        </span>
+                      )}
+                    />
                   </PieChart>
                 </ResponsiveContainer>
               </Box>
             </CardContent>
           </Card>
-        </Grid>
+        </motion.div>
 
-        {/* Gráfico de Linha */}
-        <Grid item xs={12} md={6} lg={4}>
-          <Card sx={{ borderRadius: 3, boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.06)', height: '100%' }}>
+        {/* Gráfico de Linha - Evolução de Funcionários */}
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={chartVariants}
+          transition={{ delay: 0.2 }}
+        >
+          <Card>
             <CardContent>
-              <Typography variant="h3" gutterBottom>
-                {t('historicoContratacoes')}
+              <Typography variant="h5" fontWeight="600" gutterBottom>
+                {t('evolucaoFuncionarios') || "Evolução de Funcionários"}
               </Typography>
               <Box sx={{ height: 300, pt: 2 }}>
                 <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={funcionariosData} margin={{ top: 10, right: 10, left: 0, bottom: 10 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'} />
+                  <LineChart
+                    data={funcionariosData}
+                    margin={{ top: 10, right: 10, left: 0, bottom: 10 }}
+                  >
+                    <CartesianGrid 
+                      strokeDasharray="3 3" 
+                      stroke="rgba(0,0,0,0.05)" 
+                      vertical={false}
+                    />
                     <XAxis 
                       dataKey="month" 
                       tick={{ fill: theme.palette.text.secondary, fontSize: 12 }}
+                      axisLine={false}
+                      tickLine={false}
                     />
                     <YAxis 
-                      tick={{ fill: theme.palette.text.secondary, fontSize: 12 }}
+                      tick={{ fill: theme.palette.text.secondary, fontSize: 12 }} 
+                      domain={['dataMin - 5', 'dataMax + 5']}
+                      axisLine={false}
+                      tickLine={false}
                     />
                     <Tooltip 
-                      contentStyle={{ 
+                      contentStyle={{
                         backgroundColor: theme.palette.background.paper,
-                        borderRadius: 4,
-                        boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
-                        border: '1px solid rgba(0, 0, 0, 0.05)'
+                        borderRadius: 8,
+                        boxShadow: theme.shadows[3],
+                        border: 'none'
                       }}
-                      formatter={(value: number) => [value, t('totalFuncionarios')]}
-                      labelFormatter={(label) => label}
+                      formatter={(value) => [value, 'Funcionários']}
                     />
-                    <Legend 
-                      wrapperStyle={{ paddingTop: 10 }}
-                      formatter={(value) => (
-                        <span style={{ color: theme.palette.text.primary, fontSize: 12 }}>
-                          {t('totalFuncionarios')}
-                        </span>
-                      )}
-                    />
-                    <Line 
-                      type="monotone" 
-                      dataKey="ativos" 
-                      name="ativos"
-                      stroke={theme.palette.primary.main} 
+                    <Line
+                      type="monotone"
+                      dataKey="ativos"
+                      stroke={chartColors.funcionarios}
                       strokeWidth={2}
-                      dot={{ r: 4, fill: theme.palette.primary.main, strokeWidth: 0 }}
-                      activeDot={{ r: 6, fill: theme.palette.primary.main, stroke: theme.palette.background.paper, strokeWidth: 2 }}
+                      dot={{ fill: chartColors.funcionarios, strokeWidth: 2, r: 4 }}
+                      activeDot={{ r: 6, fill: chartColors.funcionarios }}
                       animationDuration={1500}
                     />
                   </LineChart>
@@ -310,8 +391,8 @@ const FinanceCharts: React.FC = () => {
               </Box>
             </CardContent>
           </Card>
-        </Grid>
-      </Grid>
+        </motion.div>
+      </ResponsiveGrid>
     </Box>
   );
 };

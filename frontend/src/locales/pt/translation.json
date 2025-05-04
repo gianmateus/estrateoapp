@@ -20,7 +20,10 @@
   "vencimento": "Vencimento",
   "diasParaVencer": "Dias para Vencer",
   
-  "dashboard": "Dashboard",
+  "dashboard": {
+    "title": "Dashboard",
+    "breadcrumb": "Dashboard"
+  },
   "financeiro": "Financeiro",
   "inventario": "Inventário",
   "pagamentos": "Pagamentos",
@@ -131,6 +134,13 @@
   
   "gerarRelatorio": "Gerar Relatório",
   "total": "Total",
+  
+  "receitaHoje": "Receita Hoje",
+  "despesaHoje": "Despesa Hoje",
+  "itensEmEstoque": "Itens em Estoque",
+  "usuariosAtivos": "Usuários Ativos",
+  "funcionariosEmFerias": "Funcionários em Férias",
+  "semDadosNoPeriodo": "Sem dados no período",
   
   "relatorioGeradoComSucesso": "Relatório gerado com sucesso!",
   "erroAoGerarRelatorio": "Erro ao gerar relatório. Tente novamente.",

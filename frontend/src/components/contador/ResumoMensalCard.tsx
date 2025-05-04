@@ -6,7 +6,7 @@
  * Exibe uma métrica financeira com ícone e valor formatado
  */
 import React from 'react';
-import { CardContent, Typography, Box, SvgIconProps } from '@mui/material';
+import { CardContent, Typography, Box, SvgIconProps, useTheme } from '@mui/material';
 import { AnimatedCard } from '../animations';
 
 interface ResumoMensalCardProps {
@@ -31,6 +31,7 @@ const ResumoMensalCard: React.FC<ResumoMensalCardProps> = ({
   isCount = false,
   index = 0
 }) => {
+  const theme = useTheme();
   
   /**
    * Formats currency value in Euro format
@@ -49,18 +50,7 @@ const ResumoMensalCard: React.FC<ResumoMensalCardProps> = ({
   };
   
   return (
-    <AnimatedCard
-      index={index}
-      sx={{ 
-        height: '100%',
-        position: 'relative',
-        overflow: 'hidden',
-        transition: 'transform 0.3s',
-        '&:hover': {
-          transform: 'translateY(-5px)',
-        }
-      }}
-    >
+    <AnimatedCard index={index}>
       <CardContent>
         <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
           <Box>

@@ -18,7 +18,10 @@
   "vencimento": "Vencimento",
   "diasParaVencer": "Dias para vencer",
   
-  "dashboard": "Dashboard",
+  "dashboard": {
+    "title": "Dashboard",
+    "resumo": "Resumo Financeiro"
+  },
   "financeiro": "Financeiro",
   "inventario": "Inventário",
   "impostos": "Impostos",
@@ -156,5 +159,30 @@
   "kapitalertragsteuer": "Kapitalertragsteuer",
   "importacao": "Impostos de Importação",
   "taxaFixa": "Taxa Fixa",
-  "outro": "Outro"
+  "outro": "Outro",
+  
+  "receitaHoje": "Receita Hoje",
+  "despesaHoje": "Despesa Hoje",
+  "itensEmEstoque": "Itens em Estoque",
+  "usuariosAtivos": "Usuários Ativos",
+  "funcionariosEmFerias": "Funcionários em Férias",
+  "itensAbaixoEstoqueMinimo": "{{count}} itens abaixo do estoque mínimo",
+  "usuariosTotais": "De um total de {{count}} usuários",
+  "graficosFinanceiros": "Gráficos Financeiros",
+  "relatorioGeradoComSucesso": "Relatório gerado com sucesso!",
+  "erroAoGerarRelatorio": "Erro ao gerar relatório",
+  "semDadosNoPeriodo": "Sem dados disponíveis para o período selecionado",
+  
+  "parcelamentos": "Parcelamentos e Recebíveis",
+  "recebiveisFuturos": "Recebíveis Futuros",
+  "parcelamentosAbertos": "Parcelamentos Abertos",
+  "totaisPorCategoria": "Totais por Categoria",
+  "semRecebiveisFuturos": "Sem recebíveis futuros",
+  "semParcelamentosAbertos": "Sem parcelamentos abertos",
+  "semDadosCategoria": "Sem dados por categoria",
+  "parcelas": "Parcelas",
+  "proximaParcela": "Próxima parcela",
+  
+  "sugestoesIA": "Sugestões da IA",
+  "evolucaoFuncionarios": "Evolução de Funcionários"
 } 

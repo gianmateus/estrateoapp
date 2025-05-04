@@ -24,10 +24,16 @@ export const palette = {
     secondary: '#4A5568',
     disabled: '#A0AEC0',
   },
-  neutral: {
-    main: '#F5F5F5',
-    light: '#FAFAFA',
-    dark: '#E0E0E0',
+  grey: {
+    100: '#F5F5F5',
+    200: '#EEEEEE',
+    300: '#E0E0E0',
+    400: '#BDBDBD',
+    500: '#9E9E9E',
+    600: '#757575',
+    700: '#616161',
+    800: '#424242',
+    900: '#212121',
   },
   success: {
     main: '#00B37E',
@@ -56,28 +62,28 @@ export const palette = {
   divider: 'rgba(0, 0, 0, 0.1)',
 };
 
-// Sistema de espaçamento baseado em 8px
-const spacing = (factor: number) => `${8 * factor}px`;
+// Sistema de espaçamento
+const spacing = 4;
 
 // Definições de tipografia
 const typography: TypographyVariantsOptions = {
-  fontFamily: 'Inter, Roboto, Helvetica, Arial, sans-serif',
+  fontFamily: 'Inter, Roboto, "Helvetica Neue", Arial, sans-serif',
   h1: {
     fontSize: '48px',
-    fontWeight: 700,
-    lineHeight: 1.2,
+    fontWeight: 600,
+    lineHeight: '56px',
     letterSpacing: '-0.01em',
   },
   h2: {
     fontSize: '32px',
     fontWeight: 600,
-    lineHeight: 1.25,
+    lineHeight: '40px',
     letterSpacing: '-0.005em',
   },
   h3: {
     fontSize: '24px',
     fontWeight: 600,
-    lineHeight: 1.3,
+    lineHeight: '32px',
     letterSpacing: '0em',
   },
   h4: {
@@ -101,25 +107,25 @@ const typography: TypographyVariantsOptions = {
   body1: {
     fontSize: '16px',
     fontWeight: 400,
-    lineHeight: 1.5,
+    lineHeight: '24px',
     letterSpacing: '0em',
   },
   body2: {
     fontSize: '14px',
     fontWeight: 400,
-    lineHeight: 1.5,
+    lineHeight: '20px',
     letterSpacing: '0em',
   },
   caption: {
     fontSize: '12px',
     fontWeight: 400,
-    lineHeight: 1.5,
+    lineHeight: '16px',
     letterSpacing: '0em',
   },
   button: {
     fontSize: '14px',
     fontWeight: 600,
-    lineHeight: 1.5,
+    lineHeight: '20px',
     letterSpacing: '0.025em',
     textTransform: 'none' as const,
   },
@@ -127,30 +133,55 @@ const typography: TypographyVariantsOptions = {
 
 // Personalização de componentes
 const components: Components<Omit<Theme, 'components'>> = {
+  MuiCssBaseline: {
+    styleOverrides: `
+      @font-face {
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: url('https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hiJ.woff2') format('woff2');
+      }
+      @font-face {
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 500;
+        font-display: swap;
+        src: url('https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuI6fAZ9hiJ.woff2') format('woff2');
+      }
+      @font-face {
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 600;
+        font-display: swap;
+        src: url('https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuGKYAZ9hiJ.woff2') format('woff2');
+      }
+      .section {
+        margin-block: 32px;
+      }
+    `,
+  },
   MuiCard: {
     styleOverrides: {
       root: {
-        borderRadius: '16px',
+        borderRadius: 16,
         boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
-        padding: spacing(3), // 24px
+        padding: 24,
       },
     },
   },
   MuiButton: {
     styleOverrides: {
       root: {
-        borderRadius: '8px',
+        borderRadius: 8,
         padding: '10px 24px',
         boxShadow: 'none',
         textTransform: 'none' as const,
         fontWeight: 600,
         transition: 'all 0.2s ease-in-out',
-        '&:hover': {
-          boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
-          transform: 'translateY(-2px)',
-        },
       },
       contained: {
+        boxShadow: 'none',
         '&:hover': {
           boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
         },
@@ -167,7 +198,7 @@ const components: Components<Omit<Theme, 'components'>> = {
     styleOverrides: {
       root: {
         '& .MuiOutlinedInput-root': {
-          borderRadius: '8px',
+          borderRadius: 8,
           '& fieldset': {
             borderWidth: '1px',
           },
@@ -176,10 +207,12 @@ const components: Components<Omit<Theme, 'components'>> = {
           },
           '&.Mui-focused fieldset': {
             borderWidth: '2px',
+            borderColor: palette.primary.main,
           },
         },
         '& .MuiInputLabel-outlined': {
           transform: 'translate(14px, 16px) scale(1)',
+          color: palette.grey[600],
         },
         '& .MuiInputLabel-outlined.MuiInputLabel-shrink': {
           transform: 'translate(14px, -6px) scale(0.75)',
@@ -190,25 +223,35 @@ const components: Components<Omit<Theme, 'components'>> = {
   MuiSelect: {
     styleOverrides: {
       outlined: {
-        borderRadius: '8px',
+        borderRadius: 8,
+      },
+    },
+  },
+  MuiTableHead: {
+    styleOverrides: {
+      root: {
+        position: 'sticky',
+        top: 0,
+        zIndex: 10,
+        backgroundColor: palette.primary.main,
+        '& .MuiTableCell-head': {
+          color: '#FFFFFF',
+          fontWeight: 600,
+        },
       },
     },
   },
   MuiTableCell: {
     styleOverrides: {
       root: {
-        padding: spacing(2), // 16px
-      },
-      head: {
-        fontWeight: 600,
-        backgroundColor: palette.neutral.light,
+        padding: 16,
       },
     },
   },
   MuiTableContainer: {
     styleOverrides: {
       root: {
-        borderRadius: '8px',
+        borderRadius: 8,
         boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
       },
     },
@@ -216,7 +259,7 @@ const components: Components<Omit<Theme, 'components'>> = {
   MuiChip: {
     styleOverrides: {
       root: {
-        borderRadius: '8px',
+        borderRadius: 8,
         fontWeight: 500,
       },
     },
@@ -224,7 +267,7 @@ const components: Components<Omit<Theme, 'components'>> = {
   MuiAlert: {
     styleOverrides: {
       root: {
-        borderRadius: '8px',
+        borderRadius: 8,
         boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
       },
     },
@@ -232,7 +275,7 @@ const components: Components<Omit<Theme, 'components'>> = {
   MuiPaper: {
     styleOverrides: {
       root: {
-        borderRadius: '16px',
+        borderRadius: 16,
         boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
       },
     },
@@ -240,18 +283,18 @@ const components: Components<Omit<Theme, 'components'>> = {
   MuiDialogContent: {
     styleOverrides: {
       root: {
-        padding: spacing(3), // 24px
+        padding: 24,
       },
     },
   },
 };
 
-// Breakpoints
+// Breakpoints para responsividade
 const breakpoints = {
   values: {
     xs: 0,
     sm: 600,
-    md: 960,
+    md: 768,
     lg: 1280,
     xl: 1920,
   },
@@ -259,14 +302,11 @@ const breakpoints = {
 
 // Criar e exportar o tema
 const theme = createTheme({
-  palette: palette as PaletteOptions,
+  palette,
   typography,
-  spacing: (factor: number) => spacing(factor),
+  spacing,
   components,
   breakpoints,
-  shape: {
-    borderRadius: 8,
-  },
 });
 
 export default theme; 

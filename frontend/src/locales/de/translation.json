@@ -18,7 +18,10 @@
   "vencimento": "Fälligkeitsdatum",
   "diasParaVencer": "Tage bis zur Fälligkeit",
   
-  "dashboard": "Dashboard",
+  "dashboard": {
+    "title": "Dashboard",
+    "breadcrumb": "Dashboard"
+  },
   "financeiro": "Finanzen",
   "inventario": "Inventar",
   "pagamentos": "Zahlungen",
@@ -125,6 +128,13 @@
   
   "gerarRelatorio": "Bericht generieren",
   "total": "Gesamt",
+  
+  "receitaHoje": "Einnahmen Heute",
+  "despesaHoje": "Ausgaben Heute",
+  "itensEmEstoque": "Artikel auf Lager",
+  "usuariosAtivos": "Aktive Benutzer",
+  "funcionariosEmFerias": "Mitarbeiter im Urlaub",
+  "semDadosNoPeriodo": "Keine Daten für den ausgewählten Zeitraum",
   
   "relatorioGeradoComSucesso": "Bericht erfolgreich generiert!",
   "erroAoGerarRelatorio": "Fehler beim Generieren des Berichts. Bitte versuchen Sie es erneut.",

@@ -83,19 +83,23 @@ const InfoCard: React.FC<InfoCardProps> = ({
     }
   };
 
+  // Espaçamento baseado no tamanho
+  const padding = size === 'small' ? 3 : 4;
+  const marginBottom = size === 'small' ? 2 : 3;
+  const marginTop = size === 'small' ? 1 : 2;
+
   return (
     <AnimatedCard
       index={index}
       clickable={!!onClick}
       onClick={onClick}
-      sx={{
-        padding: size === 'small' ? theme.spacing(3) : theme.spacing(4),
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-      }}
     >
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: size === 'small' ? 2 : 3 }}>
+      <Box sx={{ 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'flex-start', 
+        mb: marginBottom 
+      }}>
         <Typography variant={getTitleSize()} color="text.secondary">
           {title}
         </Typography>
@@ -120,7 +124,7 @@ const InfoCard: React.FC<InfoCardProps> = ({
             <Typography 
               variant={getSubtitleSize()} 
               color="text.secondary" 
-              sx={{ mt: size === 'small' ? 1 : 2 }}
+              sx={{ mt: marginTop }}
             >
               {subtitle}
             </Typography>

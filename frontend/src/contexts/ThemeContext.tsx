@@ -9,7 +9,7 @@ const COLORS = {
   BLACK: '#000000',
   WHITE: '#FFFFFF',
   BLUE_DARK: '#0A2540',
-  GRAY_LIGHT: '#F5F5F7',
+  GRAY_LIGHT: '#F5F5F5',
   GRAY_MEDIUM: '#86868B',
   GRAY_DARK: '#1D1D1F',
   GRAY_DARKEST: '#121212'
@@ -38,10 +38,16 @@ const darkPremiumPalette = {
     secondary: '#AAAAAA',
     disabled: '#666666',
   },
-  neutral: {
-    main: '#333333',
-    light: '#444444',
-    dark: '#222222',
+  grey: {
+    100: '#333333',
+    200: '#444444',
+    300: '#555555',
+    400: '#666666',
+    500: '#777777',
+    600: '#888888',
+    700: '#999999',
+    800: '#AAAAAA',
+    900: '#BBBBBB',
   },
   success: {
     main: '#00B37E',

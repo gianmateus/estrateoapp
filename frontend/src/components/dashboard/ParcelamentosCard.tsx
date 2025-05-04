@@ -9,16 +9,15 @@ import React from 'react';
 import { 
   Box, 
   Typography, 
-  Paper, 
   Divider, 
   List, 
   ListItem, 
   ListItemText, 
   Chip, 
-  Grid, 
   Card, 
   CardHeader, 
-  CardContent 
+  CardContent,
+  useTheme 
 } from '@mui/material';
 import { 
   ReceiptLong as ReceiptIcon, 
@@ -29,6 +28,8 @@ import {
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { formatCurrency, formatDate } from '../../utils/formatters';
+import { motion } from 'framer-motion';
+import ResponsiveGrid from '../common/ResponsiveGrid';
 
 interface RecebivelFuturo {
   id: string;
@@ -71,165 +72,271 @@ const ParcelamentosCard: React.FC<ParcelamentosCardProps> = ({
   totaisPorCategoria
 }) => {
   const { t } = useTranslation();
+  const theme = useTheme();
+
+  // Variantes para animações
+  const cardVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: { 
+        duration: 0.5
+      }
+    }
+  };
+
+  const listItemVariants = {
+    hidden: { opacity: 0, x: -10 },
+    visible: (i: number) => ({ 
+      opacity: 1, 
+      x: 0,
+      transition: { 
+        delay: i * 0.05,
+        duration: 0.3
+      }
+    })
+  };
 
   return (
-    <Grid container spacing={3}>
-      {/* Recebíveis Futuros */}
-      <Grid item xs={12} md={6} lg={4}>
-        <Card elevation={2}>
-          <CardHeader 
-            title={t('recebiveisFuturos')} 
-            avatar={<CalendarIcon color="primary" />} 
-            titleTypographyProps={{ variant: 'h6' }}
-          />
-          <Divider />
-          <CardContent>
-            {recebiveisFuturos.length === 0 ? (
-              <Typography color="textSecondary" align="center">{t('semRecebiveisFuturos')}</Typography>
-            ) : (
-              <List dense>
-                {recebiveisFuturos.map((recebivel) => (
-                  <ListItem key={recebivel.id} divider>
-                    <ListItemText
-                      primary={
-                        <Box display="flex" justifyContent="space-between" alignItems="center">
-                          <Typography variant="body2" noWrap style={{ maxWidth: '70%' }}>
-                            {recebivel.descricao}
-                          </Typography>
-                          <Typography variant="body2" color="primary" fontWeight="bold">
-                            {formatCurrency(recebivel.valor)}
-                          </Typography>
-                        </Box>
-                      }
-                      secondary={
-                        <Box display="flex" justifyContent="space-between" alignItems="center">
-                          <Typography variant="caption">
-                            {formatDate(recebivel.dataPrevista)} • {recebivel.cliente}
-                          </Typography>
-                          <Chip 
-                            label={t(recebivel.statusRecebimento)} 
-                            size="small" 
-                            color={recebivel.statusRecebimento === 'recebido' ? 'success' : 
-                                  recebivel.statusRecebimento === 'parcialmente_recebido' ? 'warning' : 'default'} 
-                            variant="outlined"
-                          />
-                        </Box>
-                      }
-                    />
-                  </ListItem>
-                ))}
-              </List>
-            )}
-          </CardContent>
-        </Card>
-      </Grid>
+    <Box>
+      <Typography variant="h2" gutterBottom>
+        {t('parcelamentos') || "Parcelamentos e Recebíveis"}
+      </Typography>
+      
+      <ResponsiveGrid spacing={4}>
+        {/* Recebíveis Futuros */}
+        <motion.div
+          variants={cardVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          <Card>
+            <CardHeader 
+              title={t('recebiveisFuturos') || "Recebíveis Futuros"} 
+              avatar={<CalendarIcon sx={{ color: theme.palette.primary.main }} />} 
+              titleTypographyProps={{ variant: 'h3' }}
+            />
+            <Divider />
+            <CardContent>
+              {recebiveisFuturos.length === 0 ? (
+                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', py: 4 }}>
+                  <Typography color="text.secondary" align="center">
+                    {t('semRecebiveisFuturos') || "Sem recebíveis futuros"}
+                  </Typography>
+                </Box>
+              ) : (
+                <List>
+                  {recebiveisFuturos.map((recebivel, index) => (
+                    <motion.div
+                      key={recebivel.id}
+                      custom={index}
+                      variants={listItemVariants}
+                      initial="hidden"
+                      animate="visible"
+                    >
+                      <ListItem 
+                        divider={index < recebiveisFuturos.length - 1}
+                        sx={{
+                          py: 2,
+                          '&:hover': {
+                            bgcolor: theme.palette.grey[50]
+                          }
+                        }}
+                      >
+                        <ListItemText
+                          primary={
+                            <Box display="flex" justifyContent="space-between" alignItems="center">
+                              <Typography variant="body1" fontWeight="medium" noWrap sx={{ maxWidth: '70%' }}>
+                                {recebivel.descricao}
+                              </Typography>
+                              <Typography variant="body1" color="primary" fontWeight="bold">
+                                {formatCurrency(recebivel.valor)}
+                              </Typography>
+                            </Box>
+                          }
+                          secondary={
+                            <Box display="flex" justifyContent="space-between" alignItems="center" mt={0.5}>
+                              <Typography variant="caption">
+                                {formatDate(recebivel.dataPrevista)} • {recebivel.cliente}
+                              </Typography>
+                              <Chip 
+                                label={t(recebivel.statusRecebimento) || recebivel.statusRecebimento} 
+                                size="small" 
+                                color={recebivel.statusRecebimento === 'recebido' ? 'success' : 
+                                      recebivel.statusRecebimento === 'parcialmente_recebido' ? 'warning' : 'default'} 
+                                variant="outlined"
+                              />
+                            </Box>
+                          }
+                        />
+                      </ListItem>
+                    </motion.div>
+                  ))}
+                </List>
+              )}
+            </CardContent>
+          </Card>
+        </motion.div>
 
-      {/* Parcelamentos Abertos */}
-      <Grid item xs={12} md={6} lg={4}>
-        <Card elevation={2}>
-          <CardHeader 
-            title={t('parcelamentosAbertos')} 
-            avatar={<ReceiptIcon color="primary" />} 
-            titleTypographyProps={{ variant: 'h6' }}
-          />
-          <Divider />
-          <CardContent>
-            {parcelamentosAbertos.length === 0 ? (
-              <Typography color="textSecondary" align="center">{t('semParcelamentosAbertos')}</Typography>
-            ) : (
-              <List dense>
-                {parcelamentosAbertos.map((parcelamento) => (
-                  <ListItem key={parcelamento.id} divider>
-                    <ListItemText
-                      primary={
-                        <Box display="flex" justifyContent="space-between" alignItems="center">
-                          <Typography variant="body2" noWrap style={{ maxWidth: '70%' }}>
-                            {parcelamento.descricao}
-                          </Typography>
-                          <Box display="flex" alignItems="center">
-                            {parcelamento.tipo === 'entrada' ? 
-                              <TrendingUpIcon fontSize="small" color="success" sx={{ mr: 0.5 }} /> : 
-                              <TrendingDownIcon fontSize="small" color="error" sx={{ mr: 0.5 }} />
-                            }
-                            <Typography variant="body2" fontWeight="bold">
-                              {formatCurrency(parcelamento.valor)}
-                            </Typography>
-                          </Box>
-                        </Box>
-                      }
-                      secondary={
-                        <Box display="flex" justifyContent="space-between" alignItems="center">
-                          <Typography variant="caption">
-                            {t('parcelas')}: {parcelamento.parcelasPagas}/{parcelamento.totalParcelas}
-                          </Typography>
-                          <Typography variant="caption">
-                            {t('proximaParcela')}: {formatCurrency(parcelamento.proximaParcela.valor)} • {formatDate(parcelamento.proximaParcela.data)}
-                          </Typography>
-                        </Box>
-                      }
-                    />
-                  </ListItem>
-                ))}
-              </List>
-            )}
-          </CardContent>
-        </Card>
-      </Grid>
+        {/* Parcelamentos Abertos */}
+        <motion.div
+          variants={cardVariants}
+          initial="hidden"
+          animate="visible"
+          transition={{ delay: 0.1 }}
+        >
+          <Card>
+            <CardHeader 
+              title={t('parcelamentosAbertos') || "Parcelamentos Abertos"} 
+              avatar={<ReceiptIcon sx={{ color: theme.palette.primary.main }} />} 
+              titleTypographyProps={{ variant: 'h3' }}
+            />
+            <Divider />
+            <CardContent>
+              {parcelamentosAbertos.length === 0 ? (
+                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', py: 4 }}>
+                  <Typography color="text.secondary" align="center">
+                    {t('semParcelamentosAbertos') || "Sem parcelamentos abertos"}
+                  </Typography>
+                </Box>
+              ) : (
+                <List>
+                  {parcelamentosAbertos.map((parcelamento, index) => (
+                    <motion.div
+                      key={parcelamento.id}
+                      custom={index}
+                      variants={listItemVariants}
+                      initial="hidden"
+                      animate="visible"
+                    >
+                      <ListItem 
+                        divider={index < parcelamentosAbertos.length - 1}
+                        sx={{
+                          py: 2,
+                          '&:hover': {
+                            bgcolor: theme.palette.grey[50]
+                          }
+                        }}
+                      >
+                        <ListItemText
+                          primary={
+                            <Box display="flex" justifyContent="space-between" alignItems="center">
+                              <Typography variant="body1" fontWeight="medium" noWrap sx={{ maxWidth: '70%' }}>
+                                {parcelamento.descricao}
+                              </Typography>
+                              <Box display="flex" alignItems="center">
+                                {parcelamento.tipo === 'entrada' ? 
+                                  <TrendingUpIcon fontSize="small" color="success" sx={{ mr: 0.5 }} /> : 
+                                  <TrendingDownIcon fontSize="small" color="error" sx={{ mr: 0.5 }} />
+                                }
+                                <Typography variant="body1" fontWeight="bold">
+                                  {formatCurrency(parcelamento.valor)}
+                                </Typography>
+                              </Box>
+                            </Box>
+                          }
+                          secondary={
+                            <Box display="flex" justifyContent="space-between" alignItems="center" mt={0.5}>
+                              <Typography variant="caption">
+                                {t('parcelas') || "Parcelas"}: {parcelamento.parcelasPagas}/{parcelamento.totalParcelas}
+                              </Typography>
+                              <Typography variant="caption">
+                                {t('proximaParcela') || "Próxima parcela"}: {formatCurrency(parcelamento.proximaParcela.valor)} • {formatDate(parcelamento.proximaParcela.data)}
+                              </Typography>
+                            </Box>
+                          }
+                        />
+                      </ListItem>
+                    </motion.div>
+                  ))}
+                </List>
+              )}
+            </CardContent>
+          </Card>
+        </motion.div>
 
-      {/* Totais por Categoria */}
-      <Grid item xs={12} md={6} lg={4}>
-        <Card elevation={2}>
-          <CardHeader 
-            title={t('totaisPorCategoria')} 
-            avatar={<CategoryIcon color="primary" />} 
-            titleTypographyProps={{ variant: 'h6' }}
-          />
-          <Divider />
-          <CardContent>
-            {totaisPorCategoria.length === 0 ? (
-              <Typography color="textSecondary" align="center">{t('semDadosCategoria')}</Typography>
-            ) : (
-              <List dense>
-                {totaisPorCategoria.map((categoria, index) => (
-                  <ListItem key={index} divider>
-                    <ListItemText
-                      primary={
-                        <Box display="flex" justifyContent="space-between" alignItems="center">
-                          <Typography variant="body2" fontWeight="medium">
-                            {categoria.categoria}
-                          </Typography>
-                          <Typography 
-                            variant="body2" 
-                            fontWeight="bold"
-                            color={categoria.saldo >= 0 ? 'success.main' : 'error.main'}
-                          >
-                            {formatCurrency(categoria.saldo)}
-                          </Typography>
-                        </Box>
-                      }
-                      secondary={
-                        <Box display="flex" justifyContent="space-between" alignItems="center">
-                          <Box>
-                            <Typography variant="caption" color="success.main" component="span">
-                              + {formatCurrency(categoria.valorEntradas)}
-                            </Typography>
-                          </Box>
-                          <Box>
-                            <Typography variant="caption" color="error.main" component="span">
-                              - {formatCurrency(categoria.valorSaidas)}
-                            </Typography>
-                          </Box>
-                        </Box>
-                      }
-                    />
-                  </ListItem>
-                ))}
-              </List>
-            )}
-          </CardContent>
-        </Card>
-      </Grid>
-    </Grid>
+        {/* Totais por Categoria */}
+        <motion.div
+          variants={cardVariants}
+          initial="hidden"
+          animate="visible"
+          transition={{ delay: 0.2 }}
+        >
+          <Card>
+            <CardHeader 
+              title={t('totaisPorCategoria') || "Totais por Categoria"} 
+              avatar={<CategoryIcon sx={{ color: theme.palette.primary.main }} />} 
+              titleTypographyProps={{ variant: 'h3' }}
+            />
+            <Divider />
+            <CardContent>
+              {totaisPorCategoria.length === 0 ? (
+                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', py: 4 }}>
+                  <Typography color="text.secondary" align="center">
+                    {t('semDadosCategoria') || "Sem dados por categoria"}
+                  </Typography>
+                </Box>
+              ) : (
+                <List>
+                  {totaisPorCategoria.map((categoria, index) => (
+                    <motion.div
+                      key={index}
+                      custom={index}
+                      variants={listItemVariants}
+                      initial="hidden"
+                      animate="visible"
+                    >
+                      <ListItem 
+                        divider={index < totaisPorCategoria.length - 1}
+                        sx={{
+                          py: 2,
+                          bgcolor: index % 2 === 1 ? theme.palette.grey[100] : 'transparent',
+                          '&:hover': {
+                            bgcolor: theme.palette.grey[50]
+                          }
+                        }}
+                      >
+                        <ListItemText
+                          primary={
+                            <Box display="flex" justifyContent="space-between" alignItems="center">
+                              <Typography variant="body1" fontWeight="medium">
+                                {categoria.categoria}
+                              </Typography>
+                              <Typography 
+                                variant="body1" 
+                                fontWeight="bold"
+                                color={categoria.saldo >= 0 ? 'success.main' : 'error.main'}
+                              >
+                                {formatCurrency(categoria.saldo)}
+                              </Typography>
+                            </Box>
+                          }
+                          secondary={
+                            <Box display="flex" justifyContent="space-between" alignItems="center" mt={0.5}>
+                              <Box>
+                                <Typography variant="caption" color="success.main" component="span">
+                                  + {formatCurrency(categoria.valorEntradas)}
+                                </Typography>
+                              </Box>
+                              <Box>
+                                <Typography variant="caption" color="error.main" component="span">
+                                  - {formatCurrency(categoria.valorSaidas)}
+                                </Typography>
+                              </Box>
+                            </Box>
+                          }
+                        />
+                      </ListItem>
+                    </motion.div>
+                  ))}
+                </List>
+              )}
+            </CardContent>
+          </Card>
+        </motion.div>
+      </ResponsiveGrid>
+    </Box>
   );
 };
 

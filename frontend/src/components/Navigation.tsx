@@ -165,7 +165,7 @@ const Navigation = ({}: NavigationProps) => {
    */
   const menuItems: MenuItem[] = [
     { 
-      text: t('dashboard'), 
+      text: t('dashboard.title'), 
       icon: <DashboardIcon />, 
       path: '/dashboard',
       permission: null
@@ -315,25 +315,30 @@ const Navigation = ({}: NavigationProps) => {
                         ? `4px solid ${muiTheme.palette.primary.main}` 
                         : '4px solid transparent',
                       '&.Mui-selected': {
-                        backgroundColor: muiTheme.palette.mode === 'dark' 
-                          ? 'rgba(255, 255, 255, 0.08)' 
-                          : 'rgba(0, 0, 0, 0.04)',
+                        backgroundColor: 'rgba(25, 118, 210, 0.2)',
                       },
                       '&:hover': {
-                        backgroundColor: muiTheme.palette.mode === 'dark' 
-                          ? 'rgba(255, 255, 255, 0.12)' 
-                          : 'rgba(0, 0, 0, 0.07)',
+                        backgroundColor: 'rgba(25, 118, 210, 0.1)',
                       },
+                      backgroundColor: 'rgba(245, 245, 245, 0.9)',
+                      marginBottom: '4px',
+                      borderRadius: '4px',
+                      border: '1px solid rgba(0, 0, 0, 0.1)',
                     }}
                   >
-                    <ListItemIcon>
+                    <ListItemIcon
+                      sx={{ color: '#000000' }}
+                    >
                       {item.icon}
                     </ListItemIcon>
-                    <ListItemText primary={item.text} />
+                    <ListItemText 
+                      primary={item.text} 
+                      sx={{ '& .MuiTypography-root': { color: '#000000 !important', fontWeight: 'bold' } }}
+                    />
                     {item.subItems && (
                       expandedMenus[item.text] ? 
-                        <KeyboardArrowUpIcon /> : 
-                        <KeyboardArrowDownIcon />
+                        <KeyboardArrowUpIcon sx={{ color: '#000000' }} /> : 
+                        <KeyboardArrowDownIcon sx={{ color: '#000000' }} />
                     )}
                   </ListItemButton>
                 </ListItem>
@@ -353,21 +358,27 @@ const Navigation = ({}: NavigationProps) => {
                                 ? `4px solid ${muiTheme.palette.primary.main}` 
                                 : '4px solid transparent',
                               '&.Mui-selected': {
-                                backgroundColor: muiTheme.palette.mode === 'dark' 
-                                  ? 'rgba(255, 255, 255, 0.08)' 
-                                  : 'rgba(0, 0, 0, 0.04)',
+                                backgroundColor: 'rgba(25, 118, 210, 0.2)',
                               },
                               '&:hover': {
-                                backgroundColor: muiTheme.palette.mode === 'dark' 
-                                  ? 'rgba(255, 255, 255, 0.12)' 
-                                  : 'rgba(0, 0, 0, 0.07)',
+                                backgroundColor: 'rgba(25, 118, 210, 0.1)',
                               },
+                              backgroundColor: 'rgba(245, 245, 245, 0.9)',
+                              marginBottom: '3px',
+                              marginLeft: '10px',
+                              borderRadius: '4px',
+                              border: '1px solid rgba(0, 0, 0, 0.1)',
                             }}
                           >
-                            <ListItemIcon>
+                            <ListItemIcon
+                              sx={{ color: '#000000' }}
+                            >
                               {subItem.icon}
                             </ListItemIcon>
-                            <ListItemText primary={subItem.text} />
+                            <ListItemText 
+                              primary={subItem.text} 
+                              sx={{ '& .MuiTypography-root': { color: '#000000 !important', fontWeight: 'bold' } }}
+                            />
                           </ListItemButton>
                         </ListItem>
                       )
