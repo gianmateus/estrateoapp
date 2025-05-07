@@ -3,9 +3,17 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/material": "^7.0.2",
+    "@mui/system": "^7.0.2",
+    "@mui/x-data-grid": "^8.2.0",
+    "@types/lodash": "^4.17.16",
     "@types/react-input-mask": "^3.0.6",
     "formik": "^2.4.6",
+    "framer-motion": "^12.9.7",
     "i18next-http-backend": "^3.0.2",
+    "lucide-react": "^0.507.0",
     "react-country-flag": "^3.1.0",
     "react-input-mask": "^2.0.4",
     "yup": "^1.6.1"

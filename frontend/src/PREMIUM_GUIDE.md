@@ -136,6 +136,60 @@ O tema suporta alternância entre modo claro e escuro, com paletas específicas 
 </PageTransition>
 ```
 
+## 📊 Impostos – Visão Geral
+
+A página de Impostos foi projetada para oferecer uma experiência visual premium e consistente com o restante da aplicação, apresentando cards de impostos informativos e dinamicamente atualizados.
+
+### CardImposto
+O componente `CardImposto` foi criado para exibir informações fiscais de forma clara e elegante:
+
+```jsx
+<CardImposto
+  tipo="Umsatzsteuer"           // Nome/título do imposto
+  valor={1234.56}               // Valor numérico do imposto
+  icone={<EuroIcon />}          // Ícone representativo
+  cor="primary"                 // Esquema de cores (primary, neutral, success, warning, error)
+  legenda="Descrição detalhada" // Texto de tooltip opcional
+/>
+```
+
+### Características Visuais
+- **Cards Premium**: Bordas arredondadas, sombra sutil, cores temáticas por tipo de imposto
+- **Animação Fade-In**: Transição suave ao carregar os cards (usando framer-motion)
+- **Responsividade**: Layout se adapta a dispositivos móveis, tablets e desktop
+- **Esquemas de Cor**: 
+  - Umsatzsteuer (IVA) - Primary (Azul)
+  - Gewerbesteuer (Imposto Comercial) - Neutral (Cinza)
+  - Körperschaftsteuer (Imposto Corporativo) - Success (Verde)
+  - Lohnsteuer (Folha de Pagamento) - Warning (Laranja)
+
+### Tratamento de Estados
+- **Carregamento**: Exibe Skeleton ao carregar dados
+- **Erro de Rede**: Snackbar temporário com botão para tentar novamente
+- **Valores Zerados**: Exibe formato "€ 0,00" em vez de traço
+- **Valores Ausentes**: Exibe "Sem dados" (traduzido via i18n)
+- **Seleção de Mês**: DatePicker para selecionar o período fiscal
+
+### Layout do Grid
+- Cards dispostos em grid de 4 colunas em desktop (xl, lg)
+- 2 colunas em tablets (md, sm)
+- 1 coluna empilhada em dispositivos móveis (xs)
+- Espaçamento uniforme de 24px entre cards
+
+### Internacionalização
+A página suporta múltiplos idiomas através do sistema i18n:
+- Nome dos impostos
+- Mensagens de status
+- Formatação de valores monetários (€)
+- Textos de UI como "Sem dados", "Erro de conexão", etc.
+
+### Boas Práticas Implementadas
+- **Microinterações**: Hover nos cards com elevação sutil
+- **Feedback Visual**: Estados claros de carregamento e erro
+- **Acessibilidade**: Tooltips informativos, contraste adequado
+- **Consistência**: Alinhamento com demais elementos da interface
+- **Gerenciamento de Erros**: Tratamento elegante de falhas de rede
+
 ## 🚀 Boas Práticas
 
 1. **Consistência**: Use sempre os componentes e tokens definidos neste guia

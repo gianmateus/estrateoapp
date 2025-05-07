@@ -29,7 +29,7 @@ export const testeI18nFallback = () => {
   });
   
   // Testar uma chave que foi propositalmente removida do português
-  // Para testar, remova temporariamente a chave 'dashboard.title' do pt.json
+  // Para testar, remova temporariamente a chave 'dashboardObj.title' do pt.json
   console.log('\nTestando fallback de chaves ausentes:');
   
   // Mudar para português primeiro
@@ -37,7 +37,7 @@ export const testeI18nFallback = () => {
   
   // Testar algumas chaves que podem não existir em PT
   const chavesParaTestar = [
-    'dashboard.title', // Se foi removida, deve usar o fallback inglês
+    'dashboardObj.title', // Se foi removida, deve usar o fallback inglês
     'teste.chave.ausente', // Chave totalmente ausente
     'finance_recurrence_quarterly' // Chave que pode estar em um idioma mas não em outro
   ];

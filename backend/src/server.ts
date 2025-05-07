@@ -5,6 +5,7 @@ import routes from './routes';
 import { initializeAllListeners } from './services/sincronizacao';
 import { serverConfig, validateRequiredConfigs, corsOptions } from './config';
 import { limiter } from './middlewares';
+import { startTaxForecastJob } from './jobs/taxForecastJob';
 
 // Carrega variáveis de ambiente
 dotenv.config();
@@ -53,6 +54,12 @@ app.get('/', (req, res) => {
 
 // Inicializa os listeners de eventos para sincronização entre módulos
 initializeAllListeners();
+
+// Iniciar o job de previsão fiscal
+if (process.env.NODE_ENV !== 'test') {
+  startTaxForecastJob();
+  console.log('Job de previsão fiscal configurado e agendado');
+}
 
 // Inicializa o servidor
 app.listen(port, () => {

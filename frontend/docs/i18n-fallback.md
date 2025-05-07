@@ -44,7 +44,7 @@ i18n.init({
 
 Para testar o funcionamento do fallback, você pode:
 
-1. Remover temporariamente uma chave de um arquivo de tradução (ex: remover `dashboard.title` do `frontend/src/locales/pt/translation.json`)
+1. Remover temporariamente uma chave de um arquivo de tradução (ex: remover `dashboardObj.title` do `frontend/src/locales/pt/translation.json`)
 2. Mudar o idioma da aplicação para o idioma onde a chave foi removida
 3. Verificar se o texto é exibido em inglês em vez de mostrar uma mensagem de erro ou `[missing translation]`
 

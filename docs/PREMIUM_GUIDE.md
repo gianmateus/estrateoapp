@@ -165,6 +165,81 @@ Nosso design system segue as diretrizes WCAG para garantir acessibilidade:
 - **Reduced Motion**: Animações respeitam a preferência `prefers-reduced-motion`
 - **Textos alternativos**: Imagens e ícones possuem textos alternativos adequados
 
+## Módulos da Aplicação
+
+### Cadastro de Itens (Inventário)
+
+O módulo de Inventário permite o cadastro e gerenciamento de itens de estoque e necessidades semanais através de modais intuitivos.
+
+#### Modal de Novo Item
+
+![Modal Novo Item](../assets/images/modal-novo-item.png)
+
+O modal de cadastro de novos itens permite registrar produtos no estoque com as seguintes informações:
+
+| Campo | Tipo | Descrição |
+|-------|------|-----------|
+| Nome | Texto | Nome do item (obrigatório) |
+| Quantidade | Número | Quantidade disponível (obrigatório, > 0) |
+| Unidade | Seleção | Unidade de medida (kg, g, unidade, caixa, ml, litro) |
+| Categoria | Seleção | Categorização do item (bebidas, legumes, carnes, etc.) |
+| Quantidade Mínima | Número | Limiar para alertas de estoque baixo |
+| Preço Unitário | Número | Valor monetário por unidade (€) |
+| Data de Validade | Data | Data de vencimento do produto |
+| Localização | Texto | Local físico onde o item está armazenado |
+
+#### Modal de Necessidade Semanal
+
+![Modal Necessidade Semanal](../assets/images/modal-necessidade-semanal.png)
+
+O modal de necessidades semanais registra itens que são regularmente necessários, com campos simplificados:
+
+| Campo | Tipo | Descrição |
+|-------|------|-----------|
+| Nome | Texto | Nome do item (obrigatório) |
+| Quantidade | Número | Quantidade necessária (obrigatório, > 0) |
+| Unidade | Seleção | Unidade de medida (kg, g, unidade, caixa, ml, litro) |
+| Preço Unitário | Número | Valor monetário por unidade (€) |
+| Observação | Texto | Informações adicionais ou especificações |
+
+#### Fluxo de Gravação
+
+1. O usuário preenche os campos do formulário
+2. Ao clicar em "Salvar", o sistema valida os dados (campos obrigatórios e restrições)
+3. O item é adicionado ao contexto via função `adicionarItem()`
+4. O item é armazenado no localStorage e fica disponível nas tabelas correspondentes
+5. Um Snackbar de confirmação é exibido ao usuário
+
+#### Exemplos de Payload
+
+**Novo Item:**
+```json
+{
+  "nome": "Tomate Cereja",
+  "quantidade": 20,
+  "unidade": "kg",
+  "categoria": "legumes",
+  "quantidadeMinima": 5,
+  "precoUnitario": 3.50,
+  "dataValidade": "2024-03-25",
+  "localizacao": "Geladeira 2"
+}
+```
+
+**Necessidade Semanal:**
+```json
+{
+  "nome": "Farinha de Trigo",
+  "quantidade": 10,
+  "unidade": "kg",
+  "categoria": "necessidade_semanal",
+  "precoUnitario": 1.20,
+  "observacao": "Preferência por marca XYZ"
+}
+```
+
+Estes dados são emitidos por meio do `InventarioContext`, que gerencia o estado global do inventário e atualiza as métricas e listas automaticamente.
+
 ## Como Implementar
 
 ### Usando Componentes Prontos
@@ -501,7 +576,7 @@ Para evitar erros de tradução, as chaves i18n devem ser estruturadas hierarqui
 }
 
 // Uso correto no código
-t('dashboard.title') // em vez de t('dashboard')
+t('dashboardObj.title') // em vez de t('dashboard')
 ```
 
 ### Antes e Depois
@@ -628,8 +703,529 @@ Tooltips dos gráficos financeiros receberam estilos premium:
 />
 ```
 
+## Navegação
+
+A navegação lateral (Sidebar) é um componente fundamental do Estrateo que fornece acesso às principais funcionalidades da aplicação.
+
+### Estrutura do Menu
+
+Para adicionar ou modificar itens de menu na barra lateral, edite o array `menuItems` no arquivo `Navigation.tsx`. Cada item deve seguir esta estrutura:
+
+```tsx
+const menuItems: MenuItem[] = [
+  { 
+    text: t('dashboardObj.title'),       // Texto exibido (usando i18n)
+    icon: <DashboardIcon />,          // Ícone do Menu
+    path: '/dashboard',               // Caminho da rota
+    permission: null                  // Permissão necessária (null = público)
+  },
+  // Outros itens...
+];
+```
+
+### Chaves de Tradução
+
+Todas as chaves de tradução para a navegação devem estar presentes em todos os arquivos de idioma:
+
+```json
+// Exemplo de estrutura de chaves nos arquivos translation.json
+{
+  "dashboard": {
+    "title": "Dashboard"
+  },
+  "financeiro": "Financeiro",
+  "inventario": "Inventário",
+  "impostos": "Impostos",
+  "pagamentos": "Pagamentos", 
+  "calendario": "Calendário",
+  "funcionarios": "Funcionários",
+  "inteligenciaArtificial": "IA & Análises",
+  "whatsapp": "WhatsApp",
+  "contador": "Contador"
+}
+```
+
+### Permissões de Acesso
+
+Cada item do menu pode requerer permissões específicas para ser exibido. As permissões são verificadas usando a função `hasPermission()` do contexto de autenticação:
+
+```tsx
+// Exemplo de permissões no array menuItems
+{ 
+  text: t('financeiro'), 
+  icon: <FinanceiroIcon />, 
+  path: '/dashboard/financeiro',
+  permission: 'financeiro.visualizar'  // Usuário precisará desta permissão
+}
+```
+
+No AuthContext.tsx, certifique-se de que o usuário tem as permissões necessárias:
+
+```tsx
+const demoUser = {
+  // ...outras propriedades...
+  permissoes: [
+    'admin', 
+    'financeiro.visualizar',
+    'inventario.visualizar',
+    'impostos.visualizar',
+    'pagamentos.visualizar',
+    'calendario.visualizar',
+    'funcionarios.visualizar',
+    'ia.visualizar'
+  ]
+};
+```
+
+### Submenu
+
+Para adicionar submenus a um item de navegação, use a propriedade `subItems`:
+
+```tsx
+{ 
+  text: t('funcionarios'), 
+  icon: <PeopleIcon />, 
+  path: '/dashboard/funcionarios',
+  permission: 'funcionarios.visualizar',
+  subItems: [
+    {
+      text: t('visaoGeral'),
+      icon: <PersonIcon />,
+      path: '/dashboard/funcionarios',
+      permission: 'funcionarios.visualizar',
+    },
+    // outros subitens...
+  ]
+}
+```
+
+### Acessibilidade
+
+Todos os itens de navegação devem:
+- Ter contrast ratio adequado (4.5:1)
+- Ter ícones acompanhados por texto
+- Ser navegáveis por teclado (Tab)
+- Ter focus visual claro
+
 ## Conclusão
 
 Este Design System Premium foi criado para elevar a experiência visual do Estrateo, mantendo consistência, acessibilidade e facilidade de uso em toda a plataforma. Seguindo este guia, garantimos que novos desenvolvimentos mantenham o mesmo padrão de qualidade visual e experiência do usuário.
 
-Para perguntas ou esclarecimentos, consulte a equipe de design. 
+Para perguntas ou esclarecimentos, consulte a equipe de design.
+
+## Dashboard Premium 2.0
+
+O Dashboard foi completamente remodelado para seguir um padrão de design premium semelhante a produtos como Notion e Linear, focando em espaçamento, hierarquia e consistência visual.
+
+### MetricCard Aprimorado
+
+O componente `MetricCard` foi redesenhado para ter uma aparência mais moderna:
+
+```tsx
+const MetricCard: React.FC<MetricCardProps> = ({ 
+  title, 
+  value, 
+  icon, 
+  iconBg,
+  color 
+}) => {
+  const theme = useTheme();
+  
+  return (
+    <Card
+      component={motion.div}
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+      sx={{
+        minHeight: 180,
+        borderRadius: 2,
+        boxShadow: theme.shadows[2],
+        position: 'relative',
+        overflow: 'visible',
+      }}
+    >
+      <CardContent sx={{ 
+        p: 3, 
+        height: '100%', 
+        display: 'flex', 
+        flexDirection: 'column',
+        justifyContent: 'space-between' 
+      }}>
+        <Typography 
+          variant="h5" 
+          component="h3" 
+          color="text.secondary" 
+          fontWeight={500}
+          sx={{ pr: 5 }}
+        >
+          {title}
+        </Typography>
+        
+        <Avatar
+          sx={{
+            position: 'absolute',
+            top: 24,
+            right: 24,
+            bgcolor: iconBg || 'rgba(0, 0, 0, 0.04)',
+            width: 42,
+            height: 42
+          }}
+        >
+          {React.cloneElement(icon as React.ReactElement, { 
+            sx: { fontSize: 22, color } 
+          })}
+        </Avatar>
+
+        <Box sx={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'center',
+          flexGrow: 1 
+        }}>
+          <Typography 
+            variant="h3" 
+            component="div" 
+            color="text.primary" 
+            fontWeight="bold" 
+            align="center"
+          >
+            {value}
+          </Typography>
+        </Box>
+      </CardContent>
+    </Card>
+  );
+};
+```
+
+### Grid Responsivo
+
+O layout do dashboard agora usa um grid totalmente responsivo:
+
+```tsx
+{/* Grid de métricas */}
+<Grid container spacing={4}>
+  {metrics.map(metric => (
+    <Grid item xs={12} md={6} lg={4} key={metric.id}>
+      <MetricCard
+        title={metric.title}
+        value={metric.value}
+        icon={metric.icon}
+        iconBg={metric.iconBg}
+        color={metric.color}
+      />
+    </Grid>
+  ))}
+</Grid>
+```
+
+### Barra de Topo Fixa
+
+O botão "Gerar Relatório" agora aparece em uma barra de topo fixa que permanece visível durante a rolagem:
+
+```tsx
+{/* Header fixo com botão de gerar relatório */}
+<Box
+  sx={{
+    position: 'sticky',
+    top: 0,
+    zIndex: 10,
+    py: 2,
+    px: 1,
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: theme.palette.background.default,
+    backdropFilter: 'blur(8px)',
+    borderBottom: `1px solid ${theme.palette.divider}`,
+    mb: 4
+  }}
+>
+  <Typography variant="h4" fontWeight="bold" color="text.primary">
+    {t('dashboardObj.title')}
+  </Typography>
+  
+  <motion.div
+    whileHover={{ scale: 1.05 }}
+    transition={{ type: 'spring', stiffness: 400, damping: 10 }}
+  >
+    <Button
+      variant="contained"
+      color="primary"
+      startIcon={<PdfIcon />}
+      onClick={handleGenerateReport}
+      sx={{
+        width: { xs: '100%', sm: 180 },
+        height: 40,
+        borderRadius: 2
+      }}
+    >
+      {t('gerarRelatorio')}
+    </Button>
+  </motion.div>
+</Box>
+```
+
+### Seção de Gráficos
+
+Os gráficos agora são apresentados em cards elegantes com título interno:
+
+```tsx
+<Grid container spacing={4} sx={{ mt: 1 }}>
+  <Grid item xs={12} md={6}>
+    <Card
+      sx={{
+        borderRadius: 4,
+        boxShadow: theme.shadows[3],
+        p: 3,
+        height: '100%'
+      }}
+    >
+      <Typography
+        variant="h3"
+        sx={{ mb: 3, fontWeight: 500 }}
+      >
+        {t('finance_charts_monthlyIncome')}
+      </Typography>
+      
+      <Box
+        sx={{ height: 300 }}
+        aria-labelledby="receitas-despesas-chart-title"
+      >
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={chartData}>
+            {/* Chart configuration */}
+          </BarChart>
+        </ResponsiveContainer>
+      </Box>
+    </Card>
+  </Grid>
+  
+  {/* Second chart */}
+</Grid>
+```
+
+### Parcelamentos e Recebíveis
+
+A nova seção de parcelamentos usa um layout flexível com cards interativos:
+
+```tsx
+<Card sx={{ borderRadius: 4, boxShadow: theme.shadows[3], p: 3, mt: 2 }}>
+  <Stack 
+    direction={{ xs: 'column', md: 'row' }} 
+    spacing={4}
+  >
+    <Box component={motion.div} 
+      whileHover={{ 
+        boxShadow: theme.shadows[3], 
+        translateY: prefersReducedMotion ? 0 : -2
+      }}
+      flex={1}
+      sx={{ 
+        p: 3, 
+        borderRadius: 3, 
+        border: `1px solid ${theme.palette.divider}`,
+        boxShadow: theme.shadows[1]
+      }}
+    >
+      <Typography variant="h5" sx={{ mb: 2 }}>
+        Recebíveis Futuros
+      </Typography>
+      
+      {/* List of items */}
+    </Box>
+    
+    {/* Second card */}
+  </Stack>
+</Card>
+```
+
+### Hierarquia Tipográfica e Espaçamento
+
+O dashboard agora segue uma clara hierarquia tipográfica com espaçamento consistente:
+
+```tsx
+{/* Seção de título */}
+<Typography variant="h2" sx={{ mt: 6, mb: 2, fontWeight: 600 }}>
+  {t('graficos')}
+</Typography>
+
+{/* Título dentro de card */}
+<Typography variant="h5" sx={{ mb: 2 }}>
+  Recebíveis Futuros
+</Typography>
+
+{/* Espaçamento entre seções */}
+<Box sx={{ mt: 6 }}>
+  {/* Conteúdo da seção */}
+</Box>
+```
+
+### Acessibilidade
+
+Foram implementadas melhorias de acessibilidade:
+
+1. Suporte a `prefers-reduced-motion` para usuários que preferem menos animações
+2. Atributos `aria-labelledby` para gráficos
+3. Foco visual claro em elementos interativos
+4. Contraste adequado para todos os elementos de texto
+
+### Responsividade
+
+O dashboard é totalmente responsivo:
+- Desktop (≥1280px): Grid de 3 colunas
+- Tablet (768-1279px): Grid de 2 colunas
+- Mobile (<768px): Grid de 1 coluna com espaçamento reduzido
+
+### Antes e Depois
+
+![Dashboard Antes](screenshots/dashboard_before.png)
+
+![Dashboard Premium](screenshots/dashboard_final.png)
+
+*Nota: Acrescente capturas de tela atualizadas do dashboard nas versões antes e depois.*
+
+## Inventário Premium
+
+A nova tela de Inventário foi redesenhada para oferecer uma experiência premium, focada na usabilidade e estética alinhada ao Design System.
+
+### Principais melhorias
+
+- **Layout Responsivo**: Adapta-se automaticamente para desktop, tablet e mobile
+- **Métricas Rápidas**: Visualização imediata de valor total, itens críticos e próximos do vencimento
+- **Filtros Inteligentes**: Busca em tempo real, filtro por categoria e toggle para itens críticos
+- **Tabelas Premium**: Linhas zebradas, status visual por cores e menu de contexto 
+- **Exportação**: Download de dados em CSV diretamente de cada tabela
+
+### Design System v2 - Micro-ajustes
+
+A versão 2.0 do Inventário inclui refinamentos visuais importantes:
+
+#### 1. Scroll e Usabilidade
+- Cards com altura máxima (380px) e scroll interno personalizado
+- Barra de rolagem fina e estilizada para não interferir no layout
+- Exportação CSV com notificação via Snackbar
+
+#### 2. Chip "Mostrar críticos"
+O componente de filtro rápido recebeu melhorias visuais e de acessibilidade:
+
+```tsx
+<Chip
+  label={t('inventory.filters.showCritical')}
+  icon={<AlertTriangle size={16} color={showCriticalOnly ? "white" : undefined} />}
+  variant={showCriticalOnly ? "filled" : "outlined"}
+  color="error"
+  onClick={toggleCritical}
+  aria-pressed={showCriticalOnly}
+  sx={{ 
+    cursor: 'pointer',
+    '&:focus-visible': {
+      outline: '2px solid',
+      outlineColor: 'primary.main',
+      outlineOffset: '2px'
+    }
+  }}
+/>
+```
+
+#### 3. Responsividade Mobile
+Em telas pequenas (<480px), os MetricCards agora aparecem em um scroll horizontal com snap:
+
+![Visão Mobile do Inventário](screenshots/inventory_mobile.png)
+
+#### 4. Acessibilidade
+- Botões e ações com aria-label adequados
+- Indicadores visuais de foco para navegação por teclado
+- Suporte a prefers-reduced-motion para usuários que preferem animações reduzidas
+
+### Componentes Detalhados
+
+#### MetricCard
+Os cards de métricas agora têm altura fixa (140px) e conteúdo centralizado verticalmente para melhor visualização.
+
+#### Botões de Ação
+Botões com altura padronizada (48px), ícones consistentes e efeitos de hover suaves.
+
+#### DataGrid
+Cabeçalhos com estilo personalizado (fundo cinza claro, texto em cor secundária) e células com foco aprimorado.
+
+### Screenshots
+
+![Inventário Desktop](screenshots/inventory_final.png)
+
+### Tradução e Internacionalização
+
+O módulo de Inventário está completamente traduzido para os seguintes idiomas:
+- Português (Brasil)
+- Inglês
+- Alemão
+- Italiano
+
+Todas as strings são acessadas via namespace `inventory` e componentes comuns via `common`.
+
+### Próximos Passos
+
+- Implementação de gráficos de tendência
+- Dashboard consolidado de métricas de estoque
+- Exportação avançada (PDF, Excel)
+
+### Dúvidas Frequentes
+
+1. **Como adicionar um novo idioma?**
+   Adicione um novo arquivo na pasta `locales` seguindo a estrutura do namespace `inventory`.
+
+2. **Como personalizar o tema dos cards?**
+   Utilize o objeto `sx` para sobreescrever estilos e adequar ao tema da empresa.
+
+## Conclusão
+
+Este Design System Premium foi criado para elevar a experiência visual do Estrateo, mantendo consistência, acessibilidade e facilidade de uso em toda a plataforma. Seguindo este guia, garantimos que novos desenvolvimentos mantenham o mesmo padrão de qualidade visual e experiência do usuário.
+
+Para perguntas ou esclarecimentos, consulte a equipe de design.
+
+## Impostos – Forecast automático
+
+### Visão Geral
+
+O módulo TaxEngine fornece uma previsão automática dos principais impostos aplicáveis a empresas na Alemanha. O sistema calcula estimativas para:
+
+1. **Umsatzsteuer (VAT)** - Imposto sobre valor agregado, equivalente ao IVA europeu, com alíquota padrão de 19%
+2. **Gewerbesteuer (Trade Tax)** - Imposto comercial aplicado sobre o lucro empresarial, com multiplicador variável por município
+3. **Körperschaftsteuer (Corporate Tax)** - Imposto sobre o lucro de pessoas jurídicas, com alíquota base de 15% + taxa de solidariedade
+4. **Lohnsteuer (Payroll Tax)** - Impostos e contribuições sobre a folha de pagamento
+
+### API de Previsão Fiscal
+
+O endpoint `/api/taxes/forecast` retorna previsões fiscais para o mês especificado:
+
+```json
+// GET /api/taxes/forecast?mes=2023-05
+{
+  "mes": "2023-05",
+  "vatPayable": 1900.00,
+  "tradeTax": 350.00,
+  "corpTax": 1582.50,
+  "payrollTax": 2000.00
+}
+```
+
+### Cálculo Fiscal
+
+A previsão é calculada automaticamente com base em:
+
+- Receitas e despesas registradas no mês (para VAT, Trade Tax e Corporate Tax)
+- Folha de pagamento do mês (para Payroll Tax)
+
+O sistema aplica as alíquotas configuradas em `taxConfig.ts`, que definem os parâmetros fiscais alemães (taxas, multiplicadores, etc.).
+
+### Job Automático
+
+A previsão é atualizada diariamente por um job agendado (usando node-cron) que recalcula os valores para todas as empresas cadastradas.
+
+### Documentação Técnica
+
+Para mais detalhes sobre o mecanismo de cálculo, consulte:
+
+- [TaxEngine Service](../backend/src/services/TaxEngine.ts) - Implementação do motor de cálculo
+- [Tax Forecast Job](../backend/src/jobs/taxForecastJob.ts) - Job automático de atualização 

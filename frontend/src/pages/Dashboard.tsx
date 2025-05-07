@@ -157,6 +157,9 @@ const Dashboard: React.FC = () => {
   const { itens, resumo } = useInventario();
   const theme = useTheme();
   
+  // Verificar se o sistema prefere movimento reduzido
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  
   // Estados para dados da API
   const [paymentSummary, setPaymentSummary] = useState<PaymentSummary | null>(null);
   const [inventorySummaryData, setInventorySummaryData] = useState<InventorySummary | null>(null);
@@ -551,192 +554,370 @@ const Dashboard: React.FC = () => {
       title: t('saldoAtual'),
       value: formatCurrency(dashboardData?.resumoFinanceiro?.saldoAtual || 0),
       icon: <AttachMoneyIcon />,
-      iconBg: `${theme.palette.primary.main}15`
+      iconBg: `${theme.palette.primary.main}15`,
+      color: `${theme.palette.primary.main}99`
     },
     {
       id: 'receitas',
       title: t('receitaHoje'),
       value: formatCurrency(getTodayIncome()),
       icon: <TrendingUpIcon />,
-      iconBg: `${theme.palette.success.main}15`
+      iconBg: `${theme.palette.success.main}15`,
+      color: `${theme.palette.success.main}66`
     },
     {
       id: 'despesas',
       title: t('despesaHoje'),
       value: formatCurrency(getTodayExpenses()),
       icon: <TrendingDownIcon />,
-      iconBg: `${theme.palette.error.main}15`
+      iconBg: `${theme.palette.error.main}15`,
+      color: `${theme.palette.error.main}66`
     },
     {
       id: 'estoque',
       title: t('itensEmEstoque'),
       value: dashboardData?.resumoInventario?.totalItens || 0,
       icon: <InventoryIcon />,
-      iconBg: `${theme.palette.info.main}15`
+      iconBg: `${theme.palette.info.main}15`,
+      color: theme.palette.grey[400]
     },
     {
       id: 'usuarios',
       title: t('usuariosAtivos'),
       value: dashboardData?.estatisticasUso?.usuariosAtivosHoje || 0,
       icon: <PersonIcon />,
-      iconBg: `${theme.palette.secondary.main}15`
+      iconBg: `${theme.palette.secondary.main}15`,
+      color: theme.palette.grey[400]
     },
     {
       id: 'ferias',
       title: t('funcionariosEmFerias'),
       value: funcionariosEmFerias.length,
       icon: <BeachAccessIcon />,
-      iconBg: '#E6EBF1'
+      iconBg: '#E6EBF1',
+      color: theme.palette.grey[400]
     }
   ];
 
   return (
-    <Box sx={{ p: theme.spacing(4) }}>
-      <Box sx={{ 
-        display: 'flex', 
-        flexDirection: 'column', 
-        mb: 4,
-      }}>
-        <Typography variant="h4" fontWeight="bold" color="text.primary" mb={3}>
-          {t('dashboard.title')}
+    <Box
+      sx={{
+        px: { xs: 2, md: 4 },
+        py: 3
+      }}
+    >
+      {/* Header fixo com botão de gerar relatório */}
+      <Box
+        sx={{
+          position: 'sticky',
+          top: 0,
+          zIndex: 10,
+          py: 2,
+          px: 1,
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          backgroundColor: theme.palette.background.default,
+          backdropFilter: 'blur(8px)',
+          borderBottom: `1px solid ${theme.palette.divider}`,
+          mb: 4
+        }}
+      >
+        <Typography variant="h4" fontWeight="bold" color="text.primary">
+          {t('dashboardObj.title')}
         </Typography>
         
-        <MotionButton
-          variant="contained"
-          color="primary"
-          startIcon={<PdfIcon />}
-          onClick={handleGenerateReport}
-          sx={{
-            mt: 2,
-            mr: 4,
-            alignSelf: 'flex-end',
-            width: 160,
-            boxShadow: theme.shadows[3]
-          }}
-        >
-          {t('gerarRelatorio')}
-        </MotionButton>
-      </Box>
-
-      <Masonry columns={{ xs: 1, md: 2, lg: 3 }} spacing={4}>
-        {metrics.map(m => (
-          <MetricCard 
-            key={m.id} 
-            title={m.title} 
-            value={m.value} 
-            icon={m.icon} 
-            iconBg={m.iconBg} 
-          />
-        ))}
-      </Masonry>
-
-      {/* Gráficos Financeiros */}
-      <Box ref={chartRef} sx={{ mt: 6 }}>
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.5 }}
+          whileHover={{ scale: 1.05 }}
+          transition={{ type: 'spring', stiffness: 400, damping: 10 }}
         >
-          <FinanceCharts chartData={chartData} formatCurrency={formatCurrency} />
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<PdfIcon />}
+            onClick={handleGenerateReport}
+            sx={{
+              width: { xs: '100%', sm: 180 },
+              height: 40,
+              borderRadius: 2,
+              boxShadow: theme.shadows[2],
+              '&:focus': {
+                outline: `2px solid ${theme.palette.primary.main}`,
+                outlineOffset: 2
+              }
+            }}
+          >
+            {t('gerarRelatorio')}
+          </Button>
         </motion.div>
       </Box>
 
-      {/* Parcelamentos e Recebíveis */}
-      <Box sx={{ mt: 4 }}>
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5, duration: 0.5 }}
-        >
-          {dashboardData ? (
-            <ParcelamentosCard
-              recebiveisFuturos={dashboardData.recebiveisFuturos || []}
-              parcelamentosAbertos={dashboardData.parcelamentosAbertos || []}
-              totaisPorCategoria={dashboardData.totaisPorCategoria || []}
+      {/* Grid de métricas */}
+      <Grid container spacing={4}>
+        {metrics.map(metric => (
+          <Grid item xs={12} md={6} lg={4} key={metric.id}>
+            <MetricCard
+              title={metric.title}
+              value={metric.value}
+              icon={metric.icon}
+              iconBg={metric.iconBg}
+              color={metric.color}
             />
-          ) : (
-            <Card sx={{ boxShadow: theme.shadows[2] }}>
-              <CardContent>
-                <EmptyState message={String(t('semDadosNoPeriodo'))} />
-              </CardContent>
-            </Card>
-          )}
-        </motion.div>
-      </Box>
+          </Grid>
+        ))}
+      </Grid>
 
-      {/* Sugestões de IA */}
-      <Box ref={aiSuggestionsRef} sx={{ mt: 4 }}>
-        <motion.div
-          initial={{ opacity: 0, scale: 0.98 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.6, duration: 0.5 }}
-        >
-          <Card sx={{ boxShadow: theme.shadows[2] }}>
-            <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-                <Box sx={{
-                  backgroundColor: `${theme.palette.primary.main}15`,
-                  width: 42,
-                  height: 42,
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  mr: 2
-                }}>
-                  <AIIcon sx={{ color: theme.palette.primary.main, fontSize: 24 }} />
-                </Box>
-                <Typography variant="h5" fontWeight="600">
-                  {t('sugestoesIA')}
-                </Typography>
-              </Box>
-              
-              {aiRecommendations.length > 0 ? (
-                <List>
-                  {aiRecommendations.map((suggestion, index) => (
-                    <ListItem
-                      key={index}
-                      sx={{
-                        borderBottom: index < aiRecommendations.length - 1 ? `1px solid ${theme.palette.divider}` : 'none',
-                        py: 2,
-                        borderRadius: 1,
-                        bgcolor: index % 2 === 1 ? `${theme.palette.primary.main}05` : 'transparent',
-                        transition: 'background-color 0.2s ease-in-out',
-                        '&:hover': {
-                          bgcolor: `${theme.palette.primary.main}08`
-                        }
-                      }}
-                    >
-                      <ListItemIcon sx={{ minWidth: 42 }}>
-                        <Box sx={{
-                          backgroundColor: `${theme.palette.info.main}15`,
-                          width: 32,
-                          height: 32,
-                          borderRadius: '50%',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center'
-                        }}>
-                          <InsightsIcon fontSize="small" sx={{ color: theme.palette.info.main }} />
-                        </Box>
-                      </ListItemIcon>
-                      <ListItemText 
-                        primary={
-                          <Typography variant="body1" color="text.primary">
-                            {suggestion}
-                          </Typography>
-                        } 
-                      />
-                    </ListItem>
-                  ))}
-                </List>
-              ) : (
-                <EmptyState message={String(t('semDadosNoPeriodo'))} />
-              )}
-            </CardContent>
+      {/* Seção de Gráficos */}
+      <Typography variant="h2" sx={{ mt: 6, mb: 2, fontWeight: 600 }}>
+        {t('graficos')}
+      </Typography>
+      
+      <Grid container spacing={4} sx={{ mt: 1 }}>
+        <Grid item xs={12} md={6}>
+          <Card
+            sx={{
+              borderRadius: 4,
+              boxShadow: theme.shadows[3],
+              p: 3,
+              height: '100%'
+            }}
+          >
+            <Typography
+              variant="h3"
+              sx={{ mb: 3, fontWeight: 500 }}
+            >
+              {t('finance_charts_monthlyIncome')}
+            </Typography>
+            
+            <Box
+              sx={{ height: 300 }}
+              aria-labelledby="receitas-despesas-chart-title"
+            >
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={chartData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.divider} />
+                  <XAxis dataKey="date" />
+                  <YAxis tickFormatter={(value) => `${value}€`} />
+                  <ChartTooltip 
+                    labelStyle={{ color: theme.palette.text.secondary }}
+                    itemStyle={{
+                      color: theme.palette.text.primary,
+                      backgroundColor: theme.palette.background.paper,
+                      border: `1px solid ${theme.palette.divider}`,
+                      borderRadius: 2
+                    }}
+                    formatter={(value: number) => [formatCurrency(Number(value)), '']}
+                  />
+                  <Legend />
+                  <Bar
+                    name={String(t('receitas'))}
+                    dataKey="income"
+                    fill={theme.palette.success.main}
+                    radius={[4, 4, 0, 0]}
+                  />
+                  <Bar
+                    name={String(t('despesas'))}
+                    dataKey="expenses"
+                    fill={theme.palette.error.main}
+                    radius={[4, 4, 0, 0]}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            </Box>
           </Card>
-        </motion.div>
-      </Box>
+        </Grid>
+        
+        <Grid item xs={12} md={6}>
+          <Card
+            sx={{
+              borderRadius: 4,
+              boxShadow: theme.shadows[3],
+              p: 3,
+              height: '100%'
+            }}
+          >
+            <Typography
+              variant="h3"
+              sx={{ mb: 3, fontWeight: 500 }}
+            >
+              {t('relatorioGastos')}
+            </Typography>
+            
+            <Box
+              sx={{ height: 300 }}
+              aria-labelledby="gastos-chart-title"
+            >
+              {dashboardData?.totaisPorCategoria ? (
+                <ResponsiveContainer width="100%" height="100%">
+                  {/* Adicione aqui um gráfico de pizza ou donut */}
+                  <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+                    <Typography>Gráfico de distribuição será implementado</Typography>
+                  </Box>
+                </ResponsiveContainer>
+              ) : (
+                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+                  <Typography>{t('semDadosNoPeriodo')}</Typography>
+                </Box>
+              )}
+            </Box>
+          </Card>
+        </Grid>
+      </Grid>
+
+      {/* Seção de Parcelamentos e Recebíveis */}
+      <Typography variant="h2" sx={{ mt: 6, mb: 2, fontWeight: 600 }}>
+        Parcelamentos e Recebíveis
+      </Typography>
+      
+      <Card sx={{ borderRadius: 4, boxShadow: theme.shadows[3], p: 3, mt: 2 }}>
+        <Stack 
+          direction={{ xs: 'column', md: 'row' }} 
+          spacing={4}
+        >
+          <Box component={motion.div} 
+            whileHover={{ 
+              boxShadow: theme.shadows[3], 
+              translateY: prefersReducedMotion ? 0 : -2
+            }}
+            flex={1}
+            sx={{ 
+              p: 3, 
+              borderRadius: 3, 
+              border: `1px solid ${theme.palette.divider}`,
+              boxShadow: theme.shadows[1]
+            }}
+          >
+            <Typography variant="h5" sx={{ mb: 2 }}>
+              Recebíveis Futuros
+            </Typography>
+            
+            {dashboardData?.recebiveisFuturos && dashboardData.recebiveisFuturos.length > 0 ? (
+              <List disablePadding>
+                {dashboardData.recebiveisFuturos.slice(0, 3).map((item, index) => (
+                  <ListItem 
+                    key={item.id}
+                    disablePadding
+                    sx={{
+                      borderBottom: index < Math.min(dashboardData.recebiveisFuturos?.length - 1, 2) 
+                        ? `1px solid ${theme.palette.divider}` 
+                        : 'none',
+                      py: 1.5
+                    }}
+                  >
+                    <ListItemText
+                      primary={item.descricao}
+                      secondary={`${formatCurrency(item.valor)} - ${new Date(item.dataPrevista).toLocaleDateString()}`}
+                      primaryTypographyProps={{ fontWeight: 500 }}
+                    />
+                  </ListItem>
+                ))}
+              </List>
+            ) : (
+              <Typography color="text.secondary" sx={{ textAlign: 'center', py: 2 }}>
+                {t('semDadosNoPeriodo')}
+              </Typography>
+            )}
+          </Box>
+          
+          <Box component={motion.div} 
+            whileHover={{ 
+              boxShadow: theme.shadows[3], 
+              translateY: prefersReducedMotion ? 0 : -2
+            }}
+            flex={1}
+            sx={{ 
+              p: 3, 
+              borderRadius: 3, 
+              border: `1px solid ${theme.palette.divider}`,
+              boxShadow: theme.shadows[1]
+            }}
+          >
+            <Typography variant="h5" sx={{ mb: 2 }}>
+              Parcelamentos Abertos
+            </Typography>
+            
+            {dashboardData?.parcelamentosAbertos && dashboardData.parcelamentosAbertos.length > 0 ? (
+              <List disablePadding>
+                {dashboardData.parcelamentosAbertos.slice(0, 3).map((item, index) => (
+                  <ListItem 
+                    key={item.id}
+                    disablePadding
+                    sx={{
+                      borderBottom: index < Math.min(dashboardData.parcelamentosAbertos?.length - 1, 2) 
+                        ? `1px solid ${theme.palette.divider}` 
+                        : 'none',
+                      py: 1.5
+                    }}
+                  >
+                    <ListItemText
+                      primary={item.descricao}
+                      secondary={`${item.parcelasPagas}/${item.totalParcelas} parcelas - Próx: ${formatCurrency(item.proximaParcela.valor)}`}
+                      primaryTypographyProps={{ fontWeight: 500 }}
+                    />
+                    <Chip 
+                      label={item.tipo === 'entrada' ? t('entrada') : t('saida')}
+                      color={item.tipo === 'entrada' ? 'success' : 'error'}
+                      size="small"
+                      sx={{ ml: 1 }}
+                    />
+                  </ListItem>
+                ))}
+              </List>
+            ) : (
+              <Typography color="text.secondary" sx={{ textAlign: 'center', py: 2 }}>
+                {t('semDadosNoPeriodo')}
+              </Typography>
+            )}
+          </Box>
+        </Stack>
+      </Card>
+
+      {/* Seção de Recomendações IA */}
+      <Typography variant="h2" sx={{ mt: 6, mb: 2, fontWeight: 600 }}>
+        {t('recomendacoesIA')}
+      </Typography>
+      
+      <Card sx={{ borderRadius: 4, boxShadow: theme.shadows[3], p: 3, mt: 2 }}>
+        <Box ref={aiSuggestionsRef}>
+          {aiRecommendations.length > 0 ? (
+            <List>
+              {aiRecommendations.map((suggestion, index) => (
+                <ListItem
+                  key={index}
+                  sx={{
+                    borderBottom: index < aiRecommendations.length - 1 ? `1px solid ${theme.palette.divider}` : 'none',
+                    py: 2,
+                    borderRadius: 1,
+                    bgcolor: index % 2 === 1 ? `${theme.palette.primary.main}05` : 'transparent',
+                  }}
+                >
+                  <ListItemIcon sx={{ minWidth: 42 }}>
+                    <Box sx={{
+                      backgroundColor: `${theme.palette.info.main}15`,
+                      width: 32,
+                      height: 32,
+                      borderRadius: '50%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}>
+                      <InsightsIcon fontSize="small" sx={{ color: theme.palette.info.main }} />
+                    </Box>
+                  </ListItemIcon>
+                  <ListItemText 
+                    primary={suggestion}
+                    primaryTypographyProps={{ fontWeight: 500 }}
+                  />
+                </ListItem>
+              ))}
+            </List>
+          ) : (
+            <Typography color="text.secondary" sx={{ textAlign: 'center', py: 2 }}>
+              {t('semDadosNoPeriodo')}
+            </Typography>
+          )}
+        </Box>
+      </Card>
 
       <Snackbar 
         open={snackbar.open} 

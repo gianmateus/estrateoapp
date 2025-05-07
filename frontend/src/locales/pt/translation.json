@@ -20,12 +20,18 @@
   "vencimento": "Vencimento",
   "diasParaVencer": "Dias para Vencer",
   
-  "dashboard": {
+  "common": {
+    "exportCsv": "Exportar CSV"
+  },
+  
+  "dashboard": "Dashboard",
+  "dashboardObj": {
     "title": "Dashboard",
     "breadcrumb": "Dashboard"
   },
   "financeiro": "Financeiro",
   "inventario": "Inventário",
+  "impostos": "Impostos",
   "pagamentos": "Pagamentos",
   "calendario": "Calendário",
   "funcionarios": "Funcionários",
@@ -173,19 +179,57 @@
   "finance_year": "Ano",
   
   "inventory": {
-    "buttons": {
+    "title": "Inventário",
+    "tabs": {
       "stock": "Estoque Atual",
       "needed": "Necessidade Semanal"
     },
-    "modals": {
-      "stockTitle": "Gerenciar Estoque Atual",
-      "neededTitle": "Gerenciar Necessidade Semanal",
-      "editStockTitle": "Editar Item do Estoque",
-      "editNeededTitle": "Editar Item da Necessidade Semanal",
-      "noItems": "Nenhum item encontrado no inventário",
-      "save": "Salvar",
-      "saveChanges": "Salvar Alterações",
-      "cancel": "Cancelar"
+    "metrics": {
+      "stockValue": "Valor em Estoque",
+      "criticalItems": "Itens Críticos",
+      "expiringItems": "Próximos do Vencimento"
+    },
+    "buttons": {
+      "stock": "Estoque Atual",
+      "needed": "Necessidade Semanal",
+      "addStock": "Novo Item",
+      "addNeeded": "Necessidade Semanal"
+    },
+    "filters": {
+      "searchPlaceholder": "Buscar item...",
+      "allCategories": "Todas Categorias",
+      "beverages": "Bebidas",
+      "vegetables": "Legumes",
+      "meat": "Carnes",
+      "pasta": "Massas",
+      "others": "Outros",
+      "showCritical": "Mostrar Críticos"
+    },
+    "columns": {
+      "name": "Nome",
+      "category": "Categoria",
+      "quantity": "Quantidade",
+      "unit": "Unidade",
+      "price": "Preço (R$)",
+      "total": "Total (R$)",
+      "minStock": "Estoque Mín.",
+      "status": "Status",
+      "actions": "Ações",
+      "expiryDate": "Vencimento"
+    },
+    "status": {
+      "ok": "OK",
+      "low": "Baixo",
+      "critical": "Crítico"
+    },
+    "actions": {
+      "addStock": "Adicionar novo item",
+      "addNeeded": "Adicionar necessidade semanal",
+      "edit": "Editar",
+      "delete": "Excluir"
+    },
+    "messages": {
+      "csvExported": "Arquivo CSV exportado com sucesso"
     }
   },
   

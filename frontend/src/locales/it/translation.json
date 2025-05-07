@@ -18,14 +18,22 @@
   "vencimento": "Data di scadenza",
   "diasParaVencer": "Giorni alla scadenza",
   
-  "dashboard": {
+  "common": {
+    "exportCsv": "Esporta CSV"
+  },
+  
+  "dashboard": "Dashboard",
+  "dashboardObj": {
     "title": "Dashboard",
     "breadcrumb": "Dashboard"
   },
   "financeiro": "Finanziario",
   "inventario": "Inventario",
+  "impostos": "Imposte",
   "pagamentos": "Pagamenti",
   "pagamentosTexto": "Pagamenti",
+  "calendario": "Calendario",
+  "funcionarios": "Dipendenti",
   "inteligenciaArtificial": "IA & Analisi",
   "whatsapp": "WhatsApp",
   "contador": "Contabile",
@@ -223,5 +231,112 @@
   "itensEmEstoque": "Articoli in Magazzino",
   "usuariosAtivos": "Utenti Attivi",
   "funcionariosEmFerias": "Dipendenti in Ferie",
-  "semDadosNoPeriodo": "Nessun dato per il periodo selezionato"
+  "semDadosNoPeriodo": "Nessun dato per il periodo selezionato",
+
+  "inventory": {
+    "title": "Inventario",
+    "buttons": {
+      "stock": "Scorta Attuale",
+      "needed": "Necessità Settimanale",
+      "addStock": "+ Nuovo articolo",
+      "addNeeded": "+ Necessità Settimanale",
+      "export": "Esporta dati",
+      "exportStock": "Esporta scorta attuale",
+      "exportNeeded": "Esporta necessità settimanale"
+    },
+    "modals": {
+      "stockTitle": "Gestisci Scorta Attuale",
+      "neededTitle": "Gestisci Necessità Settimanale",
+      "editStockTitle": "Modifica Articolo della Scorta",
+      "editNeededTitle": "Modifica Articolo della Necessità",
+      "noItems": "Nessun articolo trovato nell'inventario",
+      "save": "Salva",
+      "saveChanges": "Salva Modifiche",
+      "cancel": "Annulla"
+    },
+    "metrics": {
+      "totalValue": "Valore Totale delle Scorte",
+      "belowMinimum": "Articoli Sotto il Minimo",
+      "nearExpiration": "Articoli Prossimi alla Scadenza"
+    },
+    "filters": {
+      "searchPlaceholder": "Cerca articolo...",
+      "category": "Categoria",
+      "allCategories": "Tutte",
+      "vegetables": "Verdure",
+      "meat": "Carne",
+      "beverages": "Bevande",
+      "pasta": "Pasta",
+      "others": "Altri",
+      "showCritical": "Mostra critici"
+    },
+    "columns": {
+      "name": "Nome",
+      "category": "Categoria",
+      "quantity": "Quantità",
+      "unit": "Unità",
+      "actions": "Azioni"
+    },
+    "actions": {
+      "edit": "Modifica",
+      "delete": "Elimina",
+      "duplicate": "Duplica",
+      "editItem": "Modifica articolo",
+      "deleteItem": "Elimina articolo",
+      "addStock": "Aggiungi nuovo articolo alle scorte",
+      "addNeeded": "Aggiungi nuova necessità settimanale"
+    },
+    "messages": {
+      "noItemsFound": "Nessun articolo trovato",
+      "confirmDelete": "Sei sicuro di voler eliminare questo articolo?",
+      "csvExported": "File CSV esportato con successo"
+    },
+    "tabs": {
+      "stock": "Scorte",
+      "needed": "Necessità"
+    },
+    "form": {
+      "title": {
+        "newProduct": "Nuovo Prodotto",
+        "editProduct": "Modifica Prodotto"
+      },
+      "sections": {
+        "basicInfo": "Informazioni di Base",
+        "priceInfo": "Informazioni sui Prezzi",
+        "supplierStorage": "Fornitore e Stoccaggio",
+        "stockControl": "Controllo Scorte"
+      },
+      "fields": {
+        "productName": "Nome Prodotto",
+        "sku": "Codice a Barre / SKU",
+        "quantity": "Quantità",
+        "unit": "Unità",
+        "category": "Categoria",
+        "costPrice": "Prezzo di Costo",
+        "salePrice": "Prezzo di Vendita",
+        "unitPrice": "Prezzo Unitario",
+        "supplier": "Fornitore",
+        "storageLocation": "Posizione di Stoccaggio",
+        "minQuantity": "Quantità Minima",
+        "expirationDate": "Data di Scadenza"
+      },
+      "tooltips": {
+        "sku": "Codice unico per l'identificazione del prodotto",
+        "costPrice": "Valore pagato al fornitore",
+        "storageExample": "Es: Scaffale A5, Freezer 2",
+        "minQuantity": "Quantità che attiva gli avvisi"
+      },
+      "buttons": {
+        "cancel": "Annulla",
+        "save": "Salva",
+        "saving": "Salvataggio in corso..."
+      },
+      "validation": {
+        "required": "Campo obbligatorio",
+        "positiveValue": "Il valore deve essere positivo",
+        "pastExpirationDate": "La data di scadenza non può essere nel passato",
+        "salePriceLessThanCost": "Il prezzo di vendita non può essere inferiore al costo"
+      }
+    }
+  }
 } 

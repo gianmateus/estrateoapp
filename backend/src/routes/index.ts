@@ -9,6 +9,7 @@ import clienteRoutes from '../modules/clientes/routes';
 import { authMiddleware } from '../middlewares';
 import dashboardRoutes from './dashboardRoutes';
 import contadorRoutes from '../modules/contador/routes/contadorRoutes';
+import taxRoutes from './taxRoutes';
 
 const router = Router();
 
@@ -29,6 +30,9 @@ router.use('/dashboard', authMiddleware, dashboardRoutes);
 
 // Rotas de contador
 router.use('/contador', contadorRoutes);
+
+// Rotas de impostos
+router.use('/taxes', authMiddleware, taxRoutes);
 
 // Outras rotas serão adicionadas aqui
 

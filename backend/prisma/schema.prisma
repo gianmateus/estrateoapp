@@ -227,3 +227,18 @@ model DocumentoCliente {
   @@index([clienteId])
   @@index([tipo])
 }
+
+model TaxForecast {
+  id             String   @id @default(uuid())
+  empresaId      String   // ID da empresa para a qual o cálculo foi feito
+  mes            String   // formato YYYY-MM
+  vatPayable     Float    // Imposto sobre valor agregado
+  tradeTax       Float    // Imposto comercial 
+  corpTax        Float    // Imposto corporativo
+  payrollTax     Float    // Imposto sobre folha de pagamento
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([empresaId])
+  @@index([mes])
+}

@@ -252,7 +252,7 @@ const ClientesListPage: React.FC = () => {
             </Typography>
             <Breadcrumbs aria-label="breadcrumb">
               <Link color="inherit" href="/dashboard">
-                {t('dashboard.breadcrumb')}
+                {t('dashboardObj.breadcrumb')}
               </Link>
               <Typography color="textPrimary">{t('cliente.clientes')}</Typography>
             </Breadcrumbs>

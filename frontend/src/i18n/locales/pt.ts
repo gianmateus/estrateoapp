@@ -125,5 +125,46 @@ export const pt = {
   taxaFixa: 'Taxa Fixa',
   outro: 'Outro',
   
+  // Traduções para o módulo de inventário
+  inventory: {
+    newItem: "Novo item",
+    weeklyNeed: "Necessidade semanal",
+    form: {
+      titleNew: "Adicionar novo item",
+      titleWeekly: "Registrar necessidade semanal",
+      save: "Salvar",
+      cancel: "Cancelar"
+    },
+    stockValue: "Valor em Estoque",
+    criticalItems: "Itens Críticos",
+    expirationDate: "Próximos do Vencimento",
+    currentStock: "Estoque Atual",
+    showingCritical: "Mostrando Críticos",
+    addSuccess: "Item adicionado com sucesso!",
+    addWeeklySuccess: "Necessidade semanal registrada com sucesso!",
+    error: "Ocorreu um erro. Tente novamente."
+  },
+  
+  // Traduções comuns
+  common: {
+    search: "Buscar",
+    export: "Exportar",
+    exportCsv: "Exportar CSV",
+    delete: "Excluir",
+    edit: "Editar",
+    duplicate: "Duplicar",
+    name: "Nome",
+    quantity: "Quantidade",
+    unit: "Unidade",
+    category: "Categoria",
+    actions: "Ações",
+    noItemsFound: "Nenhum item encontrado",
+    allCategories: "Todas Categorias",
+    location: "Localização",
+    minimumQuantity: "Quantidade Mínima",
+    unitPrice: "Preço Unitário",
+    notes: "Observações"
+  },
+  
   // ... existing code ...
 }

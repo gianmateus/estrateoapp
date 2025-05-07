@@ -165,7 +165,7 @@ const Navigation = ({}: NavigationProps) => {
    */
   const menuItems: MenuItem[] = [
     { 
-      text: t('dashboard.title'), 
+      text: "Dashboard", 
       icon: <DashboardIcon />, 
       path: '/dashboard',
       permission: null

@@ -47,6 +47,7 @@ import { ThemeProvider } from './contexts/ThemeContext';
 import { initializeAllListeners } from './services/sincronizacao';
 import CardDemo from './components/CardDemo';
 import ColorDemo from './components/ColorDemo';
+import { TaxProvider } from './contexts/TaxContext';
 
 /**
  * Main application component that configures routes and providers
@@ -92,105 +93,107 @@ function App() {
         <LanguageProvider value={languageValue}>
           <AuthProvider>
             <DataProvider>
-              <Suspense fallback={<Loading />}>
-                <Routes>
-                  {/* Public routes accessible without authentication
-                      Rotas públicas acessíveis sem autenticação */}
-                  <Route path="/" element={<Login />} />
-                  <Route path="/cadastro" element={<Cadastro />} />
-                  <Route path="/reset-password" element={<ResetPassword />} />
-                  <Route path="/acesso-negado" element={<AcessoNegado />} />
-                  
-                  {/* Nova rota para o componente Todo */}
-                  <Route path="/todo" element={<TodoPage />} />
+              <TaxProvider>
+                <Suspense fallback={<Loading />}>
+                  <Routes>
+                    {/* Public routes accessible without authentication
+                        Rotas públicas acessíveis sem autenticação */}
+                    <Route path="/" element={<Login />} />
+                    <Route path="/cadastro" element={<Cadastro />} />
+                    <Route path="/reset-password" element={<ResetPassword />} />
+                    <Route path="/acesso-negado" element={<AcessoNegado />} />
+                    
+                    {/* Nova rota para o componente Todo */}
+                    <Route path="/todo" element={<TodoPage />} />
 
-                  {/* Protected routes with Dashboard layout - require specific permissions
-                      Rotas protegidas com layout do Dashboard - requerem permissões específicas */}
-                  <Route element={<ProtectedRoute />}>
-                    <Route path="/dashboard" element={<Dashboard />} />
-                    <Route 
-                      path="/dashboard/financeiro" 
-                      element={
-                        <PermissionGuard permission="financeiro.visualizar">
-                          <Financeiro />
-                        </PermissionGuard>
-                      } 
-                    />
-                    <Route 
-                      path="/dashboard/inventario" 
-                      element={
-                        <PermissionGuard permission="inventario.visualizar">
-                          <Inventario />
-                        </PermissionGuard>
-                      } 
-                    />
-                    <Route 
-                      path="/dashboard/impostos" 
-                      element={
-                        <PermissionGuard permission="financeiro.visualizar">
-                          <Impostos />
-                        </PermissionGuard>
-                      } 
-                    />
-                    <Route 
-                      path="/dashboard/pagamentos" 
-                      element={
-                        <PermissionGuard permission="pagamentos.visualizar">
-                          <Pagamentos />
-                        </PermissionGuard>
-                      } 
-                    />
-                    <Route 
-                      path="/dashboard/calendario" 
-                      element={
-                        <PermissionGuard permission="calendario.visualizar">
-                          <Calendario />
-                        </PermissionGuard>
-                      } 
-                    />
-                    <Route 
-                      path="/dashboard/funcionarios" 
-                      element={
-                        <PermissionGuard permission="funcionarios.visualizar">
-                          <Funcionarios />
-                        </PermissionGuard>
-                      } 
-                    />
-                    <Route 
-                      path="/dashboard/funcionarios/time-vacations" 
-                      element={
-                        <PermissionGuard permission="funcionarios.visualizar">
-                          <Navigate to="/dashboard/funcionarios?tab=3" replace />
-                        </PermissionGuard>
-                      } 
-                    />
-                    <Route 
-                      path="/dashboard/contador" 
-                      element={
-                        <PermissionGuard permission="financeiro.visualizar">
-                          <Contador />
-                        </PermissionGuard>
-                      } 
-                    />
-                    <Route 
-                      path="/dashboard/inteligencia-artificial" 
-                      element={
-                        <PermissionGuard permission="ia.visualizar">
-                          <InteligenciaArtificial />
-                        </PermissionGuard>
-                      } 
-                    />
-                    <Route path="/dashboard/whatsapp" element={<Whatsapp />} />
-                    <Route path="/dashboard/perfil" element={<Perfil />} />
-                    <Route path="/dashboard/todo" element={<TodoPage />} />
-                  </Route>
-                  {/* Redirects for routes not found
-                       Redirecionamentos para rotas não encontradas */}
-                  <Route path="/colors" element={<ColorDemo />} />
-                  <Route path="/cards" element={<CardDemo />} />
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </Suspense>
+                    {/* Protected routes with Dashboard layout - require specific permissions
+                        Rotas protegidas com layout do Dashboard - requerem permissões específicas */}
+                    <Route element={<ProtectedRoute />}>
+                      <Route path="/dashboard" element={<Dashboard />} />
+                      <Route 
+                        path="/dashboard/financeiro" 
+                        element={
+                          <PermissionGuard permission="financeiro.visualizar">
+                            <Financeiro />
+                          </PermissionGuard>
+                        } 
+                      />
+                      <Route 
+                        path="/dashboard/inventario" 
+                        element={
+                          <PermissionGuard permission="inventario.visualizar">
+                            <Inventario />
+                          </PermissionGuard>
+                        } 
+                      />
+                      <Route 
+                        path="/dashboard/impostos" 
+                        element={
+                          <PermissionGuard permission="financeiro.visualizar">
+                            <Impostos />
+                          </PermissionGuard>
+                        } 
+                      />
+                      <Route 
+                        path="/dashboard/pagamentos" 
+                        element={
+                          <PermissionGuard permission="pagamentos.visualizar">
+                            <Pagamentos />
+                          </PermissionGuard>
+                        } 
+                      />
+                      <Route 
+                        path="/dashboard/calendario" 
+                        element={
+                          <PermissionGuard permission="calendario.visualizar">
+                            <Calendario />
+                          </PermissionGuard>
+                        } 
+                      />
+                      <Route 
+                        path="/dashboard/funcionarios" 
+                        element={
+                          <PermissionGuard permission="funcionarios.visualizar">
+                            <Funcionarios />
+                          </PermissionGuard>
+                        } 
+                      />
+                      <Route 
+                        path="/dashboard/funcionarios/time-vacations" 
+                        element={
+                          <PermissionGuard permission="funcionarios.visualizar">
+                            <Navigate to="/dashboard/funcionarios?tab=3" replace />
+                          </PermissionGuard>
+                        } 
+                      />
+                      <Route 
+                        path="/dashboard/contador" 
+                        element={
+                          <PermissionGuard permission="financeiro.visualizar">
+                            <Contador />
+                          </PermissionGuard>
+                        } 
+                      />
+                      <Route 
+                        path="/dashboard/inteligencia-artificial" 
+                        element={
+                          <PermissionGuard permission="ia.visualizar">
+                            <InteligenciaArtificial />
+                          </PermissionGuard>
+                        } 
+                      />
+                      <Route path="/dashboard/whatsapp" element={<Whatsapp />} />
+                      <Route path="/dashboard/perfil" element={<Perfil />} />
+                      <Route path="/dashboard/todo" element={<TodoPage />} />
+                    </Route>
+                    {/* Redirects for routes not found
+                         Redirecionamentos para rotas não encontradas */}
+                    <Route path="/colors" element={<ColorDemo />} />
+                    <Route path="/cards" element={<CardDemo />} />
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </Suspense>
+              </TaxProvider>
             </DataProvider>
           </AuthProvider>
         </LanguageProvider>

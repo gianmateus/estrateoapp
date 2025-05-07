@@ -89,5 +89,22 @@
   "geradoHoje": "Heute generiert",
   "sugestao1": "Ihr Kartoffelbestand ist unter dem Minimum, erwägen Sie Nachbestellung",
   "sugestao2": "Die Verkäufe steigen am Wochenende um 20%, bereiten Sie Ihren Bestand vor",
-  "sugestao3": "Ihre Lieferantenkosten sind diesen Monat um 15% gestiegen"
+  "sugestao3": "Ihre Lieferantenkosten sind diesen Monat um 15% gestiegen",
+  "finance_recurrence_quarterly": "Vierteljährlich",
+
+  "taxes": {
+    "vat": "Umsatzsteuer (VAT)",
+    "trade": "Gewerbesteuer",
+    "corp": "Körperschaftsteuer",
+    "payroll": "Lohnsteuer",
+    "noData": "Keine Daten für den Zeitraum",
+    "reload": "Neu laden"
+  },
+  
+  "previsaoAutomatica": "Automatische Steuerprognose",
+  "mesFiscal": "Steuermonat",
+  "atualizar": "Aktualisieren",
+  "erroPrevisao": "Fehler beim Laden der Steuerprognose",
+  "previsaoCalculada": "Prognose berechnet am",
+  "notaPrevisao": "Dies ist eine Schätzung basierend auf aktuellen Finanzdaten. Die tatsächlichen Werte können variieren."
 } 

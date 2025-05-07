@@ -269,7 +269,7 @@ const TimeVacationsPage: React.FC = () => {
             onClick={() => navigate('/dashboard')}
             sx={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}
           >
-            {t('dashboard.title')}
+            {t('dashboardObj.title')}
           </Link>
           <Link 
             color="inherit" 

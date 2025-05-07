@@ -184,5 +184,26 @@
   "proximaParcela": "Próxima parcela",
   
   "sugestoesIA": "Sugestões da IA",
-  "evolucaoFuncionarios": "Evolução de Funcionários"
+  "evolucaoFuncionarios": "Evolução de Funcionários",
+  
+  "finance_recurrence_quarterly": "Trimestral",
+  
+  "finance_delete_title": "Excluir Transação",
+  "finance_delete_confirmation": "Tem certeza que deseja excluir esta transação?",
+  
+  "taxes": {
+    "vat": "Umsatzsteuer (VAT)",
+    "trade": "Gewerbesteuer",
+    "corp": "Imposto sobre Lucro",
+    "payroll": "Impostos sobre Folha",
+    "noData": "Sem dados para o período",
+    "reload": "Recarregar"
+  },
+  
+  "previsaoAutomatica": "Previsão Fiscal Automática",
+  "mesFiscal": "Mês Fiscal",
+  "atualizar": "Atualizar",
+  "erroPrevisao": "Erro ao carregar previsão fiscal",
+  "previsaoCalculada": "Previsão calculada em",
+  "notaPrevisao": "Esta é uma estimativa baseada nos dados financeiros atuais. Os valores reais podem variar."
 } 

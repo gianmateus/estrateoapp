@@ -156,7 +156,20 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       nome: 'Administrador',
       email: email || 'admin@estrateo.com',
       cargo: 'Administrador',
-      permissoes: ['admin', 'view_dashboard', 'view_pagamentos', 'view_inventario', 'view_perfil']
+      permissoes: [
+        'admin', 
+        'view_dashboard', 
+        'view_pagamentos',
+        'view_inventario', 
+        'view_perfil',
+        'financeiro.visualizar',
+        'inventario.visualizar',
+        'impostos.visualizar',
+        'pagamentos.visualizar',
+        'calendario.visualizar',
+        'funcionarios.visualizar',
+        'ia.visualizar'
+      ]
     };
     
     // Salvar no localStorage

@@ -18,12 +18,18 @@
   "vencimento": "Due Date",
   "diasParaVencer": "Days to Due Date",
   
-  "dashboard": {
+  "common": {
+    "exportCsv": "Export CSV"
+  },
+  
+  "dashboard": "Dashboard",
+  "dashboardObj": {
     "title": "Dashboard",
     "breadcrumb": "Dashboard"
   },
   "financeiro": "Financial",
   "inventario": "Inventory",
+  "impostos": "Taxes",
   "pagamentos": "Payments",
   "pagamentosTexto": "Payments",
   "calendario": "Calendar",
@@ -169,9 +175,57 @@
   "inventario_frequency_none": "None",
   
   "inventory": {
+    "title": "Inventory",
+    "tabs": {
+      "stock": "Current Stock",
+      "needed": "Weekly Needs"
+    },
+    "metrics": {
+      "stockValue": "Stock Value",
+      "criticalItems": "Critical Items",
+      "expiringItems": "Near Expiration"
+    },
     "buttons": {
       "stock": "Current Stock",
-      "needed": "Weekly Need"
+      "needed": "Weekly Needs",
+      "addStock": "New Item",
+      "addNeeded": "Weekly Need"
+    },
+    "filters": {
+      "searchPlaceholder": "Search item...",
+      "allCategories": "All Categories",
+      "beverages": "Beverages",
+      "vegetables": "Vegetables",
+      "meat": "Meat",
+      "pasta": "Pasta",
+      "others": "Others",
+      "showCritical": "Show Critical"
+    },
+    "columns": {
+      "name": "Name",
+      "category": "Category",
+      "quantity": "Quantity",
+      "unit": "Unit",
+      "price": "Price ($)",
+      "total": "Total ($)",
+      "minStock": "Min. Stock",
+      "status": "Status",
+      "actions": "Actions",
+      "expiryDate": "Expiry Date"
+    },
+    "status": {
+      "ok": "OK",
+      "low": "Low",
+      "critical": "Critical"
+    },
+    "actions": {
+      "addStock": "Add new item",
+      "addNeeded": "Add weekly need",
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+    "messages": {
+      "csvExported": "CSV file successfully exported"
     },
     "modals": {
       "stockTitle": "Manage Current Stock",

@@ -25,7 +25,7 @@ const I18nFallbackDemo: React.FC = () => {
     { key: 'dashboard', description: 'Chave comum em todos os idiomas' },
     { key: 'finance_recurrence_quarterly', description: 'Chave com estrutura aninhada' },
     { key: 'teste.chave.ausente', description: 'Chave inexistente (deve usar fallback)' },
-    { key: 'dashboard.title', description: 'Chave que pode estar ausente em alguns idiomas' }
+    { key: 'dashboardObj.title', description: 'Chave que pode estar ausente em alguns idiomas' }
   ];
 
   return (

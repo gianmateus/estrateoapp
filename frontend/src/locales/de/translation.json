@@ -18,14 +18,21 @@
   "vencimento": "Fälligkeitsdatum",
   "diasParaVencer": "Tage bis zur Fälligkeit",
   
-  "dashboard": {
+  "common": {
+    "exportCsv": "CSV exportieren"
+  },
+  
+  "dashboard": "Dashboard",
+  "dashboardObj": {
     "title": "Dashboard",
     "breadcrumb": "Dashboard"
   },
   "financeiro": "Finanzen",
   "inventario": "Inventar",
+  "impostos": "Steuern",
   "pagamentos": "Zahlungen",
   "pagamentosTexto": "Zahlungen",
+  "calendario": "Kalender",
   "inteligenciaArtificial": "KI & Analysen",
   "whatsapp": "WhatsApp",
   "contador": "Buchhalter",
@@ -163,9 +170,15 @@
   "inventario_frequency_none": "Keine",
   
   "inventory": {
+    "title": "Inventar",
     "buttons": {
       "stock": "Aktueller Bestand",
-      "needed": "Wöchentlicher Bedarf"
+      "needed": "Wöchentlicher Bedarf",
+      "addStock": "+ Neuer Artikel",
+      "addNeeded": "+ Wöchentlicher Bedarf",
+      "export": "Daten exportieren",
+      "exportStock": "Aktuellen Bestand exportieren",
+      "exportNeeded": "Wöchentlichen Bedarf exportieren"
     },
     "modals": {
       "stockTitle": "Aktuellen Bestand verwalten",
@@ -176,6 +189,90 @@
       "save": "Speichern",
       "saveChanges": "Änderungen speichern",
       "cancel": "Abbrechen"
+    },
+    "metrics": {
+      "totalValue": "Gesamtbestandswert",
+      "belowMinimum": "Artikel unter Minimum",
+      "nearExpiration": "Artikel nahe Verfallsdatum"
+    },
+    "filters": {
+      "searchPlaceholder": "Artikel suchen...",
+      "category": "Kategorie",
+      "allCategories": "Alle",
+      "vegetables": "Gemüse",
+      "meat": "Fleisch",
+      "beverages": "Getränke",
+      "pasta": "Nudeln",
+      "others": "Andere",
+      "showCritical": "Kritische anzeigen"
+    },
+    "columns": {
+      "name": "Name",
+      "category": "Kategorie",
+      "quantity": "Menge",
+      "unit": "Einheit",
+      "actions": "Aktionen"
+    },
+    "actions": {
+      "edit": "Bearbeiten",
+      "delete": "Löschen",
+      "duplicate": "Duplizieren",
+      "editItem": "Artikel bearbeiten",
+      "deleteItem": "Artikel löschen",
+      "addStock": "Neuen Artikel zum Bestand hinzufügen",
+      "addNeeded": "Neuen wöchentlichen Bedarf hinzufügen"
+    },
+    "messages": {
+      "noItemsFound": "Keine Artikel gefunden",
+      "confirmDelete": "Sind Sie sicher, dass Sie diesen Artikel löschen möchten?",
+      "csvExported": "CSV-Datei erfolgreich exportiert"
+    },
+    "tabs": {
+      "stock": "Bestand",
+      "needed": "Bedarf"
+    },
+    "form": {
+      "title": {
+        "newProduct": "Neues Produkt",
+        "editProduct": "Produkt bearbeiten"
+      },
+      "sections": {
+        "basicInfo": "Grundinformationen",
+        "priceInfo": "Preisinformationen",
+        "supplierStorage": "Lieferant und Lagerung",
+        "stockControl": "Bestandskontrolle"
+      },
+      "fields": {
+        "productName": "Produktname",
+        "sku": "Barcode / SKU",
+        "quantity": "Menge",
+        "unit": "Einheit",
+        "category": "Kategorie",
+        "costPrice": "Einkaufspreis",
+        "salePrice": "Verkaufspreis",
+        "unitPrice": "Stückpreis",
+        "supplier": "Lieferant",
+        "storageLocation": "Lagerort",
+        "minQuantity": "Mindestmenge",
+        "expirationDate": "Verfallsdatum"
+      },
+      "tooltips": {
+        "sku": "Eindeutiger Code zur Produktidentifikation",
+        "costPrice": "An den Lieferanten gezahlter Wert",
+        "storageExample": "Bsp.: Regal A5, Gefrierschrank 2",
+        "minQuantity": "Menge, die Warnungen auslöst"
+      },
+      "buttons": {
+        "cancel": "Abbrechen",
+        "save": "Speichern",
+        "saving": "Speichern..."
+      },
+      "validation": {
+        "required": "Pflichtfeld",
+        "positiveValue": "Wert muss positiv sein",
+        "pastExpirationDate": "Verfallsdatum darf nicht in der Vergangenheit liegen",
+        "salePriceLessThanCost": "Verkaufspreis darf nicht niedriger sein als der Einkaufspreis"
+      }
     }
   },
   
@@ -389,7 +486,6 @@
   "folgas": "Freie Tage",
   "exportarRelatorio": "Bericht Exportieren",
   "tabela": "Tabelle",
-  "calendario": "Kalender",
   "mesAno": "Monat/Jahr",
   
   "contadorObj": {
