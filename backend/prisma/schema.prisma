@@ -1,0 +1,244 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                 String     @id @default(uuid())
+  nome               String
+  email              String     @unique
+  cargo              String?
+  telefone           String?
+  setor              String?
+  password           String
+  permissoes         String     @default("user")
+  tipoNegocio        String?
+  numeroFuncionarios Int?
+  passwordResetToken String?    // Token para redefinição de senha
+  passwordResetExpires DateTime? // Data de expiração do token de redefinição
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime   @updatedAt
+  pagamentos Pagamento[]
+  inventario Inventario[]
+}
+
+model Pagamento {
+  id          String   @id @default(uuid())
+  valor       Float
+  data        DateTime
+  status      String
+  descricao   String?
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Inventario {
+  id          String   @id @default(uuid())
+  nome        String
+  quantidade  Int
+  preco       Float
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Funcionario {
+  id               String        @id @default(uuid())
+  nome             String
+  cargo            String
+  tipoContrato     String        // 'Minijob' | 'Teilzeit' | 'Vollzeit' | 'Freelancer'
+  dataAdmissao     DateTime
+  salarioBruto     Float
+  pagamentoPorHora Boolean
+  horasSemana      Float
+  diasTrabalho     String[]      // ['segunda', 'quarta', 'sexta']
+  iban             String?       // Dados bancários opcionais
+  status           String        // 'ativo' | 'inativo'
+  observacoes      String?
+  contratoUploadUrl String?
+  
+  // Novos campos adicionados
+  formaPagamento   String?       // 'mensal', 'hora', 'comissao'
+  situacaoAtual    String?       // 'ativo', 'ferias', 'afastado', 'desligado'
+  telefone         String?
+  email            String?
+  
+  dataCriacao      DateTime      @default(now())
+  dataAtualizacao  DateTime      @updatedAt
+  controleJornada  ControleJornada[]
+  resumoPagamento  ResumoPagamento[]
+
+  // Sugestão futura para IA:
+  // - Alertar se um MiniJob ultrapassou €538 no mês
+  // - Sugerir reajuste em jornada por excesso de horas extras
+  // - Verificar padrões incomuns de faltas
+  // - Regras inteligentes baseadas na legislação trabalhista alemã
+}
+
+model ControleJornada {
+  id               String      @id @default(uuid())
+  funcionario      Funcionario @relation(fields: [funcionarioId], references: [id])
+  funcionarioId    String
+  data             DateTime
+  horaEntrada      String      // formato HH:mm
+  horaSaida        String      // formato HH:mm
+  horasTrabalhadas Float
+  horaExtra        Float?
+  faltaJustificada Boolean
+  observacoes      String?
+  dataCriacao      DateTime    @default(now())
+  dataAtualizacao  DateTime    @updatedAt
+}
+
+model ResumoPagamento {
+  id                String      @id @default(uuid())
+  funcionario       Funcionario @relation(fields: [funcionarioId], references: [id])
+  funcionarioId     String
+  mes               String      // formato MM-YYYY
+  salarioPrevisto   Float
+  salarioReal       Float
+  extras            Float?
+  descontos         Float?
+  observacoes       String?
+  enviadoParaContador Boolean   @default(false)
+  dataCriacao       DateTime    @default(now())
+  dataAtualizacao   DateTime    @updatedAt
+}
+
+model Financeiro {
+  id                    String    @id @default(uuid())
+  descricao             String
+  valor                 Float
+  data                  DateTime
+  tipo                  String    // 'receita' ou 'despesa'
+  categoria             String
+  referenciaId          String?   // ID de referência para o registro de origem
+  
+  // Campos comuns para receitas e despesas
+  parcelamento          Boolean   @default(false)
+  quantidadeParcelas    Int?
+  numeroDocumento       String?   // Nota fiscal, recibo, contrato
+  formaPagamento        String?   // 'cartao', 'transferencia', 'boleto', 'dinheiro', etc.
+  observacao            String?
+  
+  // Campos específicos para receitas (entradas)
+  tipoEntrada           String?   // 'venda', 'aluguel', 'servico', 'comissao', 'outros'
+  statusRecebimento     String?   // 'recebido', 'pendente', 'parcialmente_recebido'
+  dataPrevistaRecebimento DateTime?
+  cliente               String?
+  
+  // Campos específicos para despesas (saídas)
+  tipoDespesa           String?   // 'fornecedor', 'aluguel', 'salario', 'imposto', 'outros'
+  dataPrevistaPagamento DateTime?
+  fornecedor            String?
+  
+  // Campos para controle do parcelamento
+  parcelas              Parcela[]
+  
+  // Campos de auditoria
+  dataCriacao           DateTime  @default(now())
+  dataAtualizacao       DateTime  @updatedAt
+}
+
+model Parcela {
+  id                    String    @id @default(uuid())
+  financeiro            Financeiro @relation(fields: [financeiroId], references: [id])
+  financeiroId          String
+  numero                Int       // Número da parcela
+  valorParcela          Float
+  dataPrevista          DateTime
+  pago                  Boolean   @default(false)
+  dataPagamento         DateTime?
+  dataCriacao           DateTime  @default(now())
+  dataAtualizacao       DateTime  @updatedAt
+}
+
+// Modelos para o módulo de Clientes e Contatos
+
+model Cliente {
+  id                  String              @id @default(uuid())
+  tipo                String              // 'pessoa_fisica' ou 'pessoa_juridica'
+  nome                String              // Nome completo da pessoa ou razão social
+  empresa             String?             // Nome fantasia da empresa (opcional)
+  email               String?
+  telefone            String?
+  documentoPrincipal  String?             // CPF ou CNPJ
+  endereco            String?             // Endereço completo
+  website             String?             // Site da empresa (opcional)
+  segmento            String?             // Setor/segmento de atuação
+  anotacoes           String?             // Campo de texto longo para observações importantes
+  status              String              @default("ativo") // 'ativo', 'inativo', 'prospecto', 'arquivado'
+  dataCadastro        DateTime            @default(now())
+  dataAtualizacao     DateTime            @updatedAt
+  interacoes          InteracaoCliente[]
+  documentos          DocumentoCliente[]
+
+  @@index([nome])
+  @@index([email])
+  @@index([documentoPrincipal])
+}
+
+model InteracaoCliente {
+  id                  String              @id @default(uuid())
+  cliente             Cliente             @relation(fields: [clienteId], references: [id])
+  clienteId           String
+  tipo                String              // 'email', 'telefonema', 'reuniao', 'proposta', 'venda', 'suporte', etc.
+  titulo              String
+  descricao           String
+  data                DateTime            @default(now())
+  responsavel         String?             // Nome do responsável pela interação
+  resultado           String?             // Resultado ou status da interação
+  proximaAcao         String?             // Próxima ação a ser tomada
+  dataProximaAcao     DateTime?           // Data para próxima ação
+  dataCriacao         DateTime            @default(now())
+  dataAtualizacao     DateTime            @updatedAt
+
+  @@index([clienteId])
+  @@index([data])
+}
+
+model DocumentoCliente {
+  id                  String              @id @default(uuid())
+  cliente             Cliente             @relation(fields: [clienteId], references: [id])
+  clienteId           String
+  tipo                String              // 'contrato', 'identidade', 'cnpj', 'comprovante', 'proposta', etc.
+  nome                String              // Nome do arquivo
+  descricao           String?             // Descrição opcional
+  caminhoArquivo      String              // Caminho no storage (S3 ou outro)
+  tamanhoBytes        Int?                // Tamanho do arquivo em bytes
+  mimeType            String?             // Tipo MIME do arquivo
+  dataCriacao         DateTime            @default(now())
+  dataAtualizacao     DateTime            @updatedAt
+
+  @@index([clienteId])
+  @@index([tipo])
+}
+
+model TaxForecast {
+  id             String   @id @default(uuid())
+  empresaId      String   // ID da empresa para a qual o cálculo foi feito
+  mes            String   // formato YYYY-MM
+  vatPayable     Float    // Imposto sobre valor agregado
+  tradeTax       Float    // Imposto comercial 
+  corpTax        Float    // Imposto corporativo
+  payrollTax     Float    // Imposto sobre folha de pagamento
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([empresaId])
+  @@index([mes])
+}

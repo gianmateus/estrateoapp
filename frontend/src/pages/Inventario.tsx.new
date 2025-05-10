@@ -1,0 +1,986 @@
+import React, { useState, useEffect, useCallback, ChangeEvent } from 'react';
+import {
+  Box,
+  Typography,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  MenuItem,
+  Autocomplete,
+  Grid,
+  Paper,
+  CircularProgress,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Tooltip,
+  IconButton,
+  Snackbar,
+  Alert,
+  Chip,
+  Menu,
+  ListItemIcon,
+  ListItemText,
+  Tabs,
+  Tab,
+  useMediaQuery,
+  Select,
+  FormControl,
+  InputLabel,
+  useTheme,
+  Divider,
+  Stack,
+  Avatar,
+  SelectProps,
+} from '@mui/material';
+import { styled } from '@mui/material/styles';
+import { 
+  Add as AddIcon,
+  Remove as RemoveIcon,
+  PictureAsPdf as PdfIcon,
+  InfoOutlined as InfoIcon,
+  Edit as EditIcon,
+  Delete as DeleteIcon,
+} from '@mui/icons-material';
+// Importação dos ícones do Lucide React
+import { 
+  Plus, 
+  FileDown, 
+  Download, 
+  Search, 
+  Trash2, 
+  Copy, 
+  AlertCircle,
+  AlertTriangle,
+  Filter
+} from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { jsPDF } from 'jspdf';
+import 'jspdf-autotable';
+import { debounce } from 'lodash';
+import { useInventario } from '../contexts/InventarioContext';
+import MotionButton from '../components/ui/MotionButton';
+import MetricCard from '../components/ui/MetricCard';
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
+
+// Interface para os itens do inventário
+interface InventoryItem {
+  id: string;
+  name: string;
+  quantity: number;
+  unit: string;
+  notes?: string;
+  category?: string;
+  minQuantity?: number;
+  expirationDate?: string;
+}
+
+// Interface para os itens do relatório de compras
+interface PurchaseItem {
+  name: string;
+  currentStock: number;
+  weeklyNeed: number;
+  toBuy: number;
+  unit: string;
+}
+
+// Unidades disponíveis
+const unitOptions = [
+  { value: 'kg', label: 'quilograma' },
+  { value: 'g', label: 'gramas' },
+  { value: 'caixa', label: 'caixa' },
+  { value: 'unidade', label: 'unidade' },
+  { value: 'saco', label: 'saco' },
+];
+
+// Chip de Status para quantidades
+const StatusChip = styled(Chip)<{ status: 'success' | 'warning' | 'error' }>(({ theme, status }) => {
+  const colors = {
+    success: {
+      color: '#00B37E',
+      backgroundColor: 'rgba(0, 179, 126, 0.1)',
+    },
+    warning: {
+      color: '#FDD835',
+      backgroundColor: 'rgba(253, 216, 53, 0.1)',
+    },
+    error: {
+      color: '#F75A68',
+      backgroundColor: 'rgba(247, 90, 104, 0.1)',
+    },
+  };
+  
+  return {
+    color: colors[status].color,
+    backgroundColor: colors[status].backgroundColor,
+    borderRadius: '16px',
+    fontWeight: 600,
+    '& .MuiChip-label': {
+      padding: '0 12px',
+    },
+  };
+});
+
+// Toggle para mostrar itens críticos
+const ChipToggle = styled(Chip)<{ isActive: boolean }>(({ theme, isActive }) => ({
+  borderRadius: '16px',
+  fontWeight: 600,
+  cursor: 'pointer',
+  backgroundColor: isActive ? theme.palette.primary.main : theme.palette.grey[100],
+  color: isActive ? theme.palette.common.white : theme.palette.text.secondary,
+  '&:hover': {
+    backgroundColor: isActive ? theme.palette.primary.dark : theme.palette.grey[200],
+  },
+}));
+
+const Inventario = () => {
+  const theme = useTheme();
+  const { t, i18n } = useTranslation();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isTablet = useMediaQuery(theme.breakpoints.between('sm', 'md'));
+  const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
+  const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
+  
+  // Context do inventário
+  const { 
+    itens, 
+    resumo, 
+    adicionarItem, 
+    atualizarItem, 
+    removerItem,
+    carregarDados
+  } = useInventario();
+  
+  // Estado para os itens do inventário
+  const [currentStockItems, setCurrentStockItems] = useState<InventoryItem[]>([]);
+  const [weeklyNeedItems, setWeeklyNeedItems] = useState<InventoryItem[]>([]);
+  
+  // Estados de filtro
+  const [searchTerm, setSearchTerm] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState('all');
+  const [showCriticalOnly, setShowCriticalOnly] = useState(false);
+  
+  // Estado para abas mobile
+  const [tabValue, setTabValue] = useState(0);
+  
+  // Estados para menu de contexto
+  const [contextMenu, setContextMenu] = useState<{
+    mouseX: number;
+    mouseY: number;
+    item: InventoryItem | null;
+    type: 'stock' | 'need' | null;
+  } | null>(null);
+  
+  // Estado de loading
+  const [loading, setLoading] = useState(false);
+  
+  // Estados para controlar os modais
+  const [openCurrentStockModal, setOpenCurrentStockModal] = useState(false);
+  const [openWeeklyNeedModal, setOpenWeeklyNeedModal] = useState(false);
+
+  // Estado para o Snackbar de exportação
+  const [exportSnackbar, setExportSnackbar] = useState(false);
+  
+  // Novo estado para o Snackbar
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  
+  // Novo estado para verificar se é um dispositivo XSmall
+  const isXSmall = useMediaQuery(theme.breakpoints.down(480));
+  
+  // Efeito para carregar dados e popular as listas
+  useEffect(() => {
+    setLoading(true);
+    carregarDados();
+    
+    // Mapear itens do contexto para o formato da interface
+    const stockItems = itens
+      .filter(item => !item.categoria?.includes('necessidade_semanal'))
+      .map(item => ({
+        id: item.id,
+        name: item.nome,
+        quantity: item.quantidade,
+        unit: item.unidade,
+        notes: item.localizacao,
+        category: item.categoria,
+        minQuantity: item.quantidadeMinima || item.estoqueMinimo,
+        expirationDate: item.dataValidade
+      }));
+    
+    const needItems = itens
+      .filter(item => item.categoria?.includes('necessidade_semanal'))
+      .map(item => ({
+        id: item.id,
+        name: item.nome,
+        quantity: item.quantidade,
+        unit: item.unidade,
+        notes: item.localizacao,
+        category: item.categoria,
+        minQuantity: item.quantidadeMinima || item.estoqueMinimo,
+        expirationDate: item.dataValidade
+      }));
+    
+    setCurrentStockItems(stockItems);
+    setWeeklyNeedItems(needItems);
+    setLoading(false);
+  }, [itens, carregarDados]);
+  
+  // Handler para debounce da busca
+  const handleSearchChange = useCallback(
+    debounce((value: string) => {
+      setSearchTerm(value);
+    }, 300), 
+    []
+  );
+  
+  // Filtrar os itens com base nos filtros
+  const filteredCurrentStock = currentStockItems.filter(item => {
+    const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = categoryFilter === 'all' || item.category === categoryFilter;
+    const matchesCritical = !showCriticalOnly || 
+      (item.minQuantity !== undefined && item.quantity < item.minQuantity);
+    
+    return matchesSearch && matchesCategory && matchesCritical;
+  });
+  
+  const filteredWeeklyNeed = weeklyNeedItems.filter(item => {
+    const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = categoryFilter === 'all' || item.category === categoryFilter;
+    const matchesCritical = !showCriticalOnly || 
+      (item.minQuantity !== undefined && item.quantity < item.minQuantity);
+    
+    return matchesSearch && matchesCategory && matchesCritical;
+  });
+  
+  // Toggle para mostrar apenas itens críticos
+  const toggleCritical = () => {
+    setShowCriticalOnly(!showCriticalOnly);
+  };
+  
+  // Definições das colunas da tabela de estoque atual
+  const currentStockColumns: GridColDef[] = [
+    { field: 'name', headerName: "Nome", flex: 2, minWidth: 150 },
+    { field: 'category', headerName: "Categoria", flex: 1, minWidth: 120 },
+    { 
+      field: 'quantity', 
+      headerName: "Quantidade", 
+      flex: 1, 
+      minWidth: 120,
+      renderCell: (params: any) => {
+        const item = params.row as InventoryItem;
+        let status: 'success' | 'warning' | 'error' = 'success';
+        
+        if (item.minQuantity !== undefined) {
+          if (item.quantity < item.minQuantity) {
+            status = 'error';
+          } else if (item.quantity === item.minQuantity) {
+            status = 'warning';
+          }
+        }
+        
+        return (
+          <StatusChip 
+            label={`${item.quantity} ${item.unit}`} 
+            status={status} 
+          />
+        );
+      }
+    },
+    { field: 'unit', headerName: "Unidade", flex: 1, minWidth: 100 },
+    { 
+      field: 'actions', 
+      headerName: "Ações", 
+      flex: 1, 
+      minWidth: 120,
+      sortable: false,
+      renderCell: (params: any) => {
+        const item = params.row as InventoryItem;
+        return (
+          <Box sx={{ display: 'flex', gap: 1 }}>
+            <Tooltip title="Editar">
+              <IconButton 
+                onClick={() => handleEditCurrentStock(item)}
+                size="small"
+                aria-label={`Editar ${item.name}`}
+              >
+                <EditIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+            
+            <Tooltip title="Excluir">
+              <IconButton 
+                onClick={() => handleOpenDeleteModal(item, 'stock')}
+                size="small"
+                color="error"
+                aria-label={`Excluir ${item.name}`}
+              >
+                <DeleteIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          </Box>
+        );
+      }
+    }
+  ];
+  
+  // Definições das colunas da tabela de necessidade semanal
+  const weeklyNeedColumns: GridColDef[] = [
+    { field: 'name', headerName: "Nome", flex: 2, minWidth: 150 },
+    { field: 'category', headerName: "Categoria", flex: 1, minWidth: 120 },
+    { 
+      field: 'quantity', 
+      headerName: "Quantidade", 
+      flex: 1, 
+      minWidth: 120,
+      renderCell: (params: any) => {
+        const item = params.row as InventoryItem;
+        let status: 'success' | 'warning' | 'error' = 'success';
+        
+        if (item.minQuantity !== undefined) {
+          if (item.quantity < item.minQuantity) {
+            status = 'error';
+          } else if (item.quantity === item.minQuantity) {
+            status = 'warning';
+          }
+        }
+        
+        return (
+          <StatusChip 
+            label={`${item.quantity} ${item.unit}`} 
+            status={status} 
+          />
+        );
+      }
+    },
+    { field: 'unit', headerName: "Unidade", flex: 1, minWidth: 100 },
+    { 
+      field: 'actions', 
+      headerName: "Ações", 
+      flex: 1, 
+      minWidth: 120,
+      sortable: false,
+      renderCell: (params: any) => {
+        const item = params.row as InventoryItem;
+        return (
+          <Box sx={{ display: 'flex', gap: 1 }}>
+            <Tooltip title="Editar">
+              <IconButton 
+                onClick={() => handleEditWeeklyNeed(item)}
+                size="small"
+                aria-label={`Editar ${item.name}`}
+              >
+                <EditIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+            
+            <Tooltip title="Excluir">
+              <IconButton 
+                onClick={() => handleOpenDeleteModal(item, 'need')}
+                size="small"
+                color="error"
+                aria-label={`Excluir ${item.name}`}
+              >
+                <DeleteIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          </Box>
+        );
+      }
+    }
+  ];
+  
+  // Menu de contexto
+  const handleContextMenu = (item: InventoryItem, type: 'stock' | 'need') => {
+    // Posicionar o menu no centro da tela
+    setContextMenu({
+      mouseX: window.innerWidth / 2,
+      mouseY: window.innerHeight / 2,
+      item,
+      type
+    });
+  };
+  
+  const handleCloseContextMenu = () => {
+    setContextMenu(null);
+  };
+  
+  // Funções de abertura de modais (manter compatibilidade com o código existente)
+  const handleOpenCurrentStockModal = () => {
+    setOpenCurrentStockModal(true);
+  };
+  
+  const handleOpenWeeklyNeedModal = () => {
+    setOpenWeeklyNeedModal(true);
+  };
+  
+  const handleEditCurrentStock = (item: InventoryItem) => {
+    // Implementar lógica de edição (manter compatibilidade)
+    console.log('Editar item estoque:', item);
+  };
+  
+  const handleEditWeeklyNeed = (item: InventoryItem) => {
+    // Implementar lógica de edição (manter compatibilidade)
+    console.log('Editar item necessidade:', item);
+  };
+  
+  const handleOpenDeleteModal = (item: InventoryItem, type: 'stock' | 'need') => {
+    // Implementar lógica de deleção (manter compatibilidade)
+    console.log('Excluir item:', item, type);
+  };
+  
+  // Função para exportar dados
+  const handleExport = (type: 'stock' | 'need') => {
+    const data = type === 'stock' ? filteredCurrentStock : filteredWeeklyNeed;
+    const filename = type === 'stock' ? 'estoque_atual.csv' : 'necessidade_semanal.csv';
+    
+    // Criar CSV
+    const headers = ['Nome', 'Categoria', 'Quantidade', 'Unidade'];
+    const csvContent = [
+      headers.join(','),
+      ...data.map(item => [
+        item.name,
+        item.category || '',
+        item.quantity,
+        item.unit
+      ].join(','))
+    ].join('\n');
+    
+    // Download
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', filename);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    // Mostrar snackbar de confirmação
+    setExportSnackbar(true);
+    
+    // Após exportar, mostrar snackbar
+    setSnackbarMessage("Arquivo CSV exportado com sucesso");
+    setSnackbarOpen(true);
+  };
+  
+  // Renderizar métricas rápidas
+  const renderMetrics = () => (
+    <Grid container spacing={4} sx={{ mb: 4 }}>
+      <Grid item xs={12} md={4}>
+        <MetricCard
+          title="Valor em Estoque"
+          value={resumo.valorTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'EUR' })}
+          icon={<FileDown size={22} />}
+          color="primary"
+          minHeight={140}
+          sx={{ 
+            pt: 2,
+            '.MuiCardContent-root': {
+              display: 'flex',
+              flexDirection: 'column'
+            },
+            '.value-container': {
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexGrow: 1
+            }
+          }}
+        />
+      </Grid>
+      
+      <Grid item xs={12} md={4}>
+        <MetricCard
+          title="Itens Críticos"
+          value={resumo.itensAbaixoMinimo.toString()}
+          icon={<AlertCircle size={22} />}
+          color="error"
+          minHeight={140}
+          sx={{ 
+            pt: 2,
+            '.MuiCardContent-root': {
+              display: 'flex',
+              flexDirection: 'column'
+            },
+            '.value-container': {
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexGrow: 1
+            }
+          }}
+        />
+      </Grid>
+      
+      <Grid item xs={12} md={4}>
+        <MetricCard
+          title="Próximos do Vencimento"
+          value={(resumo.itensProximosVencimento + resumo.itensVencidos).toString()}
+          icon={<AlertCircle size={22} />}
+          color="warning"
+          minHeight={140}
+          sx={{ 
+            pt: 2,
+            '.MuiCardContent-root': {
+              display: 'flex',
+              flexDirection: 'column'
+            },
+            '.value-container': {
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexGrow: 1
+            }
+          }}
+        />
+      </Grid>
+    </Grid>
+  );
+  
+  // Renderizar filtros rápidos
+  const renderFilters = () => (
+    <Stack 
+      direction={{ xs: 'column', md: 'row' }}
+      spacing={2}
+      alignItems="center"
+      sx={{ mb: 2 }}
+    >
+      <TextField
+        placeholder="Buscar item..."
+        variant="outlined"
+        size="small"
+        InputProps={{
+          startAdornment: <Search size={20} style={{ marginRight: 8 }} />,
+        }}
+        onChange={(e: ChangeEvent<HTMLInputElement>) => handleSearchChange(e.target.value)}
+        sx={{ flexGrow: 1 }}
+      />
+      
+      <FormControl sx={{ minWidth: 160 }}>
+        <Select
+          size="small"
+          value={categoryFilter}
+          onChange={(e) => setCategoryFilter(e.target.value)}
+          displayEmpty
+          renderValue={(selected) => (
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Filter size={16} />
+              <span>
+                {selected === 'all' 
+                  ? "Todas Categorias" 
+                  : selected}
+              </span>
+            </Box>
+          )}
+        >
+          <MenuItem value="all">Todas Categorias</MenuItem>
+          <MenuItem value="beverages">Bebidas</MenuItem>
+          <MenuItem value="legumes">Legumes</MenuItem>
+          <MenuItem value="carnes">Carnes</MenuItem>
+          <MenuItem value="massas">Massas</MenuItem>
+          <MenuItem value="outros">Outros</MenuItem>
+        </Select>
+      </FormControl>
+      
+      <Box flexGrow={1} />
+      
+      <Chip
+        label="Mostrar Críticos"
+        icon={<AlertTriangle size={16} color={showCriticalOnly ? "white" : undefined} />}
+        variant={showCriticalOnly ? "filled" : "outlined"}
+        color="error"
+        onClick={toggleCritical}
+        aria-pressed={showCriticalOnly}
+        sx={{ 
+          cursor: 'pointer',
+          '&:focus-visible': {
+            outline: '2px solid',
+            outlineColor: 'primary.main',
+            outlineOffset: '2px'
+          }
+        }}
+      />
+    </Stack>
+  );
+  
+  // Renderizar tabela de estoque atual
+  const renderCurrentStockTable = () => (
+    <Box
+      sx={{ 
+        height: 400,
+        width: '100%',
+        '& .MuiDataGrid-columnHeaders': {
+          bgcolor: 'grey.50',
+          fontWeight: 600,
+          color: 'text.secondary',
+        },
+        '& .MuiDataGrid-row:nth-of-type(odd)': {
+          backgroundColor: theme.palette.grey[50],
+        },
+        '& .MuiDataGrid-row:hover': {
+          backgroundColor: theme.palette.grey[100],
+        },
+      }}
+    >
+      <DataGrid
+        rows={filteredCurrentStock}
+        columns={currentStockColumns}
+        pageSizeOptions={[10, 25, 50]}
+        initialState={{
+          pagination: {
+            paginationModel: { page: 0, pageSize: 10 },
+          },
+        }}
+        disableRowSelectionOnClick
+        onRowClick={(params) => handleContextMenu(params.row as InventoryItem, 'stock')}
+        localeText={{
+          noRowsLabel: "Nenhum item encontrado",
+        }}
+      />
+    </Box>
+  );
+  
+  // Renderizar tabela de necessidade semanal
+  const renderWeeklyNeedTable = () => (
+    <Box
+      sx={{ 
+        height: 400,
+        width: '100%',
+        '& .MuiDataGrid-columnHeaders': {
+          bgcolor: 'grey.50',
+          fontWeight: 600,
+          color: 'text.secondary',
+        },
+        '& .MuiDataGrid-row:nth-of-type(odd)': {
+          backgroundColor: theme.palette.grey[50],
+        },
+        '& .MuiDataGrid-row:hover': {
+          backgroundColor: theme.palette.grey[100],
+        },
+      }}
+    >
+      <DataGrid
+        rows={filteredWeeklyNeed}
+        columns={weeklyNeedColumns}
+        pageSizeOptions={[10, 25, 50]}
+        initialState={{
+          pagination: {
+            paginationModel: { page: 0, pageSize: 10 },
+          },
+        }}
+        disableRowSelectionOnClick
+        onRowClick={(params) => handleContextMenu(params.row as InventoryItem, 'need')}
+        localeText={{
+          noRowsLabel: "Nenhum item encontrado",
+        }}
+      />
+    </Box>
+  );
+  
+  // Layout principal responsivo
+  return (
+    <Box sx={{ padding: theme.spacing(4) }}>
+      {/* Métricas rápidas */}
+      {renderMetrics()}
+      
+      {/* Botões de ação */}
+      <Box sx={{ display: 'flex', gap: 2, mb: 3, flexWrap: 'wrap' }}>
+        <MotionButton
+          variant="contained"
+          color="primary"
+          onClick={handleOpenCurrentStockModal}
+          aria-label="Adicionar novo item"
+          sx={{ 
+            height: 48, 
+            borderRadius: 2,
+            '&:hover': {
+              transform: prefersReducedMotion ? 'none' : 'scale(1.05)'
+            },
+            '&:focus-visible': {
+              outline: '2px solid',
+              outlineColor: 'primary.main',
+              outlineOffset: '2px'
+            }
+          }}
+        >
+          <Stack direction="row" spacing={1} alignItems="center">
+            <Avatar sx={{ bgcolor: 'white', color: 'primary.main', width: 28, height: 28 }}>
+              <Plus size={16} />
+            </Avatar>
+            <span>Novo Item</span>
+          </Stack>
+        </MotionButton>
+        
+        <MotionButton
+          variant="contained"
+          onClick={handleOpenWeeklyNeedModal}
+          aria-label="Adicionar necessidade semanal"
+          sx={{ 
+            height: 48, 
+            borderRadius: 2,
+            bgcolor: 'warning.light',
+            color: 'text.primary',
+            '&:hover': {
+              bgcolor: 'warning.main',
+              transform: prefersReducedMotion ? 'none' : 'scale(1.05)'
+            },
+            '&:focus-visible': {
+              outline: '2px solid',
+              outlineColor: 'primary.main',
+              outlineOffset: '2px'
+            }
+          }}
+        >
+          <Stack direction="row" spacing={1} alignItems="center">
+            <Avatar sx={{ bgcolor: 'white', color: 'warning.main', width: 28, height: 28 }}>
+              <Plus size={16} />
+            </Avatar>
+            <span>Necessidade Semanal</span>
+          </Stack>
+        </MotionButton>
+      </Box>
+      
+      {/* Filtros */}
+      {renderFilters()}
+      
+      {/* Conteúdo principal - responsivo */}
+      {/* Mobile View */}
+      {isMobile && (
+        <>
+          <Tabs 
+            value={tabValue} 
+            onChange={(_, newValue) => setTabValue(newValue)}
+            variant="fullWidth"
+            sx={{ mb: 2 }}
+          >
+            <Tab label="Estoque Atual" />
+            <Tab label="Necessidade Semanal" />
+          </Tabs>
+          
+          {tabValue === 0 && (
+            <Paper 
+              elevation={0}
+              sx={{ 
+                p: 2,
+                borderRadius: 4,
+                position: 'relative',
+                mb: 4,
+                maxHeight: 380,
+                overflow: 'auto',
+                scrollbarWidth: 'thin',
+                '&::-webkit-scrollbar': { width: 6 },
+                '&::-webkit-scrollbar-thumb': { bgcolor: 'grey.400', borderRadius: 3 }
+              }}
+            >
+              <Box sx={{ position: 'absolute', top: 16, right: 16 }}>
+                <Tooltip title="Exportar CSV">
+                  <IconButton 
+                    onClick={() => handleExport('stock')}
+                    aria-label="Exportar estoque atual em CSV"
+                  >
+                    <Download size={20} />
+                  </IconButton>
+                </Tooltip>
+              </Box>
+              
+              <Typography variant="h6" sx={{ mb: 2 }}>
+                Estoque Atual
+              </Typography>
+              {renderCurrentStockTable()}
+            </Paper>
+          )}
+          
+          {tabValue === 1 && (
+            <Paper 
+              elevation={0}
+              sx={{ 
+                p: 2,
+                borderRadius: 4,
+                position: 'relative',
+                maxHeight: 380,
+                overflow: 'auto',
+                scrollbarWidth: 'thin',
+                '&::-webkit-scrollbar': { width: 6 },
+                '&::-webkit-scrollbar-thumb': { bgcolor: 'grey.400', borderRadius: 3 }
+              }}
+            >
+              <Box sx={{ position: 'absolute', top: 16, right: 16 }}>
+                <Tooltip title="Exportar CSV">
+                  <IconButton 
+                    onClick={() => handleExport('need')}
+                    aria-label="Exportar necessidade semanal em CSV"
+                  >
+                    <Download size={20} />
+                  </IconButton>
+                </Tooltip>
+              </Box>
+              
+              <Typography variant="h6" sx={{ mb: 2 }}>
+                Necessidade Semanal
+              </Typography>
+              {renderWeeklyNeedTable()}
+            </Paper>
+          )}
+        </>
+      )}
+      
+      {/* Tablet/Desktop View */}
+      {!isMobile && (
+        <Grid container spacing={4}>
+          <Grid item xs={12} md={isDesktop ? 6 : 12}>
+            <Paper 
+              elevation={0}
+              sx={{ 
+                p: 2,
+                borderRadius: 4,
+                position: 'relative',
+                height: '100%',
+                maxHeight: 380,
+                overflow: 'auto',
+                scrollbarWidth: 'thin',
+                '&::-webkit-scrollbar': { width: 6 },
+                '&::-webkit-scrollbar-thumb': { bgcolor: 'grey.400', borderRadius: 3 }
+              }}
+            >
+              <Box sx={{ position: 'absolute', top: 16, right: 16 }}>
+                <Tooltip title="Exportar CSV">
+                  <IconButton 
+                    onClick={() => handleExport('stock')}
+                    aria-label="Exportar estoque atual em CSV"
+                  >
+                    <Download size={20} />
+                  </IconButton>
+                </Tooltip>
+              </Box>
+              
+              <Typography variant="h6" sx={{ mb: 2 }}>
+                Estoque Atual
+              </Typography>
+              
+              {loading ? (
+                <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
+                  <CircularProgress />
+                </Box>
+              ) : (
+                renderCurrentStockTable()
+              )}
+            </Paper>
+          </Grid>
+          
+          <Grid item xs={12} md={isDesktop ? 6 : 12}>
+            <Paper 
+              elevation={0}
+              sx={{ 
+                p: 2,
+                borderRadius: 4,
+                position: 'relative',
+                height: '100%',
+                maxHeight: 380,
+                overflow: 'auto',
+                scrollbarWidth: 'thin',
+                '&::-webkit-scrollbar': { width: 6 },
+                '&::-webkit-scrollbar-thumb': { bgcolor: 'grey.400', borderRadius: 3 }
+              }}
+            >
+              <Box sx={{ position: 'absolute', top: 16, right: 16 }}>
+                <Tooltip title="Exportar CSV">
+                  <IconButton 
+                    onClick={() => handleExport('need')}
+                    aria-label="Exportar necessidade semanal em CSV"
+                  >
+                    <Download size={20} />
+                  </IconButton>
+                </Tooltip>
+              </Box>
+              
+              <Typography variant="h6" sx={{ mb: 2 }}>
+                Necessidade Semanal
+              </Typography>
+              
+              {loading ? (
+                <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
+                  <CircularProgress />
+                </Box>
+              ) : (
+                renderWeeklyNeedTable()
+              )}
+            </Paper>
+          </Grid>
+        </Grid>
+      )}
+      
+      {/* Menu de contexto */}
+      <Menu
+        open={contextMenu !== null}
+        onClose={handleCloseContextMenu}
+        anchorReference="anchorPosition"
+        anchorPosition={
+          contextMenu !== null
+            ? { top: contextMenu.mouseY, left: contextMenu.mouseX }
+            : undefined
+        }
+      >
+        <MenuItem onClick={() => {
+          if (contextMenu?.type === 'stock' && contextMenu.item) {
+            handleEditCurrentStock(contextMenu.item);
+          } else if (contextMenu?.type === 'need' && contextMenu.item) {
+            handleEditWeeklyNeed(contextMenu.item);
+          }
+          handleCloseContextMenu();
+        }}>
+          <ListItemIcon>
+            <EditIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Editar</ListItemText>
+        </MenuItem>
+        
+        <MenuItem onClick={() => {
+          // Lógica para duplicar item
+          handleCloseContextMenu();
+        }}>
+          <ListItemIcon>
+            <Copy size={18} />
+          </ListItemIcon>
+          <ListItemText>Duplicar</ListItemText>
+        </MenuItem>
+        
+        <MenuItem onClick={() => {
+          if (contextMenu?.item && contextMenu?.type) {
+            handleOpenDeleteModal(contextMenu.item, contextMenu.type);
+          }
+          handleCloseContextMenu();
+        }}>
+          <ListItemIcon>
+            <Trash2 size={18} />
+          </ListItemIcon>
+          <ListItemText>Excluir</ListItemText>
+        </MenuItem>
+      </Menu>
+      
+      {/* Snackbar para feedback de exportação */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={4000}
+        onClose={() => setSnackbarOpen(false)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert 
+          severity="success" 
+          onClose={() => setSnackbarOpen(false)}
+          sx={{ width: '100%' }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
+    </Box>
+  );
+};
+
+export default Inventario; 

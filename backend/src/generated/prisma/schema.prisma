@@ -1,0 +1,113 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                   String       @id @default(uuid())
+  nome                 String
+  email                String       @unique
+  cargo                String?
+  telefone             String?
+  setor                String?
+  password             String
+  permissoes           String       @default("user")
+  tipoNegocio          String?
+  numeroFuncionarios   Int?
+  passwordResetToken   String? // Token para redefinição de senha
+  passwordResetExpires DateTime? // Data de expiração do token de redefinição
+  createdAt            DateTime     @default(now())
+  updatedAt            DateTime     @updatedAt
+  pagamentos           Pagamento[]
+  inventario           Inventario[]
+}
+
+model Pagamento {
+  id        String   @id @default(uuid())
+  valor     Float
+  data      DateTime
+  status    String
+  descricao String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Inventario {
+  id         String   @id @default(uuid())
+  nome       String
+  quantidade Int
+  preco      Float
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Funcionario {
+  id                String            @id @default(uuid())
+  nome              String
+  cargo             String
+  tipoContrato      String // 'Minijob' | 'Teilzeit' | 'Vollzeit' | 'Freelancer'
+  dataAdmissao      DateTime
+  salarioBruto      Float
+  pagamentoPorHora  Boolean
+  horasSemana       Float
+  diasTrabalho      String[] // ['segunda', 'quarta', 'sexta']
+  iban              String? // Dados bancários opcionais
+  status            String // 'ativo' | 'inativo'
+  observacoes       String?
+  contratoUploadUrl String?
+  dataCriacao       DateTime          @default(now())
+  dataAtualizacao   DateTime          @updatedAt
+  controleJornada   ControleJornada[]
+  resumoPagamento   ResumoPagamento[]
+
+  // Sugestão futura para IA:
+  // - Alertar se um MiniJob ultrapassou €538 no mês
+  // - Sugerir reajuste em jornada por excesso de horas extras
+  // - Verificar padrões incomuns de faltas
+  // - Regras inteligentes baseadas na legislação trabalhista alemã
+}
+
+model ControleJornada {
+  id               String      @id @default(uuid())
+  funcionario      Funcionario @relation(fields: [funcionarioId], references: [id])
+  funcionarioId    String
+  data             DateTime
+  horaEntrada      String // formato HH:mm
+  horaSaida        String // formato HH:mm
+  horasTrabalhadas Float
+  horaExtra        Float?
+  faltaJustificada Boolean
+  observacoes      String?
+  dataCriacao      DateTime    @default(now())
+  dataAtualizacao  DateTime    @updatedAt
+}
+
+model ResumoPagamento {
+  id                  String      @id @default(uuid())
+  funcionario         Funcionario @relation(fields: [funcionarioId], references: [id])
+  funcionarioId       String
+  mes                 String // formato MM-YYYY
+  salarioPrevisto     Float
+  salarioReal         Float
+  extras              Float?
+  descontos           Float?
+  observacoes         String?
+  enviadoParaContador Boolean     @default(false)
+  dataCriacao         DateTime    @default(now())
+  dataAtualizacao     DateTime    @updatedAt
+}

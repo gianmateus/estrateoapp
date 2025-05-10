@@ -1,0 +1,944 @@
+import React, { useState, useEffect, useMemo, useRef } from 'react';
+import {
+  Box,
+  Grid,
+  Paper,
+  Typography,
+  Card,
+  CardContent,
+  Divider,
+  Button,
+  IconButton,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemIcon,
+  Tooltip,
+  Chip,
+  Stack,
+  CircularProgress,
+  Alert,
+  Snackbar,
+  useTheme
+} from '@mui/material';
+import Masonry from '@mui/lab/Masonry';
+import {
+  TrendingUp as TrendingUpIcon,
+  TrendingDown as TrendingDownIcon,
+  Inventory as InventoryIcon,
+  Warning as WarningIcon,
+  Payment as PaymentIcon,
+  AttachMoney as MoneyIcon,
+  MoneyOff as ExpenseIcon,
+  Add as AddIcon,
+  BarChart as ChartIcon,
+  Schedule as ScheduleIcon,
+  SmartToy as AIIcon,
+  SmartToy,
+  Insights as InsightsIcon,
+  PictureAsPdf as PdfIcon,
+  Receipt as ReceiptIcon,
+  Payments as PaymentsIcon,
+  AssignmentInd as AssignmentIndIcon,
+  BeachAccess as BeachAccessIcon,
+  Event as EventIcon,
+  Person as PersonIcon,
+} from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
+import { useFinanceiro, Transacao } from '../contexts/FinanceiroContext';
+import { useInventario } from '../contexts/InventarioContext';
+import { 
+  BarChart, 
+  Bar, 
+  XAxis, 
+  YAxis, 
+  Tooltip as ChartTooltip, 
+  ResponsiveContainer,
+  CartesianGrid,
+  Legend
+} from 'recharts';
+import { useTranslation } from 'react-i18next';
+import apiClient from '../services/api';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import mockDashboardData from '../mocks/mockDashboardData';
+import { formatCurrency } from '../utils/formatters';
+import Currency from '../components/Currency';
+import { generateDashboardReport, generateDashboardReportFromDOM } from '../utils/reportGenerator';
+import ParcelamentosCard from '../components/dashboard/ParcelamentosCard';
+import ResponsiveGrid from '../components/common/ResponsiveGrid';
+import MotionButton from '../components/common/MotionButton';
+import { motion } from 'framer-motion';
+import MetricCard from '../components/ui/MetricCard';
+import EmptyState from '../components/ui/EmptyState';
+import FinanceCharts from '../components/dashboard/FinanceCharts';
+
+// Interfaces for the dashboard API response
+// Interfaces para a resposta da API do dashboard
+interface DashboardData {
+  resumoFinanceiro: {
+    totalEntradas: number;
+    totalSaidas: number;
+    saldoAtual: number;
+  };
+  resumoInventario: {
+    totalItens: number;
+    itensCriticos: number;
+  };
+  estatisticasUso: {
+    usuariosAtivosHoje: number;
+    usuariosTotais: number;
+  };
+  recomendacoesIA: string[];
+  
+  // Novos campos para parcelamentos
+  recebiveisFuturos: Array<{
+    id: string;
+    descricao: string;
+    valor: number;
+    dataPrevista: string;
+    statusRecebimento: string;
+    cliente: string;
+  }>;
+  parcelamentosAbertos: Array<{
+    id: string;
+    descricao: string;
+    valor: number;
+    parcelasPagas: number;
+    totalParcelas: number;
+    proximaParcela: {
+      valor: number;
+      data: string;
+    };
+    tipo: 'entrada' | 'saida';
+  }>;
+  totaisPorCategoria: Array<{
+    categoria: string;
+    valorEntradas: number;
+    valorSaidas: number;
+    saldo: number;
+  }>;
+}
+
+// Interfaces para os dados da API (existentes)
+interface PaymentSummary {
+  pagos: number;
+  pendentes: number;
+  total: number;
+}
+
+interface InventorySummary {
+  itensCriticos: number;
+  totalItens: number;
+  valorTotal: number;
+}
+
+// Interface para os dados do gráfico
+interface ChartDataItem {
+  date: string;
+  income: number;
+  expenses: number;
+}
+
+// Interface para funcionários em férias
+interface FuncionarioFerias {
+  id: string;
+  nome: string;
+  dataInicio: string;
+  dataFim: string;
+  diasRestantes: number;
+}
+
+const Dashboard: React.FC = () => {
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const { transacoes, balanco } = useFinanceiro();
+  const { itens, resumo } = useInventario();
+  const theme = useTheme();
+  
+  // Verificar se o sistema prefere movimento reduzido
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  
+  // Estados para dados da API
+  const [paymentSummary, setPaymentSummary] = useState<PaymentSummary | null>(null);
+  const [inventorySummaryData, setInventorySummaryData] = useState<InventorySummary | null>(null);
+  const [criticalItemsCount, setCriticalItemsCount] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  
+  // State for dashboard data from the API
+  // Estado para os dados do dashboard da API
+  const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
+  
+  // Dados do gráfico simplificado
+  const [chartData, setChartData] = useState<ChartDataItem[]>([]);
+  
+  // Recomendações da IA
+  const [aiRecommendations, setAiRecommendations] = useState<string[]>([
+    t('sugestao1'),
+    t('sugestao2'),
+    t('sugestao3')
+  ]);
+
+  // Refs para os elementos a serem capturados no relatório
+  const financialSectionRef = useRef<HTMLDivElement>(null);
+  const aiSuggestionsRef = useRef<HTMLDivElement>(null);
+  const chartRef = useRef<HTMLDivElement>(null);
+  
+  // Estado para o snackbar de notificação
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'success' as 'success' | 'error' | 'info' | 'warning'
+  });
+
+  const [funcionariosEmFerias, setFuncionariosEmFerias] = useState<FuncionarioFerias[]>([]);
+  const [carregandoFerias, setCarregandoFerias] = useState<boolean>(false);
+
+  // Variantes de animação para fade-in
+  const fadeIn = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { duration: 0.6 } }
+  };
+
+  // Animação escalonada para cards
+  const staggerContainer = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  // Fetch data from the dashboard API endpoint
+  // Buscar dados do endpoint da API do dashboard
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      setIsLoading(true);
+      setError(null);
+      
+      try {
+        // Tentar buscar da API real
+        const response = await apiClient.get('/dashboard');
+        setDashboardData(response.data);
+        
+        // Update AI recommendations if they're provided
+        // Atualizar recomendações de IA se fornecidas
+        if (response.data.recomendacoesIA && response.data.recomendacoesIA.length > 0) {
+          setAiRecommendations(response.data.recomendacoesIA);
+        }
+        
+        // Fetch other summaries as before
+        // Buscar outros resumos como antes
+        // Buscar resumo de pagamentos
+        const paymentResponse = await apiClient.get<PaymentSummary>('/pagamentos/resumo');
+        setPaymentSummary(paymentResponse.data);
+        
+        // Buscar resumo do inventário
+        const inventoryResponse = await apiClient.get<InventorySummary>('/inventario/resumo');
+        setInventorySummaryData(inventoryResponse.data);
+        
+        // Buscar itens críticos
+        const suggestionsResponse = await apiClient.get('/inventario/sugestoes');
+        setCriticalItemsCount(suggestionsResponse.data.itensCriticos);
+      } catch (error) {
+        console.log('Erro ao buscar dados do dashboard, usando dados simulados', error);
+        
+        // Usar dados simulados em caso de erro
+        const mockData: DashboardData = {
+          ...mockDashboardData,
+          resumoFinanceiro: {
+            saldoAtual: mockDashboardData.saldoAtual || 0,
+            totalEntradas: mockDashboardData.entradasHoje || 0,
+            totalSaidas: mockDashboardData.saidasHoje || 0
+          },
+          resumoInventario: {
+            totalItens: mockDashboardData.itensTotal || 0,
+            itensCriticos: mockDashboardData.itensAbaixoMin || 0
+          },
+          estatisticasUso: {
+            usuariosAtivosHoje: 5,
+            usuariosTotais: 15
+          },
+          recomendacoesIA: mockDashboardData.sugestoesIA || [],
+          
+          // Adicionar dados simulados para parcelamentos
+          recebiveisFuturos: [
+            {
+              id: '1',
+              descricao: 'Pagamento de cliente XYZ',
+              valor: 1500.00,
+              dataPrevista: '2023-10-15',
+              statusRecebimento: 'pendente',
+              cliente: 'Cliente XYZ'
+            },
+            {
+              id: '2',
+              descricao: 'Serviço de consultoria',
+              valor: 2800.00,
+              dataPrevista: '2023-10-20',
+              statusRecebimento: 'parcialmente_recebido',
+              cliente: 'Empresa ABC'
+            },
+            {
+              id: '3',
+              descricao: 'Aluguel de equipamento',
+              valor: 750.00,
+              dataPrevista: '2023-11-01',
+              statusRecebimento: 'pendente',
+              cliente: 'Cliente DEF'
+            }
+          ],
+          parcelamentosAbertos: [
+            {
+              id: '1',
+              descricao: 'Compra de equipamentos',
+              valor: 3600.00,
+              parcelasPagas: 2,
+              totalParcelas: 6,
+              proximaParcela: {
+                valor: 600.00,
+                data: '2023-10-15'
+              },
+              tipo: 'saida'
+            },
+            {
+              id: '2',
+              descricao: 'Venda de software',
+              valor: 4800.00,
+              parcelasPagas: 1,
+              totalParcelas: 4,
+              proximaParcela: {
+                valor: 1200.00,
+                data: '2023-10-10'
+              },
+              tipo: 'entrada'
+            },
+            {
+              id: '3',
+              descricao: 'Reforma do escritório',
+              valor: 9000.00,
+              parcelasPagas: 3,
+              totalParcelas: 10,
+              proximaParcela: {
+                valor: 900.00,
+                data: '2023-10-25'
+              },
+              tipo: 'saida'
+            }
+          ],
+          totaisPorCategoria: [
+            {
+              categoria: 'Vendas',
+              valorEntradas: 12500.00,
+              valorSaidas: 0,
+              saldo: 12500.00
+            },
+            {
+              categoria: 'Serviços',
+              valorEntradas: 8750.00,
+              valorSaidas: 1200.00,
+              saldo: 7550.00
+            },
+            {
+              categoria: 'Operacional',
+              valorEntradas: 0,
+              valorSaidas: 5800.00,
+              saldo: -5800.00
+            },
+            {
+              categoria: 'Marketing',
+              valorEntradas: 0,
+              valorSaidas: 2300.00,
+              saldo: -2300.00
+            },
+            {
+              categoria: 'Aluguel',
+              valorEntradas: 0,
+              valorSaidas: 3500.00,
+              saldo: -3500.00
+            }
+          ]
+        };
+        
+        setDashboardData(mockData);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    fetchDashboardData();
+  }, []);
+
+  useEffect(() => {
+    // Preparar dados para o gráfico de barras
+    const today = new Date();
+    const lastSevenDays = Array.from({ length: 7 }, (_, i) => {
+      const dateObj = new Date();
+      dateObj.setDate(today.getDate() - (6 - i));
+      return dateObj.toISOString().split('T')[0];
+    });
+
+    const processedData = lastSevenDays.map(dateString => {
+      const dailyTransactions = transacoes.filter((t: Transacao) => t.data.startsWith(dateString));
+      const incomeAmount = dailyTransactions
+        .filter((t: Transacao) => t.tipo === 'entrada')
+        .reduce((acc: number, t: Transacao) => acc + t.valor, 0);
+      const expenseAmount = dailyTransactions
+        .filter((t: Transacao) => t.tipo === 'saida')
+        .reduce((acc: number, t: Transacao) => acc + t.valor, 0);
+
+      // Formatar a data para exibição mais amigável
+      const dateObj = new Date(dateString);
+      const day = dateObj.getDate();
+      const month = dateObj.getMonth() + 1;
+      const formattedDate = `${day}/${month}`;
+
+      return {
+        date: formattedDate,
+        income: incomeAmount,
+        expenses: expenseAmount
+      };
+    });
+
+    setChartData(processedData);
+  }, [transacoes]);
+
+  const getTodayIncome = (): number => {
+    const today = new Date().toISOString().split('T')[0];
+    return transacoes
+      .filter((t: Transacao) => t.data.startsWith(today) && t.tipo === 'entrada')
+      .reduce((acc: number, t: Transacao) => acc + t.valor, 0);
+  };
+
+  const getTodayExpenses = (): number => {
+    const today = new Date().toISOString().split('T')[0];
+    return transacoes
+      .filter((t: Transacao) => t.data.startsWith(today) && t.tipo === 'saida')
+      .reduce((acc: number, t: Transacao) => acc + t.valor, 0);
+  };
+
+  // Função para gerar relatório em PDF
+  const handleGenerateReport = async () => {
+    try {
+      // Método 1: Gerar relatório com dados estruturados
+      await generateDashboardReport(
+        {
+          currentDate: new Date(),
+          balance: Number(dashboardData?.resumoFinanceiro?.saldoAtual || balanco?.saldoAtual || 0),
+          todayIncome: Number(getTodayIncome()),
+          todayExpenses: Number(getTodayExpenses()),
+          payments: {
+            total: paymentSummary?.total || 0,
+            paid: paymentSummary?.pagos || 0,
+            pending: paymentSummary?.pendentes || 0
+          },
+          inventory: {
+            totalItems: dashboardData?.resumoInventario.totalItens || inventorySummaryData?.totalItens || 0,
+            criticalItems: dashboardData?.resumoInventario.itensCriticos || criticalItemsCount || 0,
+            totalValue: Number(inventorySummaryData?.valorTotal || 0)
+          },
+          aiSuggestions: aiRecommendations
+        },
+        t
+      );
+      
+      /* Método alternativo: capturar elementos DOM
+      await generateDashboardReportFromDOM(
+        ['financial-overview', 'ai-suggestions', 'chart-container'],
+        t
+      ); */
+      
+      setSnackbar({
+        open: true,
+        message: t('relatorioGeradoComSucesso'),
+        severity: 'success'
+      });
+    } catch (error) {
+      console.error('Erro ao gerar relatório:', error);
+      setSnackbar({
+        open: true,
+        message: t('erroAoGerarRelatorio'),
+        severity: 'error'
+      });
+    }
+  };
+  
+  const handleCloseSnackbar = () => {
+    setSnackbar({ ...snackbar, open: false });
+  };
+
+  // Buscar funcionários em férias
+  useEffect(() => {
+    const fetchFuncionariosEmFerias = async () => {
+      setCarregandoFerias(true);
+      try {
+        // Simulação de chamada à API
+        await new Promise(resolve => setTimeout(resolve, 600));
+        
+        // Dados simulados de funcionários em férias
+        const mockFuncionariosFerias: FuncionarioFerias[] = [
+          {
+            id: '1',
+            nome: 'Ana Silva',
+            dataInicio: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(), // 5 dias atrás
+            dataFim: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString(), // 10 dias no futuro
+            diasRestantes: 10
+          },
+          {
+            id: '2',
+            nome: 'Pedro Santos',
+            dataInicio: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), // 2 dias atrás
+            dataFim: new Date(Date.now() + 12 * 24 * 60 * 60 * 1000).toISOString(), // 12 dias no futuro
+            diasRestantes: 12
+          },
+          {
+            id: '3',
+            nome: 'Carla Oliveira',
+            dataInicio: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(), // 5 dias no futuro
+            dataFim: new Date(Date.now() + 20 * 24 * 60 * 60 * 1000).toISOString(), // 20 dias no futuro
+            diasRestantes: 0 // Ainda não começou
+          }
+        ];
+        
+        setFuncionariosEmFerias(mockFuncionariosFerias);
+      } catch (error) {
+        console.error('Erro ao buscar funcionários em férias:', error);
+      } finally {
+        setCarregandoFerias(false);
+      }
+    };
+    
+    fetchFuncionariosEmFerias();
+  }, []);
+
+  // Formatar data
+  const formatarData = (dataString: string): string => {
+    return new Date(dataString).toLocaleDateString('pt-BR');
+  };
+
+  // Verificar se as férias já começaram
+  const feriasJaComecaram = (dataInicio: string): boolean => {
+    const hoje = new Date();
+    const inicio = new Date(dataInicio);
+    return inicio <= hoje;
+  };
+
+  // Show loading indicator while data is being fetched
+  // Mostrar indicador de carregamento enquanto os dados são buscados
+  if (isLoading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  // Show error message if there was a problem
+  // Mostrar mensagem de erro se ocorreu algum problema
+  if (error && error !== 'mockdata_warning') {
+    return (
+      <Box sx={{ mt: 2 }}>
+        <Alert severity="error">{error}</Alert>
+      </Box>
+    );
+  }
+
+  // Preparar os dados das métricas
+  const metrics = [
+    {
+      id: 'saldo',
+      title: t('saldoAtual'),
+      value: formatCurrency(dashboardData?.resumoFinanceiro?.saldoAtual || 0),
+      icon: <AttachMoneyIcon />,
+      iconBg: `${theme.palette.primary.main}15`,
+      color: `${theme.palette.primary.main}99`
+    },
+    {
+      id: 'receitas',
+      title: t('receitaHoje'),
+      value: formatCurrency(getTodayIncome()),
+      icon: <TrendingUpIcon />,
+      iconBg: `${theme.palette.success.main}15`,
+      color: `${theme.palette.success.main}66`
+    },
+    {
+      id: 'despesas',
+      title: t('despesaHoje'),
+      value: formatCurrency(getTodayExpenses()),
+      icon: <TrendingDownIcon />,
+      iconBg: `${theme.palette.error.main}15`,
+      color: `${theme.palette.error.main}66`
+    },
+    {
+      id: 'estoque',
+      title: t('itensEmEstoque'),
+      value: dashboardData?.resumoInventario?.totalItens || 0,
+      icon: <InventoryIcon />,
+      iconBg: `${theme.palette.info.main}15`,
+      color: theme.palette.grey[400]
+    },
+    {
+      id: 'usuarios',
+      title: t('usuariosAtivos'),
+      value: dashboardData?.estatisticasUso?.usuariosAtivosHoje || 0,
+      icon: <PersonIcon />,
+      iconBg: `${theme.palette.secondary.main}15`,
+      color: theme.palette.grey[400]
+    },
+    {
+      id: 'ferias',
+      title: t('funcionariosEmFerias'),
+      value: funcionariosEmFerias.length,
+      icon: <BeachAccessIcon />,
+      iconBg: '#E6EBF1',
+      color: theme.palette.grey[400]
+    }
+  ];
+
+  return (
+    <Box
+      sx={{
+        px: { xs: 2, md: 4 },
+        py: 3
+      }}
+    >
+      {/* Header fixo com botão de gerar relatório */}
+      <Box
+        sx={{
+          position: 'sticky',
+          top: 0,
+          zIndex: 10,
+          py: 2,
+          px: 1,
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          backgroundColor: theme.palette.background.default,
+          backdropFilter: 'blur(8px)',
+          borderBottom: `1px solid ${theme.palette.divider}`,
+          mb: 4
+        }}
+      >
+        <Typography 
+          variant="h5" 
+          fontWeight="bold" 
+          color="text.primary"
+        >
+          {t('dashboardObj.title')}
+        </Typography>
+        
+        <motion.div
+          whileHover={{ scale: 1.05 }}
+          transition={{ type: 'spring', stiffness: 400, damping: 10 }}
+        >
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<PdfIcon />}
+            onClick={handleGenerateReport}
+            sx={{
+              width: { xs: '100%', sm: 180 },
+              height: 40,
+              borderRadius: 2,
+              boxShadow: theme.shadows[2],
+              '&:focus': {
+                outline: `2px solid ${theme.palette.primary.main}`,
+                outlineOffset: 2
+              }
+            }}
+          >
+            {t('gerarRelatorio')}
+          </Button>
+        </motion.div>
+      </Box>
+
+      {/* Grid de métricas */}
+      <Grid container spacing={4}>
+        {metrics.map(metric => (
+          <Grid item xs={12} md={6} lg={4} key={metric.id}>
+            <MetricCard
+              title={metric.title}
+              value={metric.value}
+              icon={metric.icon}
+              iconBg={metric.iconBg}
+              color={metric.color}
+            />
+          </Grid>
+        ))}
+      </Grid>
+
+      {/* Seção de Gráficos */}
+      <Typography variant="h5" sx={{ mt: 6, mb: 2, fontWeight: 600 }}>
+        {t('graficos')}
+      </Typography>
+      
+      <Grid container spacing={4} sx={{ mt: 1 }}>
+        <Grid item xs={12} md={6}>
+          <Card
+            sx={{
+              borderRadius: 4,
+              boxShadow: theme.shadows[3],
+              p: 3,
+              height: '100%'
+            }}
+          >
+            <Typography
+              variant="h5"
+              sx={{ mb: 3, fontWeight: 500 }}
+            >
+              {t('finance_charts_monthlyIncome')}
+            </Typography>
+            
+            <Box
+              sx={{ height: 300 }}
+              aria-labelledby="receitas-despesas-chart-title"
+            >
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={chartData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.divider} />
+                  <XAxis dataKey="date" />
+                  <YAxis tickFormatter={(value) => `${value}€`} />
+                  <ChartTooltip 
+                    labelStyle={{ color: theme.palette.text.secondary }}
+                    itemStyle={{
+                      color: theme.palette.text.primary,
+                      backgroundColor: theme.palette.background.paper,
+                      border: `1px solid ${theme.palette.divider}`,
+                      borderRadius: 2
+                    }}
+                    formatter={(value: number) => [formatCurrency(Number(value)), '']}
+                  />
+                  <Legend />
+                  <Bar
+                    name={String(t('receitas'))}
+                    dataKey="income"
+                    fill={theme.palette.success.main}
+                    radius={[4, 4, 0, 0]}
+                  />
+                  <Bar
+                    name={String(t('despesas'))}
+                    dataKey="expenses"
+                    fill={theme.palette.error.main}
+                    radius={[4, 4, 0, 0]}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            </Box>
+          </Card>
+        </Grid>
+        
+        <Grid item xs={12} md={6}>
+          <Card
+            sx={{
+              borderRadius: 4,
+              boxShadow: theme.shadows[3],
+              p: 3,
+              height: '100%'
+            }}
+          >
+            <Typography
+              variant="h5"
+              sx={{ mb: 3, fontWeight: 500 }}
+            >
+              {t('relatorioGastos')}
+            </Typography>
+            
+            <Box
+              sx={{ height: 300 }}
+              aria-labelledby="gastos-chart-title"
+            >
+              {dashboardData?.totaisPorCategoria ? (
+                <ResponsiveContainer width="100%" height="100%">
+                  {/* Adicione aqui um gráfico de pizza ou donut */}
+                  <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+                    <Typography>Gráfico de distribuição será implementado</Typography>
+                  </Box>
+                </ResponsiveContainer>
+              ) : (
+                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+                  <Typography>{t('semDadosNoPeriodo')}</Typography>
+                </Box>
+              )}
+            </Box>
+          </Card>
+        </Grid>
+      </Grid>
+
+      {/* Seção de Parcelamentos e Recebíveis */}
+      <Typography variant="h5" sx={{ mt: 6, mb: 2, fontWeight: 600 }}>
+        Parcelamentos e Recebíveis
+      </Typography>
+      
+      <Card sx={{ borderRadius: 4, boxShadow: theme.shadows[3], p: 3, mt: 2 }}>
+        <Stack 
+          direction={{ xs: 'column', md: 'row' }} 
+          spacing={4}
+        >
+          <Box component={motion.div} 
+            whileHover={{ 
+              boxShadow: theme.shadows[3], 
+              translateY: prefersReducedMotion ? 0 : -2
+            }}
+            flex={1}
+            sx={{ 
+              p: 3, 
+              borderRadius: 3, 
+              border: `1px solid ${theme.palette.divider}`,
+              boxShadow: theme.shadows[1]
+            }}
+          >
+            <Typography variant="h5" sx={{ mb: 2 }}>
+              Recebíveis Futuros
+            </Typography>
+            
+            {dashboardData?.recebiveisFuturos && dashboardData.recebiveisFuturos.length > 0 ? (
+              <List disablePadding>
+                {dashboardData.recebiveisFuturos.slice(0, 3).map((item, index) => (
+                  <ListItem 
+                    key={item.id}
+                    disablePadding
+                    sx={{
+                      borderBottom: index < Math.min(dashboardData.recebiveisFuturos?.length - 1, 2) 
+                        ? `1px solid ${theme.palette.divider}` 
+                        : 'none',
+                      py: 1.5
+                    }}
+                  >
+                    <ListItemText
+                      primary={item.descricao}
+                      secondary={`${formatCurrency(item.valor)} - ${new Date(item.dataPrevista).toLocaleDateString()}`}
+                      primaryTypographyProps={{ fontWeight: 500 }}
+                    />
+                  </ListItem>
+                ))}
+              </List>
+            ) : (
+              <Typography color="text.secondary" sx={{ textAlign: 'center', py: 2 }}>
+                {t('semDadosNoPeriodo')}
+              </Typography>
+            )}
+          </Box>
+          
+          <Box component={motion.div} 
+            whileHover={{ 
+              boxShadow: theme.shadows[3], 
+              translateY: prefersReducedMotion ? 0 : -2
+            }}
+            flex={1}
+            sx={{ 
+              p: 3, 
+              borderRadius: 3, 
+              border: `1px solid ${theme.palette.divider}`,
+              boxShadow: theme.shadows[1]
+            }}
+          >
+            <Typography variant="h5" sx={{ mb: 2 }}>
+              Parcelamentos Abertos
+            </Typography>
+            
+            {dashboardData?.parcelamentosAbertos && dashboardData.parcelamentosAbertos.length > 0 ? (
+              <List disablePadding>
+                {dashboardData.parcelamentosAbertos.slice(0, 3).map((item, index) => (
+                  <ListItem 
+                    key={item.id}
+                    disablePadding
+                    sx={{
+                      borderBottom: index < Math.min(dashboardData.parcelamentosAbertos?.length - 1, 2) 
+                        ? `1px solid ${theme.palette.divider}` 
+                        : 'none',
+                      py: 1.5
+                    }}
+                  >
+                    <ListItemText
+                      primary={item.descricao}
+                      secondary={`${item.parcelasPagas}/${item.totalParcelas} parcelas - Próx: ${formatCurrency(item.proximaParcela.valor)}`}
+                      primaryTypographyProps={{ fontWeight: 500 }}
+                    />
+                    <Chip 
+                      label={item.tipo === 'entrada' ? t('entrada') : t('saida')}
+                      color={item.tipo === 'entrada' ? 'success' : 'error'}
+                      size="small"
+                      sx={{ ml: 1 }}
+                    />
+                  </ListItem>
+                ))}
+              </List>
+            ) : (
+              <Typography color="text.secondary" sx={{ textAlign: 'center', py: 2 }}>
+                {t('semDadosNoPeriodo')}
+              </Typography>
+            )}
+          </Box>
+        </Stack>
+      </Card>
+
+      {/* Seção de Recomendações IA */}
+      <Typography variant="h5" sx={{ mt: 6, mb: 2, fontWeight: 600 }}>
+        {t('recomendacoesIA')}
+      </Typography>
+      
+      <Card sx={{ borderRadius: 4, boxShadow: theme.shadows[3], p: 3, mt: 2 }}>
+        <Box ref={aiSuggestionsRef}>
+          {aiRecommendations.length > 0 ? (
+            <List>
+              {aiRecommendations.map((suggestion, index) => (
+                <ListItem
+                  key={index}
+                  sx={{
+                    borderBottom: index < aiRecommendations.length - 1 ? `1px solid ${theme.palette.divider}` : 'none',
+                    py: 2,
+                    borderRadius: 1,
+                    bgcolor: index % 2 === 1 ? `${theme.palette.primary.main}05` : 'transparent',
+                  }}
+                >
+                  <ListItemIcon sx={{ minWidth: 42 }}>
+                    <Box sx={{
+                      backgroundColor: `${theme.palette.info.main}15`,
+                      width: 32,
+                      height: 32,
+                      borderRadius: '50%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}>
+                      <InsightsIcon fontSize="small" sx={{ color: theme.palette.info.main }} />
+                    </Box>
+                  </ListItemIcon>
+                  <ListItemText 
+                    primary={suggestion}
+                    primaryTypographyProps={{ fontWeight: 500 }}
+                  />
+                </ListItem>
+              ))}
+            </List>
+          ) : (
+            <Typography color="text.secondary" sx={{ textAlign: 'center', py: 2 }}>
+              {t('semDadosNoPeriodo')}
+            </Typography>
+          )}
+        </Box>
+      </Card>
+
+      <Snackbar 
+        open={snackbar.open} 
+        autoHideDuration={6000} 
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert 
+          onClose={handleCloseSnackbar} 
+          severity={snackbar.severity}
+          sx={{ width: '100%', borderRadius: 2, boxShadow: theme.shadows[3] }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
+    </Box>
+  );
+};
+
+export default Dashboard;

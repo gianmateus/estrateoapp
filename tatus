@@ -1,0 +1,5 @@
+[33mcommit 2cdc538d76bcf15beabe5bd0ffe904bc24fa93ac[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m)[m
+Author: Seu Nome <seu-email@exemplo.com>
+Date:   Tue Apr 22 08:40:29 2025 +0200
+
+    fix: ajusta formato da data no PDF do dashboard

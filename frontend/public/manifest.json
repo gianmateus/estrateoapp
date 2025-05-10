@@ -1,0 +1,45 @@
+{
+  "short_name": "Estrateo",
+  "name": "Estrateo - Gestão para Restaurantes",
+  "description": "Plataforma completa de gestão de restaurantes para controle financeiro, estoque e funcionários",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "logo192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "logo512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": ".",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#1a365d",
+  "background_color": "#ffffff",
+  "categories": ["business", "finance", "productivity"],
+  "screenshots": [
+    {
+      "src": "screenshots/dashboard.png",
+      "type": "image/png",
+      "sizes": "1280x720"
+    },
+    {
+      "src": "screenshots/mobile.png",
+      "type": "image/png",
+      "sizes": "750x1334"
+    }
+  ],
+  "lang": "pt-BR",
+  "dir": "ltr"
+} 

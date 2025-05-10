@@ -1,0 +1,6 @@
+// ... existing code ...
+    validationSchema,
+    onSubmit: async (values: ClienteFormValues) => {
+      setLoading(true);
+      setError(null);
+// ... existing code ...
