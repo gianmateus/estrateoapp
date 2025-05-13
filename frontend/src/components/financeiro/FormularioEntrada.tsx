@@ -25,9 +25,11 @@ import {
   CardContent,
   CardHeader,
   useTheme,
-  Paper
+  Paper,
+  Tooltip
 } from '@mui/material';
 import { ExpandMore, ExpandLess } from '@mui/icons-material';
+import InfoIcon from '@mui/icons-material/Info';
 import { format, addMonths } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { Transacao, TipoEntrada, StatusRecebimento, FormaPagamento, Parcela } from '../../contexts/FinanceiroContext';
@@ -74,6 +76,7 @@ const FormularioEntrada: React.FC<FormularioEntradaProps> = ({
       cliente: prev.cliente || '',
       formaPagamento: prev.formaPagamento || 'transferencia',
       numeroDocumento: prev.numeroDocumento || '',
+      notaFiscal: prev.notaFiscal || '',
       categoria: prev.categoria || 'Vendas',
     }));
   }, [setFormData]);
@@ -246,19 +249,48 @@ const FormularioEntrada: React.FC<FormularioEntradaProps> = ({
       <Grid item xs={12} id="descricao-section">
         <Card elevation={2}>
           <CardContent>
-            <TextField
-              fullWidth
-              label="Descrição"
-              name="descricao"
-              value={formData.descricao}
-              onChange={handleChange}
-              error={!!formErrors.descricao}
-              helperText={formErrors.descricao}
-              required
-              InputLabelProps={{ 
-                style: { fontWeight: 'bold' }
-              }}
-            />
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Descrição"
+                  name="descricao"
+                  value={formData.descricao}
+                  onChange={handleChange}
+                  error={!!formErrors.descricao}
+                  helperText={formErrors.descricao}
+                  multiline
+                  rows={2}
+                  required
+                  InputLabelProps={{ 
+                    style: { fontWeight: 'bold' }
+                  }}
+                />
+              </Grid>
+              
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Nota Fiscal (opcional)"
+                  name="notaFiscal"
+                  value={formData.notaFiscal || ''}
+                  onChange={handleChange}
+                  placeholder="Ex: 123456789 ou INV-DE-2025-01"
+                  InputLabelProps={{ 
+                    style: { fontWeight: 'bold' }
+                  }}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <Tooltip title="Número da nota fiscal ou invoice relacionada a esta entrada">
+                          <InfoIcon fontSize="small" color="action" />
+                        </Tooltip>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Grid>
+            </Grid>
           </CardContent>
         </Card>
       </Grid>

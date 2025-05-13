@@ -72,6 +72,7 @@ import { motion } from 'framer-motion';
 import MetricCard from '../components/ui/MetricCard';
 import EmptyState from '../components/ui/EmptyState';
 import FinanceCharts from '../components/dashboard/FinanceCharts';
+import { RelatorioModalDashboard } from '../components/Relatorios/RelatorioModalDashboard';
 
 // Interfaces for the dashboard API response
 // Interfaces para a resposta da API do dashboard
@@ -212,6 +213,8 @@ const Dashboard: React.FC = () => {
       }
     }
   };
+
+  const [openModal, setOpenModal] = useState(false);
 
   // Fetch data from the dashboard API endpoint
   // Buscar dados do endpoint da API do dashboard
@@ -639,7 +642,7 @@ const Dashboard: React.FC = () => {
             variant="contained"
             color="primary"
             startIcon={<PdfIcon />}
-            onClick={handleGenerateReport}
+            onClick={() => setOpenModal(true)}
             sx={{
               width: { xs: '100%', sm: 180 },
               height: 40,
@@ -655,6 +658,8 @@ const Dashboard: React.FC = () => {
           </Button>
         </motion.div>
       </Box>
+
+      <RelatorioModalDashboard open={openModal} onClose={() => setOpenModal(false)} />
 
       {/* Grid de métricas */}
       <Grid container spacing={4}>

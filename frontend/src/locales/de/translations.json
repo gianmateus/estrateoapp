@@ -1,0 +1,110 @@
+{
+  "general": {
+    "welcome": "Willkommen bei Estrateo",
+    "loading": "Laden...",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "add": "Hinzufügen",
+    "search": "Suchen",
+    "filter": "Filter",
+    "yes": "Ja",
+    "no": "Nein",
+    "ok": "OK",
+    "error": "Fehler",
+    "success": "Erfolg",
+    "warning": "Warnung",
+    "info": "Info"
+  },
+  "auth": {
+    "login": "Anmelden",
+    "logout": "Abmelden",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "forgotPassword": "Passwort vergessen?",
+    "resetPassword": "Passwort zurücksetzen",
+    "register": "Registrieren",
+    "rememberMe": "Angemeldet bleiben"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Willkommen zurück",
+    "summary": "Zusammenfassung",
+    "recentTransactions": "Letzte Transaktionen",
+    "recentOrders": "Letzte Bestellungen",
+    "statistics": "Statistiken",
+    "moreDetails": "Mehr Details"
+  },
+  "contador": {
+    "pageTitle": "Finanzberichte & Steuern",
+    "pageSubtitle": "Steuerberechnungen und Finanzberichte für den deutschen Markt",
+    "selecioneMes": "Monat auswählen",
+    "infoDeutscheSteuern": "Dieses Modul ist an die deutschen Steuervorschriften angepasst, mit Unterstützung für Mehrwertsteuer-Berechnungen und ELSTER-Integrationen.",
+    "dashboardTitle": "Finanzdashboard",
+    "dashboardDesc": "Übersicht der finanziellen Kennzahlen und Steuerberechnungen",
+    "conformidadeGdpr": "Alle Daten werden gemäß den DSGVO-Richtlinien verarbeitet und geschützt",
+    
+    "impostos": {
+      "mehrwertsteuer": "Mehrwertsteuer",
+      "mehrwertsteuerDesc": "Umsatzsteuer - Standardsatz 19%",
+      "gewerbesteuer": "Gewerbesteuer",
+      "gewerbesteuerDesc": "Kommunale Unternehmenssteuer",
+      "einkommensteuer": "Einkommensteuer",
+      "einkommensteuerDesc": "Einkommenssteuer für Einzelpersonen",
+      "koerperschaftsteuer": "Körperschaftsteuer",
+      "koerperschaftsteuerDesc": "Steuer auf Unternehmensgewinne",
+      "solidaritaetszuschlag": "Solidaritätszuschlag",
+      "solidaritaetszuschlagDesc": "Ergänzungsabgabe zur Einkommensteuer"
+    },
+    
+    "abas": {
+      "relatoriosFiscais": "Steuerberichte",
+      "configuracoes": "Einstellungen"
+    },
+    
+    "relatorios": {
+      "titulo": "Steuerberichte & Finanzdokumente",
+      "subtitulo": "Generieren Sie Berichte in Übereinstimmung mit deutschen und europäischen Standards",
+      "vatReport": "Umsatzsteuervoranmeldung",
+      "vatReportDesc": "Monatliche Umsatzsteuervoranmeldung für ELSTER",
+      "annualFinancial": "Jahresabschluss",
+      "annualFinancialDesc": "Kompletter Finanzbericht im XBRL-Format",
+      "tradeTax": "Gewerbesteuererklärung",
+      "tradeTaxDesc": "Jährliche Gewerbesteuererklärung",
+      "euVatReport": "EU-Mehrwertsteuer-Meldung",
+      "euVatReportDesc": "Bericht für grenzüberschreitende EU-Transaktionen",
+      "emBreve": "Bald verfügbar",
+      "gerar": "Generieren",
+      "processando": "Wird verarbeitet...",
+      "sucessoGeracao": "Bericht erfolgreich generiert",
+      "erroGeracao": "Fehler bei der Berichtsgenerierung",
+      "conformidadeInfo": "Konformität und Einhaltung von Vorschriften",
+      "conformidadeDesc": "Alle generierten Berichte entsprechen den aktuellen deutschen Steuervorschriften und EU-Richtlinien."
+    },
+    
+    "configuracoes": {
+      "titulo": "Steuereinstellungen",
+      "subtitulo": "Konfigurieren Sie Steuersätze und Abrechnungsoptionen",
+      "taxRateTitle": "Mehrwertsteuersatz",
+      "taxRateDesc": "Wählen Sie den anzuwendenden Mehrwertsteuersatz",
+      "taxRate": "Steuersatz",
+      "taxRateNormal": "Normal",
+      "taxRateReduced": "Ermäßigt",
+      "taxRateZero": "Nullsatz",
+      "ecommerce": "E-Commerce-Verkäufe aktivieren",
+      "oneStopShop": "One-Stop-Shop für EU-Verkäufe",
+      "oneStopShopTooltip": "Vereinfachte Mehrwertsteuerabwicklung für Verkäufe an EU-Kunden",
+      "businessTaxSettings": "Gewerbesteuereinstellungen",
+      "businessTaxSettingsDesc": "Konfigurieren Sie die Berechnungsparameter für die Gewerbesteuer",
+      "businessTaxRate": "Gewerbesteuersatz",
+      "euMember": "EU-Mitgliedsstaat",
+      "enableExports": "Exporte aktivieren",
+      "restaurarPadrao": "Standardeinstellungen",
+      "salvarConfiguracoes": "Einstellungen speichern",
+      "salvoComSucesso": "Einstellungen erfolgreich gespeichert",
+      "gdprInfo": "Datenschutzhinweis",
+      "gdprDesc": "Alle steuerrelevanten Daten werden gemäß den DSGVO-Anforderungen und deutschen Steuervorschriften verarbeitet und aufbewahrt."
+    }
+  }
+} 

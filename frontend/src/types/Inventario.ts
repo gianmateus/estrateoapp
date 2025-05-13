@@ -4,6 +4,11 @@
 export type FrequenciaUso = 'diaria' | 'semanal' | 'mensal' | 'nenhuma';
 
 /**
+ * Tipo para periodicidade de necessidade do estoque
+ */
+export type PeriodicidadeNecessidade = 'diario' | 'semanal' | 'mensal' | 'trimestral';
+
+/**
  * Interface representando um item do inventário retornado pela API
  */
 export interface InventarioItem {
@@ -26,6 +31,7 @@ export interface InventarioItem {
   dataValidade?: string;         // Data de validade para produtos perecíveis
   quantidadeMinima?: number;     // Quantidade mínima para alertas
   localArmazenamento?: string;   // Local de armazenamento (prateleira, depósito, etc.)
+  periodicidadeNecessidade?: PeriodicidadeNecessidade; // Periodicidade da necessidade de estoque
   
   estoqueNecessario?: number;    // Campo opcional para cálculo de necessidade
 }
@@ -50,6 +56,7 @@ export interface InventarioInput {
   dataValidade?: string;
   quantidadeMinima?: number;
   localArmazenamento?: string;
+  periodicidadeNecessidade?: PeriodicidadeNecessidade; // Periodicidade da necessidade de estoque
   
   estoqueNecessario?: number;
 }

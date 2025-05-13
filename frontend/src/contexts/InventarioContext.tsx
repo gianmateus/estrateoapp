@@ -1,78 +1,107 @@
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 import { EventBus } from '../services/EventBus';
+import api from '../services/api';
+
+// Função para calcular a necessidade semanal baseada na periodicidade
+export const calcularNecessidadeSemanal = (
+  quantidadeIdeal: number,
+  periodicidade: 'diario' | 'semanal' | 'mensal' | 'trimestral' = 'semanal'
+): number => {
+  switch (periodicidade) {
+    case 'diario':
+      return quantidadeIdeal * 7; // Necessidade diária x 7 dias da semana
+    case 'semanal':
+      return quantidadeIdeal; // A necessidade já é semanal
+    case 'mensal':
+      return quantidadeIdeal / 4; // Divide por 4 semanas no mês
+    case 'trimestral':
+      return quantidadeIdeal / 13; // Divide por 13 semanas no trimestre
+    default:
+      return quantidadeIdeal; // Fallback para semanal
+  }
+};
+
+// Função para calcular a sugestão de compra
+export const calcularSugestaoCompra = (
+  estoqueAtual: number,
+  quantidadeIdeal: number,
+  periodicidade: 'diario' | 'semanal' | 'mensal' | 'trimestral' = 'semanal'
+): number => {
+  const necessidadeSemanal = calcularNecessidadeSemanal(quantidadeIdeal, periodicidade);
+  return Math.max(0, necessidadeSemanal - estoqueAtual);
+};
 
 // Interfaces
 export interface ItemInventario {
   id: string;
   nome: string;
   quantidade: number;
-  unidade: 'kg' | 'unidade' | 'caixa' | 'g' | 'ml' | 'litro';
-  precoUnitario: number;
-  categoria: string;
-  
-  // Novos campos
-  codigoSKU?: string;            // Código de barras / SKU
-  fornecedor?: string;           // Fornecedor do produto
-  precoCusto?: number;           // Preço de custo
-  precoVenda?: number;           // Preço de venda
-  dataValidade?: string;         // Data de validade para perecíveis
-  quantidadeMinima?: number;     // Quantidade mínima para alertas
-  localArmazenamento?: string;   // Local de armazenamento
-  
-  // Campos existentes
-  estoqueMinimo?: number;
-  estoqueMaximo?: number;
-  localizacao?: string;
-  dataAtualizacao?: string;
+  preco: number; // Preço de venda
+  codigoEAN?: string; // Código EAN europeu
+  fornecedor?: string; // Nome do fornecedor
+  precoCompra?: number; // Preço de compra
+  unidadeMedida: string; // Unidade de medida (kg, g, unidade, etc.)
+  dataValidade?: Date | string; // Data de validade do produto
+  nivelMinimoEstoque?: number; // Quantidade mínima de estoque
+  periodicidadeNecessidade?: 'diario' | 'semanal' | 'mensal' | 'trimestral'; // Periodicidade de necessidade do estoque
+  localizacaoArmazem?: string; // Localização no armazém/estoque
+  categoria?: string; // Categoria do produto
+  descricao?: string; // Descrição do produto
+  foto?: string; // URL da foto do produto
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface MovimentacaoInventario {
   id: string;
   itemId: string;
+  itemNome: string;
   tipo: 'entrada' | 'saida' | 'ajuste';
   quantidade: number;
-  data: string;
-  responsavel: string;
   motivo?: string;
+  responsavel?: string;
+  dataMovimentacao: string;
 }
 
 export interface ResumoInventario {
   totalItens: number;
-  valorTotal: number;
-  itensAbaixoMinimo: number;
-  itensProximosVencimento: number; // Novo campo para contar itens próximos do vencimento
-  itensVencidos: number;          // Novo campo para contar itens vencidos
+  valorTotalCompra: number;
+  valorTotalVenda: number;
+  lucroPotencial: number;
+  itensCriticos: number;
+  itensValidadeProxima: number;
   ultimaAtualizacao: string;
+  categorias: Record<string, number>;
 }
 
 interface InventarioContextType {
   itens: ItemInventario[];
   movimentacoes: MovimentacaoInventario[];
   resumo: ResumoInventario;
-  adicionarItem: (item: Omit<ItemInventario, 'id' | 'dataAtualizacao'>) => void;
-  atualizarItem: (id: string, item: Partial<Omit<ItemInventario, 'id' | 'dataAtualizacao'>>) => void;
-  removerItem: (id: string) => void;
+  loading: boolean;
+  error: string | null;
+  adicionarItem: (item: Omit<ItemInventario, 'id' | 'createdAt' | 'updatedAt'>) => Promise<void>;
+  atualizarItem: (id: string, item: Partial<Omit<ItemInventario, 'id' | 'createdAt' | 'updatedAt'>>) => Promise<void>;
+  removerItem: (id: string) => Promise<void>;
   registrarMovimentacao: (movimentacao: Omit<MovimentacaoInventario, 'id'>) => void;
-  buscarItem: (id: string) => ItemInventario | undefined;
-  buscarItensPorCategoria: (categoria: string) => ItemInventario[];
-  carregarDados: () => void;
+  buscarItem: (id: string) => Promise<ItemInventario | undefined>;
+  buscarItensPorCategoria: (categoria: string) => Promise<ItemInventario[]>;
+  carregarDados: () => Promise<ItemInventario[]>;
+  buscarCategorias: () => Promise<string[]>;
+  exportarInventario: (formato: 'json' | 'csv') => Promise<void>;
+  filtrarItens: (filtros: Record<string, any>, pagina: number, limite: number) => Promise<{ itens: ItemInventario[], pagination: { total: number, page: number, limit: number, pages: number } }>;
 }
-
-// Chaves para armazenamento no localStorage
-const STORAGE_KEYS = {
-  itens: 'inventario_itens',
-  movimentacoes: 'inventario_movimentacoes',
-  resumo: 'inventario_resumo'
-};
 
 // Valores iniciais
 const resumoInicial: ResumoInventario = {
   totalItens: 0,
-  valorTotal: 0,
-  itensAbaixoMinimo: 0,
-  itensProximosVencimento: 0,
-  itensVencidos: 0,
-  ultimaAtualizacao: new Date().toISOString()
+  valorTotalCompra: 0,
+  valorTotalVenda: 0,
+  lucroPotencial: 0,
+  itensCriticos: 0,
+  itensValidadeProxima: 0,
+  ultimaAtualizacao: new Date().toISOString(),
+  categorias: {}
 };
 
 // Criação do contexto
@@ -89,253 +118,411 @@ export const InventarioProvider: React.FC<InventarioProviderProps> = ({ children
   const [itens, setItens] = useState<ItemInventario[]>([]);
   const [movimentacoes, setMovimentacoes] = useState<MovimentacaoInventario[]>([]);
   const [resumo, setResumo] = useState<ResumoInventario>(resumoInicial);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  // Função para calcular o resumo com base nos itens atuais
-  const calcularResumo = (itensInventario: ItemInventario[]): ResumoInventario => {
-    const valorTotal = itensInventario.reduce((total, item) => total + (item.quantidade * (item.precoVenda || item.precoUnitario)), 0);
-    const itensAbaixoMinimo = itensInventario.filter(
-      item => (item.quantidadeMinima !== undefined && item.quantidade < item.quantidadeMinima) || 
-              (item.estoqueMinimo !== undefined && item.quantidade < item.estoqueMinimo)
-    ).length;
+  // Função para carregar dados do backend e do localStorage
+  const carregarDados = async () => {
+    setLoading(true);
+    setError(null);
     
-    // Verificar itens próximos do vencimento (7 dias antes da data de validade)
-    const hoje = new Date();
-    const seteDiasDepois = new Date();
-    seteDiasDepois.setDate(hoje.getDate() + 7);
+    let itensCarregados: ItemInventario[] = [];
+    let usouFallback = false;
     
-    const itensProximosVencimento = itensInventario.filter(item => {
-      if (!item.dataValidade) return false;
-      const dataValidade = new Date(item.dataValidade);
-      return dataValidade > hoje && dataValidade <= seteDiasDepois;
-    }).length;
-    
-    // Verificar itens vencidos
-    const itensVencidos = itensInventario.filter(item => {
-      if (!item.dataValidade) return false;
-      const dataValidade = new Date(item.dataValidade);
-      return dataValidade < hoje;
-    }).length;
-
-    return {
-      totalItens: itensInventario.length,
-      valorTotal,
-      itensAbaixoMinimo,
-      itensProximosVencimento,
-      itensVencidos,
-      ultimaAtualizacao: new Date().toISOString()
-    };
-  };
-
-  // Função para carregar os dados do localStorage
-  const carregarDados = () => {
     try {
-      // Carregar itens
-      const itensStr = localStorage.getItem(STORAGE_KEYS.itens);
-      if (itensStr) {
-        const itensCarregados = JSON.parse(itensStr);
-        setItens(itensCarregados);
+      // Tentar carregar do backend primeiro
+      const response = await api.get('/inventario');
+      itensCarregados = response.data.itens || response.data;
 
-        // Recalcular resumo
-        const novoResumo = calcularResumo(itensCarregados);
-        setResumo(novoResumo);
-        localStorage.setItem(STORAGE_KEYS.resumo, JSON.stringify(novoResumo));
-      }
-
-      // Carregar movimentações
-      const movimentacoesStr = localStorage.getItem(STORAGE_KEYS.movimentacoes);
-      if (movimentacoesStr) {
-        setMovimentacoes(JSON.parse(movimentacoesStr));
+      // Carregar resumo
+      try {
+        const resumoResponse = await api.get('/inventario/resumo');
+        setResumo({
+          ...resumoResponse.data,
+          ultimaAtualizacao: new Date().toISOString()
+        });
+      } catch (resumoError) {
+        console.error('Erro ao carregar resumo, usando dados padrão:', resumoError);
+        setResumo({
+          totalItens: itensCarregados.length,
+          valorTotalCompra: 0,
+          valorTotalVenda: 0,
+          lucroPotencial: 0,
+          itensCriticos: 0,
+          itensValidadeProxima: 0,
+          ultimaAtualizacao: new Date().toISOString(),
+          categorias: {}
+        });
       }
     } catch (error) {
-      console.error('Erro ao carregar dados do inventário:', error);
+      console.error('Erro ao carregar dados do inventário do backend:', error);
+      usouFallback = true;
+      setError('Falha ao carregar dados do inventário do backend');
+      
+      // Carregar itens do localStorage (modo offline/fallback)
+      try {
+        const itensMock = JSON.parse(localStorage.getItem('mockInventario') || '[]');
+        console.log('Usando itens do localStorage como fallback:', itensMock.length, 'itens encontrados');
+        itensCarregados = itensMock;
+        
+        // Atualizar resumo com os dados locais
+        setResumo({
+          totalItens: itensCarregados.length,
+          valorTotalCompra: itensCarregados.reduce((total, item) => total + ((item.precoCompra || 0) * item.quantidade), 0),
+          valorTotalVenda: itensCarregados.reduce((total, item) => total + ((item.preco || 0) * item.quantidade), 0),
+          lucroPotencial: 0, // Calculado automaticamente depois
+          itensCriticos: 0,  // Não temos como saber sem a lógica do backend
+          itensValidadeProxima: 0, // Não temos como saber sem a lógica do backend
+          ultimaAtualizacao: new Date().toISOString(),
+          categorias: {}
+        });
+      } catch (localError) {
+        console.error('Erro ao carregar dados do localStorage:', localError);
+      }
     }
+
+    if (itensCarregados.length > 0) {
+      // Se chegou aqui, a comunicação com o backend foi bem-sucedida
+      // Mas ainda podemos ter itens no localStorage que precisam ser exibidos
+      // e eventualmente sincronizados com o backend quando ele voltar online
+      
+      try {
+        const itensMock = JSON.parse(localStorage.getItem('mockInventario') || '[]');
+        if (itensMock.length > 0) {
+          console.log('Encontrados', itensMock.length, 'itens no localStorage para combinar com backend');
+          
+          // Filtrar para não duplicar itens do backend (comparando por ID)
+          const idsBackend = new Set(itensCarregados.map(item => item.id));
+          
+          // Pegar apenas os itens que têm IDs com prefixo "local_"
+          const itensApenasLocal = itensMock.filter((item: ItemInventario) => 
+            item.id.startsWith('local_') && !idsBackend.has(item.id)
+          );
+          
+          if (itensApenasLocal.length > 0) {
+            console.log('Adicionando', itensApenasLocal.length, 'itens do localStorage aos itens do backend');
+            itensCarregados = [...itensCarregados, ...itensApenasLocal];
+            
+            // TODO: Implementar sincronização dos itens locais com o backend quando online
+          }
+        }
+      } catch (localError) {
+        console.error('Erro ao combinar dados do localStorage com backend:', localError);
+      }
+    }
+
+    // Definir itens carregados (do backend ou localStorage)
+    setItens(itensCarregados);
+    setLoading(false);
+    
+    // Se usou fallback, mostrar alerta para o usuário
+    if (usouFallback && itensCarregados.length > 0) {
+      console.info('Usando dados locais (offline mode) - ', itensCarregados.length, 'itens carregados');
+    }
+    
+    return itensCarregados;
   };
 
   // Carregar dados ao inicializar o componente
   useEffect(() => {
     carregarDados();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Função para adicionar um novo item
-  const adicionarItem = (novoItem: Omit<ItemInventario, 'id' | 'dataAtualizacao'>) => {
-    const item: ItemInventario = {
-      ...novoItem,
-      id: `item_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-      dataAtualizacao: new Date().toISOString()
-    };
-
-    const novosItens = [...itens, item];
-    setItens(novosItens);
-
-    // Atualizar resumo
-    const novoResumo = calcularResumo(novosItens);
-    setResumo(novoResumo);
-
-    // Persistir no localStorage
-    localStorage.setItem(STORAGE_KEYS.itens, JSON.stringify(novosItens));
-    localStorage.setItem(STORAGE_KEYS.resumo, JSON.stringify(novoResumo));
+  const adicionarItem = async (novoItem: Omit<ItemInventario, 'id' | 'createdAt' | 'updatedAt'>) => {
+    setLoading(true);
+    setError(null);
     
-    // Verificar se o item está abaixo do mínimo e emitir evento
-    if ((item.quantidadeMinima !== undefined && item.quantidade < item.quantidadeMinima) ||
-        (item.estoqueMinimo !== undefined && item.quantidade < item.estoqueMinimo)) {
-      EventBus.emit('estoque.item.abaixo.minimo', {
-        id: item.id,
-        nome: item.nome,
-        quantidade: item.quantidade,
-        minimo: item.quantidadeMinima || item.estoqueMinimo
-      });
+    try {
+      // Tentar adicionar via API
+      const response = await api.post('/inventario', novoItem);
+      
+      if (response.data && response.data.item) {
+        // Atualizar a lista de itens e o resumo
+        await carregarDados();
+        return response.data.item;
+      }
+    } catch (error) {
+      console.error('Erro ao adicionar item ao inventário via API:', error);
+      setError('Falha ao adicionar item via servidor');
+      
+      // Modo offline/fallback - criar um ID local e salvar no localStorage
+      try {
+        console.log('Usando modo offline para adicionar item');
+        const mockId = `local_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        
+        // Criar o novo item com ID local
+        const itemLocal: ItemInventario = {
+          id: mockId,
+          ...novoItem,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        };
+        
+        // Adicionar ao estado local
+        const novosItens = [...itens, itemLocal];
+        setItens(novosItens);
+        
+        // Atualizar localStorage
+        const itensAtuais = JSON.parse(localStorage.getItem('mockInventario') || '[]');
+        itensAtuais.push(itemLocal);
+        localStorage.setItem('mockInventario', JSON.stringify(itensAtuais));
+        
+        // Atualizar o resumo
+        setResumo(prev => ({
+          ...prev,
+          totalItens: (prev.totalItens || 0) + 1,
+          valorTotalCompra: (prev.valorTotalCompra || 0) + ((itemLocal.precoCompra || 0) * itemLocal.quantidade),
+          valorTotalVenda: (prev.valorTotalVenda || 0) + (itemLocal.preco * itemLocal.quantidade),
+        }));
+        
+        console.log('Item adicionado no modo offline com sucesso:', itemLocal);
+        return itemLocal;
+      } catch (localError) {
+        console.error('Erro também ao adicionar item em modo offline:', localError);
+        throw localError;
+      }
+    } finally {
+      setLoading(false);
     }
-    
-    // Emitir evento de adição de item
-    EventBus.emit('estoque.item.adicionado', item);
   };
 
   // Função para atualizar um item existente
-  const atualizarItem = (id: string, dadosAtualizados: Partial<Omit<ItemInventario, 'id' | 'dataAtualizacao'>>) => {
-    const itemAnterior = itens.find(item => item.id === id);
-    const novosItens = itens.map(item => {
-      if (item.id === id) {
-        const itemAtualizado = {
-          ...item,
+  const atualizarItem = async (id: string, dadosAtualizados: Partial<Omit<ItemInventario, 'id' | 'createdAt' | 'updatedAt'>>) => {
+    setLoading(true);
+    setError(null);
+    try {
+      // Tentar atualizar via API
+      const response = await api.put(`/inventario/${id}`, dadosAtualizados);
+      
+      if (response.data && response.data.item) {
+        // Atualizar a lista de itens e o resumo
+        await carregarDados();
+        return response.data.item;
+      }
+    } catch (error) {
+      console.error('Erro ao atualizar item do inventário via API:', error);
+      setError('Falha ao atualizar item via servidor');
+      
+      // Modo offline/fallback - atualizar no localStorage
+      try {
+        console.log('Usando modo offline para atualizar item:', id);
+        
+        // Verificar se o item existe no estado atual
+        const itemExistente = itens.find(item => item.id === id);
+        if (!itemExistente) {
+          throw new Error('Item não encontrado no modo offline');
+        }
+        
+        // Criar o item atualizado
+        const itemAtualizado: ItemInventario = {
+          ...itemExistente,
           ...dadosAtualizados,
-          dataAtualizacao: new Date().toISOString()
+          updatedAt: new Date().toISOString()
         };
         
-        // Verificar se o item está abaixo do mínimo depois da atualização
-        if ((itemAtualizado.quantidadeMinima !== undefined && itemAtualizado.quantidade < itemAtualizado.quantidadeMinima) ||
-            (itemAtualizado.estoqueMinimo !== undefined && itemAtualizado.quantidade < itemAtualizado.estoqueMinimo)) {
-          EventBus.emit('estoque.item.abaixo.minimo', {
-            id: itemAtualizado.id,
-            nome: itemAtualizado.nome,
-            quantidade: itemAtualizado.quantidade,
-            minimo: itemAtualizado.quantidadeMinima || itemAtualizado.estoqueMinimo
-          });
+        // Atualizar o estado local (substituir o item antigo pelo novo)
+        const novosItens = itens.map(item => item.id === id ? itemAtualizado : item);
+        setItens(novosItens);
+        
+        // Atualizar no localStorage
+        const itensAtuais = JSON.parse(localStorage.getItem('mockInventario') || '[]');
+        const indiceItem = itensAtuais.findIndex((item: any) => item.id === id);
+        
+        if (indiceItem !== -1) {
+          itensAtuais[indiceItem] = itemAtualizado;
+          localStorage.setItem('mockInventario', JSON.stringify(itensAtuais));
+        } else {
+          // Se não existir no localStorage mas existir no estado, adicionar
+          itensAtuais.push(itemAtualizado);
+          localStorage.setItem('mockInventario', JSON.stringify(itensAtuais));
         }
         
-        // Verificar se o item está próximo da data de validade
-        if (itemAtualizado.dataValidade) {
-          const hoje = new Date();
-          const dataValidade = new Date(itemAtualizado.dataValidade);
-          const seteDiasDepois = new Date();
-          seteDiasDepois.setDate(hoje.getDate() + 7);
-          
-          if (dataValidade <= hoje) {
-            // Item vencido
-            EventBus.emit('estoque.item.vencido', {
-              id: itemAtualizado.id,
-              nome: itemAtualizado.nome,
-              dataValidade: itemAtualizado.dataValidade
-            });
-          } else if (dataValidade <= seteDiasDepois) {
-            // Item próximo do vencimento
-            EventBus.emit('estoque.item.proxim.vencimento', {
-              id: itemAtualizado.id,
-              nome: itemAtualizado.nome,
-              dataValidade: itemAtualizado.dataValidade,
-              diasRestantes: Math.floor((dataValidade.getTime() - hoje.getTime()) / (1000 * 60 * 60 * 24))
-            });
-          }
-        }
+        // Atualizar resumo (cálculo simplificado)
+        // Em uma aplicação real, isso seria mais complexo
+        setResumo(prev => ({
+          ...prev,
+          ultimaAtualizacao: new Date().toISOString()
+        }));
         
-        // Emitir evento de atualização
-        EventBus.emit('estoque.item.atualizado', {
-          id: itemAtualizado.id,
-          anterior: itemAnterior,
-          atual: itemAtualizado
-        });
-        
+        console.log('Item atualizado no modo offline com sucesso:', itemAtualizado);
         return itemAtualizado;
+      } catch (localError) {
+        console.error('Erro também ao atualizar item em modo offline:', localError);
+        throw localError;
       }
-      return item;
-    });
-
-    setItens(novosItens);
-
-    // Atualizar resumo
-    const novoResumo = calcularResumo(novosItens);
-    setResumo(novoResumo);
-
-    // Persistir no localStorage
-    localStorage.setItem(STORAGE_KEYS.itens, JSON.stringify(novosItens));
-    localStorage.setItem(STORAGE_KEYS.resumo, JSON.stringify(novoResumo));
-  };
-
-  // Função para remover um item
-  const removerItem = (id: string) => {
-    const itemRemovido = itens.find(item => item.id === id);
-    const novosItens = itens.filter(item => item.id !== id);
-    setItens(novosItens);
-
-    // Atualizar resumo
-    const novoResumo = calcularResumo(novosItens);
-    setResumo(novoResumo);
-
-    // Persistir no localStorage
-    localStorage.setItem(STORAGE_KEYS.itens, JSON.stringify(novosItens));
-    localStorage.setItem(STORAGE_KEYS.resumo, JSON.stringify(novoResumo));
-    
-    // Emitir evento de remoção
-    if (itemRemovido) {
-      EventBus.emit('estoque.item.removido', itemRemovido);
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Função para registrar uma movimentação de inventário e atualizar o item
+  // Função para remover um item
+  const removerItem = async (id: string) => {
+    setLoading(true);
+    setError(null);
+    try {
+      // Tentar remover via API
+      await api.delete(`/inventario/${id}`);
+      
+      // Atualizar a lista de itens e o resumo
+      await carregarDados();
+    } catch (error) {
+      console.error('Erro ao remover item do inventário via API:', error);
+      setError('Falha ao remover item via servidor');
+      
+      // Modo offline/fallback - remover do localStorage
+      try {
+        console.log('Usando modo offline para remover item:', id);
+        
+        // Remover do estado local
+        const itemARemover = itens.find(item => item.id === id);
+        if (!itemARemover) {
+          throw new Error('Item não encontrado no modo offline');
+        }
+        
+        // Remover do estado
+        const novosItens = itens.filter(item => item.id !== id);
+        setItens(novosItens);
+        
+        // Remover do localStorage
+        const itensAtuais = JSON.parse(localStorage.getItem('mockInventario') || '[]');
+        const itensAtualizados = itensAtuais.filter((item: any) => item.id !== id);
+        localStorage.setItem('mockInventario', JSON.stringify(itensAtualizados));
+        
+        // Atualizar resumo
+        setResumo(prev => ({
+          ...prev,
+          totalItens: Math.max(0, (prev.totalItens || 0) - 1),
+          valorTotalCompra: Math.max(0, (prev.valorTotalCompra || 0) - ((itemARemover.precoCompra || 0) * itemARemover.quantidade)),
+          valorTotalVenda: Math.max(0, (prev.valorTotalVenda || 0) - (itemARemover.preco * itemARemover.quantidade)),
+          ultimaAtualizacao: new Date().toISOString()
+        }));
+        
+        console.log('Item removido no modo offline com sucesso:', id);
+      } catch (localError) {
+        console.error('Erro também ao remover item em modo offline:', localError);
+        throw localError;
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Função para registrar uma movimentação de inventário (simulada por enquanto)
   const registrarMovimentacao = (novaMovimentacao: Omit<MovimentacaoInventario, 'id'>) => {
     const movimentacao: MovimentacaoInventario = {
       ...novaMovimentacao,
       id: `mov_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
     };
 
-    // Adicionar movimentação ao histórico
+    // Adicionar movimentação ao histórico (local por enquanto)
     const novasMovimentacoes = [...movimentacoes, movimentacao];
     setMovimentacoes(novasMovimentacoes);
-    localStorage.setItem(STORAGE_KEYS.movimentacoes, JSON.stringify(novasMovimentacoes));
 
-    // Atualizar o item correspondente
-    const itemIndex = itens.findIndex(item => item.id === movimentacao.itemId);
-    if (itemIndex >= 0) {
-      const novosItens = [...itens];
-      const item = novosItens[itemIndex];
-
-      // Calcular nova quantidade baseada no tipo de movimentação
-      let novaQuantidade = item.quantidade;
-      if (movimentacao.tipo === 'entrada') {
-        novaQuantidade += movimentacao.quantidade;
-      } else if (movimentacao.tipo === 'saida') {
-        novaQuantidade -= movimentacao.quantidade;
-      } else if (movimentacao.tipo === 'ajuste') {
-        novaQuantidade = movimentacao.quantidade;
-      }
-
-      // Atualizar o item
-      novosItens[itemIndex] = {
-        ...item,
-        quantidade: novaQuantidade,
-        dataAtualizacao: new Date().toISOString()
-      };
-
-      setItens(novosItens);
-
-      // Atualizar resumo
-      const novoResumo = calcularResumo(novosItens);
-      setResumo(novoResumo);
-
-      // Persistir no localStorage
-      localStorage.setItem(STORAGE_KEYS.itens, JSON.stringify(novosItens));
-      localStorage.setItem(STORAGE_KEYS.resumo, JSON.stringify(novoResumo));
-    }
+    // Na versão real, chamaríamos a API para registrar a movimentação
+    // E atualizaríamos o item correspondente
   };
 
   // Função para buscar um item específico pelo ID
-  const buscarItem = (id: string): ItemInventario | undefined => {
-    return itens.find(item => item.id === id);
+  const buscarItem = async (id: string): Promise<ItemInventario | undefined> => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await api.get(`/inventario/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao buscar item do inventário:', error);
+      setError('Falha ao buscar item');
+      return undefined;
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // Função para buscar itens por categoria
-  const buscarItensPorCategoria = (categoria: string): ItemInventario[] => {
-    return itens.filter(item => item.categoria === categoria);
+  // Função para buscar itens por categoria usando a API
+  const buscarItensPorCategoria = async (categoria: string): Promise<ItemInventario[]> => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await api.get('/inventario', {
+        params: { categoria }
+      });
+      return response.data.itens || response.data;
+    } catch (error) {
+      console.error('Erro ao buscar itens por categoria:', error);
+      setError('Falha ao buscar itens por categoria');
+      return [];
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Função para buscar categorias disponíveis
+  const buscarCategorias = async (): Promise<string[]> => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await api.get('/inventario/categorias');
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao buscar categorias:', error);
+      setError('Falha ao buscar categorias');
+      return [];
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Função para exportar o inventário
+  const exportarInventario = async (formato: 'json' | 'csv') => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await api.get('/inventario/exportar', {
+        params: { formato },
+        responseType: formato === 'csv' ? 'blob' : 'json'
+      });
+
+      if (formato === 'csv') {
+        // Criar um objeto URL para o blob e fazer o download
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'inventario.csv');
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+      } else {
+        return response.data;
+      }
+    } catch (error) {
+      console.error('Erro ao exportar inventário:', error);
+      setError('Falha ao exportar inventário');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Função para filtrar itens com paginação
+  const filtrarItens = async (filtros: Record<string, any>, pagina: number, limite: number) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await api.get('/inventario', {
+        params: {
+          ...filtros,
+          page: pagina,
+          limit: limite
+        }
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao filtrar itens do inventário:', error);
+      setError('Falha ao filtrar itens');
+      return { itens: [], pagination: { total: 0, page: 1, limit: limite, pages: 0 } };
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -344,13 +531,18 @@ export const InventarioProvider: React.FC<InventarioProviderProps> = ({ children
         itens,
         movimentacoes,
         resumo,
+        loading,
+        error,
         adicionarItem,
         atualizarItem,
         removerItem,
         registrarMovimentacao,
         buscarItem,
         buscarItensPorCategoria,
-        carregarDados
+        carregarDados,
+        buscarCategorias,
+        exportarInventario,
+        filtrarItens
       }}
     >
       {children}

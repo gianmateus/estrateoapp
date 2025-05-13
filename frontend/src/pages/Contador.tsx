@@ -1,69 +1,46 @@
 /**
- * Contador (Accountant) Module
- * Main page component that displays financial data organized for the accountant
- * Includes summary cards, charts, detailed tables and export functionality
+ * Contador (Accountant) Module - Main Page
  * 
- * Módulo do Contador
- * Componente principal que exibe dados financeiros organizados para o contador
- * Inclui cards de resumo, gráficos, tabelas detalhadas e funcionalidade de exportação
+ * Página principal do módulo financeiro e contábil, adaptada para o mercado alemão e europeu.
+ * 
+ * Recursos principais:
+ * - Cálculos automáticos de impostos alemães (Mehrwertsteuer/VAT, Gewerbesteuer)
+ * - Relatórios compatíveis com o sistema ELSTER
+ * - Exportação em formato XBRL para conformidade com regulamentação EU
+ * - Internacionalização completa (alemão/inglês)
+ * - Implementação de conformidade com GDPR
  */
 import React, { useState, useEffect } from 'react';
 import { 
   Box, 
   Typography, 
   Paper, 
-  Grid, 
-  Button, 
   FormControl, 
   InputLabel, 
   Select, 
   MenuItem,
   SelectChangeEvent,
-  Divider, 
-  useTheme,
-  Card,
-  CardContent,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
+  Snackbar,
   Alert,
-  Snackbar
+  CircularProgress,
+  Divider,
+  Stack
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { format, addMonths, subMonths } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
-import { 
-  AttachMoney, 
-  Money, 
-  AccountBalance, 
-  People, 
-  PictureAsPdf 
-} from '@mui/icons-material';
-import ResumoMensalCard from '../components/contador/ResumoMensalCard';
-import GraficoReceitasDespesas from '../components/contador/GraficoReceitasDespesas';
-import TabelaEntradas from '../components/contador/TabelaEntradas';
-import TabelaSaidas from '../components/contador/TabelaSaidas';
-import TabelaFuncionarios from '../components/contador/TabelaFuncionarios';
-import BotaoGerarRelatorio from '../components/contador/BotaoGerarRelatorio';
+import { format, subMonths } from 'date-fns';
+import { ptBR, de } from 'date-fns/locale';
+import ContadorDashboard from '../modules/contador/ContadorDashboard';
 
-// Import services from the contador module
-// Importar serviços do módulo contador
-import dataService, { ContadorData } from '../modules/contador/services/dataService';
-import relatorioService from '../modules/contador/services/relatorioService';
+// Import services
+import dataService from '../modules/contador/services/dataService';
 
 /**
  * Returns an array of months for dropdown selection
+ * 
  * @param count Number of months to generate (default 12)
  * @returns Array of month objects with date and formatted label
- * 
- * Retorna um array de meses para seleção no dropdown
- * @param count Número de meses a gerar (padrão 12)
- * @returns Array de objetos de mês com data e rótulo formatado
  */
-const getMonthOptions = (count = 12) => {
+const getMonthOptions = (count = 12, currentLocale = ptBR) => {
   const options = [];
   let currentDate = new Date();
   
@@ -71,7 +48,7 @@ const getMonthOptions = (count = 12) => {
     const monthDate = subMonths(currentDate, i);
     options.push({
       value: format(monthDate, 'yyyy-MM'),
-      label: format(monthDate, 'MMMM yyyy', { locale: ptBR })
+      label: format(monthDate, 'MMMM yyyy', { locale: currentLocale })
     });
   }
   
@@ -80,66 +57,28 @@ const getMonthOptions = (count = 12) => {
 
 /**
  * Contador (Accountant) page component
- * Displays financial data organized for accounting purposes
- * 
- * Componente da página do Contador
- * Exibe dados financeiros organizados para fins contábeis
+ * Displays financial data organized for EU accounting purposes
  */
 const Contador: React.FC = () => {
-  const { t } = useTranslation();
-  const theme = useTheme();
+  const { t, i18n } = useTranslation();
   const [selectedMonth, setSelectedMonth] = useState(format(new Date(), 'yyyy-MM'));
   const [loading, setLoading] = useState(false);
-  const [reportLoading, setReportLoading] = useState(false);
-  const [contadorData, setContadorData] = useState<ContadorData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   
-  const monthOptions = getMonthOptions();
+  // Forçar o idioma português
+  useEffect(() => {
+    i18n.changeLanguage('pt');
+    localStorage.setItem('appLanguage', 'pt-BR');
+  }, [i18n]);
+  
+  // Definir localidade de datas de acordo com o idioma
+  const currentLocale = i18n.language === 'de' ? de : ptBR;
+  const monthOptions = getMonthOptions(12, currentLocale);
   
   // Handle month selection change
   const handleMonthChange = (event: SelectChangeEvent) => {
     setSelectedMonth(event.target.value as string);
-  };
-  
-  // Load data when month changes
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const data = await dataService.getContadorData(selectedMonth);
-        setContadorData(data);
-      } catch (err) {
-        console.error('Erro ao carregar dados:', err);
-        setError(t('erroAoBuscarDados'));
-      } finally {
-        setLoading(false);
-      }
-    };
-    
-    loadData();
-  }, [selectedMonth, t]);
-  
-  // Handle PDF report generation
-  const handleGenerateReport = async () => {
-    if (!contadorData) return;
-    
-    try {
-      setReportLoading(true);
-      setError(null);
-      
-      // Call report service
-      await relatorioService.downloadRelatorio(selectedMonth);
-      
-      // Show success message
-      setSuccessMessage(t('relatorioGeradoComSucesso'));
-    } catch (err) {
-      console.error('Erro ao gerar relatório:', err);
-      setError(t('erroAoGerarRelatorio'));
-    } finally {
-      setReportLoading(false);
-    }
   };
   
   // Handle closing snackbar
@@ -148,10 +87,10 @@ const Contador: React.FC = () => {
     setSuccessMessage(null);
   };
   
-  if (loading && !contadorData) {
+  if (loading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
-        <Typography variant="h6">{t('carregando')}</Typography>
+        <CircularProgress />
       </Box>
     );
   }
@@ -182,20 +121,30 @@ const Contador: React.FC = () => {
       </Snackbar>
       
       {/* Header with title and month selection */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Typography variant="h4" component="h1" fontWeight="bold" color="primary">
-          {t('contadorData.titulo')}
-        </Typography>
+      <Stack
+        direction={{ xs: 'column', sm: 'row' }}
+        justifyContent="space-between"
+        alignItems={{ xs: 'stretch', sm: 'center' }}
+        spacing={2}
+        sx={{ mb: 3 }}
+      >
+        <Box>
+          <Typography variant="h4" component="h1" fontWeight="bold" color="primary">
+            {t('contador.pageTitle')}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            {t('contador.pageSubtitle')}
+          </Typography>
+        </Box>
         
         <FormControl sx={{ minWidth: 200 }}>
-          <InputLabel id="month-select-label">{t('contadorData.selecioneMes')}</InputLabel>
+          <InputLabel id="month-select-label">{t('contador.selecioneMes')}</InputLabel>
           <Select
             labelId="month-select-label"
             id="month-select"
             value={selectedMonth}
-            label={t('contadorData.selecioneMes')}
+            label={t('contador.selecioneMes')}
             onChange={handleMonthChange}
-            disabled={loading}
           >
             {monthOptions.map((option) => (
               <MenuItem key={option.value} value={option.value}>
@@ -204,103 +153,17 @@ const Contador: React.FC = () => {
             ))}
           </Select>
         </FormControl>
-      </Box>
+      </Stack>
       
-      {/* Introduction text */}
+      {/* Informação fiscal alemã */}
       <Paper sx={{ p: 2, mb: 3 }}>
         <Typography variant="body1">
-          {t('contadorData.introducao')}
+          {t('contador.infoDeutscheSteuern')}
         </Typography>
       </Paper>
       
-      {contadorData && (
-        <>
-          {/* Summary Cards */}
-          <Typography variant="h5" sx={{ mb: 2, fontWeight: 'medium' }}>
-            {t('contadorData.resumoGeral')}
-          </Typography>
-          
-          <Grid container spacing={3} sx={{ mb: 4 }}>
-            <Grid item xs={12} sm={6} md={3}>
-              <ResumoMensalCard 
-                title={t('contadorData.receitaTotal')}
-                value={contadorData.resumo.receita}
-                icon={<AttachMoney fontSize="large" />}
-                color="#4caf50"
-              />
-            </Grid>
-            <Grid item xs={12} sm={6} md={3}>
-              <ResumoMensalCard 
-                title={t('contadorData.despesasTotal')}
-                value={contadorData.resumo.despesas}
-                icon={<Money fontSize="large" />}
-                color="#f44336"
-              />
-            </Grid>
-            <Grid item xs={12} sm={6} md={3}>
-              <ResumoMensalCard 
-                title={t('contadorData.saldoFinal')}
-                value={contadorData.resumo.saldo}
-                icon={<AccountBalance fontSize="large" />}
-                color="#2196f3"
-              />
-            </Grid>
-            <Grid item xs={12} sm={6} md={3}>
-              <ResumoMensalCard 
-                title={t('contadorData.totalFuncionarios')}
-                value={contadorData.resumo.funcionariosPagos}
-                icon={<People fontSize="large" />}
-                color="#ff9800"
-                isCount
-              />
-            </Grid>
-          </Grid>
-          
-          {/* Revenue vs Expenses Chart */}
-          <Typography variant="h5" sx={{ mb: 2, fontWeight: 'medium' }}>
-            {t('contadorData.graficoReceitas')}
-          </Typography>
-          
-          <Paper sx={{ p: 3, mb: 4 }}>
-            <GraficoReceitasDespesas data={contadorData.graficoData} />
-          </Paper>
-          
-          {/* Income Table */}
-          <Typography variant="h5" sx={{ mb: 2, fontWeight: 'medium' }}>
-            {t('contadorData.tabelaEntradas')}
-          </Typography>
-          
-          <Paper sx={{ mb: 4, overflow: 'hidden' }}>
-            <TabelaEntradas data={contadorData.entradas} />
-          </Paper>
-          
-          {/* Expenses Table */}
-          <Typography variant="h5" sx={{ mb: 2, fontWeight: 'medium' }}>
-            {t('contadorData.tabelaSaidas')}
-          </Typography>
-          
-          <Paper sx={{ mb: 4, overflow: 'hidden' }}>
-            <TabelaSaidas data={contadorData.saidas} />
-          </Paper>
-          
-          {/* Employees Table */}
-          <Typography variant="h5" sx={{ mb: 2, fontWeight: 'medium' }}>
-            {t('contadorData.tabelaFuncionarios')}
-          </Typography>
-          
-          <Paper sx={{ mb: 4, overflow: 'hidden' }}>
-            <TabelaFuncionarios data={contadorData.funcionarios} />
-          </Paper>
-          
-          {/* Export Button */}
-          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4, mb: 2 }}>
-            <BotaoGerarRelatorio 
-              onClick={handleGenerateReport} 
-              loading={reportLoading} 
-            />
-          </Box>
-        </>
-      )}
+      {/* Dashboard principal do contador */}
+      <ContadorDashboard mes={selectedMonth} />
     </Box>
   );
 };

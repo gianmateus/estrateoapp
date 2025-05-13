@@ -157,10 +157,10 @@ export class FuncionarioController {
    */
   async findAll(req: Request, res: Response): Promise<void> {
     try {
-      const { nome, cargo, tipoContrato, status } = req.query;
+      const { nomeCompleto, cargo, tipoContrato, status } = req.query;
       
       const filters = {
-        ...(nome && { nome: String(nome) }),
+        ...(nomeCompleto && { nomeCompleto: String(nomeCompleto) }),
         ...(cargo && { cargo: String(cargo) }),
         ...(tipoContrato && { tipoContrato: String(tipoContrato) }),
         ...(status && { status: String(status) })

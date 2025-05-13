@@ -46,47 +46,59 @@ model Pagamento {
 }
 
 model Inventario {
-  id          String   @id @default(uuid())
-  nome        String
-  quantidade  Int
-  preco       Float
-  userId      String
-  user        User     @relation(fields: [userId], references: [id])
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id                String   @id @default(uuid())
+  nome              String
+  quantidade        Int
+  preco             Float    // Preço de venda
+  codigoEAN         String?  // Código EAN europeu
+  fornecedor        String?  // Nome do fornecedor
+  precoCompra       Float?   // Preço de compra
+  unidadeMedida     String   @default("unidade") // Unidade de medida (kg, g, unidade, etc.)
+  dataValidade      DateTime? // Data de validade do produto
+  nivelMinimoEstoque Int?     // Quantidade mínima de estoque
+  periodicidadeNecessidade String?  @default("semanal") // Diário, semanal, mensal ou trimestral
+  localizacaoArmazem String?  // Localização no armazém/estoque
+  categoria         String?  // Categoria do produto
+  descricao         String?  // Descrição do produto
+  foto              String?  // URL da foto do produto
+  userId            String
+  user              User     @relation(fields: [userId], references: [id])
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  @@index([nome])
+  @@index([codigoEAN])
+  @@index([fornecedor])
+  @@index([categoria])
 }
 
 model Funcionario {
-  id               String        @id @default(uuid())
-  nome             String
-  cargo            String
-  tipoContrato     String        // 'Minijob' | 'Teilzeit' | 'Vollzeit' | 'Freelancer'
-  dataAdmissao     DateTime
-  salarioBruto     Float
-  pagamentoPorHora Boolean
-  horasSemana      Float
-  diasTrabalho     String[]      // ['segunda', 'quarta', 'sexta']
-  iban             String?       // Dados bancários opcionais
-  status           String        // 'ativo' | 'inativo'
-  observacoes      String?
-  contratoUploadUrl String?
-  
-  // Novos campos adicionados
-  formaPagamento   String?       // 'mensal', 'hora', 'comissao'
-  situacaoAtual    String?       // 'ativo', 'ferias', 'afastado', 'desligado'
-  telefone         String?
-  email            String?
-  
-  dataCriacao      DateTime      @default(now())
-  dataAtualizacao  DateTime      @updatedAt
-  controleJornada  ControleJornada[]
-  resumoPagamento  ResumoPagamento[]
+  id                 String   @id @default(uuid())
+  nomeCompleto       String
+  cargo              String
+  departamento       String?
+  emailProfissional  String
+  telefone           String
+  endereco           String
+  cidade             String
+  cep                String
+  pais               String
+  steurId            String? // Número de identificação fiscal (Steuer-ID)
+  nacionalidade      String
+  idiomas            String   // Armazene como string separada por vírgula, ou use Json se preferir
+  dataAdmissao       DateTime
+  tipoContrato       String   // Minijob, Teilzeit, Vollzeit, Freelancer
+  jornadaSemanal     Int      // Horas por semana
+  diasTrabalho       String   // Armazene como string separada por vírgula, ou use Json se preferir
+  salarioBruto       Float    // Em EUR
+  status             String   // 'ativo' | 'inativo'
+  observacoes        String?
+  contratoUploadUrl  String?
+  dataCriacao        DateTime @default(now())
+  dataAtualizacao    DateTime @updatedAt
 
-  // Sugestão futura para IA:
-  // - Alertar se um MiniJob ultrapassou €538 no mês
-  // - Sugerir reajuste em jornada por excesso de horas extras
-  // - Verificar padrões incomuns de faltas
-  // - Regras inteligentes baseadas na legislação trabalhista alemã
+  controleJornada    ControleJornada[]
+  resumoPagamento    ResumoPagamento[]
 }
 
 model ControleJornada {

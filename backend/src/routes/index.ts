@@ -8,7 +8,7 @@ import inventarioRoutes from '../modules/inventario/routes';
 import clienteRoutes from '../modules/clientes/routes';
 import { authMiddleware } from '../middlewares';
 import dashboardRoutes from './dashboardRoutes';
-import contadorRoutes from '../modules/contador/routes/contadorRoutes';
+import contadorRoutes from './contadorRoutes';
 import taxRoutes from './taxRoutes';
 
 const router = Router();
@@ -33,6 +33,29 @@ router.use('/contador', contadorRoutes);
 
 // Rotas de impostos
 router.use('/taxes', authMiddleware, taxRoutes);
+
+// Rotas para o controlador do Contador, atendendo o mercado alemão
+
+// GET /contador/dados/:periodo
+// Obtém dados financeiros para o período especificado
+
+// POST /contador/impostos/calcular
+// Calcula impostos alemães a partir de dados enviados
+
+// POST /contador/relatorios/elster
+// Gera relatório no formato ELSTER
+
+// POST /contador/relatorios/xbrl
+// Gera relatório no formato XBRL
+
+// GET /contador/relatorios/pdf
+// Gera relatório PDF com dados fiscais
+
+// GET /contador/configuracoes/impostos
+// Obtém configurações de impostos por tipo de produto/serviço
+
+// PUT /contador/configuracoes/impostos
+// Atualiza configurações de impostos
 
 // Outras rotas serão adicionadas aqui
 

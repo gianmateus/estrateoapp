@@ -1,0 +1,110 @@
+{
+  "general": {
+    "welcome": "Bem-vindo ao Estrateo",
+    "loading": "Carregando...",
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "delete": "Excluir",
+    "edit": "Editar",
+    "add": "Adicionar",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "yes": "Sim",
+    "no": "Não",
+    "ok": "OK",
+    "error": "Erro",
+    "success": "Sucesso",
+    "warning": "Aviso",
+    "info": "Informação"
+  },
+  "auth": {
+    "login": "Entrar",
+    "logout": "Sair",
+    "email": "E-mail",
+    "password": "Senha",
+    "forgotPassword": "Esqueceu a senha?",
+    "resetPassword": "Redefinir senha",
+    "register": "Cadastrar",
+    "rememberMe": "Lembrar-me"
+  },
+  "dashboard": {
+    "title": "Painel",
+    "welcome": "Bem-vindo de volta",
+    "summary": "Resumo",
+    "recentTransactions": "Transações recentes",
+    "recentOrders": "Pedidos recentes",
+    "statistics": "Estatísticas",
+    "moreDetails": "Mais detalhes"
+  },
+  "contador": {
+    "pageTitle": "Relatórios Financeiros & Impostos",
+    "pageSubtitle": "Cálculos fiscais e relatórios financeiros para o mercado alemão",
+    "selecioneMes": "Selecionar mês",
+    "infoDeutscheSteuern": "Este módulo está adaptado às regulamentações fiscais alemãs, com suporte para cálculos de Mehrwertsteuer (IVA) e integrações com o sistema ELSTER.",
+    "dashboardTitle": "Painel Financeiro",
+    "dashboardDesc": "Visão geral de indicadores financeiros e cálculos de impostos",
+    "conformidadeGdpr": "Todos os dados são processados e protegidos de acordo com as diretrizes do GDPR",
+    
+    "impostos": {
+      "mehrwertsteuer": "Mehrwertsteuer (IVA)",
+      "mehrwertsteuerDesc": "Imposto sobre valor agregado - taxa padrão 19%",
+      "gewerbesteuer": "Gewerbesteuer",
+      "gewerbesteuerDesc": "Imposto comercial municipal",
+      "einkommensteuer": "Einkommensteuer",
+      "einkommensteuerDesc": "Imposto de renda para pessoas físicas",
+      "koerperschaftsteuer": "Körperschaftsteuer",
+      "koerperschaftsteuerDesc": "Imposto corporativo sobre lucros",
+      "solidaritaetszuschlag": "Solidaritätszuschlag",
+      "solidaritaetszuschlagDesc": "Taxa de solidariedade sobre impostos"
+    },
+    
+    "abas": {
+      "relatoriosFiscais": "Relatórios Fiscais",
+      "configuracoes": "Configurações"
+    },
+    
+    "relatorios": {
+      "titulo": "Relatórios Fiscais & Documentos Financeiros",
+      "subtitulo": "Gere relatórios em conformidade com padrões alemães e europeus",
+      "vatReport": "Declaração de IVA",
+      "vatReportDesc": "Declaração mensal de IVA para o sistema ELSTER",
+      "annualFinancial": "Demonstração Financeira Anual",
+      "annualFinancialDesc": "Relatório financeiro completo no formato XBRL",
+      "tradeTax": "Declaração de Imposto Comercial",
+      "tradeTaxDesc": "Declaração anual do imposto comercial",
+      "euVatReport": "Declaração de IVA da UE",
+      "euVatReportDesc": "Relatório para transações transfronteiriças na UE",
+      "emBreve": "Em breve",
+      "gerar": "Gerar",
+      "processando": "Processando...",
+      "sucessoGeracao": "Relatório gerado com sucesso",
+      "erroGeracao": "Erro ao gerar relatório",
+      "conformidadeInfo": "Conformidade e Regulamentação",
+      "conformidadeDesc": "Todos os relatórios gerados estão em conformidade com as regulamentações fiscais alemãs atuais e diretrizes da UE."
+    },
+    
+    "configuracoes": {
+      "titulo": "Configurações Fiscais",
+      "subtitulo": "Configure alíquotas de impostos e opções de faturamento",
+      "taxRateTitle": "Alíquota de Mehrwertsteuer (IVA)",
+      "taxRateDesc": "Selecione a alíquota de IVA a ser aplicada",
+      "taxRate": "Alíquota",
+      "taxRateNormal": "Normal",
+      "taxRateReduced": "Reduzida",
+      "taxRateZero": "Zero",
+      "ecommerce": "Ativar vendas e-commerce",
+      "oneStopShop": "One-Stop-Shop para vendas UE",
+      "oneStopShopTooltip": "Processamento simplificado de IVA para vendas a clientes da UE",
+      "businessTaxSettings": "Configurações de Imposto Comercial",
+      "businessTaxSettingsDesc": "Configure os parâmetros de cálculo do imposto comercial",
+      "businessTaxRate": "Alíquota de imposto comercial",
+      "euMember": "Estado-membro da UE",
+      "enableExports": "Habilitar exportações",
+      "restaurarPadrao": "Restaurar padrões",
+      "salvarConfiguracoes": "Salvar configurações",
+      "salvoComSucesso": "Configurações salvas com sucesso",
+      "gdprInfo": "Aviso de Privacidade",
+      "gdprDesc": "Todos os dados fiscais são processados e armazenados de acordo com os requisitos do GDPR e regulamentações fiscais alemãs."
+    }
+  }
+} 

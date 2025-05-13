@@ -40,6 +40,7 @@ import {
   OutlinedInput,
   InputAdornment,
   FormHelperText,
+  TextField,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { 
@@ -49,6 +50,8 @@ import {
   InfoOutlined as InfoIcon,
   Edit as EditIcon,
   Delete as DeleteIcon,
+  Inventory,
+  ShoppingCartCheckout as ShoppingCartCheckoutIcon,
 } from '@mui/icons-material';
 // Importação dos ícones do Lucide React
 import { 
@@ -70,6 +73,9 @@ import { useInventario } from '../contexts/InventarioContext';
 import MotionButton from '../components/ui/MotionButton';
 import MetricCard from '../components/ui/MetricCard';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import FormularioProduto from '../components/inventario/FormularioProduto';
+import RelatorioSugestaoCompra from '../components/inventario/RelatorioSugestaoCompra';
+import { convertToItemInventario } from '../utils/inventarioAdapters';
 
 // Função para formatar valor monetário
 const formatCurrency = (value: number): string => {
@@ -151,6 +157,16 @@ const ChipToggle = styled(Chip)<{ isActive: boolean }>(({ theme, isActive }) => 
   },
 }));
 
+// Interface para registro de estoque atual com cálculo automático
+interface EstoqueAtualData {
+  produtoId: string;
+  nome: string;
+  quantidadeAtual: number;
+  unidadeMedida: string;
+  necessidadeSemanal?: number;
+  quantidadeComprar?: number; // Calculada automaticamente
+}
+
 const Inventario = () => {
   const theme = useTheme();
   const { t, i18n } = useTranslation();
@@ -230,6 +246,25 @@ const Inventario = () => {
   // Novo estado para verificar se é um dispositivo XSmall
   const isXSmall = useMediaQuery(theme.breakpoints.down(480));
   
+  // Estado para o modal do FormularioProduto
+  const [openFormularioProduto, setOpenFormularioProduto] = useState(false);
+  const [produtoIdParaEditar, setProdutoIdParaEditar] = useState<string | undefined>(undefined);
+  
+  // Estado para o modal de Estoque Atual
+  const [openEstoqueAtualModal, setOpenEstoqueAtualModal] = useState(false);
+  const [estoqueAtualData, setEstoqueAtualData] = useState<EstoqueAtualData>({
+    produtoId: '',
+    nome: '',
+    quantidadeAtual: 0,
+    unidadeMedida: 'unidade',
+    necessidadeSemanal: 0,
+    quantidadeComprar: 0
+  });
+  const [produtosDisponiveis, setProdutosDisponiveis] = useState<{id: string, nome: string}[]>([]);
+  
+  // Novo estado para mostrar o relatório de sugestão de compra
+  const [showSugestaoCompra, setShowSugestaoCompra] = useState(false);
+  
   // Calcular o valor total do estoque
   const calculateTotalStockValue = () => {
     if (currentStockItems.length === 0) return formatCurrency(0);
@@ -254,12 +289,16 @@ const Inventario = () => {
         id: item.id,
         name: item.nome,
         quantity: item.quantidade,
-        unit: item.unidade,
-        notes: item.localizacao,
+        unit: item.unidadeMedida,
+        notes: item.localizacaoArmazem,
         category: item.categoria,
-        minQuantity: item.quantidadeMinima || item.estoqueMinimo,
-        expirationDate: item.dataValidade,
-        unitCost: item.precoUnitario || item.precoCusto || 0
+        minQuantity: item.nivelMinimoEstoque,
+        expirationDate: item.dataValidade ? 
+          (item.dataValidade instanceof Date ? 
+            item.dataValidade.toISOString().split('T')[0] : 
+            String(item.dataValidade)) : 
+          undefined,
+        unitCost: item.precoCompra || 0
       }));
     
     const needItems = itens
@@ -268,11 +307,15 @@ const Inventario = () => {
         id: item.id,
         name: item.nome,
         quantity: item.quantidade,
-        unit: item.unidade,
-        notes: item.localizacao,
+        unit: item.unidadeMedida,
+        notes: item.localizacaoArmazem,
         category: item.categoria,
-        minQuantity: item.quantidadeMinima || item.estoqueMinimo,
-        expirationDate: item.dataValidade
+        minQuantity: item.nivelMinimoEstoque,
+        expirationDate: item.dataValidade ? 
+          (item.dataValidade instanceof Date ? 
+            item.dataValidade.toISOString().split('T')[0] : 
+            String(item.dataValidade)) : 
+          undefined
       }));
     
     setCurrentStockItems(stockItems);
@@ -310,6 +353,11 @@ const Inventario = () => {
   // Toggle para mostrar apenas itens críticos
   const toggleCritical = () => {
     setShowCriticalOnly(!showCriticalOnly);
+  };
+  
+  // Alternar visibilidade do relatório de sugestão de compra
+  const toggleSugestaoCompra = () => {
+    setShowSugestaoCompra(prev => !prev);
   };
   
   // Definições das colunas da tabela de estoque atual
@@ -487,6 +535,123 @@ const Inventario = () => {
     setOpenWeeklyNeedModal(true);
   };
   
+  // Função para abrir o modal de Estoque Atual
+  const handleOpenEstoqueAtualModal = () => {
+    // Carregar lista de produtos disponíveis
+    const produtos = itens.map(item => ({
+      id: item.id,
+      nome: item.nome
+    }));
+    setProdutosDisponiveis(produtos);
+    
+    // Resetar o formulário
+    setEstoqueAtualData({
+      produtoId: '',
+      nome: '',
+      quantidadeAtual: 0,
+      unidadeMedida: 'unidade',
+      necessidadeSemanal: 0,
+      quantidadeComprar: 0
+    });
+    
+    setOpenEstoqueAtualModal(true);
+  };
+  
+  // Handler para alterações no formulário de Estoque Atual
+  const handleEstoqueAtualChange = (e: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>) => {
+    const { name, value } = e.target;
+    
+    if (name) {
+      setEstoqueAtualData(prev => {
+        const newData = {
+          ...prev,
+          [name]: value
+        };
+        
+        // Calcular automaticamente a quantidade a comprar
+        if (name === 'quantidadeAtual' || name === 'necessidadeSemanal') {
+          const atual = name === 'quantidadeAtual' ? Number(value) : prev.quantidadeAtual;
+          const necessidade = name === 'necessidadeSemanal' ? Number(value) : prev.necessidadeSemanal || 0;
+          
+          // Se a quantidade atual for menor que a necessidade semanal, calcular diferença
+          const quantComprar = atual < necessidade ? necessidade - atual : 0;
+          newData.quantidadeComprar = quantComprar;
+        }
+        
+        return newData;
+      });
+    }
+  };
+
+  // Quando um produto é selecionado, preencher dados automaticamente
+  const handleProdutoSelection = (produtoId: string) => {
+    const produto = itens.find(item => item.id === produtoId);
+    
+    if (produto) {
+      setEstoqueAtualData({
+        produtoId: produto.id,
+        nome: produto.nome,
+        quantidadeAtual: 0, // Inicial zero para ser preenchido pelo usuário
+        unidadeMedida: produto.unidadeMedida,
+        // Buscar necessidade semanal se já existir
+        necessidadeSemanal: produto.categoria === 'necessidade_semanal' ? produto.quantidade : 0,
+        quantidadeComprar: 0
+      });
+    }
+  };
+
+  // Salvar o registro de estoque atual
+  const handleSalvarEstoqueAtual = async () => {
+    setIsSubmitting(true);
+    
+    try {
+      // Atualizar o item selecionado com a quantidade atual
+      if (estoqueAtualData.produtoId) {
+        await atualizarItem(estoqueAtualData.produtoId, {
+          quantidade: Number(estoqueAtualData.quantidadeAtual)
+        });
+        
+        // Se tiver necessidade semanal, criar ou atualizar um item para isso
+        if (estoqueAtualData.necessidadeSemanal && estoqueAtualData.necessidadeSemanal > 0) {
+          // Verificar se já existe item de necessidade
+          const necessidadeExistente = itens.find(
+            item => item.nome === `Necessidade: ${estoqueAtualData.nome}` && 
+                  item.categoria === 'necessidade_semanal'
+          );
+          
+          if (necessidadeExistente) {
+            await atualizarItem(necessidadeExistente.id, {
+              quantidade: Number(estoqueAtualData.necessidadeSemanal)
+            });
+          } else {
+            // Criar novo item de necessidade
+            await adicionarItem({
+              nome: `Necessidade: ${estoqueAtualData.nome}`,
+              quantidade: Number(estoqueAtualData.necessidadeSemanal),
+              unidadeMedida: estoqueAtualData.unidadeMedida,
+              categoria: 'necessidade_semanal',
+              preco: 0
+            });
+          }
+        }
+        
+        // Fechar modal e atualizar dados
+        setOpenEstoqueAtualModal(false);
+        await carregarDados();
+        
+        // Mostrar mensagem de sucesso
+        setSnackbarMessage("Estoque atual registrado com sucesso!");
+        setSnackbarOpen(true);
+      }
+    } catch (error) {
+      console.error("Erro ao registrar estoque atual:", error);
+      setSnackbarMessage("Erro ao registrar estoque atual");
+      setSnackbarOpen(true);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+  
   // Handlers para o formulário
   const handleCurrentStockChange = (e: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>) => {
     const { name, value } = e.target;
@@ -570,12 +735,12 @@ const Inventario = () => {
       const newItem = {
         nome: currentStockForm.nome,
         quantidade: Number(currentStockForm.quantidade),
-        unidade: currentStockForm.unidade,
+        unidadeMedida: currentStockForm.unidade,
         categoria: currentStockForm.categoria || "outros",
-        quantidadeMinima: Number(currentStockForm.quantidadeMinima),
-        precoUnitario: Number(currentStockForm.precoUnitario),
+        nivelMinimoEstoque: Number(currentStockForm.quantidadeMinima),
+        preco: Number(currentStockForm.precoUnitario),
         dataValidade: currentStockForm.dataValidade,
-        localizacao: currentStockForm.localizacao,
+        localizacaoArmazem: currentStockForm.localizacao,
       };
       
       // Adicionar ao contexto
@@ -604,10 +769,10 @@ const Inventario = () => {
       const newItem = {
         nome: weeklyNeedForm.nome,
         quantidade: Number(weeklyNeedForm.quantidade),
-        unidade: weeklyNeedForm.unidade,
+        unidadeMedida: weeklyNeedForm.unidade,
         categoria: "necessidade_semanal",
-        precoUnitario: Number(weeklyNeedForm.precoUnitario),
-        observacao: weeklyNeedForm.observacao,
+        preco: Number(weeklyNeedForm.precoUnitario),
+        descricao: weeklyNeedForm.observacao,
       };
       
       // Adicionar ao contexto
@@ -626,9 +791,26 @@ const Inventario = () => {
     }
   };
   
+  // Função que substitui handleEditCurrentStock para abrir o FormularioProduto
   const handleEditCurrentStock = (item: InventoryItem) => {
-    // Implementar lógica de edição (manter compatibilidade)
-    console.log('Editar item estoque:', item);
+    setProdutoIdParaEditar(item.id);
+    setOpenFormularioProduto(true);
+  };
+  
+  // Função para abrir o formulário para adicionar um novo produto
+  const handleAddNewProduct = () => {
+    setProdutoIdParaEditar(undefined); // Nenhum ID significa novo produto
+    setOpenFormularioProduto(true);
+  };
+  
+  // Função chamada quando o formulário é salvo com sucesso
+  const handleFormularioSalvo = () => {
+    setOpenFormularioProduto(false);
+    carregarDados(); // Recarregar dados do inventário
+    setSnackbarMessage(produtoIdParaEditar ? 
+      "Produto atualizado com sucesso" : 
+      "Produto adicionado com sucesso");
+    setSnackbarOpen(true);
   };
   
   const handleEditWeeklyNeed = (item: InventoryItem) => {
@@ -691,7 +873,7 @@ const Inventario = () => {
       <Grid item xs={12} md={4}>
         <MetricCard
           title="Itens Críticos"
-          value={resumo.itensAbaixoMinimo.toString()}
+          value={resumo.itensCriticos?.toString() || "0"}
           icon={<AlertCircle size={22} />}
           color="error.main"
           iconBg="rgba(0, 0, 0, 0.04)"
@@ -702,7 +884,7 @@ const Inventario = () => {
       <Grid item xs={12} md={4}>
         <MetricCard
           title="Próximos do Vencimento"
-          value={(resumo.itensProximosVencimento + resumo.itensVencidos).toString()}
+          value={resumo.itensValidadeProxima?.toString() || "0"}
           icon={<AlertCircle size={22} />}
           color="warning.dark"
           iconBg="warning.light"
@@ -885,7 +1067,7 @@ const Inventario = () => {
         <MotionButton
           variant="contained"
           color="primary"
-          onClick={handleOpenCurrentStockModal}
+          onClick={handleAddNewProduct}
           aria-label="Adicionar novo item"
           sx={{ 
             height: 48, 
@@ -910,8 +1092,8 @@ const Inventario = () => {
         
         <MotionButton
           variant="contained"
-          onClick={handleOpenWeeklyNeedModal}
-          aria-label="Adicionar necessidade semanal"
+          onClick={handleOpenEstoqueAtualModal}
+          aria-label="Registrar estoque atual"
           sx={{ 
             height: 48, 
             borderRadius: 2,
@@ -930,9 +1112,9 @@ const Inventario = () => {
         >
           <Stack direction="row" spacing={1} alignItems="center">
             <Avatar sx={{ bgcolor: 'white', color: 'primary.main', width: 28, height: 28 }}>
-              <Plus size={16} />
+              <Inventory fontSize="small" />
             </Avatar>
-            <span>Necessidade Semanal</span>
+            <span>Estoque Atual</span>
           </Stack>
         </MotionButton>
       </Box>
@@ -1445,6 +1627,143 @@ const Inventario = () => {
         </DialogActions>
       </Dialog>
       
+      {/* Modal do FormularioProduto */}
+      <Dialog 
+        open={openFormularioProduto} 
+        onClose={() => setOpenFormularioProduto(false)}
+        fullWidth
+        maxWidth="md"
+        disableEscapeKeyDown
+        PaperProps={{
+          sx: { 
+            overflowY: 'visible',
+            borderRadius: 2
+          }
+        }}
+        sx={{
+          '& .MuiDialog-container': {
+            alignItems: 'center',
+            justifyContent: 'center',
+          }
+        }}
+      >
+        <Box sx={{ overflowY: 'auto', position: 'relative' }}>
+          <FormularioProduto 
+            produtoId={produtoIdParaEditar}
+            onSave={handleFormularioSalvo}
+            onCancel={() => setOpenFormularioProduto(false)}
+          />
+        </Box>
+      </Dialog>
+      
+      {/* Modal de Estoque Atual */}
+      <Dialog
+        open={openEstoqueAtualModal}
+        onClose={() => setOpenEstoqueAtualModal(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>Registrar Estoque Atual</DialogTitle>
+        <DialogContent>
+          <Box sx={{ mt: 2 }}>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+              Registre a quantidade atual de um produto no estoque e a necessidade semanal para calcular automaticamente a quantidade a ser comprada.
+            </Typography>
+            
+            <FormControl fullWidth sx={{ mb: 3 }}>
+              <InputLabel id="produto-label">Produto</InputLabel>
+              <Select
+                labelId="produto-label"
+                value={estoqueAtualData.produtoId}
+                onChange={(e) => {
+                  handleProdutoSelection(e.target.value as string);
+                }}
+                label="Produto"
+              >
+                {produtosDisponiveis.map(produto => (
+                  <MenuItem key={produto.id} value={produto.id}>
+                    {produto.nome}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            
+            {estoqueAtualData.produtoId && (
+              <>
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      fullWidth
+                      type="number"
+                      label="Quantidade Atual"
+                      name="quantidadeAtual"
+                      value={estoqueAtualData.quantidadeAtual}
+                      onChange={handleEstoqueAtualChange}
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            {estoqueAtualData.unidadeMedida}
+                          </InputAdornment>
+                        )
+                      }}
+                    />
+                  </Grid>
+                  
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      fullWidth
+                      type="number"
+                      label="Necessidade Semanal"
+                      name="necessidadeSemanal"
+                      value={estoqueAtualData.necessidadeSemanal}
+                      onChange={handleEstoqueAtualChange}
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            {estoqueAtualData.unidadeMedida}
+                          </InputAdornment>
+                        )
+                      }}
+                    />
+                  </Grid>
+                </Grid>
+                
+                <Box sx={{ mt: 3, p: 2, bgcolor: 'action.hover', borderRadius: 1 }}>
+                  <Typography variant="subtitle2" gutterBottom>
+                    Cálculo Automático
+                  </Typography>
+                  
+                  <Grid container spacing={2} alignItems="center">
+                    <Grid item xs={5}>
+                      <Typography variant="body2" color="text.secondary">
+                        Quantidade a Comprar:
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={7}>
+                      <Typography variant="h6" color="primary.main" fontWeight="bold">
+                        {estoqueAtualData.quantidadeComprar} {estoqueAtualData.unidadeMedida}
+                      </Typography>
+                    </Grid>
+                  </Grid>
+                </Box>
+              </>
+            )}
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenEstoqueAtualModal(false)}>
+            Cancelar
+          </Button>
+          <Button 
+            variant="contained"
+            onClick={handleSalvarEstoqueAtual}
+            disabled={!estoqueAtualData.produtoId || isSubmitting}
+          >
+            {isSubmitting ? 'Salvando...' : 'Salvar'}
+          </Button>
+        </DialogActions>
+      </Dialog>
+      
       {/* Snackbar para feedback de exportação */}
       <Snackbar
         open={snackbarOpen}
@@ -1460,6 +1779,38 @@ const Inventario = () => {
           {snackbarMessage}
         </Alert>
       </Snackbar>
+      
+      {/* Botões de ação na barra de títulos */}
+      <Grid container spacing={2} sx={{ mb: 3 }}>
+        <Grid item xs={12} sm={6}>
+          <Typography variant="h4" component="h1" fontWeight="bold">
+            {t('Inventário')}
+          </Typography>
+          <Typography variant="subtitle1" sx={{ mt: 0.5 }}>
+            {t('Gerenciamento de estoque e produtos')}
+          </Typography>
+        </Grid>
+        <Grid item xs={12} sm={6} sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+          <Button
+            color="primary"
+            variant={showSugestaoCompra ? "contained" : "outlined"}
+            startIcon={<ShoppingCartCheckoutIcon />}
+            onClick={toggleSugestaoCompra}
+            sx={{ ml: 1 }}
+          >
+            {t('Sugestão de Compra')}
+          </Button>
+        </Grid>
+      </Grid>
+      
+      {/* Relatório de Sugestão de Compra */}
+      {showSugestaoCompra && (
+        <RelatorioSugestaoCompra 
+          itens={convertToItemInventario(filteredCurrentStock)} 
+          onPrint={() => window.print()}
+          onExport={() => handleExport('stock')}
+        />
+      )}
     </Box>
   );
 };

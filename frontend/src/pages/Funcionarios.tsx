@@ -62,21 +62,8 @@ import TimeVacationsPage from './employees/time-vacations/TimeVacationsPage';
 // Importar componentes de visão geral e estatísticas
 import OverviewPage from './employees/overview/OverviewPage';
 import StatisticsPage from './employees/statistics/StatisticsPage';
-
-// Interface para representar um funcionário
-interface Funcionario {
-  id: string;
-  nome: string;
-  cargo: string;
-  departamento: string;
-  dataContratacao: string; // formato ISO 8601
-  salario: number;
-  status: 'ativo' | 'inativo' | 'ferias' | 'licenca';
-  documento: string;
-  telefone: string;
-  email: string;
-  endereco: string;
-}
+import FuncionarioForm from '../components/funcionarios/FuncionarioForm';
+import type { Funcionario } from '../components/funcionarios/FuncionarioForm';
 
 // Interface para a interface TabPanel
 interface TabPanelProps {
@@ -142,68 +129,63 @@ const Funcionarios = () => {
   const mockFuncionarios: Funcionario[] = [
     {
       id: '1',
-      nome: 'Maria Silva',
+      nomeCompleto: 'Maria Silva',
       cargo: 'Gerente',
       departamento: 'Administrativo',
-      dataContratacao: '2021-03-15',
-      salario: 4500,
-      status: 'ativo',
-      documento: '123.456.789-00',
+      emailProfissional: 'maria.silva@empresa.com',
       telefone: '(11) 98765-4321',
-      email: 'maria.silva@empresa.com',
-      endereco: 'Rua das Flores, 123'
+      endereco: 'Rua das Flores, 123',
+      cidade: 'São Paulo',
+      cep: '01234-567',
+      pais: 'Alemanha',
+      nacionalidade: 'Brasileira',
+      idiomas: ['Português', 'Alemão', 'Inglês'],
+      dataAdmissao: new Date('2021-03-15'),
+      tipoContrato: 'Vollzeit',
+      jornadaSemanal: 40,
+      diasTrabalho: ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta'],
+      salarioBruto: 4500,
+      status: 'ativo'
     },
     {
       id: '2',
-      nome: 'João Santos',
+      nomeCompleto: 'João Santos',
       cargo: 'Chef de Cozinha',
       departamento: 'Cozinha',
-      dataContratacao: '2020-05-10',
-      salario: 3800,
-      status: 'ativo',
-      documento: '987.654.321-00',
+      emailProfissional: 'joao.santos@empresa.com',
       telefone: '(11) 91234-5678',
-      email: 'joao.santos@empresa.com',
-      endereco: 'Av. Principal, 456'
+      endereco: 'Av. Principal, 456',
+      cidade: 'São Paulo',
+      cep: '04567-890',
+      pais: 'Alemanha',
+      nacionalidade: 'Brasileira',
+      idiomas: ['Português', 'Alemão'],
+      dataAdmissao: new Date('2020-05-10'),
+      tipoContrato: 'Vollzeit',
+      jornadaSemanal: 40,
+      diasTrabalho: ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta'],
+      salarioBruto: 3800,
+      status: 'ativo'
     },
     {
       id: '3',
-      nome: 'Ana Oliveira',
+      nomeCompleto: 'Ana Oliveira',
       cargo: 'Atendente',
       departamento: 'Atendimento',
-      dataContratacao: '2022-01-20',
-      salario: 2200,
-      status: 'ferias',
-      documento: '456.789.123-00',
+      emailProfissional: 'ana.oliveira@empresa.com',
       telefone: '(11) 94567-8901',
-      email: 'ana.oliveira@empresa.com',
-      endereco: 'Rua Secundária, 789'
-    },
-    {
-      id: '4',
-      nome: 'Pedro Costa',
-      cargo: 'Auxiliar de Cozinha',
-      departamento: 'Cozinha',
-      dataContratacao: '2021-11-05',
-      salario: 1800,
-      status: 'ativo',
-      documento: '789.123.456-00',
-      telefone: '(11) 95678-9012',
-      email: 'pedro.costa@empresa.com',
-      endereco: 'Av. Central, 101'
-    },
-    {
-      id: '5',
-      nome: 'Juliana Pereira',
-      cargo: 'Recepcionista',
-      departamento: 'Atendimento',
-      dataContratacao: '2022-03-01',
-      salario: 2000,
-      status: 'licenca',
-      documento: '321.654.987-00',
-      telefone: '(11) 96789-0123',
-      email: 'juliana.pereira@empresa.com',
-      endereco: 'Rua Nova, 202'
+      endereco: 'Rua Secundária, 789',
+      cidade: 'São Paulo',
+      cep: '07890-123',
+      pais: 'Alemanha',
+      nacionalidade: 'Brasileira',
+      idiomas: ['Português', 'Alemão', 'Inglês'],
+      dataAdmissao: new Date('2022-01-20'),
+      tipoContrato: 'Teilzeit',
+      jornadaSemanal: 30,
+      diasTrabalho: ['Segunda', 'Terça', 'Quarta', 'Quinta'],
+      salarioBruto: 2200,
+      status: 'inativo'
     }
   ];
 
@@ -301,10 +283,10 @@ const Funcionarios = () => {
   };
 
   // Manipulador para salvar funcionário
-  const handleSalvarFuncionario = () => {
-    alert(t('funcionarioSalvoComSucesso'));
+  const handleSalvarFuncionario = (dados: any) => {
+    // Aqui você pode fazer a chamada para salvar no backend
+    // Exemplo: await api.post('/funcionarios', dados);
     setModalAberto(false);
-    setFuncionarioEditando(null);
   };
 
   // Manipulador para excluir funcionário
@@ -329,7 +311,7 @@ const Funcionarios = () => {
   };
 
   // Renderização de status
-  const renderizarStatus = (status: 'ativo' | 'inativo' | 'ferias' | 'licenca') => {
+  const renderizarStatus = (status: string) => {
     let color: 'success' | 'error' | 'primary' | 'warning' = 'success';
     let label = t('ativo');
     
@@ -341,14 +323,6 @@ const Funcionarios = () => {
       case 'inativo':
         color = 'error';
         label = t('inativo');
-        break;
-      case 'ferias':
-        color = 'primary';
-        label = t('ferias');
-        break;
-      case 'licenca':
-        color = 'warning';
-        label = t('licenca');
         break;
     }
 
@@ -433,92 +407,11 @@ const Funcionarios = () => {
           {funcionarioEditando ? t('editarFuncionario') : t('novoFuncionario')}
         </DialogTitle>
         <DialogContent>
-          <Grid container spacing={2} sx={{ mt: 1 }}>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                label={t('nome')}
-                fullWidth
-                defaultValue={funcionarioEditando?.nome || ''}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                label={t('email')}
-                type="email"
-                fullWidth
-                defaultValue={funcionarioEditando?.email || ''}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                label={t('documento')}
-                fullWidth
-                defaultValue={funcionarioEditando?.documento || ''}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                label={t('telefone')}
-                fullWidth
-                defaultValue={funcionarioEditando?.telefone || ''}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                label={t('endereco')}
-                fullWidth
-                defaultValue={funcionarioEditando?.endereco || ''}
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <TextField
-                label={t('cargo')}
-                fullWidth
-                defaultValue={funcionarioEditando?.cargo || ''}
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <TextField
-                label={t('departamento')}
-                fullWidth
-                defaultValue={funcionarioEditando?.departamento || ''}
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <FormControl fullWidth>
-                <InputLabel>{t('status')}</InputLabel>
-                <Select
-                  defaultValue={funcionarioEditando?.status || 'ativo'}
-                  label={t('status')}
-                >
-                  <MenuItem value="ativo">{t('ativo')}</MenuItem>
-                  <MenuItem value="inativo">{t('inativo')}</MenuItem>
-                  <MenuItem value="ferias">{t('ferias')}</MenuItem>
-                  <MenuItem value="licenca">{t('licenca')}</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                label={t('dataContratacao')}
-                type="date"
-                fullWidth
-                defaultValue={funcionarioEditando?.dataContratacao || new Date().toISOString().split('T')[0]}
-                InputLabelProps={{ shrink: true }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                label={t('salario')}
-                type="number"
-                fullWidth
-                defaultValue={funcionarioEditando?.salario || ''}
-                InputProps={{
-                  startAdornment: <Box component="span" sx={{ mr: 1 }}>R$</Box>
-                }}
-              />
-            </Grid>
-          </Grid>
+          <FuncionarioForm
+            funcionario={funcionarioEditando || undefined}
+            onSubmit={handleSalvarFuncionario}
+            isLoading={loading}
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleFecharModal}>{t('cancelar')}</Button>

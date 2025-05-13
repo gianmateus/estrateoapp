@@ -95,6 +95,7 @@ const FormularioSaida: React.FC<FormularioSaidaProps> = ({
       fornecedor: prev.fornecedor || '',
       formaPagamento: prev.formaPagamento || 'transferencia',
       numeroDocumento: prev.numeroDocumento || '',
+      notaFiscal: prev.notaFiscal || '',
       categoria: prev.categoria || 'Fornecedores',
     }));
   }, [setFormData]);
@@ -343,6 +344,29 @@ const FormularioSaida: React.FC<FormularioSaidaProps> = ({
               }}
               placeholder="Descreva esta despesa"
             />
+            
+            <Box mt={2}>
+              <TextField
+                fullWidth
+                label="Nota Fiscal (opcional)"
+                name="notaFiscal"
+                value={formData.notaFiscal || ''}
+                onChange={handleChange}
+                placeholder="Ex: 123456789 ou INV-DE-2025-01"
+                InputLabelProps={{ 
+                  style: { fontWeight: 'bold' }
+                }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <Tooltip title="Número da nota fiscal ou invoice relacionada a esta despesa">
+                        <InfoIcon fontSize="small" color="action" />
+                      </Tooltip>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </Box>
           </CardContent>
         </Card>
       </Grid>

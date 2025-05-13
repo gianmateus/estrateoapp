@@ -15,7 +15,9 @@ import {
   ListItemText,
   Divider,
   CircularProgress,
-  Chip
+  Chip,
+  Tabs,
+  Tab
 } from '@mui/material';
 import { 
   ArrowBack as ArrowBackIcon,
@@ -24,6 +26,7 @@ import {
 import { format, getDaysInMonth, startOfMonth, getDay, parseISO, isSameDay } from 'date-fns';
 import { ptBR, enUS, de } from 'date-fns/locale';
 import { useTheme } from '@mui/material/styles';
+import { CalendarioFinanceiro } from '../modules/calendario';
 
 // Interface para representar uma transação financeira
 interface Transacao {
@@ -72,6 +75,7 @@ const Calendario = () => {
   const [mesSelecionado, setMesSelecionado] = useState(new Date().getMonth());
   const [diaSelecionado, setDiaSelecionado] = useState<Date | null>(null);
   const [detalhesAberto, setDetalhesAberto] = useState(false);
+  const [tipoVisualizacao, setTipoVisualizacao] = useState<'simples' | 'avancado'>('simples');
 
   // Mock de dados para desenvolvimento
   const mockTransacoes: Transacao[] = [
@@ -445,6 +449,11 @@ const Calendario = () => {
     return semanas;
   }, [diasDoCalendario]);
 
+  // Manipular mudança de tipo de visualização
+  const handleChangeTipoVisualizacao = (evento: React.SyntheticEvent, novoValor: 'simples' | 'avancado') => {
+    setTipoVisualizacao(novoValor);
+  };
+
   // Componente de UI
   return (
     <Box sx={{ p: 3 }}>
@@ -452,260 +461,279 @@ const Calendario = () => {
         {t('calendario')}
       </Typography>
       
-      {/* Seletor de Ano */}
-      <Box sx={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        gap: 2, 
-        overflow: 'auto',
-        p: 1,
-        mb: 1,
-        borderRadius: 1,
-        bgcolor: 'background.paper',
-        boxShadow: 1
-      }}>
-        {anosDisponiveis.map(ano => (
-          <Button
-            key={ano}
-            variant={anoSelecionado === ano ? "contained" : "outlined"}
-            onClick={() => setAnoSelecionado(ano)}
-            sx={{ 
-              minWidth: '80px',
-              px: 2
-            }}
-          >
-            {ano}
-          </Button>
-        ))}
-      </Box>
+      <Paper sx={{ mb: 3 }}>
+        <Tabs
+          value={tipoVisualizacao}
+          onChange={handleChangeTipoVisualizacao}
+          indicatorColor="primary"
+          textColor="primary"
+          centered
+        >
+          <Tab value="simples" label={t('visualizacaoSimples')} />
+          <Tab value="avancado" label={t('visualizacaoFinanceira')} />
+        </Tabs>
+      </Paper>
       
-      {/* Seletor de Mês */}
-      <Box sx={{ 
-        display: 'flex', 
-        justifyContent: 'space-between',
-        flexWrap: 'wrap',
-        gap: 1,
-        p: 1,
-        mb: 2,
-        borderRadius: 1,
-        bgcolor: 'background.paper',
-        boxShadow: 1
-      }}>
-        {nomesMeses.map((mes, index) => (
-          <Button
-            key={index}
-            variant={mesSelecionado === index ? "contained" : "text"}
-            onClick={() => setMesSelecionado(index)}
-            sx={{ 
-              flex: { xs: '1 0 30%', sm: '1 0 15%', md: '1 0 8%' },
-              textTransform: 'capitalize',
-              fontSize: { xs: '0.7rem', sm: '0.8rem', md: '0.875rem' }
-            }}
-          >
-            {mes}
-          </Button>
-        ))}
-      </Box>
-
-      {/* Exibição do mês e ano selecionado */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-        <Button
-          startIcon={<ArrowBackIcon />}
-          onClick={() => {
-            if (mesSelecionado === 0) {
-              setMesSelecionado(11);
-              setAnoSelecionado(anoSelecionado - 1);
-            } else {
-              setMesSelecionado(mesSelecionado - 1);
-            }
-          }}
-        >
-          {t('mesAnterior')}
-        </Button>
-        
-        <Typography variant="h6" sx={{ textTransform: 'uppercase' }}>
-          {nomesMeses[mesSelecionado]} {anoSelecionado}
-        </Typography>
-        
-        <Button
-          endIcon={<ArrowForwardIcon />}
-          onClick={() => {
-            if (mesSelecionado === 11) {
-              setMesSelecionado(0);
-              setAnoSelecionado(anoSelecionado + 1);
-            } else {
-              setMesSelecionado(mesSelecionado + 1);
-            }
-          }}
-        >
-          {t('proximoMes')}
-        </Button>
-      </Box>
-
-      {/* Calendário */}
-      {loading ? (
-        <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
-          <CircularProgress />
-        </Box>
-      ) : (
-        <Paper sx={{ p: 1, borderRadius: 2, overflow: 'hidden' }}>
-          {/* Cabeçalho dos dias da semana */}
-          <Grid container>
-            {['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'].map((dia, i) => (
-              <Grid item xs key={i} sx={{ p: 1, textAlign: 'center', borderBottom: '1px solid #e0e0e0', bgcolor: 'background.default' }}>
-                <Typography variant="subtitle2" fontWeight="bold">{dia}</Typography>
-              </Grid>
+      {tipoVisualizacao === 'simples' ? (
+        <>
+          {/* Seletor de Ano */}
+          <Box sx={{ 
+            display: 'flex', 
+            justifyContent: 'center', 
+            gap: 2, 
+            overflow: 'auto',
+            p: 1,
+            mb: 1,
+            borderRadius: 1,
+            bgcolor: 'background.paper',
+            boxShadow: 1
+          }}>
+            {anosDisponiveis.map(ano => (
+              <Button
+                key={ano}
+                variant={anoSelecionado === ano ? "contained" : "outlined"}
+                onClick={() => setAnoSelecionado(ano)}
+                sx={{ 
+                  minWidth: '80px',
+                  px: 2
+                }}
+              >
+                {ano}
+              </Button>
             ))}
-          </Grid>
+          </Box>
           
-          {/* Semanas do mês */}
-          {diasPorSemana.map((semana, indexSemana) => (
-            <Grid container key={`semana-${indexSemana}`}>
-              {semana.map((dia, indexDia) => (
-                <Grid item xs key={`dia-${indexSemana}-${indexDia}`}>
-                  {renderizarCelula(dia)}
+          {/* Seletor de Mês */}
+          <Box sx={{ 
+            display: 'flex', 
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: 1,
+            p: 1,
+            mb: 2,
+            borderRadius: 1,
+            bgcolor: 'background.paper',
+            boxShadow: 1
+          }}>
+            {nomesMeses.map((mes, index) => (
+              <Button
+                key={index}
+                variant={mesSelecionado === index ? "contained" : "text"}
+                onClick={() => setMesSelecionado(index)}
+                sx={{ 
+                  flex: { xs: '1 0 30%', sm: '1 0 15%', md: '1 0 8%' },
+                  textTransform: 'capitalize',
+                  fontSize: { xs: '0.7rem', sm: '0.8rem', md: '0.875rem' }
+                }}
+              >
+                {mes}
+              </Button>
+            ))}
+          </Box>
+
+          {/* Exibição do mês e ano selecionado */}
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+            <Button
+              startIcon={<ArrowBackIcon />}
+              onClick={() => {
+                if (mesSelecionado === 0) {
+                  setMesSelecionado(11);
+                  setAnoSelecionado(anoSelecionado - 1);
+                } else {
+                  setMesSelecionado(mesSelecionado - 1);
+                }
+              }}
+            >
+              {t('mesAnterior')}
+            </Button>
+            
+            <Typography variant="h6" sx={{ textTransform: 'uppercase' }}>
+              {nomesMeses[mesSelecionado]} {anoSelecionado}
+            </Typography>
+            
+            <Button
+              endIcon={<ArrowForwardIcon />}
+              onClick={() => {
+                if (mesSelecionado === 11) {
+                  setMesSelecionado(0);
+                  setAnoSelecionado(anoSelecionado + 1);
+                } else {
+                  setMesSelecionado(mesSelecionado + 1);
+                }
+              }}
+            >
+              {t('proximoMes')}
+            </Button>
+          </Box>
+
+          {/* Calendário */}
+          {loading ? (
+            <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
+              <CircularProgress />
+            </Box>
+          ) : (
+            <Paper sx={{ p: 1, borderRadius: 2, overflow: 'hidden' }}>
+              {/* Cabeçalho dos dias da semana */}
+              <Grid container>
+                {['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'].map((dia, i) => (
+                  <Grid item xs key={i} sx={{ p: 1, textAlign: 'center', borderBottom: '1px solid #e0e0e0', bgcolor: 'background.default' }}>
+                    <Typography variant="subtitle2" fontWeight="bold">{dia}</Typography>
+                  </Grid>
+                ))}
+              </Grid>
+              
+              {/* Semanas do mês */}
+              {diasPorSemana.map((semana, indexSemana) => (
+                <Grid container key={`semana-${indexSemana}`}>
+                  {semana.map((dia, indexDia) => (
+                    <Grid item xs key={`dia-${indexSemana}-${indexDia}`}>
+                      {renderizarCelula(dia)}
+                    </Grid>
+                  ))}
                 </Grid>
               ))}
-            </Grid>
-          ))}
-        </Paper>
-      )}
+            </Paper>
+          )}
 
-      {/* Modal de detalhes do dia */}
-      <Dialog
-        open={detalhesAberto}
-        onClose={handleFecharDetalhes}
-        maxWidth="sm"
-        fullWidth
-      >
-        <DialogTitle>
-          {diaSelecionado && format(diaSelecionado, 'EEEE, dd MMMM yyyy', { locale: getDateLocale(i18n.language) })}
-        </DialogTitle>
-        
-        <DialogContent dividers>
-          {diaSelecionado && (
-            <>
-              {/* Resumo do dia */}
-              <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between' }}>
-                <Box>
-                  <Typography variant="subtitle2" color="text.secondary">
+          {/* Modal de detalhes do dia */}
+          <Dialog
+            open={detalhesAberto}
+            onClose={handleFecharDetalhes}
+            maxWidth="sm"
+            fullWidth
+          >
+            <DialogTitle>
+              {diaSelecionado && format(diaSelecionado, 'EEEE, dd MMMM yyyy', { locale: getDateLocale(i18n.language) })}
+            </DialogTitle>
+            
+            <DialogContent dividers>
+              {diaSelecionado && (
+                <>
+                  {/* Resumo do dia */}
+                  <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between' }}>
+                    <Box>
+                      <Typography variant="subtitle2" color="text.secondary">
+                        {t('entradas')}
+                      </Typography>
+                      <Typography variant="h6" color="success.main">
+                        {formatarMoedaDetalhado(calcularTotaisPorDia(diaSelecionado).entradas)}
+                      </Typography>
+                    </Box>
+                    
+                    <Box>
+                      <Typography variant="subtitle2" color="text.secondary" align="right">
+                        {t('saidas')}
+                      </Typography>
+                      <Typography variant="h6" color="error.main" align="right">
+                        {formatarMoedaDetalhado(calcularTotaisPorDia(diaSelecionado).saidas)}
+                      </Typography>
+                    </Box>
+                  </Box>
+                  
+                  <Divider sx={{ my: 2 }} />
+                  
+                  {/* Lista de entradas */}
+                  <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'bold', color: 'success.main' }}>
                     {t('entradas')}
                   </Typography>
-                  <Typography variant="h6" color="success.main">
-                    {formatarMoedaDetalhado(calcularTotaisPorDia(diaSelecionado).entradas)}
-                  </Typography>
-                </Box>
-                
-                <Box>
-                  <Typography variant="subtitle2" color="text.secondary" align="right">
+                  
+                  {obterTransacoesDoDia().entradas.length > 0 ? (
+                    <List>
+                      {obterTransacoesDoDia().entradas.map((entrada) => (
+                        <ListItem key={entrada.id} divider>
+                          <ListItemText
+                            primary={entrada.descricao}
+                            secondary={entrada.categoria}
+                          />
+                          <Typography variant="body1" color="success.main">
+                            {formatarMoedaDetalhado(entrada.valor)}
+                          </Typography>
+                        </ListItem>
+                      ))}
+                    </List>
+                  ) : (
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                      {t('nenhumaEntradaRegistrada')}
+                    </Typography>
+                  )}
+                  
+                  <Divider sx={{ my: 2 }} />
+                  
+                  {/* Lista de saídas */}
+                  <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'bold', color: 'error.main' }}>
                     {t('saidas')}
                   </Typography>
-                  <Typography variant="h6" color="error.main" align="right">
-                    {formatarMoedaDetalhado(calcularTotaisPorDia(diaSelecionado).saidas)}
+                  
+                  {obterTransacoesDoDia().saidas.length > 0 ? (
+                    <List>
+                      {obterTransacoesDoDia().saidas.map((saida) => (
+                        <ListItem key={saida.id} divider>
+                          <ListItemText
+                            primary={saida.descricao}
+                            secondary={saida.categoria}
+                          />
+                          <Typography variant="body1" color="error.main">
+                            {formatarMoedaDetalhado(saida.valor)}
+                          </Typography>
+                        </ListItem>
+                      ))}
+                    </List>
+                  ) : (
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                      {t('nenhumaSaidaRegistrada')}
+                    </Typography>
+                  )}
+                  
+                  <Divider sx={{ my: 2 }} />
+                  
+                  {/* Lista de pagamentos */}
+                  <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'bold', color: 'warning.main' }}>
+                    {t('pagamentos')}
                   </Typography>
-                </Box>
-              </Box>
-              
-              <Divider sx={{ my: 2 }} />
-              
-              {/* Lista de entradas */}
-              <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'bold', color: 'success.main' }}>
-                {t('entradas')}
-              </Typography>
-              
-              {obterTransacoesDoDia().entradas.length > 0 ? (
-                <List>
-                  {obterTransacoesDoDia().entradas.map((entrada) => (
-                    <ListItem key={entrada.id} divider>
-                      <ListItemText
-                        primary={entrada.descricao}
-                        secondary={entrada.categoria}
-                      />
-                      <Typography variant="body1" color="success.main">
-                        {formatarMoedaDetalhado(entrada.valor)}
-                      </Typography>
-                    </ListItem>
-                  ))}
-                </List>
-              ) : (
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                  {t('nenhumaEntradaRegistrada')}
-                </Typography>
+                  
+                  {(obterTransacoesDoDia()?.pagamentosDoDia ?? []).length > 0 ? (
+                    <List>
+                      {(obterTransacoesDoDia()?.pagamentosDoDia ?? []).map((pagamento) => (
+                        <ListItem key={pagamento.id} divider>
+                          <ListItemText
+                            primary={pagamento.nome}
+                            secondary={
+                              <>
+                                {pagamento.descricao}
+                                <Chip 
+                                  size="small" 
+                                  label={pagamento.pago ? t('pago') : t('pendente')} 
+                                  color={pagamento.pago ? "success" : "warning"}
+                                  sx={{ ml: 1 }}
+                                />
+                              </>
+                            }
+                          />
+                          <Typography variant="body1" color="error.main">
+                            {formatarMoedaDetalhado(pagamento.valor)}
+                          </Typography>
+                        </ListItem>
+                      ))}
+                    </List>
+                  ) : (
+                    <Typography variant="body2" color="text.secondary">
+                      {t('nenhumPagamentoRegistrado')}
+                    </Typography>
+                  )}
+                </>
               )}
-              
-              <Divider sx={{ my: 2 }} />
-              
-              {/* Lista de saídas */}
-              <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'bold', color: 'error.main' }}>
-                {t('saidas')}
-              </Typography>
-              
-              {obterTransacoesDoDia().saidas.length > 0 ? (
-                <List>
-                  {obterTransacoesDoDia().saidas.map((saida) => (
-                    <ListItem key={saida.id} divider>
-                      <ListItemText
-                        primary={saida.descricao}
-                        secondary={saida.categoria}
-                      />
-                      <Typography variant="body1" color="error.main">
-                        {formatarMoedaDetalhado(saida.valor)}
-                      </Typography>
-                    </ListItem>
-                  ))}
-                </List>
-              ) : (
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                  {t('nenhumaSaidaRegistrada')}
-                </Typography>
-              )}
-              
-              <Divider sx={{ my: 2 }} />
-              
-              {/* Lista de pagamentos */}
-              <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'bold', color: 'warning.main' }}>
-                {t('pagamentos')}
-              </Typography>
-              
-              {(obterTransacoesDoDia()?.pagamentosDoDia ?? []).length > 0 ? (
-                <List>
-                  {(obterTransacoesDoDia()?.pagamentosDoDia ?? []).map((pagamento) => (
-                    <ListItem key={pagamento.id} divider>
-                      <ListItemText
-                        primary={pagamento.nome}
-                        secondary={
-                          <>
-                            {pagamento.descricao}
-                            <Chip 
-                              size="small" 
-                              label={pagamento.pago ? t('pago') : t('pendente')} 
-                              color={pagamento.pago ? "success" : "warning"}
-                              sx={{ ml: 1 }}
-                            />
-                          </>
-                        }
-                      />
-                      <Typography variant="body1" color="error.main">
-                        {formatarMoedaDetalhado(pagamento.valor)}
-                      </Typography>
-                    </ListItem>
-                  ))}
-                </List>
-              ) : (
-                <Typography variant="body2" color="text.secondary">
-                  {t('nenhumPagamentoRegistrado')}
-                </Typography>
-              )}
-            </>
-          )}
-        </DialogContent>
-        
-        <DialogActions>
-          <Button onClick={handleFecharDetalhes} color="primary">
-            {t('fechar')}
-          </Button>
-        </DialogActions>
-      </Dialog>
+            </DialogContent>
+            
+            <DialogActions>
+              <Button onClick={handleFecharDetalhes} color="primary">
+                {t('fechar')}
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </>
+      ) : (
+        <CalendarioFinanceiro />
+      )}
     </Box>
   );
 };

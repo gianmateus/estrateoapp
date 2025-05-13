@@ -17,6 +17,10 @@ const CardImposto: React.FC<CardImpostoProps> = ({ tipo, valor, icone, cor = 'pr
   const theme = useTheme();
   const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
   
+  // Garantir que o tipo e legenda nunca sejam null
+  const tipoSeguro = tipo || 'Imposto';
+  const legendaSegura = legenda || '';
+  
   // Formatação aprimorada para valores monetários
   const valorFormatado = React.useMemo(() => {
     if (valor === null || valor === undefined) {
@@ -50,7 +54,7 @@ const CardImposto: React.FC<CardImpostoProps> = ({ tipo, valor, icone, cor = 'pr
       {...motionProps}
       style={{ height: '100%' }}
     >
-      <Tooltip title={legenda || tipo} arrow placement="top">
+      <Tooltip title={legendaSegura || tipoSeguro} arrow placement="top">
         <Card
           elevation={1}
           sx={{
@@ -102,7 +106,7 @@ const CardImposto: React.FC<CardImpostoProps> = ({ tipo, valor, icone, cor = 'pr
                 color="text.primary"
                 sx={{ lineHeight: 1.2 }}
               >
-                {tipo}
+                {tipoSeguro}
               </Typography>
             </Box>
             

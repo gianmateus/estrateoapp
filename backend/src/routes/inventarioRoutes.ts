@@ -13,22 +13,25 @@ const router = Router();
 // Listar todos os itens do inventário
 router.get('/', permissionMiddleware.checkPermission(VIEW_INVENTORY_PERMISSION), inventarioController.listar);
 
-// Resumo dos itens do inventário para dashboard
+// Resumo do inventário
 router.get('/resumo', permissionMiddleware.checkPermission(VIEW_INVENTORY_PERMISSION), inventarioController.resumo);
 
-// Sugestões de itens abaixo do ideal
-router.get('/sugestoes', permissionMiddleware.checkPermission(VIEW_INVENTORY_PERMISSION), inventarioController.sugestoes);
+// Exportar dados do inventário (em JSON ou CSV)
+router.get('/exportar', permissionMiddleware.checkPermission(VIEW_INVENTORY_PERMISSION), inventarioController.exportar);
+
+// Listar categorias disponíveis
+router.get('/categorias', permissionMiddleware.checkPermission(VIEW_INVENTORY_PERMISSION), inventarioController.categorias);
 
 // Buscar item por ID
 router.get('/:id', permissionMiddleware.checkPermission(VIEW_INVENTORY_PERMISSION), inventarioController.buscarPorId);
 
-// Criar novo item
+// Adicionar novo item ao inventário
 router.post('/', permissionMiddleware.checkPermission(CREATE_INVENTORY_PERMISSION), inventarioController.criar);
 
-// Atualizar item
+// Atualizar item do inventário
 router.put('/:id', permissionMiddleware.checkPermission(EDIT_INVENTORY_PERMISSION), inventarioController.atualizar);
 
-// Excluir item
+// Excluir item do inventário
 router.delete('/:id', permissionMiddleware.checkPermission(DELETE_INVENTORY_PERMISSION), inventarioController.excluir);
 
 export default router; 

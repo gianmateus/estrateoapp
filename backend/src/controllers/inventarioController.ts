@@ -1,23 +1,75 @@
 import { Request, Response } from 'express';
 import prisma from '../lib/prisma';
 import { EventBus } from '../lib/EventBus';
+import { Prisma } from '../generated/prisma';
 
 const inventarioController = {
-  // Listar todos os itens do inventário do usuário
+  // Listar todos os itens do inventário do usuário com paginação, filtros e ordenação
   async listar(req: Request, res: Response) {
     try {
       const userId = req.user.id;
       
+      // Parâmetros de paginação
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = parseInt(req.query.limit as string) || 10;
+      const skip = (page - 1) * limit;
+      
+      // Parâmetros de ordenação
+      const sortBy = (req.query.sortBy as string) || 'nome';
+      const sortOrder = (req.query.sortOrder as string) || 'asc';
+      
+      // Parâmetros de filtro
+      const nome = req.query.nome as string;
+      const codigoEAN = req.query.codigoEAN as string;
+      const fornecedor = req.query.fornecedor as string;
+      const categoria = req.query.categoria as string;
+      const estoqueMinimo = req.query.estoqueMinimo === 'true';
+      const validade = req.query.validade as string;
+      
+      // Construir filtro
+      const where: Prisma.InventarioWhereInput = {
+        userId,
+        ...(nome && { nome: { contains: nome, mode: 'insensitive' } }),
+        ...(codigoEAN && { codigoEAN: { contains: codigoEAN } }),
+        ...(fornecedor && { fornecedor: { contains: fornecedor, mode: 'insensitive' } }),
+        ...(categoria && { categoria: { equals: categoria } }),
+        ...(estoqueMinimo && { 
+          AND: [
+            { nivelMinimoEstoque: { not: null } },
+            { quantidade: { lte: { path: ['nivelMinimoEstoque'] } } }
+          ]
+        }),
+        ...(validade && { 
+          dataValidade: { 
+            lte: new Date(new Date().setDate(new Date().getDate() + parseInt(validade))) 
+          } 
+        }),
+      };
+      
+      // Construir ordenação
+      const orderBy: any = {};
+      orderBy[sortBy] = sortOrder;
+      
+      // Contar total de itens
+      const total = await prisma.inventario.count({ where });
+      
+      // Buscar itens paginados
       const itens = await prisma.inventario.findMany({
-        where: {
-          userId
-        },
-        orderBy: {
-          createdAt: 'desc'
-        }
+        where,
+        orderBy,
+        skip,
+        take: limit
       });
       
-      return res.status(200).json(itens);
+      return res.status(200).json({
+        itens,
+        pagination: {
+          total,
+          page,
+          limit,
+          pages: Math.ceil(total / limit)
+        }
+      });
     } catch (error) {
       console.error('Erro ao listar inventário:', error);
       return res.status(500).json({ 
@@ -61,35 +113,102 @@ const inventarioController = {
   async criar(req: Request, res: Response) {
     try {
       const userId = req.user.id;
-      const { nome, categoria, unidade, quantidadeAtual, quantidadeIdeal } = req.body;
+      const { 
+        nome, 
+        quantidade, 
+        preco,
+        codigoEAN,
+        fornecedor,
+        precoCompra,
+        unidadeMedida,
+        dataValidade,
+        nivelMinimoEstoque,
+        localizacaoArmazem,
+        categoria,
+        descricao,
+        foto
+      } = req.body;
       
       // Validações básicas
-      if (!nome || !categoria || !unidade || quantidadeAtual === undefined || quantidadeIdeal === undefined) {
+      if (!nome || quantidade === undefined || preco === undefined) {
         return res.status(400).json({
           error: true,
-          message: 'Dados incompletos. Informe nome, categoria, unidade, quantidade atual e quantidade ideal'
+          message: 'Dados incompletos. Informe nome, quantidade e preço.'
         });
       }
       
-      // Validar se as quantidades são números positivos
-      if (isNaN(quantidadeAtual) || isNaN(quantidadeIdeal) || quantidadeAtual < 0 || quantidadeIdeal < 0) {
+      // Validar se as quantidades e preços são números positivos
+      if (isNaN(quantidade) || quantidade < 0) {
         return res.status(400).json({
           error: true,
-          message: 'As quantidades devem ser números positivos'
+          message: 'A quantidade deve ser um número positivo'
         });
+      }
+      
+      if (isNaN(preco) || preco < 0) {
+        return res.status(400).json({
+          error: true,
+          message: 'O preço deve ser um número positivo'
+        });
+      }
+      
+      if (precoCompra !== undefined && (isNaN(precoCompra) || precoCompra < 0)) {
+        return res.status(400).json({
+          error: true,
+          message: 'O preço de compra deve ser um número positivo'
+        });
+      }
+      
+      if (nivelMinimoEstoque !== undefined && (isNaN(nivelMinimoEstoque) || nivelMinimoEstoque < 0)) {
+        return res.status(400).json({
+          error: true,
+          message: 'O nível mínimo de estoque deve ser um número positivo'
+        });
+      }
+      
+      // Validação da data de validade
+      let validadeDate = null;
+      if (dataValidade) {
+        validadeDate = new Date(dataValidade);
+        if (isNaN(validadeDate.getTime())) {
+          return res.status(400).json({
+            error: true,
+            message: 'Data de validade inválida'
+          });
+        }
       }
       
       // Criar item
       const item = await prisma.inventario.create({
         data: {
           nome,
+          quantidade: Number(quantidade),
+          preco: Number(preco),
+          codigoEAN,
+          fornecedor,
+          precoCompra: precoCompra ? Number(precoCompra) : null,
+          unidadeMedida: unidadeMedida || 'unidade',
+          dataValidade: validadeDate,
+          nivelMinimoEstoque: nivelMinimoEstoque ? Number(nivelMinimoEstoque) : null,
+          localizacaoArmazem,
           categoria,
-          unidade,
-          quantidadeAtual: Number(quantidadeAtual),
-          quantidadeIdeal: Number(quantidadeIdeal),
+          descricao,
+          foto,
           userId
         }
       });
+      
+      // Verificar se o item está abaixo do mínimo
+      if (nivelMinimoEstoque && quantidade < nivelMinimoEstoque) {
+        EventBus.emit('estoque.item.abaixo.minimo', {
+          id: item.id,
+          nome: item.nome,
+          categoria: item.categoria,
+          quantidade: item.quantidade,
+          nivelMinimo: item.nivelMinimoEstoque,
+          unidadeMedida: item.unidadeMedida
+        });
+      }
       
       return res.status(201).json({
         message: 'Item adicionado ao inventário',
@@ -109,7 +228,21 @@ const inventarioController = {
     try {
       const { id } = req.params;
       const userId = req.user.id;
-      const { nome, categoria, unidade, quantidadeAtual, quantidadeIdeal } = req.body;
+      const { 
+        nome, 
+        quantidade, 
+        preco,
+        codigoEAN,
+        fornecedor,
+        precoCompra,
+        unidadeMedida,
+        dataValidade,
+        nivelMinimoEstoque,
+        localizacaoArmazem,
+        categoria,
+        descricao,
+        foto
+      } = req.body;
       
       // Verificar se o item existe e pertence ao usuário
       const itemExistente = await prisma.inventario.findFirst({
@@ -126,30 +259,66 @@ const inventarioController = {
         });
       }
       
+      // Validação da data de validade
+      let validadeDate = undefined;
+      if (dataValidade) {
+        validadeDate = new Date(dataValidade);
+        if (isNaN(validadeDate.getTime())) {
+          return res.status(400).json({
+            error: true,
+            message: 'Data de validade inválida'
+          });
+        }
+      }
+      
       // Preparar dados para atualização
       const dadosAtualizacao: any = {};
       
-      if (nome) dadosAtualizacao.nome = nome;
-      if (categoria) dadosAtualizacao.categoria = categoria;
-      if (unidade) dadosAtualizacao.unidade = unidade;
-      if (quantidadeAtual !== undefined) {
-        if (isNaN(quantidadeAtual) || quantidadeAtual < 0) {
+      if (nome !== undefined) dadosAtualizacao.nome = nome;
+      if (quantidade !== undefined) {
+        if (isNaN(quantidade) || quantidade < 0) {
           return res.status(400).json({
             error: true,
-            message: 'A quantidade atual deve ser um número positivo'
+            message: 'A quantidade deve ser um número positivo'
           });
         }
-        dadosAtualizacao.quantidadeAtual = Number(quantidadeAtual);
+        dadosAtualizacao.quantidade = Number(quantidade);
       }
-      if (quantidadeIdeal !== undefined) {
-        if (isNaN(quantidadeIdeal) || quantidadeIdeal < 0) {
+      if (preco !== undefined) {
+        if (isNaN(preco) || preco < 0) {
           return res.status(400).json({
             error: true,
-            message: 'A quantidade ideal deve ser um número positivo'
+            message: 'O preço deve ser um número positivo'
           });
         }
-        dadosAtualizacao.quantidadeIdeal = Number(quantidadeIdeal);
+        dadosAtualizacao.preco = Number(preco);
       }
+      if (codigoEAN !== undefined) dadosAtualizacao.codigoEAN = codigoEAN;
+      if (fornecedor !== undefined) dadosAtualizacao.fornecedor = fornecedor;
+      if (precoCompra !== undefined) {
+        if (isNaN(precoCompra) || precoCompra < 0) {
+          return res.status(400).json({
+            error: true,
+            message: 'O preço de compra deve ser um número positivo'
+          });
+        }
+        dadosAtualizacao.precoCompra = Number(precoCompra);
+      }
+      if (unidadeMedida !== undefined) dadosAtualizacao.unidadeMedida = unidadeMedida;
+      if (dataValidade !== undefined) dadosAtualizacao.dataValidade = validadeDate;
+      if (nivelMinimoEstoque !== undefined) {
+        if (isNaN(nivelMinimoEstoque) || nivelMinimoEstoque < 0) {
+          return res.status(400).json({
+            error: true,
+            message: 'O nível mínimo de estoque deve ser um número positivo'
+          });
+        }
+        dadosAtualizacao.nivelMinimoEstoque = Number(nivelMinimoEstoque);
+      }
+      if (localizacaoArmazem !== undefined) dadosAtualizacao.localizacaoArmazem = localizacaoArmazem;
+      if (categoria !== undefined) dadosAtualizacao.categoria = categoria;
+      if (descricao !== undefined) dadosAtualizacao.descricao = descricao;
+      if (foto !== undefined) dadosAtualizacao.foto = foto;
       
       // Atualizar item
       const itemAtualizado = await prisma.inventario.update({
@@ -158,12 +327,12 @@ const inventarioController = {
       });
 
       // Emitir evento de movimentação de estoque se a quantidade foi alterada
-      if (quantidadeAtual !== undefined && itemExistente.quantidadeAtual !== Number(quantidadeAtual)) {
-        const diferencaQuantidade = Number(quantidadeAtual) - itemExistente.quantidadeAtual;
+      if (quantidade !== undefined && itemExistente.quantidade !== Number(quantidade)) {
+        const diferencaQuantidade = Number(quantidade) - itemExistente.quantidade;
         const tipo = diferencaQuantidade > 0 ? 'entrada' : 'saida';
         
-        // Calcular valor da movimentação (simulado como 10 por unidade)
-        const valorPorUnidade = 10; // Valor fixo para exemplo
+        // Calcular valor da movimentação com base no preço de compra
+        const valorPorUnidade = itemAtualizado.precoCompra || itemAtualizado.preco;
         const valorMovimentacao = Math.abs(diferencaQuantidade) * valorPorUnidade;
         
         EventBus.emit('estoque.movimentado', {
@@ -178,15 +347,15 @@ const inventarioController = {
         });
       }
       
-      // Verificar se o item está abaixo do ideal após atualização
-      if (itemAtualizado.quantidadeAtual < itemAtualizado.quantidadeIdeal) {
+      // Verificar se o item está abaixo do mínimo após atualização
+      if (itemAtualizado.nivelMinimoEstoque && itemAtualizado.quantidade < itemAtualizado.nivelMinimoEstoque) {
         EventBus.emit('estoque.item.abaixo.minimo', {
           id: itemAtualizado.id,
           nome: itemAtualizado.nome,
           categoria: itemAtualizado.categoria,
-          quantidadeAtual: itemAtualizado.quantidadeAtual,
-          quantidadeMinima: itemAtualizado.quantidadeIdeal,
-          unidade: itemAtualizado.unidade
+          quantidade: itemAtualizado.quantidade,
+          nivelMinimo: itemAtualizado.nivelMinimoEstoque,
+          unidadeMedida: itemAtualizado.unidadeMedida
         });
       }
       
@@ -241,7 +410,7 @@ const inventarioController = {
     }
   },
 
-  // Resumo do inventário com itens abaixo do ideal
+  // Resumo do inventário com estatísticas
   async resumo(req: Request, res: Response) {
     try {
       const userId = req.user.id;
@@ -253,18 +422,43 @@ const inventarioController = {
         }
       });
       
-      // Calcular itens abaixo do ideal
+      // Calcular itens abaixo do mínimo
       const itensCriticos = itens.filter(item => 
-        item.quantidadeAtual < item.quantidadeIdeal
+        item.nivelMinimoEstoque !== null && item.quantidade < item.nivelMinimoEstoque
       ).length;
       
-      // Calcular valor total do inventário (simulação)
-      const valorTotal = itens.reduce((acc, item) => acc + (item.quantidadeAtual * 10), 0);
+      // Calcular valor total do inventário
+      const valorTotalCompra = itens.reduce((acc, item) => 
+        acc + (item.quantidade * (item.precoCompra || 0)), 0
+      );
+      
+      const valorTotalVenda = itens.reduce((acc, item) => 
+        acc + (item.quantidade * item.preco), 0
+      );
+      
+      // Itens com validade próxima (30 dias)
+      const dataLimite = new Date();
+      dataLimite.setDate(dataLimite.getDate() + 30);
+      
+      const itensValidadeProxima = itens.filter(item => 
+        item.dataValidade && item.dataValidade <= dataLimite
+      ).length;
+      
+      // Contagem por categoria
+      const categorias = itens.reduce((acc: Record<string, number>, item) => {
+        const categoria = item.categoria || 'Sem categoria';
+        acc[categoria] = (acc[categoria] || 0) + 1;
+        return acc;
+      }, {});
       
       return res.json({
-        itensCriticos,
         totalItens: itens.length,
-        valorTotal
+        itensCriticos,
+        itensValidadeProxima,
+        valorTotalCompra,
+        valorTotalVenda,
+        lucroPotencial: valorTotalVenda - valorTotalCompra,
+        categorias
       });
     } catch (error) {
       console.error('Erro ao buscar resumo do inventário:', error);
@@ -275,30 +469,92 @@ const inventarioController = {
     }
   },
   
-  // Sugestões de reabastecimento (itens abaixo do ideal)
-  async sugestoes(req: Request, res: Response) {
+  // Exportar dados do inventário
+  async exportar(req: Request, res: Response) {
     try {
       const userId = req.user.id;
+      const formato = (req.query.formato as string) || 'json';
       
-      // Buscar itens abaixo do ideal
-      const itensCriticos = await prisma.inventario.findMany({
+      // Buscar itens do usuário
+      const itens = await prisma.inventario.findMany({
         where: {
-          userId,
-          quantidadeAtual: {
-            lt: prisma.inventario.fields.quantidadeIdeal
-          }
+          userId
+        },
+        orderBy: {
+          nome: 'asc'
         }
       });
       
-      return res.json({
-        itensCriticos: itensCriticos.length,
-        itens: itensCriticos
-      });
+      if (formato === 'csv') {
+        // Preparar dados para CSV
+        const headers = 'ID,Nome,Quantidade,Preço Venda,Preço Compra,Código EAN,Fornecedor,Unidade de Medida,Data de Validade,Nível Mínimo,Localização,Categoria\n';
+        
+        const rows = itens.map(item => {
+          const dataValidade = item.dataValidade ? new Date(item.dataValidade).toLocaleDateString() : '';
+          
+          return [
+            item.id,
+            item.nome,
+            item.quantidade,
+            item.preco,
+            item.precoCompra || '',
+            item.codigoEAN || '',
+            item.fornecedor || '',
+            item.unidadeMedida,
+            dataValidade,
+            item.nivelMinimoEstoque || '',
+            item.localizacaoArmazem || '',
+            item.categoria || ''
+          ].join(',');
+        }).join('\n');
+        
+        const csv = headers + rows;
+        
+        res.setHeader('Content-Type', 'text/csv');
+        res.setHeader('Content-Disposition', 'attachment; filename=inventario.csv');
+        
+        return res.status(200).send(csv);
+      } else {
+        // Retornar JSON
+        return res.status(200).json(itens);
+      }
     } catch (error) {
-      console.error('Erro ao buscar sugestões de inventário:', error);
-      return res.status(500).json({ 
-        error: true, 
-        message: 'Erro ao buscar sugestões de inventário' 
+      console.error('Erro ao exportar inventário:', error);
+      return res.status(500).json({
+        error: true,
+        message: 'Erro ao exportar inventário'
+      });
+    }
+  },
+  
+  // Buscar categorias disponíveis
+  async categorias(req: Request, res: Response) {
+    try {
+      const userId = req.user.id;
+      
+      const itens = await prisma.inventario.findMany({
+        where: {
+          userId,
+          categoria: {
+            not: null
+          }
+        },
+        select: {
+          categoria: true
+        },
+        distinct: ['categoria']
+      });
+      
+      const categorias = itens
+        .map(item => item.categoria)
+        .filter(categoria => categoria !== null) as string[];
+      
+      return res.status(200).json(categorias);
+    } catch (error) {
+      console.error('Erro ao buscar categorias:', error);
+      return res.status(500).json({
+        error: true,
+        message: 'Erro ao buscar categorias do inventário'
       });
     }
   }

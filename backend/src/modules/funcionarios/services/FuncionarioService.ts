@@ -22,29 +22,30 @@ export class FuncionarioService {
    * @param data Dados do funcionário
    * @returns Funcionário criado
    */
-  async create(data: CreateFuncionarioDTO): Promise<any> {
+  async create(data: any): Promise<any> {
     try {
-      // Converte array de dias para formato adequado para armazenamento
-      // Converts days array to proper format for storage
       return await this.prisma.funcionario.create({
         data: {
-          nome: data.nome,
+          nomeCompleto: data.nomeCompleto,
           cargo: data.cargo,
+          departamento: data.departamento,
+          emailProfissional: data.emailProfissional,
+          telefone: data.telefone,
+          endereco: data.endereco,
+          cidade: data.cidade,
+          cep: data.cep,
+          pais: data.pais,
+          steurId: data.steurId,
+          nacionalidade: data.nacionalidade,
+          idiomas: Array.isArray(data.idiomas) ? data.idiomas.join(',') : data.idiomas,
+          dataAdmissao: new Date(data.dataAdmissao),
           tipoContrato: data.tipoContrato,
-          dataAdmissao: data.dataAdmissao,
-          salarioBruto: data.salarioBruto,
-          pagamentoPorHora: data.pagamentoPorHora,
-          horasSemana: data.horasSemana,
-          diasTrabalho: data.diasTrabalho,
-          iban: data.iban,
-          status: 'ativo',
+          jornadaSemanal: Number(data.jornadaSemanal),
+          diasTrabalho: Array.isArray(data.diasTrabalho) ? data.diasTrabalho.join(',') : data.diasTrabalho,
+          salarioBruto: Number(data.salarioBruto),
+          status: data.status || 'ativo',
           observacoes: data.observacoes,
           contratoUploadUrl: data.contratoUploadUrl,
-          // Novos campos
-          formaPagamento: data.formaPagamento,
-          situacaoAtual: data.situacaoAtual || 'ativo',
-          telefone: data.telefone,
-          email: data.email,
         },
       });
     } catch (error) {
@@ -59,13 +60,33 @@ export class FuncionarioService {
    * @param data Dados atualizados do funcionário
    * @returns Funcionário atualizado
    */
-  async update(data: UpdateFuncionarioDTO): Promise<any> {
+  async update(data: any): Promise<any> {
     try {
       const { id, ...updateData } = data;
-      
       return await this.prisma.funcionario.update({
         where: { id },
-        data: updateData,
+        data: {
+          nomeCompleto: updateData.nomeCompleto,
+          cargo: updateData.cargo,
+          departamento: updateData.departamento,
+          emailProfissional: updateData.emailProfissional,
+          telefone: updateData.telefone,
+          endereco: updateData.endereco,
+          cidade: updateData.cidade,
+          cep: updateData.cep,
+          pais: updateData.pais,
+          steurId: updateData.steurId,
+          nacionalidade: updateData.nacionalidade,
+          idiomas: Array.isArray(updateData.idiomas) ? updateData.idiomas.join(',') : updateData.idiomas,
+          dataAdmissao: new Date(updateData.dataAdmissao),
+          tipoContrato: updateData.tipoContrato,
+          jornadaSemanal: Number(updateData.jornadaSemanal),
+          diasTrabalho: Array.isArray(updateData.diasTrabalho) ? updateData.diasTrabalho.join(',') : updateData.diasTrabalho,
+          salarioBruto: Number(updateData.salarioBruto),
+          status: updateData.status,
+          observacoes: updateData.observacoes,
+          contratoUploadUrl: updateData.contratoUploadUrl,
+        },
       });
     } catch (error) {
       console.error('Erro ao atualizar funcionário:', error);
@@ -81,13 +102,18 @@ export class FuncionarioService {
    */
   async findById(id: string): Promise<any | null> {
     try {
-      return await this.prisma.funcionario.findUnique({
+      const funcionario = await this.prisma.funcionario.findUnique({
         where: { id },
         include: {
           controleJornada: true,
           resumoPagamento: true
         }
       });
+      if (funcionario) {
+        funcionario.idiomas = funcionario.idiomas ? funcionario.idiomas.split(',') : [];
+        funcionario.diasTrabalho = funcionario.diasTrabalho ? funcionario.diasTrabalho.split(',') : [];
+      }
+      return funcionario;
     } catch (error) {
       console.error('Erro ao buscar funcionário:', error);
       throw new Error('Não foi possível buscar o funcionário');
@@ -100,42 +126,32 @@ export class FuncionarioService {
    * @param filters Filtros opcionais
    * @returns Lista de funcionários
    */
-  async findAll(filters?: FuncionarioFilters): Promise<any[]> {
+  async findAll(filters?: any): Promise<any[]> {
     try {
       const where: any = {};
-      
       if (filters) {
-        if (filters.nome) {
-          where.nome = { contains: filters.nome };
+        if (filters.nomeCompleto) {
+          where.nomeCompleto = { contains: filters.nomeCompleto };
         }
-        
         if (filters.cargo) {
           where.cargo = { contains: filters.cargo };
         }
-        
         if (filters.tipoContrato) {
           where.tipoContrato = filters.tipoContrato;
         }
-        
         if (filters.status) {
           where.status = filters.status;
         }
-
-        // Adicionar filtro para situação atual se fornecido
-        if (filters.situacaoAtual) {
-          where.situacaoAtual = filters.situacaoAtual;
-        }
-
-        // Adicionar filtro para forma de pagamento se fornecido
-        if (filters.formaPagamento) {
-          where.formaPagamento = filters.formaPagamento;
-        }
       }
-      
-      return await this.prisma.funcionario.findMany({
+      const funcionarios = await this.prisma.funcionario.findMany({
         where,
-        orderBy: { nome: 'asc' },
+        orderBy: { nomeCompleto: 'asc' },
       });
+      return funcionarios.map(f => ({
+        ...f,
+        idiomas: f.idiomas ? f.idiomas.split(',') : [],
+        diasTrabalho: f.diasTrabalho ? f.diasTrabalho.split(',') : [],
+      }));
     } catch (error) {
       console.error('Erro ao listar funcionários:', error);
       throw new Error('Não foi possível listar os funcionários');

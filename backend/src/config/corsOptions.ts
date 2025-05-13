@@ -14,6 +14,7 @@ import { serverConfig } from './index';
 // Lista de domínios permitidos
 const allowedOrigins = [
   'http://localhost:3000',     // ambiente de desenvolvimento
+  'http://localhost:3001',     // ambiente de desenvolvimento (porta alternativa)
   'https://estrateo.io',       // domínio oficial do front-end
   'https://www.estrateo.io',   // com www (caso use)
 ];

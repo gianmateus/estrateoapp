@@ -36,6 +36,7 @@ export interface Transacao {
   };
   formaPagamento?: FormaPagamento;
   numeroDocumento?: string; // nota fiscal, recibo, contrato
+  notaFiscal?: string; // número ou referência da nota fiscal
   observacao?: string;
   
   // Campos específicos para entradas
