@@ -5,43 +5,85 @@
 import i18n from '../i18n';
 
 /**
- * Formata um valor numérico como moeda (EUR)
- * @param value - Valor a ser formatado
- * @param locale - Localidade para formatação (padrão: pt-BR)
- * @returns Valor formatado como moeda
+ * Formata um valor numérico como moeda em euro (€) de acordo com o idioma atual
+ * @param value - Valor numérico a ser formatado
+ * @param locale - Idioma a ser usado na formatação (padrão: idioma atual do i18n)
+ * @returns String formatada com o valor em euro
  */
-export const formatCurrency = (value: number, locale = 'pt-BR'): string => {
-  return new Intl.NumberFormat(locale, {
+export const formatCurrency = (value: number, locale?: string): string => {
+  const currentLocale = locale || i18n.language;
+  
+  // Mapeia códigos de idioma curtos para códigos completos se necessário
+  const localeMap: { [key: string]: string } = {
+    'en': 'en-GB', // Formato britânico para euro
+    'pt': 'pt-BR',
+    'de': 'de-DE',
+    'it': 'it-IT'
+  };
+  
+  const formattingLocale = localeMap[currentLocale] || currentLocale;
+  
+  return new Intl.NumberFormat(formattingLocale, {
     style: 'currency',
-    currency: 'EUR',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
+    currency: 'EUR'
   }).format(value);
 };
 
 /**
- * Formata uma data no padrão europeu
- * @param date Data a ser formatada
- * @returns String formatada de acordo com o idioma atual
+ * Formata uma data de acordo com o idioma atual
+ * @param date - Data a ser formatada (Date, string ou timestamp)
+ * @param locale - Idioma a ser usado na formatação (padrão: idioma atual do i18n)
+ * @param options - Opções adicionais de formatação
+ * @returns String formatada com a data
  */
-export const formatDate = (date: Date | string): string => {
-  // Usar i18n.language quando disponível ou usar locale padrão
-  const language = i18n?.language || 'de-DE';
+export const formatDate = (
+  date: Date | string | number,
+  locale?: string,
+  options?: Intl.DateTimeFormatOptions
+): string => {
+  const currentLocale = locale || i18n.language;
   
-  // Converter para objeto Date se for string
-  const dateObj = typeof date === 'string' ? new Date(date) : date;
+  // Mapeia códigos de idioma curtos para códigos completos se necessário
+  const localeMap: { [key: string]: string } = {
+    'en': 'en-GB',
+    'pt': 'pt-BR',
+    'de': 'de-DE',
+    'it': 'it-IT'
+  };
   
-  return dateObj.toLocaleDateString(language);
+  const formattingLocale = localeMap[currentLocale] || currentLocale;
+  const dateObject = date instanceof Date ? date : new Date(date);
+  
+  return new Intl.DateTimeFormat(
+    formattingLocale,
+    options || { 
+      day: '2-digit', 
+      month: '2-digit', 
+      year: 'numeric' 
+    }
+  ).format(dateObject);
 };
 
 /**
- * Formata um valor numérico com separadores de milhares
- * @param value - Valor a ser formatado
- * @param locale - Localidade para formatação (padrão: pt-BR)
- * @returns Valor formatado com separadores
+ * Formata um valor numérico de acordo com o idioma atual
+ * @param value - Valor numérico a ser formatado
+ * @param locale - Idioma a ser usado na formatação (padrão: idioma atual do i18n)
+ * @returns String formatada com o valor numérico
  */
-export const formatNumber = (value: number, locale = 'pt-BR'): string => {
-  return new Intl.NumberFormat(locale).format(value);
+export const formatNumber = (value: number, locale?: string): string => {
+  const currentLocale = locale || i18n.language;
+  
+  // Mapeia códigos de idioma curtos para códigos completos se necessário
+  const localeMap: { [key: string]: string } = {
+    'en': 'en-GB',
+    'pt': 'pt-BR',
+    'de': 'de-DE',
+    'it': 'it-IT'
+  };
+  
+  const formattingLocale = localeMap[currentLocale] || currentLocale;
+  
+  return new Intl.NumberFormat(formattingLocale).format(value);
 };
 
 /**

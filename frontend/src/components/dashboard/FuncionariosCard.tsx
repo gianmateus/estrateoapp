@@ -21,7 +21,7 @@ import {
   People as PeopleIcon
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
-import api from '../../services/api';
+import { api } from '../../services/api';
 
 // Interface para o objeto de contagem por situação
 interface SituacaoCount {
@@ -51,7 +51,7 @@ const FuncionariosCard: React.FC = () => {
         setSituacaoCount(response.data);
         
         // Calcular total de funcionários
-        const total = Object.values(response.data).reduce((sum, count) => sum + count, 0);
+        const total = Object.values(response.data).reduce((sum: number, count: number) => sum + count, 0);
         setTotalFuncionarios(total);
       } catch (error) {
         console.error('Erro ao buscar dados de funcionários:', error);
@@ -63,7 +63,7 @@ const FuncionariosCard: React.FC = () => {
           desligado: 1
         };
         setSituacaoCount(mockData);
-        setTotalFuncionarios(Object.values(mockData).reduce((sum, count) => sum + count, 0));
+        setTotalFuncionarios(Object.values(mockData).reduce((sum: number, count: number) => sum + count, 0));
       } finally {
         setLoading(false);
       }

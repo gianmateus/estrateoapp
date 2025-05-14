@@ -1,41 +1,49 @@
 import axios from 'axios';
+import i18n from '../i18n';
 
-// Criando uma instância do axios com a URL base da API
-const apiClient = axios.create({
-  baseURL: 'http://localhost:3333/api'
+/**
+ * Configuração base do Axios para as requisições da API
+ */
+export const api = axios.create({
+  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:3001/api',
+  timeout: 10000,
+  headers: {
+    'Content-Type': 'application/json',
+  }
 });
 
-// Interceptor para adicionar o token JWT em todas as requisições
-apiClient.interceptors.request.use(config => {
-  const token = localStorage.getItem('auth_token');
-  
+/**
+ * Interceptor para adicionar o token de autenticação e idioma às requisições
+ */
+api.interceptors.request.use(config => {
+  // Obter token do localStorage
+  const token = localStorage.getItem('token');
   if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+    config.headers['Authorization'] = `Bearer ${token}`;
   }
   
+  // Adicionar idioma atual às requisições
+  config.headers['Accept-Language'] = i18n.language;
+  
   return config;
-}, error => {
-  return Promise.reject(error);
 });
 
-// Interceptor para tratamento de erros nas respostas
-apiClient.interceptors.response.use(
+/**
+ * Interceptor para tratar erros de resposta
+ */
+api.interceptors.response.use(
   response => response,
   error => {
-    const { response } = error;
-    
-    // Se o token expirou (401) ou não tem permissão (403)
-    if (response && (response.status === 401 || response.status === 403)) {
-      // Redirecionar para login se o token for inválido
-      if (window.location.pathname !== '/login') {
-        localStorage.removeItem('auth_token');
-        localStorage.removeItem('auth_user');
-        window.location.href = '/login';
-      }
+    // Tratar erros de autenticação (401)
+    if (error.response && error.response.status === 401) {
+      // Redirecionar para login ou limpar dados de autenticação
+      localStorage.removeItem('token');
+      window.location.href = '/login';
     }
     
     return Promise.reject(error);
   }
 );
 
-export default apiClient; 
+// Exportação padrão para manter compatibilidade com importações existentes
+export default api; 

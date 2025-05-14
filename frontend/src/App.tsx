@@ -154,6 +154,22 @@ function App() {
                               } 
                             />
                             <Route 
+                              path="/dashboard/financeiro/contas-a-pagar" 
+                              element={
+                                <PermissionGuard permission="financeiro.visualizar">
+                                  <Financeiro route="contas-a-pagar" />
+                                </PermissionGuard>
+                              } 
+                            />
+                            <Route 
+                              path="/dashboard/financeiro/contas-a-receber" 
+                              element={
+                                <PermissionGuard permission="financeiro.visualizar">
+                                  <Financeiro route="contas-a-receber" />
+                                </PermissionGuard>
+                              } 
+                            />
+                            <Route 
                               path="/dashboard/inventario" 
                               element={
                                 <PermissionGuard permission="inventario.visualizar">

@@ -179,7 +179,27 @@ const Navigation = ({}: NavigationProps) => {
       text: t('financeiro'), 
       icon: <FinanceiroIcon />, 
       path: '/dashboard/financeiro',
-      permission: 'financeiro.visualizar'
+      permission: 'financeiro.visualizar',
+      subItems: [
+        {
+          text: t('resumoFinanceiro'),
+          icon: <DashboardIcon />,
+          path: '/dashboard/financeiro',
+          permission: 'financeiro.visualizar',
+        },
+        {
+          text: t('contasAPagar'),
+          icon: <PagamentosIcon />,
+          path: '/dashboard/financeiro/contas-a-pagar',
+          permission: 'financeiro.visualizar',
+        },
+        {
+          text: t('contasAReceber'),
+          icon: <MoneyIcon />,
+          path: '/dashboard/financeiro/contas-a-receber',
+          permission: 'financeiro.visualizar',
+        }
+      ]
     },
     { 
       text: t('inventario'), 

@@ -878,7 +878,7 @@
   "recorrencia_trimestral": "Quarterly",
   "notaFiscal": "Invoice Number",
   "resumoFinanceiro": "Financial Summary",
-  "visaoGeralFinancas": "Company's financial overview for the current month",
+  "visaoGeralFinancas": "Company financial overview",
   "totalEntradas": "Total Income",
   "totalSaidas": "Total Expenses",
   "resultadoMes": "Month Result",
@@ -889,5 +889,90 @@
   "saidasPorCategoria": "Expenses by Category",
   "comparacaoMesAnterior": "Comparison with Previous Month",
   "aumentou": "increased",
-  "diminuiu": "decreased"
+  "diminuiu": "decreased",
+  "contasAPagar": "Accounts Payable",
+  "contasAReceber": "Accounts Receivable",
+  "nenhumaContaAPagar": "No accounts payable registered",
+  "nenhumaContaAReceber": "No accounts receivable registered",
+  "novaContaAPagar": "New Account Payable",
+  "novaContaAReceber": "New Account Receivable",
+  "adicionarContaAPagar": "Add Account Payable",
+  "adicionarContaAReceber": "Add Account Receivable",
+  "dataPrevistaRecebimento": "Expected Receipt Date",
+  "marcarComoPago": "Mark as Paid",
+  "marcarComoRecebido": "Mark as Received",
+  "recebido": "Received",
+  "limpar": "Clear",
+  "cliente": "Customer",
+  "fornecedor": "Supplier",
+  "parcelamento": "Installments",
+  "quantidadeParcelas": "Number of Installments",
+  "acoes": "Actions",
+  "editar": "Edit",
+  "resumoFinanceiro": "Financial Summary",
+  "visaoGeralFinancas": "Company financial overview",
+  "formaPagamento": {
+    "transferencia": "Bank Transfer",
+    "boleto": "Bank Slip",
+    "cartao": "Credit Card",
+    "dinheiro": "Cash",
+    "pix": "Instant Payment",
+    "outros": "Others"
+  },
+  "tipoEntrada": {
+    "venda": "Sale",
+    "aluguel": "Rent",
+    "servico": "Service",
+    "comissao": "Commission",
+    "outros": "Others"
+  },
+  "tipoDespesa": {
+    "fornecedor": "Supplier",
+    "aluguel": "Rent",
+    "salario": "Salary",
+    "imposto": "Tax",
+    "outros": "Others"
+  },
+  "mudarIdioma": "Change language",
+  "mudarTema": "Toggle theme",
+  
+  "exemplos": {
+    "formatacao": "Currency and Number Formatting",
+    "descricao": "This component demonstrates how currency, numbers, and dates are formatted according to the current language, while always displaying the currency in euros (€).",
+    "idiomaAtual": "Current language",
+    "moeda": "Currency",
+    "numero": "Number",
+    "data": "Date",
+    "valorOriginal": "Original value"
+  },
+  
+  "ia": {
+    "titulo": "AI & Analytics",
+    "descricao": "Personalized insights and recommendations for your business",
+    "recomendacoes": {
+      "titulo": "AI Recommendations",
+      "hoje": "Today",
+      "historico": "History",
+      "mensagemHoje": "Here are your personalized recommendations for today:",
+      "mensagemHistorico": "See your previous recommendations:",
+      "atualizar": "Refresh",
+      "marcarLida": "Mark as read",
+      "tentar": "Try again",
+      "erroCarregar": "Error loading recommendations",
+      "erroCarregarHistorico": "Error loading recommendation history",
+      "semRecomendacoes": "No recommendations available for today",
+      "semHistorico": "No previous recommendations found",
+      "exemplo1": "Your balance decreased by 15% this week. Review your fixed expenses.",
+      "exemplo2": "Your Flour inventory is below ideal levels.",
+      "exemplo3": "Your monthly report hasn't been generated yet. Click here to create it.",
+      "historico1": "You've saved €350 on expenses compared to last month.",
+      "historico2": "Three products in your inventory will expire in the next 7 days."
+    },
+    "insights": {
+      "titulo": "Insights",
+      "financeiro": "Financial",
+      "estoque": "Inventory",
+      "vendas": "Sales"
+    }
+  }
 } 

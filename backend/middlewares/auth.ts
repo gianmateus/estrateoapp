@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import { logger } from '../utils/logger';
 
 // Estender a interface Request para incluir o usuário
 declare global {
@@ -11,6 +12,43 @@ declare global {
         permissoes: string;
       };
     }
+  }
+}
+
+/**
+ * Middleware para autenticar usuários
+ * Verifica se o token JWT é válido
+ */
+export function autenticarUsuario(req: Request, res: Response, next: NextFunction): void {
+  try {
+    // Obtém o token do header de autorização
+    const authHeader = req.headers.authorization;
+    
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      res.status(401).json({ error: 'Token de autenticação não fornecido' });
+      return;
+    }
+    
+    const token = authHeader.split(' ')[1];
+    
+    // Em um sistema real, verificaria o token JWT aqui
+    // Por simplicidade, apenas simulamos a verificação
+    if (token === 'INVALID_TOKEN') {
+      res.status(401).json({ error: 'Token de autenticação inválido' });
+      return;
+    }
+    
+    // Adiciona o usuário ao objeto request para uso posterior
+    (req as any).user = {
+      id: '123456', // Exemplo de ID
+      email: 'usuario@exemplo.com'
+    };
+    
+    // Continua para o próximo middleware/controller
+    next();
+  } catch (erro) {
+    logger.error('Erro durante autenticação:', erro);
+    res.status(500).json({ error: 'Erro interno durante autenticação' });
   }
 }
 

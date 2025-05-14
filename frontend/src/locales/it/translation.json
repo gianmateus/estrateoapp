@@ -387,5 +387,47 @@
     "payrollDetail1": "Include assicurazione sanitaria, pensione, disoccupazione e assistenza",
     "payrollDetail2": "Solitamente diviso tra datore di lavoro e dipendente",
     "payrollDetail3": "Pagamento mensile obbligatorio tramite sistema elettronico"
+  },
+  "mudarIdioma": "Cambia lingua",
+  "mudarTema": "Cambia tema",
+  
+  "exemplos": {
+    "formatacao": "Formattazione di Valuta e Numeri",
+    "descricao": "Questo componente mostra come la valuta, i numeri e le date sono formattati secondo la lingua corrente, visualizzando sempre la valuta in euro (€).",
+    "idiomaAtual": "Lingua corrente",
+    "moeda": "Valuta",
+    "numero": "Numero",
+    "data": "Data",
+    "valorOriginal": "Valore originale"
+  },
+  
+  "ia": {
+    "titulo": "IA & Analisi",
+    "descricao": "Approfondimenti e raccomandazioni personalizzate per la tua attività",
+    "recomendacoes": {
+      "titulo": "Raccomandazioni IA",
+      "hoje": "Oggi",
+      "historico": "Cronologia",
+      "mensagemHoje": "Ecco le tue raccomandazioni personalizzate per oggi:",
+      "mensagemHistorico": "Visualizza le tue raccomandazioni precedenti:",
+      "atualizar": "Aggiorna",
+      "marcarLida": "Segna come letto",
+      "tentar": "Riprova",
+      "erroCarregar": "Errore nel caricamento delle raccomandazioni",
+      "erroCarregarHistorico": "Errore nel caricamento della cronologia delle raccomandazioni",
+      "semRecomendacoes": "Nessuna raccomandazione disponibile per oggi",
+      "semHistorico": "Nessuna raccomandazione precedente trovata",
+      "exemplo1": "Il tuo saldo è diminuito del 15% questa settimana. Rivedi le tue spese fisse.",
+      "exemplo2": "La tua scorta di Farina è sotto i livelli ideali.",
+      "exemplo3": "Il tuo report mensile non è ancora stato generato. Clicca qui per crearlo.",
+      "historico1": "Hai risparmiato €350 sulle spese rispetto al mese scorso.",
+      "historico2": "Tre prodotti nel tuo inventario scadranno nei prossimi 7 giorni."
+    },
+    "insights": {
+      "titulo": "Approfondimenti",
+      "financeiro": "Finanziario",
+      "estoque": "Inventario",
+      "vendas": "Vendite"
+    }
   }
 } 

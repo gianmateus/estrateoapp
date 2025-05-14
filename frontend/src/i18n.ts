@@ -25,27 +25,6 @@ const resources = {
   }
 };
 
-// Função para obter o idioma salvo ou o padrão
-const getSavedLanguage = () => {
-  const savedLanguage = localStorage.getItem('appLanguage');
-  
-  // Mapeamento de códigos de idioma completos para códigos curtos
-  const languageMap: { [key: string]: string } = {
-    'pt-BR': 'pt',
-    'en-US': 'en',
-    'de-DE': 'de',
-    'it-IT': 'it'
-  };
-  
-  if (savedLanguage && languageMap[savedLanguage]) {
-    return languageMap[savedLanguage];
-  }
-  
-  // Detectar idioma do navegador se não houver preferência salva
-  const browserLang = navigator.language.split('-')[0];
-  return ['pt', 'en', 'de', 'it'].includes(browserLang) ? browserLang : 'en';
-};
-
 i18n
   // Carregar traduções do backend
   .use(Backend)
@@ -56,14 +35,7 @@ i18n
   // Inicializar i18next
   .init({
     resources,
-    // Configuração de fallback - inglês como padrão global
-    fallbackLng: {
-      'pt': ['en'],
-      'de': ['en'],
-      'it': ['en'],
-      'default': ['en']
-    },
-    lng: getSavedLanguage(), // Usar o idioma salvo ou detectado
+    fallbackLng: 'en', // Inglês como idioma padrão
     supportedLngs: ['en', 'pt', 'de', 'it'],
     debug: process.env.NODE_ENV === 'development',
     
@@ -72,8 +44,9 @@ i18n
     },
     
     detection: {
-      order: ['localStorage', 'htmlTag', 'navigator'],
-      lookupLocalStorage: 'appLanguage', // Nome da chave no localStorage
+      // Ordem de detecção conforme solicitado
+      order: ['localStorage', 'navigator', 'htmlTag'],
+      lookupLocalStorage: 'i18nextLng', // Nome da chave no localStorage
       caches: ['localStorage'],
     },
     
@@ -85,16 +58,22 @@ i18n
     // Garantir que o fallback funcione corretamente
     returnNull: false, // Não retornar null para chaves ausentes
     returnEmptyString: false, // Não retornar string vazia para chaves ausentes
-    saveMissing: false, // Não salvar chaves ausentes (pode ser ativado em desenvolvimento)
-    missingKeyHandler: (lng, ns, key) => {
-      if (process.env.NODE_ENV === 'development') {
-        console.log(`[i18n] Chave ausente: ${key} no idioma: ${lng}`);
-      }
-    },
-    parseMissingKeyHandler: (key) => {
-      // Isso garante que a chave ausente nunca aparece como [missing translation]
-      return undefined; // Força usar o fallback
-    }
   });
+
+// Funções de utilidade para formatação
+export const formatCurrency = (value: number, locale: string = i18n.language): string => {
+  return new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency: 'EUR'
+  }).format(value);
+};
+
+export const formatNumber = (value: number, locale: string = i18n.language): string => {
+  return new Intl.NumberFormat(locale).format(value);
+};
+
+export const formatDate = (date: Date | string | number, locale: string = i18n.language): string => {
+  return new Intl.DateTimeFormat(locale).format(new Date(date));
+};
 
 export default i18n; 

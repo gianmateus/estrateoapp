@@ -20,18 +20,27 @@ import {
   Check as CheckIcon 
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
-import { useIdioma } from '../../contexts/IdiomaContext';
-
-// Ícones de bandeiras para cada idioma
-import UkIcon from '@mui/icons-material/Flag'; // Substituir por ícones reais de bandeiras se disponíveis
-import BrIcon from '@mui/icons-material/Flag';
-import DeIcon from '@mui/icons-material/Flag';
-import ItIcon from '@mui/icons-material/Flag';
 
 // Propriedades disponíveis para o componente
 interface ToggleLanguageButtonProps {
   tooltipPlacement?: 'top' | 'bottom' | 'left' | 'right';
 }
+
+// Flags para os idiomas suportados
+const languageFlags: { [key: string]: string } = {
+  en: '🇬🇧',
+  pt: '🇧🇷',
+  de: '🇩🇪',
+  it: '🇮🇹'
+};
+
+// Nomes dos idiomas em seus idiomas nativos
+const languageNames: { [key: string]: string } = {
+  en: 'English',
+  pt: 'Português',
+  de: 'Deutsch',
+  it: 'Italiano'
+};
 
 /**
  * Language toggle button with dropdown menu
@@ -42,8 +51,7 @@ interface ToggleLanguageButtonProps {
  */
 const ToggleLanguageButton = ({ tooltipPlacement = 'right' }: ToggleLanguageButtonProps) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const { currentLanguage, changeLanguage } = useIdioma();
-  const { t } = useTranslation();
+  const { i18n, t } = useTranslation();
   const theme = useTheme();
   
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -55,20 +63,21 @@ const ToggleLanguageButton = ({ tooltipPlacement = 'right' }: ToggleLanguageButt
   };
 
   const handleLanguageSelect = (language: string) => {
-    changeLanguage(language);
+    i18n.changeLanguage(language);
+    localStorage.setItem('i18nextLng', language);
     handleClose();
   };
 
   const languages = [
-    { code: 'pt', name: 'Português' },
     { code: 'en', name: 'English' },
+    { code: 'pt', name: 'Português' },
     { code: 'de', name: 'Deutsch' },
     { code: 'it', name: 'Italiano' },
   ];
 
   return (
     <>
-      <Tooltip title={t('mudarIdioma')} placement={tooltipPlacement}>
+      <Tooltip title={t('mudarIdioma') || 'Change language'} placement={tooltipPlacement}>
         <IconButton 
           onClick={handleClick}
           aria-controls="language-menu"
@@ -97,14 +106,20 @@ const ToggleLanguageButton = ({ tooltipPlacement = 'right' }: ToggleLanguageButt
           <MenuItem 
             key={lang.code} 
             onClick={() => handleLanguageSelect(lang.code)}
-            selected={currentLanguage === lang.code}
+            selected={i18n.language === lang.code}
+            sx={{ 
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1
+            }}
           >
-            <ListItemIcon sx={{ minWidth: '30px' }}>
-              {currentLanguage === lang.code && (
-                <CheckIcon fontSize="small" color="primary" />
-              )}
-            </ListItemIcon>
+            <span style={{ fontSize: '1.2rem', marginRight: '8px' }}>
+              {languageFlags[lang.code]}
+            </span>
             <ListItemText>{lang.name}</ListItemText>
+            {i18n.language === lang.code && (
+              <CheckIcon fontSize="small" color="primary" />
+            )}
           </MenuItem>
         ))}
       </Menu>

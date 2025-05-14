@@ -922,5 +922,90 @@
   "saidasPorCategoria": "Saídas por Categoria",
   "comparacaoMesAnterior": "Comparação com Mês Anterior",
   "aumentou": "aumentou",
-  "diminuiu": "diminuiu"
+  "diminuiu": "diminuiu",
+  "contasAPagar": "Contas a Pagar",
+  "contasAReceber": "Contas a Receber",
+  "nenhumaContaAPagar": "Nenhuma conta a pagar cadastrada",
+  "nenhumaContaAReceber": "Nenhuma conta a receber cadastrada",
+  "novaContaAPagar": "Nova Conta a Pagar",
+  "novaContaAReceber": "Nova Conta a Receber",
+  "adicionarContaAPagar": "Adicionar Conta a Pagar",
+  "adicionarContaAReceber": "Adicionar Conta a Receber",
+  "dataPrevistaRecebimento": "Data Prevista de Recebimento",
+  "marcarComoPago": "Marcar como Pago",
+  "marcarComoRecebido": "Marcar como Recebido",
+  "recebido": "Recebido",
+  "limpar": "Limpar",
+  "cliente": "Cliente",
+  "fornecedor": "Fornecedor",
+  "parcelamento": "Parcelamento",
+  "quantidadeParcelas": "Quantidade de Parcelas",
+  "acoes": "Ações",
+  "editar": "Editar",
+  "resumoFinanceiro": "Resumo Financeiro",
+  "visaoGeralFinancas": "Visão geral das finanças da empresa",
+  "formaPagamento": {
+    "transferencia": "Transferência",
+    "boleto": "Boleto",
+    "cartao": "Cartão",
+    "dinheiro": "Dinheiro",
+    "pix": "PIX",
+    "outros": "Outros"
+  },
+  "tipoEntrada": {
+    "venda": "Venda",
+    "aluguel": "Aluguel",
+    "servico": "Serviço",
+    "comissao": "Comissão",
+    "outros": "Outros"
+  },
+  "tipoDespesa": {
+    "fornecedor": "Fornecedor",
+    "aluguel": "Aluguel",
+    "salario": "Salário",
+    "imposto": "Imposto",
+    "outros": "Outros"
+  },
+  "mudarIdioma": "Mudar idioma",
+  "mudarTema": "Alternar tema",
+  
+  "exemplos": {
+    "formatacao": "Formatação de Moeda e Números",
+    "descricao": "Este componente demonstra como moeda, números e datas são formatados de acordo com o idioma atual, sempre exibindo a moeda em euros (€).",
+    "idiomaAtual": "Idioma atual",
+    "moeda": "Moeda",
+    "numero": "Número",
+    "data": "Data",
+    "valorOriginal": "Valor original"
+  },
+  
+  "ia": {
+    "titulo": "IA & Análises",
+    "descricao": "Insights e recomendações personalizadas para o seu negócio",
+    "recomendacoes": {
+      "titulo": "Recomendações da IA",
+      "hoje": "Hoje",
+      "historico": "Histórico",
+      "mensagemHoje": "Aqui estão suas recomendações personalizadas para hoje:",
+      "mensagemHistorico": "Veja suas recomendações anteriores:",
+      "atualizar": "Atualizar",
+      "marcarLida": "Marcar como lida",
+      "tentar": "Tentar novamente",
+      "erroCarregar": "Erro ao carregar recomendações",
+      "erroCarregarHistorico": "Erro ao carregar histórico de recomendações",
+      "semRecomendacoes": "Não há recomendações disponíveis para hoje",
+      "semHistorico": "Nenhuma recomendação anterior encontrada",
+      "exemplo1": "Seu saldo diminuiu 15% esta semana. Revise suas despesas fixas.",
+      "exemplo2": "Seu estoque de Farinha está abaixo dos níveis ideais.",
+      "exemplo3": "Seu relatório mensal ainda não foi gerado. Clique aqui para criá-lo.",
+      "historico1": "Você economizou €350 em despesas em comparação com o mês passado.",
+      "historico2": "Três produtos em seu estoque irão expirar nos próximos 7 dias."
+    },
+    "insights": {
+      "titulo": "Insights",
+      "financeiro": "Financeiro",
+      "estoque": "Estoque",
+      "vendas": "Vendas"
+    }
+  }
 } 

@@ -596,5 +596,91 @@
     "payrollDetail1": "Umfasst Krankenversicherung, Rente, Arbeitslosenversicherung und Pflegeversicherung",
     "payrollDetail2": "Wird in der Regel zwischen Arbeitgeber und Arbeitnehmer aufgeteilt",
     "payrollDetail3": "Obligatorische monatliche Zahlung über elektronisches System"
+  },
+  "contasAPagar": "Verbindlichkeiten",
+  "contasAReceber": "Forderungen",
+  "nenhumaContaAPagar": "Keine Verbindlichkeiten registriert",
+  "nenhumaContaAReceber": "Keine Forderungen registriert",
+  "novaContaAPagar": "Neue Verbindlichkeit",
+  "novaContaAReceber": "Neue Forderung",
+  "adicionarContaAPagar": "Verbindlichkeit hinzufügen",
+  "adicionarContaAReceber": "Forderung hinzufügen",
+  "dataPrevistaRecebimento": "Erwartetes Eingangsdatum",
+  "marcarComoPago": "Als bezahlt markieren",
+  "marcarComoRecebido": "Als erhalten markieren",
+  "recebido": "Erhalten",
+  "todos": "Alle",
+  "limpar": "Löschen",
+  "cliente": "Kunde",
+  "fornecedor": "Lieferant",
+  "parcelamento": "Ratenzahlung",
+  "quantidadeParcelas": "Anzahl der Raten",
+  "acoes": "Aktionen",
+  "editar": "Bearbeiten",
+  "resumoFinanceiro": "Finanzübersicht",
+  "visaoGeralFinancas": "Finanzübersicht des Unternehmens",
+  "formaPagamento": {
+    "transferencia": "Überweisung",
+    "boleto": "Bankeinzug",
+    "cartao": "Kreditkarte",
+    "dinheiro": "Bargeld",
+    "pix": "Sofortzahlung",
+    "outros": "Andere"
+  },
+  "tipoEntrada": {
+    "venda": "Verkauf",
+    "aluguel": "Miete",
+    "servico": "Dienstleistung",
+    "comissao": "Provision",
+    "outros": "Andere"
+  },
+  "tipoDespesa": {
+    "fornecedor": "Lieferant",
+    "aluguel": "Miete",
+    "salario": "Gehalt",
+    "imposto": "Steuer",
+    "outros": "Andere"
+  },
+  "mudarIdioma": "Sprache ändern",
+  "mudarTema": "Thema umschalten",
+  
+  "exemplos": {
+    "formatacao": "Währungs- und Zahlenformatierung",
+    "descricao": "Diese Komponente zeigt, wie Währung, Zahlen und Daten entsprechend der aktuellen Sprache formatiert werden, wobei die Währung immer in Euro (€) angezeigt wird.",
+    "idiomaAtual": "Aktuelle Sprache",
+    "moeda": "Währung",
+    "numero": "Zahl",
+    "data": "Datum",
+    "valorOriginal": "Originalwert"
+  },
+  
+  "ia": {
+    "titulo": "KI & Analysen",
+    "descricao": "Personalisierte Erkenntnisse und Empfehlungen für Ihr Unternehmen",
+    "recomendacoes": {
+      "titulo": "KI-Empfehlungen",
+      "hoje": "Heute",
+      "historico": "Verlauf",
+      "mensagemHoje": "Hier sind Ihre personalisierten Empfehlungen für heute:",
+      "mensagemHistorico": "Sehen Sie Ihre vorherigen Empfehlungen:",
+      "atualizar": "Aktualisieren",
+      "marcarLida": "Als gelesen markieren",
+      "tentar": "Erneut versuchen",
+      "erroCarregar": "Fehler beim Laden der Empfehlungen",
+      "erroCarregarHistorico": "Fehler beim Laden des Empfehlungsverlaufs",
+      "semRecomendacoes": "Keine Empfehlungen für heute verfügbar",
+      "semHistorico": "Keine früheren Empfehlungen gefunden",
+      "exemplo1": "Ihr Saldo ist diese Woche um 15% gesunken. Überprüfen Sie Ihre festen Ausgaben.",
+      "exemplo2": "Ihr Mehlbestand liegt unter dem Idealwert.",
+      "exemplo3": "Ihr Monatsbericht wurde noch nicht erstellt. Klicken Sie hier, um ihn zu erstellen.",
+      "historico1": "Sie haben im Vergleich zum Vormonat €350 bei den Ausgaben gespart.",
+      "historico2": "Drei Produkte in Ihrem Bestand werden in den nächsten 7 Tagen ablaufen."
+    },
+    "insights": {
+      "titulo": "Erkenntnisse",
+      "financeiro": "Finanziell",
+      "estoque": "Bestand",
+      "vendas": "Verkäufe"
+    }
   }
 } 
