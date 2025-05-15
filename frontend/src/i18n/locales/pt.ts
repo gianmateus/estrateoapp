@@ -146,6 +146,18 @@ export const pt = {
   },
   
   // Traduções comuns
+  comum: {
+    fechar: "Fechar",
+    exportarPDF: "Exportar PDF",
+    gerando: "Gerando...",
+    acoes: "Ações",
+    erroAoSalvar: "Erro ao salvar",
+    salvar: "Salvar",
+    salvando: "Salvando...",
+    cancelar: "Cancelar"
+  },
+  
+  // Traduções comuns
   common: {
     search: "Buscar",
     export: "Exportar",
@@ -165,7 +177,8 @@ export const pt = {
     unitPrice: "Preço Unitário",
     notes: "Observações",
     save: "Salvar",
-    refresh: "Atualizar"
+    refresh: "Atualizar",
+    showCritical: "Mostrar Críticos"
   },
   
   // Menu de navegação
@@ -202,6 +215,96 @@ export const pt = {
     optionalInformation: "Informações Opcionais",
     taxNumber: "Número Fiscal",
     vatId: "Identificação de IVA"
+  },
+  
+  // Traduções específicas para o módulo de inventário (novas funcionalidades)
+  inventario: {
+    sugestaoCompra: "Sugestão de Compra",
+    sugestaoCompraTitle: "Sugestão de Compra Automática",
+    diario: "Diário",
+    semanal: "Semanal",
+    mensal: "Mensal",
+    trimestral: "Trimestral",
+    produto: "Produto",
+    quantidadeAtual: "Quantidade Atual",
+    quantidadeNecessaria: "Quantidade Necessária",
+    diferenca: "Diferença",
+    unidade: "Unidade",
+    periodicidade: "Periodicidade",
+    totalItens: "Total de Itens",
+    geradoEm: "Gerado em",
+    observacao: "Observação",
+    basedDefinicaoNecessidade: "Baseado na definição de necessidade periódica de cada produto",
+    totalItensNecessitamCompra: "Total de {{total}} itens necessitam de compra",
+    nenhumItemNecessita: "Nenhum item necessita de compra no momento",
+    necessidadePeriodica: "Necessidade Periódica",
+    definicaoNecessidade: "Defina a quantidade necessária por período para cálculo automático de sugestões de compra",
+    quantidadeNecessariaHint: "Ex: para consumo diário de 5kg, coloque 5",
+    // Novas traduções para EstoqueAtual
+    estoqueAtual: "Estoque Atual",
+    necessidadeSemanal: "Necessidade Semanal",
+    status: "Status",
+    statusCritico: "Crítico",
+    statusBaixo: "Baixo",
+    statusNormal: "Normal",
+    verSugestaoCompra: "Ver Sugestão de Compra",
+    itensPrecisandoReposicao: "{{count}} itens precisam de reposição",
+    nenhumItemCadastrado: "Nenhum item cadastrado",
+    quantidadeInvalida: "Quantidade inválida",
+    adicionarSugestaoCompra: "Ver na lista de compras",
+    instrucaoRegistroEstoque: "Registre a quantidade atual de um produto no estoque e a necessidade semanal para calcular automaticamente a quantidade a ser comprada.",
+    calculoAutomatico: "Cálculo Automático",
+    quantidadeComprar: "Quantidade a Comprar:"
+  },
+  
+  // Traduções para o módulo de Fluxo de Caixa (nova funcionalidade)
+  fluxoCaixa: {
+    titulo: "Fluxo de Caixa",
+    subtitulo: "Movimentações financeiras consolidadas",
+    hoje: "Hoje",
+    ontem: "Ontem",
+    entrada: "Entrada",
+    saida: "Saída",
+    confirmado: "Confirmado",
+    pendente: "Pendente",
+    cancelado: "Cancelado",
+    cliente: "Cliente",
+    fornecedor: "Fornecedor",
+    totalEntradas: "Total de Entradas",
+    totalSaidas: "Total de Saídas",
+    saldoFinal: "Saldo Final",
+    nenhumaMovimentacao: "Nenhuma movimentação encontrada para o período selecionado",
+    previewRelatorio: "Visualização do Relatório",
+    resumoFinanceiro: "Resumo Financeiro",
+    movimentacoesDetalhadas: "Movimentações Detalhadas",
+    movimentacoesNoRelatorio: "O relatório incluirá {{count}} movimentações detalhadas.",
+    geradoEm: "Gerado em",
+    periodo: "Período",
+    data: "Data",
+    tipo: "Tipo",
+    descricao: "Descrição",
+    valor: "Valor",
+    status: "Status",
+    gerarRelatorio: "Gerar Relatório",
+    
+    // Filtros
+    filtros: {
+      titulo: "Filtros",
+      tipo: "Tipo de Movimentação",
+      status: "Status",
+      origem: "Origem",
+      todos: "Todos",
+      entrada: "Entradas",
+      saida: "Saídas",
+      confirmado: "Confirmados",
+      pendente: "Pendentes", 
+      contasAPagar: "Contas a Pagar",
+      contasAReceber: "Contas a Receber",
+      manual: "Manual",
+      de: "De",
+      ate: "Até",
+      limpar: "Limpar Filtros"
+    }
   },
   
   // ... existing code ...

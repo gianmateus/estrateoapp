@@ -208,9 +208,9 @@ const Navigation = ({}: NavigationProps) => {
       permission: 'inventario.visualizar'
     },
     { 
-      text: t('pagamentos'), 
+      text: t('fluxoCaixa.titulo'), 
       icon: <PagamentosIcon />, 
-      path: '/dashboard/pagamentos',
+      path: '/dashboard/fluxo-de-caixa',
       permission: 'pagamentos.visualizar'
     },
     { 

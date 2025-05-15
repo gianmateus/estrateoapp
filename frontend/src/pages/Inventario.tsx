@@ -75,6 +75,7 @@ import MetricCard from '../components/ui/MetricCard';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import FormularioProduto from '../components/inventario/FormularioProduto';
 import RelatorioSugestaoCompra from '../components/inventario/RelatorioSugestaoCompra';
+import SugestaoDeCompra from '../components/inventario/SugestaoDeCompra';
 import { convertToItemInventario } from '../utils/inventarioAdapters';
 
 // Função para formatar valor monetário
@@ -264,6 +265,9 @@ const Inventario = () => {
   
   // Novo estado para mostrar o relatório de sugestão de compra
   const [showSugestaoCompra, setShowSugestaoCompra] = useState(false);
+  
+  // Novo estado para o modal de sugestão de compra
+  const [openSugestaoCompra, setOpenSugestaoCompra] = useState(false);
   
   // Calcular o valor total do estoque
   const calculateTotalStockValue = () => {
@@ -945,7 +949,7 @@ const Inventario = () => {
       <Box flexGrow={1} />
       
       <Chip
-        label={showCriticalOnly ? t('inventory.showingCritical') : "Mostrar Críticos"}
+        label={showCriticalOnly ? t('inventario.statusCritico') : t('common.showCritical')}
         icon={<AlertTriangle size={16} color={showCriticalOnly ? "white" : undefined} />}
         variant={showCriticalOnly ? "filled" : "outlined"}
         color="error"
@@ -1063,7 +1067,12 @@ const Inventario = () => {
       )}
       
       {/* Botões de ação */}
-      <Box sx={{ display: 'flex', gap: 2, mb: 3, flexWrap: 'wrap' }}>
+      <Stack 
+        direction={{ xs: 'column', sm: 'row' }} 
+        spacing={2} 
+        mb={3} 
+        alignItems={{ xs: 'stretch', sm: 'center' }}
+      >
         <MotionButton
           variant="contained"
           color="primary"
@@ -1086,21 +1095,19 @@ const Inventario = () => {
             <Avatar sx={{ bgcolor: 'white', color: 'primary.main', width: 28, height: 28 }}>
               <Plus size={16} />
             </Avatar>
-            <span>Novo Item</span>
+            <span>{t('inventory.newItem')}</span>
           </Stack>
         </MotionButton>
         
         <MotionButton
-          variant="contained"
+          variant="outlined"
+          color="primary"
           onClick={handleOpenEstoqueAtualModal}
           aria-label="Registrar estoque atual"
           sx={{ 
             height: 48, 
             borderRadius: 2,
-            bgcolor: 'primary.light',
-            color: 'primary.contrastText',
             '&:hover': {
-              bgcolor: 'primary.main',
               transform: prefersReducedMotion ? 'none' : 'scale(1.05)'
             },
             '&:focus-visible': {
@@ -1111,13 +1118,13 @@ const Inventario = () => {
           }}
         >
           <Stack direction="row" spacing={1} alignItems="center">
-            <Avatar sx={{ bgcolor: 'white', color: 'primary.main', width: 28, height: 28 }}>
+            <Avatar sx={{ bgcolor: 'transparent', color: 'primary.main', width: 28, height: 28 }}>
               <Inventory fontSize="small" />
             </Avatar>
-            <span>Estoque Atual</span>
+            <span>{t('inventario.estoqueAtual')}</span>
           </Stack>
         </MotionButton>
-      </Box>
+      </Stack>
       
       {/* Filtros */}
       {renderFilters()}
@@ -1663,22 +1670,22 @@ const Inventario = () => {
         maxWidth="sm"
         fullWidth
       >
-        <DialogTitle>Registrar Estoque Atual</DialogTitle>
+        <DialogTitle>{t('inventario.estoqueAtual')}</DialogTitle>
         <DialogContent>
           <Box sx={{ mt: 2 }}>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-              Registre a quantidade atual de um produto no estoque e a necessidade semanal para calcular automaticamente a quantidade a ser comprada.
+              {t('inventario.instrucaoRegistroEstoque')}
             </Typography>
             
             <FormControl fullWidth sx={{ mb: 3 }}>
-              <InputLabel id="produto-label">Produto</InputLabel>
+              <InputLabel id="produto-label">{t('inventario.produto')}</InputLabel>
               <Select
                 labelId="produto-label"
                 value={estoqueAtualData.produtoId}
                 onChange={(e) => {
                   handleProdutoSelection(e.target.value as string);
                 }}
-                label="Produto"
+                label={t('inventario.produto')}
               >
                 {produtosDisponiveis.map(produto => (
                   <MenuItem key={produto.id} value={produto.id}>
@@ -1695,7 +1702,7 @@ const Inventario = () => {
                     <TextField
                       fullWidth
                       type="number"
-                      label="Quantidade Atual"
+                      label={t('inventario.quantidadeAtual')}
                       name="quantidadeAtual"
                       value={estoqueAtualData.quantidadeAtual}
                       onChange={handleEstoqueAtualChange}
@@ -1713,7 +1720,7 @@ const Inventario = () => {
                     <TextField
                       fullWidth
                       type="number"
-                      label="Necessidade Semanal"
+                      label={t('inventario.necessidadeSemanal')}
                       name="necessidadeSemanal"
                       value={estoqueAtualData.necessidadeSemanal}
                       onChange={handleEstoqueAtualChange}
@@ -1730,13 +1737,13 @@ const Inventario = () => {
                 
                 <Box sx={{ mt: 3, p: 2, bgcolor: 'action.hover', borderRadius: 1 }}>
                   <Typography variant="subtitle2" gutterBottom>
-                    Cálculo Automático
+                    {t('inventario.calculoAutomatico')}
                   </Typography>
                   
                   <Grid container spacing={2} alignItems="center">
                     <Grid item xs={5}>
                       <Typography variant="body2" color="text.secondary">
-                        Quantidade a Comprar:
+                        {t('inventario.quantidadeComprar')}
                       </Typography>
                     </Grid>
                     <Grid item xs={7}>
@@ -1752,14 +1759,14 @@ const Inventario = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenEstoqueAtualModal(false)}>
-            Cancelar
+            {t('comum.cancelar')}
           </Button>
           <Button 
             variant="contained"
             onClick={handleSalvarEstoqueAtual}
             disabled={!estoqueAtualData.produtoId || isSubmitting}
           >
-            {isSubmitting ? 'Salvando...' : 'Salvar'}
+            {isSubmitting ? t('comum.salvando') : t('comum.salvar')}
           </Button>
         </DialogActions>
       </Dialog>
@@ -1798,7 +1805,7 @@ const Inventario = () => {
             onClick={toggleSugestaoCompra}
             sx={{ ml: 1 }}
           >
-            {t('Sugestão de Compra')}
+            {t('inventario.sugestaoCompra')}
           </Button>
         </Grid>
       </Grid>
@@ -1811,6 +1818,13 @@ const Inventario = () => {
           onExport={() => handleExport('stock')}
         />
       )}
+      
+      {/* Adicionar o diálogo de sugestão de compra */}
+      <SugestaoDeCompra 
+        itens={itens}
+        open={openSugestaoCompra}
+        onClose={() => setOpenSugestaoCompra(false)}
+      />
     </Box>
   );
 };

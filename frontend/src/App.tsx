@@ -13,7 +13,7 @@ import Navigation from './components/Navigation';
 import Home from './pages/Home';
 import Financeiro from './pages/Financeiro';
 import Inventario from './pages/Inventario';
-import Pagamentos from './pages/Pagamentos';
+import FluxoDeCaixa from './pages/FluxoDeCaixa';
 import Login from './pages/Login';
 import Cadastro from './pages/Cadastro';
 import Perfil from './pages/Perfil';
@@ -178,10 +178,10 @@ function App() {
                               } 
                             />
                             <Route 
-                              path="/dashboard/pagamentos" 
+                              path="/dashboard/fluxo-de-caixa" 
                               element={
                                 <PermissionGuard permission="pagamentos.visualizar">
-                                  <Pagamentos />
+                                  <FluxoDeCaixa />
                                 </PermissionGuard>
                               } 
                             />

@@ -64,15 +64,23 @@
     "exportCsv": "Exportar CSV"
   },
   
-  "dashboard": "Dashboard",
+  "dashboard": {
+    "title": "Dashboard",
+    "visaoGeral": "Visão Geral",
+    "parcelamentosERecebiveis": "Parcelamentos e Recebíveis",
+    "recomendacoesIA": "Recomendações da IA",
+    "recebiveisFuturos": "Recebíveis Futuros",
+    "parcelamentosAbertos": "Parcelamentos Abertos"
+  },
   "dashboardObj": {
     "title": "Dashboard",
-    "breadcrumb": "Dashboard"
+    "breadcrumb": "Dashboard",
+    "visaoGeral": "Visão Geral",
+    "parcelamentosERecebiveis": "Parcelamentos e Recebíveis"
   },
   "financeiro": "Financeiro",
   "inventario": "Inventário",
   "impostos": "Impostos",
-  "pagamentos": "Pagamentos",
   "calendario": "Calendário",
   "funcionarios": "Funcionários",
   "inteligenciaArtificial": "IA & Análises",
@@ -198,6 +206,26 @@
   "campoObrigatorio": "Campo obrigatório",
   "valorDeveSerPositivo": "Valor deve ser maior que zero",
   
+  "resumoFinanceiro": {
+    "titulo": "Resumo Financeiro",
+    "visaoGeralFinancas": "Visão geral das finanças da empresa para o mês atual",
+    "saldoAtual": "Saldo Atual",
+    "totalEntradas": "Total de Entradas",
+    "totalSaidas": "Total de Saídas",
+    "resultadoMes": "Resultado do Mês",
+    "lucro": "Lucro",
+    "prejuizo": "Prejuízo",
+    "variacaoSaldoDiario": "Variação Diária de Saldo",
+    "entradasPorCategoria": "Entradas por Categoria",
+    "saidasPorCategoria": "Saídas por Categoria",
+    "comparacaoMesAnterior": "Comparação com Mês Anterior",
+    "aumentou": "aumentou",
+    "diminuiu": "diminuiu",
+    "mesAtual": "Mês Atual",
+    "mesAnterior": "Mês Anterior",
+    "variacao": "Variação"
+  },
+  
   "inventario_addItem": "Adicionar Item",
   "inventario_unit": "Unidade",
   "inventario_frequency": "Frequência",
@@ -217,151 +245,14 @@
   "finance_month": "Mês",
   "finance_year": "Ano",
   
-  "inventory": {
-    "title": "Inventário",
-    "tabs": {
-      "stock": "Estoque Atual",
-      "needed": "Necessidade Semanal"
-    },
-    "metrics": {
-      "stockValue": "Valor em Estoque",
-      "criticalItems": "Itens Críticos",
-      "expiringItems": "Próximos do Vencimento"
-    },
-    "buttons": {
-      "stock": "Estoque Atual",
-      "needed": "Necessidade Semanal",
-      "addStock": "Novo Item",
-      "addNeeded": "Necessidade Semanal"
-    },
-    "filters": {
-      "searchPlaceholder": "Buscar item...",
-      "allCategories": "Todas Categorias",
-      "beverages": "Bebidas",
-      "vegetables": "Legumes",
-      "meat": "Carnes",
-      "pasta": "Massas",
-      "others": "Outros",
-      "showCritical": "Mostrar Críticos"
-    },
-    "columns": {
-      "name": "Nome",
-      "category": "Categoria",
-      "quantity": "Quantidade",
-      "unit": "Unidade",
-      "price": "Preço (R$)",
-      "total": "Total (R$)",
-      "minStock": "Estoque Mín.",
-      "status": "Status",
-      "actions": "Ações",
-      "expiryDate": "Vencimento"
-    },
-    "status": {
-      "ok": "OK",
-      "low": "Baixo",
-      "critical": "Crítico"
-    },
-    "actions": {
-      "addStock": "Adicionar novo item",
-      "addNeeded": "Adicionar necessidade semanal",
-      "edit": "Editar",
-      "delete": "Excluir"
-    },
-    "messages": {
-      "csvExported": "Arquivo CSV exportado com sucesso"
-    }
-  },
-  
-  "salvar": "Salvar",
-  "editar": "Editar",
-  "excluir": "Excluir",
-  "quantidade": "Quantidade",
-  "ideal": "Ideal",
-  "itensCadastrados": "Itens Cadastrados",
-  "editarItem": "Editar Item",
-  "confirmarExclusao": "Confirmar Exclusão",
-  "confirmarExclusaoItem": "Tem certeza que deseja excluir este item?",
-  "confirmarExclusaoPagamento": "Tem certeza que deseja excluir este pagamento?",
-  "itemExcluidoComSucesso": "Item excluído com sucesso!",
-  "erroAoExcluirItem": "Erro ao excluir item. Tente novamente.",
-  "itemAtualizadoComSucesso": "Item atualizado com sucesso!",
-  "itemAdicionadoComSucesso": "Item adicionado com sucesso!",
-  "erroAoSalvarItem": "Erro ao salvar item. Tente novamente.",
-  "nenhumItemCadastrado": "Nenhum item cadastrado!",
-  "existemItensCriticos": "Existem {{count}} itens abaixo do estoque mínimo!",
-  "itemAbaixoDoIdeal": "Item abaixo do estoque ideal",
-  "resumoInventario": "Resumo do Inventário",
-  "porcentagem": "Porcentagem",
-  "status": "Status",
-  "nenhumItemParaComprar": "Nenhum item precisa ser comprado no momento",
-  "erroAoBuscarInventario": "Erro ao buscar inventário. Usando dados locais.",
-  
-  "mensagem_entradaAdicionada": "Entrada adicionada com sucesso!",
-  "mensagem_saidaAdicionada": "Saída adicionada com sucesso!",
-  "mensagem_erroAdicionarTransacao": "Erro ao adicionar transação, tente novamente",
-  
-  "finance_transactions": "Movimentações Financeiras",
-  "finance_filter": "Filtrar",
-  "finance_charts": "Gráficos",
-  "finance_noCategory": "Sem Categoria",
-  "finance_activeFilters": "Filtros Ativos",
-  "finance_clearFilters": "Limpar Filtros",
-  "finance_noTransactions": "Nenhuma Transação Encontrada",
-  "finance_recurrence": "Recorrência",
-  "finance_latestTransactions": "Últimas Transações",
-  "finance_salary": "Salário",
-  "finance_shopping": "Compras",
-  "finance_payments": "Pagamentos",
-  "finance_inputs": "Entradas",
-  "finance_outputs": "Saídas",
-  
-  "finance_charts_monthlyIncome": "Entradas e Saídas Mensais",
-  "finance_charts_weekdayIncome": "Entradas por Dia da Semana",
-  
-  "finance_recurrence_none": "Nenhuma",
-  "finance_recurrence_biweekly": "Quinzenal",
-  "finance_recurrence_monthly": "Mensal",
-  "finance_recurrence_quarterly": "Trimestral",
-  
-  "finance_delete_title": "Excluir Transação",
-  "finance_delete_confirmation": "Tem certeza que deseja excluir esta transação?",
-  "finance_delete_success": "Transação Excluída com Sucesso",
-  "finance_delete_cancel": "Cancelar",
-  "finance_delete_confirm": "Excluir",
-  "finance_delete_paymentTitle": "Excluir Pagamento",
-  "finance_delete_paymentConfirmation": "Tem certeza que deseja excluir este pagamento?",
-  "finance_delete_paymentSuccess": "Pagamento Excluído com Sucesso",
-  
-  "weekdays_monday": "Segunda-feira",
-  "weekdays_tuesday": "Terça-feira",
-  "weekdays_wednesday": "Quarta-feira",
-  "weekdays_thursday": "Quinta-feira",
-  "weekdays_friday": "Sexta-feira",
-  "weekdays_saturday": "Sábado",
-  "weekdays_sunday": "Domingo",
-  
-  "calendario": "Calendário",
-  "mesAnterior": "Mês Anterior",
-  "proximoMes": "Próximo Mês",
-  "nenhumaEntradaRegistrada": "Nenhuma entrada registrada",
-  "nenhumaSaidaRegistrada": "Nenhuma saída registrada",
-  "nenhumPagamentoRegistrado": "Nenhum pagamento registrado",
-  "pendente": "Pendente",
-  
-  "mensagem": {
-    "entradaAdicionada": "Entrada adicionada com sucesso!",
-    "saidaAdicionada": "Saída adicionada com sucesso!",
-    "erroAdicionarTransacao": "Erro ao adicionar transação, tente novamente"
-  },
-  
   "finance": {
     "transactions": "Movimentações Financeiras",
     "filter": "Filtrar",
     "charts": "Gráficos",
-    "noCategory": "Sem categoria",
+    "noCategory": "Sem Categoria",
     "activeFilters": "Filtros Ativos",
     "clearFilters": "Limpar Filtros",
-    "noTransactions": "Nenhuma transação encontrada",
+    "noTransactions": "Nenhuma Transação Encontrada",
     "recurrence": "Recorrência",
     "latestTransactions": "Últimas Transações",
     "salary": "Salário",
@@ -386,12 +277,12 @@
   "finance.delete": {
     "title": "Excluir Transação",
     "confirmation": "Tem certeza que deseja excluir esta transação?",
-    "success": "Transação excluída com sucesso",
+    "success": "Transação Excluída com Sucesso",
     "cancel": "Cancelar",
     "confirm": "Excluir",
     "paymentTitle": "Excluir Pagamento",
     "paymentConfirmation": "Tem certeza que deseja excluir este pagamento?",
-    "paymentSuccess": "Pagamento excluído com sucesso"
+    "paymentSuccess": "Pagamento Excluído com Sucesso"
   },
   
   "weekdays": {
@@ -942,6 +833,48 @@
   "quantidadeParcelas": "Quantidade de Parcelas",
   "acoes": "Ações",
   "editar": "Editar",
+  "contasAPagar": {
+    "titulo": "Contas a Pagar",
+    "novaConta": "Nova Conta a Pagar",
+    "descricao": "Descrição",
+    "fornecedor": "Fornecedor",
+    "data": "Data",
+    "valor": "Valor",
+    "status": "Status",
+    "acoes": "Ações",
+    "pendente": "Pendente",
+    "pago": "Pago",
+    "atrasado": "Atrasado",
+    "cancelado": "Cancelado",
+    "totalContas": "Total de Contas Cadastradas",
+    "valorPendentes": "Valor Total Pendente",
+    "valorProxSeteDias": "Valor Próximos 7 Dias",
+    "marcarComoPago": "Marcar como Pago",
+    "editar": "Editar",
+    "confirmarPagamento": "Confirmar Pagamento",
+    "confirmarPagamentoTexto": "Tem certeza que deseja marcar esta conta como paga?"
+  },
+  "contasAReceber": {
+    "titulo": "Contas a Receber",
+    "novaConta": "Nova Conta a Receber",
+    "descricao": "Descrição",
+    "cliente": "Cliente",
+    "data": "Data",
+    "valor": "Valor",
+    "status": "Status",
+    "acoes": "Ações",
+    "pendente": "Pendente",
+    "recebido": "Recebido",
+    "atrasado": "Atrasado",
+    "cancelado": "Cancelado",
+    "totalContas": "Total de Contas Cadastradas",
+    "valorTotalPendente": "Valor Total Pendente",
+    "valorProximosDias": "Valor Próximos 7 Dias",
+    "marcarComoRecebido": "Marcar como Recebido",
+    "editar": "Editar",
+    "confirmarRecebimento": "Confirmar Recebimento",
+    "confirmarRecebimentoTexto": "Tem certeza que deseja marcar esta conta como recebida?"
+  },
   "resumoFinanceiro": "Resumo Financeiro",
   "visaoGeralFinancas": "Visão geral das finanças da empresa",
   "formaPagamento": {
@@ -1007,5 +940,9 @@
       "estoque": "Estoque",
       "vendas": "Vendas"
     }
-  }
+  },
+  "recebiveis": "Recebíveis Futuros",
+  "parcelamentos": "Parcelamentos Abertos",
+  "parcelas": "parcelas",
+  "prox": "Próx"
 } 

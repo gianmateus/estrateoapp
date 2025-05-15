@@ -665,6 +665,163 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
             </Card>
           </Grid>
           
+          {/* Seção de Estoque */}
+          <Grid item xs={12}>
+            <Card variant="outlined" sx={{ mb: 3 }}>
+              <CardContent>
+                <Typography variant="h6" gutterBottom display="flex" alignItems="center">
+                  <InventoryIcon sx={{ mr: 1 }} />
+                  {t('Informações de Estoque')}
+                </Typography>
+                
+                <Grid container spacing={2} alignItems="center">
+                  <Grid item xs={12} sm={4}>
+                    <TextField
+                      name="quantidade"
+                      label={t('Quantidade')}
+                      value={formData.quantidade}
+                      onChange={handleChange}
+                      fullWidth
+                      required
+                      type="number"
+                      InputLabelProps={{ shrink: true }}
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            {formData.unidadeMedida}
+                          </InputAdornment>
+                        ),
+                      }}
+                      error={!!formErrors.quantidade}
+                      helperText={formErrors.quantidade}
+                    />
+                  </Grid>
+                  
+                  <Grid item xs={12} sm={4}>
+                    <FormControl fullWidth required>
+                      <InputLabel>{t('Unidade de Medida')}</InputLabel>
+                      <Select
+                        name="unidadeMedida"
+                        value={formData.unidadeMedida}
+                        onChange={handleSelectChange}
+                        label={t('Unidade de Medida')}
+                        error={!!formErrors.unidadeMedida}
+                      >
+                        {UNIDADES.map((unidade) => (
+                          <MenuItem key={unidade.value} value={unidade.value}>
+                            {unidade.label}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                      {formErrors.unidadeMedida && (
+                        <FormHelperText error>{formErrors.unidadeMedida}</FormHelperText>
+                      )}
+                    </FormControl>
+                  </Grid>
+                  
+                  <Grid item xs={12} sm={4}>
+                    <TextField
+                      name="nivelMinimoEstoque"
+                      label={t('Nível Mínimo de Estoque')}
+                      value={formData.nivelMinimoEstoque}
+                      onChange={handleChange}
+                      fullWidth
+                      type="number"
+                      InputLabelProps={{ shrink: true }}
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            {formData.unidadeMedida}
+                          </InputAdornment>
+                        ),
+                        startAdornment: (
+                          <Tooltip title={t('Quantidade mínima para gerar alertas de baixo estoque')}>
+                            <InputAdornment position="start">
+                              <WarningIcon color="warning" fontSize="small" />
+                            </InputAdornment>
+                          </Tooltip>
+                        ),
+                      }}
+                      error={!!formErrors.nivelMinimoEstoque}
+                      helperText={formErrors.nivelMinimoEstoque}
+                    />
+                  </Grid>
+                </Grid>
+              </CardContent>
+            </Card>
+          </Grid>
+          
+          {/* NOVA SEÇÃO: Necessidade Periódica */}
+          <Grid item xs={12}>
+            <Card variant="outlined" sx={{ mb: 3 }}>
+              <CardContent>
+                <Typography variant="h6" gutterBottom display="flex" alignItems="center">
+                  <CalendarMonthIcon sx={{ mr: 1 }} />
+                  {t('Necessidade Periódica')}
+                </Typography>
+                
+                <Box sx={{ mb: 2 }}>
+                  <Typography variant="body2" color="text.secondary">
+                    {t('Defina a quantidade necessária por período para cálculo automático de sugestões de compra')}
+                  </Typography>
+                </Box>
+                
+                <Grid container spacing={2} alignItems="center">
+                  <Grid item xs={12} sm={6}>
+                    <FormControl fullWidth required>
+                      <InputLabel>{t('Periodicidade')}</InputLabel>
+                      <Select
+                        name="periodicidadeNecessidade"
+                        value={formData.periodicidadeNecessidade}
+                        onChange={handleSelectChange}
+                        label={t('Periodicidade')}
+                        error={!!formErrors.periodicidadeNecessidade}
+                      >
+                        {PERIODICIDADE_NECESSIDADE.map((periodo) => (
+                          <MenuItem key={periodo.value} value={periodo.value}>
+                            {periodo.label}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                      {formErrors.periodicidadeNecessidade && (
+                        <FormHelperText error>{formErrors.periodicidadeNecessidade}</FormHelperText>
+                      )}
+                    </FormControl>
+                  </Grid>
+                  
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      name="nivelMinimoEstoque"
+                      label={t('Quantidade Necessária')}
+                      value={formData.nivelMinimoEstoque}
+                      onChange={handleChange}
+                      fullWidth
+                      required
+                      type="number"
+                      InputLabelProps={{ shrink: true }}
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            {formData.unidadeMedida}
+                          </InputAdornment>
+                        ),
+                        startAdornment: (
+                          <Tooltip title={t('Quantidade necessária para o período selecionado')}>
+                            <InputAdornment position="start">
+                              <InfoIcon color="primary" fontSize="small" />
+                            </InputAdornment>
+                          </Tooltip>
+                        ),
+                      }}
+                      error={!!formErrors.nivelMinimoEstoque}
+                      helperText={formErrors.nivelMinimoEstoque || t('Ex: para consumo diário de 5kg, coloque 5')}
+                    />
+                  </Grid>
+                </Grid>
+              </CardContent>
+            </Card>
+          </Grid>
+          
           {/* Seção de Controle de Estoque */}
           <Grid item xs={12}>
             <Card variant="outlined" sx={{ mb: 3 }}>
@@ -719,41 +876,6 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({
                 </Grid>
               </CardContent>
             </Card>
-          </Grid>
-          
-          {/* Campo de Periodicidade de Necessidade */}
-          <Grid item xs={12} sm={6}>
-            <FormControl fullWidth error={!!formErrors.periodicidadeNecessidade}>
-              <InputLabel id="periodicidade-necessidade-label">
-                Periodicidade de Necessidade*
-              </InputLabel>
-              <Select
-                labelId="periodicidade-necessidade-label"
-                id="periodicidadeNecessidade"
-                name="periodicidadeNecessidade"
-                value={formData.periodicidadeNecessidade}
-                onChange={handleSelectChange}
-                label="Periodicidade de Necessidade*"
-                required
-                startAdornment={
-                  <InputAdornment position="start">
-                    <CalendarMonthIcon color="action" />
-                  </InputAdornment>
-                }
-              >
-                {PERIODICIDADE_NECESSIDADE.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
-                  </MenuItem>
-                ))}
-              </Select>
-              {formErrors.periodicidadeNecessidade && (
-                <FormHelperText>{formErrors.periodicidadeNecessidade}</FormHelperText>
-              )}
-              <FormHelperText>
-                Define o período para cálculo de necessidade de estoque
-              </FormHelperText>
-            </FormControl>
           </Grid>
         </Grid>
         
