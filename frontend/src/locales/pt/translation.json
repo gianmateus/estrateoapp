@@ -80,9 +80,127 @@
   },
   "financeiro": "Financeiro",
   "inventario": "Inventário",
-  "impostos": "Impostos",
+  "impostos": {
+    "titulo": "Resumo Tributário",
+    "subtitulo": "Gerencie e visualize seus impostos",
+    "iva": {
+      "titulo": "IVA",
+      "descricao": "O IVA é calculado sobre as vendas, com dedução do imposto pago nas compras. É o principal imposto sobre consumo na Alemanha.",
+      "detalhe1": "A alíquota padrão é de 19% para a maioria dos produtos e serviços",
+      "detalhe2": "Deve ser declarado mensalmente ou trimestralmente",
+      "detalhe3": "Empresas menores podem optar pelo regime de caixa",
+      "tooltip": "Imposto sobre Valor Agregado"
+    },
+    "gewerbe": {
+      "titulo": "Gewerbesteuer",
+      "descricao": "O Gewerbesteuer é um imposto municipal cobrado sobre o lucro operacional das empresas. A taxa varia conforme o município.",
+      "detalhe1": "Calculado com base no lucro ajustado da empresa",
+      "detalhe2": "A taxa é determinada pelo Hebesatz (multiplicador) do município",
+      "detalhe3": "Pago trimestralmente como adiantamento",
+      "tooltip": "Imposto Comercial"
+    },
+    "corpSoli": {
+      "titulo": "KSt + Soli",
+      "descricao": "O KSt é o imposto de renda corporativo, aplicado sobre o lucro tributável. O Soli é um adicional de 5,5% sobre o imposto corporativo.",
+      "detalhe1": "Imposto Corporativo: taxa fixa de 15% sobre o lucro",
+      "detalhe2": "Taxa de Solidariedade: 5,5% adicional sobre o imposto calculado",
+      "detalhe3": "Pagamentos trimestrais antecipados baseados no lucro estimado",
+      "tooltip": "Imposto corporativo e taxa de solidariedade"
+    },
+    "folha": {
+      "titulo": "Folha & Sozial",
+      "descricao": "Inclui o Lohnsteuer (imposto retido sobre salários) e as contribuições sociais obrigatórias pagas pelo empregador.",
+      "detalhe1": "Inclui seguro saúde, aposentadoria, desemprego e cuidados",
+      "detalhe2": "Geralmente dividido entre empregador e empregado",
+      "detalhe3": "Pagamento mensal obrigatório via sistema eletrônico",
+      "tooltip": "Impostos sobre folha de pagamento e contribuições sociais"
+    },
+    "comum": {
+      "perfilFiscal": "Perfil Fiscal",
+      "irParaPerfil": "Ir para Perfil Fiscal",
+      "perfilIncompleto": "Complete o Perfil Fiscal para habilitar o cálculo automático.",
+      "calculo": "Cálculo",
+      "baseCalculo": "Base de cálculo",
+      "taxa": "Taxa aplicada",
+      "selecionarMes": "Mês",
+      "selecionarAno": "Ano",
+      "buscar": "Buscar",
+      "exportarPDF": "Exportar Relatório Fiscal (PDF)",
+      "atualizarDados": "Atualizar",
+      "valorDevido": "a Pagar"
+    }
+  },
   "calendario": "Calendário",
-  "funcionarios": "Funcionários",
+  "funcionarios": {
+    "titulo": "Funcionários",
+    "visaoGeral": {
+      "titulo": "Visão Geral",
+      "totalFuncionarios": "Total de Funcionários",
+      "funcionariosAtivos": "Funcionários Ativos",
+      "ausenciasAtivas": "Ausências Ativas",
+      "contratadosRecentemente": "Contratados Recentemente",
+      "ultimosTresMeses": "Últimos Três Meses",
+      "custoMensalFolha": "Custo Mensal da Folha",
+      "mediaFuncionario": "Média por Funcionário",
+      "ultimosContratados": "Últimos Contratados",
+      "verTodos": "Ver Todos",
+      "funcionariosPorDepartamento": "Funcionários por Departamento",
+      "ativosDepartamento": "Ativos no Departamento",
+      "custoMensal": "Custo Mensal",
+      "ferias": "Férias",
+      "licenca": "Licença"
+    },
+    "estatisticas": {
+      "titulo": "Estatísticas",
+      "filtros": "Filtros",
+      "periodo": "Período",
+      "dataInicio": "Data Inicial",
+      "dataFim": "Data Final",
+      "departamento": "Departamento",
+      "aplicar": "Aplicar Filtros",
+      "exportar": "Exportar Dados",
+      "statusFuncionarios": "Status dos Funcionários",
+      "funcionariosPorDepartamento": "Funcionários por Departamento",
+      "historicoContratacoes": "Histórico de Contratações",
+      "distribuicaoSalarial": "Distribuição Salarial",
+      "faixaSalarial": "Faixa Salarial",
+      "quantidade": "Quantidade",
+      "total": "Total",
+      "ativos": "Ativos",
+      "contratacoes": "Contratações",
+      "desligamentos": "Desligamentos",
+      "custoMedio": "Custo Médio",
+      "custoTotal": "Custo Total",
+      "ativo": "Ativo",
+      "inativo": "Inativo",
+      "ferias": "Férias",
+      "licenca": "Licença",
+      "todos": "Todos",
+      "exportarEstatisticas": "Exportar Estatísticas",
+      "selecionarPeriodo": "Selecionar Período",
+      "funcionalidadeEmDesenvolvimento": "Funcionalidade em desenvolvimento"
+    },
+    "folhaPagamento": {
+      "titulo": "Folha de Pagamento",
+      "filtros": "Filtros",
+      "mes": "Mês",
+      "ano": "Ano",
+      "funcionario": "Funcionário",
+      "salario": "Salário",
+      "beneficios": "Benefícios",
+      "descontos": "Descontos",
+      "total": "Total"
+    },
+    "tempoFerias": {
+      "titulo": "Tempo e Férias",
+      "diasTrabalhados": "Dias Trabalhados",
+      "ausencias": "Ausências",
+      "folgas": "Folgas",
+      "ferias": "Férias",
+      "registrarFerias": "Registrar Férias",
+      "registrarAusencia": "Registrar Ausência"
+    }
+  },
   "inteligenciaArtificial": "IA & Análises",
   "whatsapp": "WhatsApp",
   "contador": "Contador",
@@ -308,7 +426,6 @@
   "dataContratacao": "Data de Contratação",
   "novoFuncionario": "Novo Funcionário",
   "editarFuncionario": "Editar Funcionário",
-  "estatisticas": "Estatísticas",
   "folhaPagamento": "Folha de Pagamento",
   "pontosFerias": "Pontos e Férias",
   "ativo": "Ativo",
@@ -944,5 +1061,78 @@
   "recebiveis": "Recebíveis Futuros",
   "parcelamentos": "Parcelamentos Abertos",
   "parcelas": "parcelas",
-  "prox": "Próx"
+  "prox": "Próx",
+  "fluxoCaixa": {
+    "titulo": "Fluxo de Caixa",
+    "subtitulo": "Movimentações financeiras consolidadas",
+    "hoje": "Hoje",
+    "ontem": "Ontem",
+    "entrada": "Entrada",
+    "saida": "Saída",
+    "confirmado": "Confirmado",
+    "pendente": "Pendente",
+    "cancelado": "Cancelado",
+    "cliente": "Cliente",
+    "fornecedor": "Fornecedor",
+    "totalEntradas": "Entradas",
+    "totalSaidas": "Saídas",
+    "saldoFinal": "Saldo Final",
+    "nenhumaMovimentacao": "Nenhuma movimentação encontrada para o período selecionado",
+    "previewRelatorio": "Visualização do Relatório",
+    "resumoFinanceiro": "Resumo Financeiro",
+    "movimentacoesDetalhadas": "Movimentações Detalhadas",
+    "movimentacoesNoRelatorio": "O relatório incluirá {{count}} movimentações detalhadas.",
+    "geradoEm": "Gerado em",
+    "periodo": "Período",
+    "data": "Data",
+    "tipo": "Tipo",
+    "descricao": "Descrição",
+    "valor": "Valor",
+    "status": "Status",
+    "gerarRelatorio": "Gerar Relatório",
+    "filtros": {
+      "titulo": "Filtros",
+      "tipo": "Tipo",
+      "status": "Status",
+      "origem": "Origem",
+      "todos": "Todos",
+      "entrada": "Entradas",
+      "saida": "Saídas",
+      "confirmado": "Confirmados",
+      "pendente": "Pendentes", 
+      "contasAPagar": "Contas a Pagar",
+      "contasAReceber": "Contas a Receber",
+      "manual": "Manual",
+      "de": "De",
+      "ate": "Até",
+      "limpar": "Limpar Filtros"
+    }
+  },
+  "FLUXOCAIXA": {
+    "GERARRELATORIO": "GERAR RELATÓRIO"
+  },
+  "funcionarios": {
+    "visaoGeral": {
+      "titulo": "Visão Geral"
+    },
+    "estatisticas": {
+      "titulo": "Estatísticas"
+    },
+    "folhaPagamento": {
+      "titulo": "Folha de Pagamento"
+    },
+    "tempoFerias": {
+      "titulo": "Tempo e Férias"
+    }
+  },
+  "impostos": {
+    "titulo": "Resumo Tributário"
+  },
+  "resumoFinanceiro": "Resumo Financeiro",
+  "contasAPagar": "Contas a Pagar",
+  "contasAReceber": "Contas a Receber",
+  
+  "timeAndVacations": "Tempo e Férias",
+  "tabela": "Tabela",
+  "calendario": "Calendário"
 } 

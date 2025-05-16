@@ -3,16 +3,12 @@ import {
   Box,
   Typography,
   Grid,
-  Paper,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
   Button,
-  Card,
-  CardContent,
   CircularProgress,
-  TextField
+  SelectChangeEvent,
+  useMediaQuery,
+  useTheme,
+  Divider
 } from '@mui/material';
 import {
   BarChart,
@@ -20,28 +16,35 @@ import {
   XAxis,
   YAxis,
   CartesianGrid,
-  Tooltip as ChartTooltip,
+  Tooltip as RechartsTooltip,
   Legend,
   ResponsiveContainer,
   PieChart,
   Pie,
   Cell,
   LineChart,
-  Line
+  Line,
+  Area,
+  AreaChart
 } from 'recharts';
 import {
   Download as DownloadIcon,
   BarChart as ChartIcon,
   PieChart as PieChartIcon,
   ShowChart as LineChartIcon,
-  FilterList as FilterIcon,
-  PaidOutlined as PaidIcon
+  PaidOutlined as PaidIcon,
+  Badge as StatusIcon,
+  Group as DepartmentIcon,
+  TrendingUp as TrendingIcon,
+  Euro as EuroIcon
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { ptBR } from 'date-fns/locale';
+import { format, subMonths } from 'date-fns';
+
+// Componentes personalizados
+import StatisticsCard from '../../../components/ui/StatisticsCard';
+import PeriodFilter from '../../../components/ui/PeriodFilter';
+import CustomTooltip from '../../../components/ui/CustomTooltip';
 
 // Interface para representar um funcionário
 interface Funcionario {
@@ -84,18 +87,48 @@ interface FuncionarioStats {
   }[];
 }
 
+/**
+ * Página de estatísticas de funcionários
+ * Exibe gráficos e dados sobre a equipe, departamentos, salários e tendências
+ */
 const StatisticsPage: React.FC = () => {
   const { t } = useTranslation();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isTablet = useMediaQuery(theme.breakpoints.down('md'));
+  
+  // Estados
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState<FuncionarioStats | null>(null);
   const [periodoInicio, setPeriodoInicio] = useState<Date | null>(
-    new Date(new Date().getFullYear(), 0, 1) // 1º de janeiro do ano atual
+    subMonths(new Date(), 12) // 12 meses atrás
   );
   const [periodoFim, setPeriodoFim] = useState<Date | null>(new Date());
   const [departamentoFiltro, setDepartamentoFiltro] = useState<string>('todos');
   
-  // Cores para os gráficos
-  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82CA9D'];
+  // Cores para os gráficos com base na paleta do tema
+  const statusColors = [
+    theme.palette.success.main,
+    theme.palette.error.main,
+    theme.palette.warning.main,
+    theme.palette.info.main
+  ];
+  
+  const departmentColors = [
+    theme.palette.primary.main,
+    theme.palette.secondary.main,
+    '#00C49F',
+    '#FF8042',
+    '#8884D8'
+  ];
+
+  // Formatador de moedas para Euros
+  const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat('de-DE', { 
+      style: 'currency', 
+      currency: 'EUR' 
+    }).format(value);
+  };
   
   // Mock de dados para desenvolvimento
   const mockFuncionarios: Funcionario[] = [
@@ -170,6 +203,42 @@ const StatisticsPage: React.FC = () => {
       dataContratacao: '2021-07-22',
       salario: 4200,
       status: 'ativo'
+    },
+    {
+      id: '9',
+      nome: 'Marcelo Santos',
+      cargo: 'Auxiliar de Limpeza',
+      departamento: 'Operacional',
+      dataContratacao: '2022-04-18',
+      salario: 1500,
+      status: 'ativo'
+    },
+    {
+      id: '10',
+      nome: 'Camila Rodrigues',
+      cargo: 'Chef de Confeitaria',
+      departamento: 'Cozinha',
+      dataContratacao: '2021-09-30',
+      salario: 3200,
+      status: 'ferias'
+    },
+    {
+      id: '11',
+      nome: 'Rafael Sousa',
+      cargo: 'Barista',
+      departamento: 'Atendimento',
+      dataContratacao: '2022-11-15',
+      salario: 1900,
+      status: 'inativo'
+    },
+    {
+      id: '12',
+      nome: 'Luciana Martins',
+      cargo: 'Auxiliar Administrativo',
+      departamento: 'Financeiro',
+      dataContratacao: '2023-02-05',
+      salario: 2200,
+      status: 'ativo'
     }
   ];
 
@@ -190,7 +259,8 @@ const StatisticsPage: React.FC = () => {
   // Gerar dados mock para a distribuição salarial
   const gerarDistribuicaoSalarial = (funcionarios: Funcionario[]) => {
     const faixas = [
-      '1000-2000',
+      '1000-1500',
+      '1501-2000',
       '2001-3000',
       '3001-4000',
       '4001-5000',
@@ -276,6 +346,28 @@ const StatisticsPage: React.FC = () => {
     };
   };
 
+  // Handler para atualizar o filtro de departamento
+  const handleChangeDepartment = (event: SelectChangeEvent) => {
+    setDepartamentoFiltro(event.target.value);
+  };
+
+  // Handler para aplicar os filtros
+  const handleApplyFilters = () => {
+    setLoading(true);
+    // Aqui entraria a lógica de busca dos dados com os filtros
+    // Por enquanto simulamos um delay
+    setTimeout(() => {
+      setStats(processarDados(mockFuncionarios));
+      setLoading(false);
+    }, 800);
+  };
+
+  // Manipulador para exportar estatísticas
+  const handleExportarEstatisticas = () => {
+    // Implementação futura
+    alert(t('funcionarios.estatisticas.funcionalidadeEmDesenvolvimento'));
+  };
+
   // Carregar dados
   useEffect(() => {
     const fetchData = async () => {
@@ -296,259 +388,328 @@ const StatisticsPage: React.FC = () => {
     fetchData();
   }, []);
 
-  // Formatar moeda
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('pt-BR', { 
-      style: 'currency', 
-      currency: 'BRL' 
-    }).format(value);
-  };
-  
-  // Renderizador customizado para tooltip do gráfico de pizza
-  const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index, name }: any) => {
-    const RADIAN = Math.PI / 180;
-    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-    const x = cx + radius * Math.cos(-midAngle * RADIAN);
-    const y = cy + radius * Math.sin(-midAngle * RADIAN);
-  
-    return (
-      <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
-        {`${name}: ${(percent * 100).toFixed(0)}%`}
-      </text>
-    );
-  };
-  
-  // Manipulador para exportar estatísticas
-  const handleExportarEstatisticas = () => {
-    alert(t('funcionalidadeEmDesenvolvimento'));
-    // Aqui seria implementada a exportação para PDF/Excel
-  };
-  
+  // Componente de loading
   if (loading || !stats) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
-        <CircularProgress />
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 400 }}>
+        <CircularProgress size={48} thickness={4} />
       </Box>
     );
   }
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      {/* Filtros */}
-      <Paper sx={{ p: 2, mb: 3 }}>
-        <Grid container spacing={2} alignItems="center">
-          <Grid item xs={12} sm={3}>
-            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ptBR}>
-              <DatePicker
-                label={t('periodoInicio')}
-                value={periodoInicio}
-                onChange={setPeriodoInicio}
-                slotProps={{
-                  textField: {
-                    fullWidth: true,
-                    variant: 'outlined',
-                    size: 'small'
-                  }
-                }}
-              />
-            </LocalizationProvider>
-          </Grid>
-          <Grid item xs={12} sm={3}>
-            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ptBR}>
-              <DatePicker
-                label={t('periodoFim')}
-                value={periodoFim}
-                onChange={setPeriodoFim}
-                slotProps={{
-                  textField: {
-                    fullWidth: true,
-                    variant: 'outlined',
-                    size: 'small'
-                  }
-                }}
-              />
-            </LocalizationProvider>
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <FormControl fullWidth size="small">
-              <InputLabel id="departamento-label">{t('departamento')}</InputLabel>
-              <Select
-                labelId="departamento-label"
-                value={departamentoFiltro}
-                onChange={(e) => setDepartamentoFiltro(e.target.value)}
-                label={t('departamento')}
-              >
-                <MenuItem value="todos">{t('todos')}</MenuItem>
-                {stats.departamentos.map(dep => (
-                  <MenuItem key={dep.nome} value={dep.nome}>{dep.nome}</MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12} sm={2}>
-            <Button
-              variant="outlined"
-              startIcon={<FilterIcon />}
-              fullWidth
-              size="medium"
-            >
-              {t('aplicar')}
-            </Button>
-          </Grid>
-        </Grid>
-      </Paper>
+      {/* Cabeçalho da página */}
+      <Box sx={{ mb: 3 }}>
+        <Typography 
+          variant="h5" 
+          component="h1" 
+          sx={{ 
+            fontWeight: 600, 
+            color: theme.palette.text.primary,
+            mb: 1
+          }}
+        >
+          {t('funcionarios.estatisticas.titulo')}
+        </Typography>
+        <Typography 
+          variant="body1" 
+          color="text.secondary"
+          sx={{ mb: 2 }}
+        >
+          {format(new Date(), 'dd/MM/yyyy')} • {stats.totalFuncionarios} {t('funcionarios.titulo').toLowerCase()}
+        </Typography>
+        <Divider />
+      </Box>
       
+      {/* Componente de filtro */}
+      <PeriodFilter
+        startDate={periodoInicio}
+        endDate={periodoFim}
+        departmentFilter={departamentoFiltro}
+        departments={stats.departamentos.map(dep => dep.nome)}
+        onStartDateChange={setPeriodoInicio}
+        onEndDateChange={setPeriodoFim}
+        onDepartmentChange={handleChangeDepartment}
+        onFilterApply={handleApplyFilters}
+      />
+
       {/* Estatísticas e Gráficos */}
       <Grid container spacing={3}>
         {/* Status dos Funcionários */}
         <Grid item xs={12} md={6}>
-          <Card>
-            <CardContent>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-                <Typography variant="h6" gutterBottom>
-                  {t('statusFuncionarios')}
-                </Typography>
-                <PieChartIcon color="primary" />
-              </Box>
-              <ResponsiveContainer width="100%" height={300}>
-                <PieChart>
-                  <Pie
-                    data={[
-                      { name: String(t('ativo')), value: stats.totalAtivos },
-                      { name: String(t('inativo')), value: stats.totalInativos },
-                      { name: String(t('ferias')), value: stats.totalFerias },
-                      { name: String(t('licenca')), value: stats.totalLicenca }
-                    ]}
-                    cx="50%"
-                    cy="50%"
-                    labelLine={false}
-                    label={renderCustomizedLabel}
-                    outerRadius={120}
-                    fill="#8884d8"
-                    dataKey="value"
-                  >
-                    {
-                      [
-                        { name: String(t('ativo')), value: stats.totalAtivos },
-                        { name: String(t('inativo')), value: stats.totalInativos },
-                        { name: String(t('ferias')), value: stats.totalFerias },
-                        { name: String(t('licenca')), value: stats.totalLicenca }
-                      ].map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)
-                    }
-                  </Pie>
-                  <ChartTooltip formatter={(value) => [value, String(t('funcionarios'))]} />
-                </PieChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
+          <StatisticsCard
+            title={t('funcionarios.estatisticas.statusFuncionarios')}
+            icon={<StatusIcon />}
+          >
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={[
+                    { name: t('funcionarios.estatisticas.ativo') || 'Ativo', value: stats.totalAtivos },
+                    { name: t('funcionarios.estatisticas.inativo') || 'Inativo', value: stats.totalInativos },
+                    { name: t('funcionarios.estatisticas.ferias') || 'Férias', value: stats.totalFerias },
+                    { name: t('funcionarios.estatisticas.licenca') || 'Licença', value: stats.totalLicenca }
+                  ]}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={isMobile ? 55 : 70}
+                  outerRadius={isMobile ? 75 : 90}
+                  paddingAngle={3}
+                  cornerRadius={6}
+                  dataKey="value"
+                >
+                  {[
+                    { name: t('funcionarios.estatisticas.ativo') || 'Ativo', value: stats.totalAtivos },
+                    { name: t('funcionarios.estatisticas.inativo') || 'Inativo', value: stats.totalInativos },
+                    { name: t('funcionarios.estatisticas.ferias') || 'Férias', value: stats.totalFerias },
+                    { name: t('funcionarios.estatisticas.licenca') || 'Licença', value: stats.totalLicenca }
+                  ].map((entry, index) => (
+                    <Cell 
+                      key={`cell-${index}`} 
+                      fill={statusColors[index % statusColors.length]} 
+                      stroke={theme.palette.background.paper}
+                      strokeWidth={2}
+                    />
+                  ))}
+                </Pie>
+                <RechartsTooltip
+                  content={
+                    <CustomTooltip 
+                      title={t('funcionarios.estatisticas.statusFuncionarios') || 'Status dos Funcionários'}
+                    />
+                  }
+                />
+              </PieChart>
+            </ResponsiveContainer>
+            
+            {/* Legenda personalizada sob o gráfico */}
+            <Box 
+              sx={{ 
+                display: 'flex', 
+                justifyContent: 'center', 
+                flexWrap: 'wrap', 
+                gap: 2, 
+                mt: 1 
+              }}
+            >
+              {[
+                { name: t('funcionarios.estatisticas.ativo') || 'Ativo', value: stats.totalAtivos, color: statusColors[0] },
+                { name: t('funcionarios.estatisticas.inativo') || 'Inativo', value: stats.totalInativos, color: statusColors[1] },
+                { name: t('funcionarios.estatisticas.ferias') || 'Férias', value: stats.totalFerias, color: statusColors[2] },
+                { name: t('funcionarios.estatisticas.licenca') || 'Licença', value: stats.totalLicenca, color: statusColors[3] }
+              ].map((item, index) => (
+                <Box 
+                  key={index} 
+                  sx={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    mr: 2 
+                  }}
+                >
+                  <Box
+                    sx={{
+                      width: 12,
+                      height: 12,
+                      borderRadius: 1,
+                      bgcolor: item.color,
+                      mr: 1
+                    }}
+                  />
+                  <Typography variant="caption" sx={{ fontWeight: 500 }}>
+                    {item.name}: {item.value}
+                  </Typography>
+                </Box>
+              ))}
+            </Box>
+          </StatisticsCard>
         </Grid>
         
         {/* Funcionários por Departamento */}
         <Grid item xs={12} md={6}>
-          <Card>
-            <CardContent>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-                <Typography variant="h6" gutterBottom>
-                  {t('funcionariosPorDepartamento')}
-                </Typography>
-                <ChartIcon color="primary" />
-              </Box>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart
-                  data={stats.departamentos}
-                  margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="nome" />
-                  <YAxis />
-                  <ChartTooltip formatter={(value) => [value, String(t('funcionarios'))]} />
-                  <Legend />
-                  <Bar dataKey="total" name={String(t('total'))} fill="#8884d8" />
-                  <Bar dataKey="ativos" name={String(t('ativos'))} fill="#82ca9d" />
-                </BarChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
+          <StatisticsCard
+            title={t('funcionarios.estatisticas.funcionariosPorDepartamento')}
+            icon={<DepartmentIcon />}
+          >
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart
+                data={stats.departamentos}
+                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                barSize={isMobile ? 15 : 20}
+              >
+                <CartesianGrid 
+                  strokeDasharray="3 3" 
+                  vertical={false} 
+                  stroke={theme.palette.divider}
+                />
+                <XAxis 
+                  dataKey="nome" 
+                  tickLine={false}
+                  axisLine={{ stroke: theme.palette.divider }}
+                  tick={{ fill: theme.palette.text.secondary, fontSize: 12 }}
+                />
+                <YAxis 
+                  tickLine={false}
+                  axisLine={{ stroke: theme.palette.divider }}
+                  tick={{ fill: theme.palette.text.secondary, fontSize: 12 }}
+                />
+                <RechartsTooltip
+                  content={
+                    <CustomTooltip 
+                      title={t('funcionarios.estatisticas.funcionariosPorDepartamento') || 'Funcionários por Departamento'} 
+                    />
+                  }
+                />
+                <Bar 
+                  dataKey="total" 
+                  name={t('funcionarios.estatisticas.total') || 'Total'} 
+                  fill={theme.palette.primary.main}
+                  radius={[4, 4, 0, 0]}
+                />
+                <Bar 
+                  dataKey="ativos" 
+                  name={t('funcionarios.estatisticas.ativos') || 'Ativos'} 
+                  fill={theme.palette.success.main}
+                  radius={[4, 4, 0, 0]}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </StatisticsCard>
         </Grid>
         
         {/* Histórico de Contratações */}
         <Grid item xs={12} md={8}>
-          <Card>
-            <CardContent>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-                <Typography variant="h6" gutterBottom>
-                  {t('historicoContratacoes')}
-                </Typography>
-                <LineChartIcon color="primary" />
-              </Box>
-              <ResponsiveContainer width="100%" height={300}>
-                <LineChart
-                  data={stats.historicoContratacoes}
-                  margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="mes" />
-                  <YAxis />
-                  <ChartTooltip formatter={(value) => [value, String(t('funcionarios'))]} />
-                  <Legend />
-                  <Line
-                    type="monotone"
-                    dataKey="contratacoes"
-                    name={String(t('contratacoes'))}
-                    stroke="#8884d8"
-                    activeDot={{ r: 8 }}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="desligamentos"
-                    name={String(t('desligamentos'))}
-                    stroke="#ff7300"
-                    activeDot={{ r: 8 }}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
+          <StatisticsCard
+            title={t('funcionarios.estatisticas.historicoContratacoes')}
+            icon={<TrendingIcon />}
+          >
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart
+                data={stats.historicoContratacoes}
+                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+              >
+                <defs>
+                  <linearGradient id="colorContratacoes" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor={theme.palette.primary.main} stopOpacity={0.8}/>
+                    <stop offset="95%" stopColor={theme.palette.primary.main} stopOpacity={0.1}/>
+                  </linearGradient>
+                  <linearGradient id="colorDesligamentos" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor={theme.palette.error.main} stopOpacity={0.8}/>
+                    <stop offset="95%" stopColor={theme.palette.error.main} stopOpacity={0.1}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid 
+                  strokeDasharray="3 3" 
+                  vertical={false}
+                  stroke={theme.palette.divider}
+                />
+                <XAxis 
+                  dataKey="mes" 
+                  tickLine={false}
+                  axisLine={{ stroke: theme.palette.divider }}
+                  tick={{ fill: theme.palette.text.secondary, fontSize: 12 }}
+                />
+                <YAxis 
+                  tickLine={false}
+                  axisLine={{ stroke: theme.palette.divider }}
+                  tick={{ fill: theme.palette.text.secondary, fontSize: 12 }}
+                />
+                <RechartsTooltip
+                  content={
+                    <CustomTooltip 
+                      title={t('funcionarios.estatisticas.historicoContratacoes') || 'Histórico de Contratações'}
+                    />
+                  }
+                />
+                <Area
+                  type="monotone"
+                  dataKey="contratacoes"
+                  name={t('funcionarios.estatisticas.contratacoes') || 'Contratações'}
+                  stroke={theme.palette.primary.main}
+                  fillOpacity={1}
+                  fill="url(#colorContratacoes)"
+                  activeDot={{ r: 6, strokeWidth: 0 }}
+                />
+                <Area
+                  type="monotone"
+                  dataKey="desligamentos"
+                  name={t('funcionarios.estatisticas.desligamentos') || 'Desligamentos'}
+                  stroke={theme.palette.error.main}
+                  fillOpacity={1}
+                  fill="url(#colorDesligamentos)"
+                  activeDot={{ r: 6, strokeWidth: 0 }}
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          </StatisticsCard>
         </Grid>
         
         {/* Distribuição Salarial */}
         <Grid item xs={12} md={4}>
-          <Card>
-            <CardContent>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-                <Typography variant="h6" gutterBottom>
-                  {t('distribuicaoSalarial')}
-                </Typography>
-                <PaidIcon color="primary" />
-              </Box>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart
-                  data={stats.distribuicaoSalarial}
-                  layout="vertical"
-                  margin={{ top: 20, right: 30, left: 60, bottom: 5 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis type="number" />
-                  <YAxis dataKey="faixa" type="category" />
-                  <ChartTooltip formatter={(value) => [value, String(t('funcionarios'))]} />
-                  <Legend />
-                  <Bar dataKey="quantidade" name={String(t('quantidade'))} fill="#8884d8" />
-                </BarChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
+          <StatisticsCard
+            title={t('funcionarios.estatisticas.distribuicaoSalarial')}
+            icon={<EuroIcon />}
+          >
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart
+                data={stats.distribuicaoSalarial}
+                layout="vertical"
+                margin={{ top: 20, right: 30, left: 60, bottom: 5 }}
+                barSize={isMobile ? 15 : 20}
+              >
+                <CartesianGrid 
+                  strokeDasharray="3 3"
+                  horizontal={true}
+                  vertical={false}
+                  stroke={theme.palette.divider}
+                />
+                <XAxis 
+                  type="number"
+                  tickLine={false}
+                  axisLine={{ stroke: theme.palette.divider }}
+                  tick={{ fill: theme.palette.text.secondary, fontSize: 12 }}
+                />
+                <YAxis 
+                  dataKey="faixa" 
+                  type="category"
+                  tickLine={false}
+                  axisLine={{ stroke: theme.palette.divider }}
+                  tick={{ fill: theme.palette.text.secondary, fontSize: 12 }}
+                />
+                <RechartsTooltip
+                  content={
+                    <CustomTooltip 
+                      title={t('funcionarios.estatisticas.faixaSalarial') || 'Faixa Salarial'}
+                    />
+                  }
+                />
+                <Bar 
+                  dataKey="quantidade" 
+                  name={t('funcionarios.estatisticas.quantidade') || 'Quantidade'} 
+                  fill={theme.palette.success.main}
+                  radius={[0, 4, 4, 0]}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </StatisticsCard>
         </Grid>
         
         {/* Botão de Exportar */}
         <Grid item xs={12}>
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
             <Button
               variant="contained"
               color="primary"
               startIcon={<DownloadIcon />}
               onClick={handleExportarEstatisticas}
+              sx={{ 
+                borderRadius: '8px',
+                py: 1,
+                px: 3,
+                boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)'
+              }}
             >
-              {t('exportarEstatisticas')}
+              {t('funcionarios.estatisticas.exportarEstatisticas')}
             </Button>
           </Box>
         </Grid>

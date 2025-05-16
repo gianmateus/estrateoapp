@@ -24,10 +24,53 @@
   },
   "financeiro": "Financeiro",
   "inventario": "Inventário",
-  "impostos": "Impostos",
+  "impostos": {
+    "titulo": "Resumo Tributário"
+  },
   "pagamentos": "Pagamentos",
   "calendario": "Calendário",
-  "funcionarios": "Funcionários",
+  "funcionarios": {
+    "titulo": "Funcionários",
+    "visaoGeral": {
+      "titulo": "Visão Geral"
+    },
+    "estatisticas": {
+      "titulo": "Estatísticas",
+      "filtros": "Filtros",
+      "periodo": "Período",
+      "dataInicio": "Data Inicial",
+      "dataFim": "Data Final",
+      "departamento": "Departamento",
+      "aplicar": "Aplicar Filtros",
+      "exportar": "Exportar Dados",
+      "statusFuncionarios": "Status dos Funcionários",
+      "funcionariosPorDepartamento": "Funcionários por Departamento",
+      "historicoContratacoes": "Histórico de Contratações",
+      "distribuicaoSalarial": "Distribuição Salarial",
+      "faixaSalarial": "Faixa Salarial",
+      "quantidade": "Quantidade",
+      "total": "Total",
+      "ativos": "Ativos",
+      "contratacoes": "Contratações",
+      "desligamentos": "Desligamentos",
+      "custoMedio": "Custo Médio",
+      "custoTotal": "Custo Total",
+      "ativo": "Ativo",
+      "inativo": "Inativo",
+      "ferias": "Férias",
+      "licenca": "Licença",
+      "todos": "Todos",
+      "exportarEstatisticas": "Exportar Estatísticas",
+      "selecionarPeriodo": "Selecionar Período",
+      "funcionalidadeEmDesenvolvimento": "Funcionalidade em desenvolvimento"
+    },
+    "folhaPagamento": {
+      "titulo": "Folha de Pagamento"
+    },
+    "tempoFerias": {
+      "titulo": "Tempo e Férias"
+    }
+  },
   "contador": "Contador",
   "inteligenciaArtificial": "IA & Análises",
   "whatsapp": "WhatsApp",
@@ -230,5 +273,56 @@
   "campoObrigatorio": "Campo obrigatório",
   "valorDeveSerPositivo": "O valor deve ser positivo",
   "emailInvalido": "E-mail inválido",
-  "telefoneInvalido": "Telefone inválido"
+  "telefoneInvalido": "Telefone inválido",
+  
+  "fluxoCaixa": {
+    "titulo": "Fluxo de Caixa",
+    "subtitulo": "Movimentações financeiras consolidadas",
+    "hoje": "Hoje",
+    "ontem": "Ontem",
+    "entrada": "Entrada",
+    "saida": "Saída",
+    "confirmado": "Confirmado",
+    "pendente": "Pendente",
+    "cancelado": "Cancelado",
+    "cliente": "Cliente",
+    "fornecedor": "Fornecedor",
+    "totalEntradas": "Entradas",
+    "totalSaidas": "Saídas",
+    "saldoFinal": "Saldo Final",
+    "nenhumaMovimentacao": "Nenhuma movimentação encontrada para o período selecionado",
+    "previewRelatorio": "Visualização do Relatório",
+    "resumoFinanceiro": "Resumo Financeiro",
+    "movimentacoesDetalhadas": "Movimentações Detalhadas",
+    "movimentacoesNoRelatorio": "O relatório incluirá {{count}} movimentações detalhadas.",
+    "geradoEm": "Gerado em",
+    "periodo": "Período",
+    "data": "Data",
+    "tipo": "Tipo",
+    "descricao": "Descrição",
+    "valor": "Valor",
+    "status": "Status",
+    "gerarRelatorio": "Gerar Relatório",
+    "filtros": {
+      "titulo": "Filtros",
+      "tipo": "Tipo",
+      "status": "Status",
+      "origem": "Origem",
+      "todos": "Todos",
+      "entrada": "Entradas",
+      "saida": "Saídas",
+      "confirmado": "Confirmados",
+      "pendente": "Pendentes", 
+      "contasAPagar": "Contas a Pagar",
+      "contasAReceber": "Contas a Receber",
+      "manual": "Manual",
+      "de": "De",
+      "ate": "Até",
+      "limpar": "Limpar Filtros"
+    }
+  },
+  
+  "FLUXOCAIXA": {
+    "GERARRELATORIO": "GERAR RELATÓRIO"
+  }
 } 

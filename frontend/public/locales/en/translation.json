@@ -24,7 +24,48 @@
   "impostos": "Taxes",
   "pagamentos": "Payments",
   "calendario": "Calendar",
-  "funcionarios": "Employees",
+  "funcionarios": {
+    "titulo": "Employees",
+    "visaoGeral": {
+      "titulo": "Overview"
+    },
+    "estatisticas": {
+      "titulo": "Statistics",
+      "filtros": "Filters",
+      "periodo": "Period",
+      "dataInicio": "Start Date",
+      "dataFim": "End Date",
+      "departamento": "Department",
+      "aplicar": "Apply Filters",
+      "exportar": "Export Data",
+      "statusFuncionarios": "Employee Status",
+      "funcionariosPorDepartamento": "Employees by Department",
+      "historicoContratacoes": "Hiring History",
+      "distribuicaoSalarial": "Salary Distribution",
+      "faixaSalarial": "Salary Range",
+      "quantidade": "Quantity",
+      "total": "Total",
+      "ativos": "Active",
+      "contratacoes": "Hires",
+      "desligamentos": "Terminations",
+      "custoMedio": "Average Cost",
+      "custoTotal": "Total Cost",
+      "ativo": "Active",
+      "inativo": "Inactive",
+      "ferias": "Vacation",
+      "licenca": "Leave",
+      "todos": "All",
+      "exportarEstatisticas": "Export Statistics",
+      "selecionarPeriodo": "Select Period",
+      "funcionalidadeEmDesenvolvimento": "Feature under development"
+    },
+    "folhaPagamento": {
+      "titulo": "Payroll"
+    },
+    "tempoFerias": {
+      "titulo": "Time and Vacation"
+    }
+  },
   "contador": "Accounting",
   "inteligenciaArtificial": "AI & Analytics",
   "whatsapp": "WhatsApp",
@@ -156,5 +197,56 @@
   "kapitalertragsteuer": "Kapitalertragsteuer",
   "importacao": "Import Taxes",
   "taxaFixa": "Fixed Fee",
-  "outro": "Other"
+  "outro": "Other",
+
+  "fluxoCaixa": {
+    "titulo": "Cash Flow",
+    "subtitulo": "Consolidated financial transactions",
+    "hoje": "Today",
+    "ontem": "Yesterday",
+    "entrada": "Income",
+    "saida": "Expense",
+    "confirmado": "Confirmed",
+    "pendente": "Pending",
+    "cancelado": "Canceled",
+    "cliente": "Client",
+    "fornecedor": "Supplier",
+    "totalEntradas": "Income",
+    "totalSaidas": "Expenses",
+    "saldoFinal": "Final Balance",
+    "nenhumaMovimentacao": "No transactions found for the selected period",
+    "previewRelatorio": "Report Preview",
+    "resumoFinanceiro": "Financial Summary",
+    "movimentacoesDetalhadas": "Detailed Transactions",
+    "movimentacoesNoRelatorio": "The report will include {{count}} detailed transactions.",
+    "geradoEm": "Generated on",
+    "periodo": "Period",
+    "data": "Date",
+    "tipo": "Type",
+    "descricao": "Description",
+    "valor": "Amount",
+    "status": "Status",
+    "gerarRelatorio": "Generate Report",
+    "filtros": {
+      "titulo": "Filters",
+      "tipo": "Type",
+      "status": "Status",
+      "origem": "Source",
+      "todos": "All",
+      "entrada": "Income",
+      "saida": "Expenses",
+      "confirmado": "Confirmed",
+      "pendente": "Pending", 
+      "contasAPagar": "Accounts Payable",
+      "contasAReceber": "Accounts Receivable",
+      "manual": "Manual",
+      "de": "From",
+      "ate": "To",
+      "limpar": "Clear Filters"
+    }
+  },
+  
+  "FLUXOCAIXA": {
+    "GERARRELATORIO": "GENERATE REPORT"
+  }
 } 
