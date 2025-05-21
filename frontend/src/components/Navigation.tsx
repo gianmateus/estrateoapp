@@ -214,7 +214,7 @@ const Navigation = ({}: NavigationProps) => {
       permission: 'pagamentos.visualizar'
     },
     { 
-      text: t('impostos'), 
+      text: t('impostos.titulo'), 
       icon: <ReceiptIcon />, 
       path: '/dashboard/taxes',
       permission: 'financeiro.visualizar'
@@ -226,31 +226,31 @@ const Navigation = ({}: NavigationProps) => {
       permission: 'calendario.visualizar'
     },
     { 
-      text: t('funcionarios'), 
+      text: 'Funcionários', 
       icon: <PeopleIcon />, 
       path: '/dashboard/funcionarios',
       permission: 'funcionarios.visualizar',
       subItems: [
         {
-          text: t('visaoGeral'),
+          text: 'Visão Geral',
           icon: <PersonIcon />,
           path: '/dashboard/funcionarios',
           permission: 'funcionarios.visualizar',
         },
         {
-          text: t('estatisticas'),
+          text: 'Estatísticas',
           icon: <ChartIcon />,
           path: '/dashboard/funcionarios?tab=1',
           permission: 'funcionarios.visualizar',
         },
         {
-          text: t('folhaPagamento'),
+          text: 'Folha de Pagamento',
           icon: <MoneyIcon />,
           path: '/dashboard/funcionarios?tab=2',
           permission: 'funcionarios.visualizar',
         },
         {
-          text: t('tempoFerias'),
+          text: 'Tempo e Férias',
           icon: <AccessTimeIcon />,
           path: '/dashboard/funcionarios/time-vacations',
           permission: 'funcionarios.visualizar',
@@ -295,6 +295,7 @@ const Navigation = ({}: NavigationProps) => {
           width: drawerWidth,
           boxSizing: 'border-box',
           borderRight: `1px solid ${muiTheme.palette.divider}`,
+          backgroundColor: muiTheme.palette.background.default,
         },
       }}
     >
@@ -303,7 +304,8 @@ const Navigation = ({}: NavigationProps) => {
           padding: 2, 
           display: 'flex', 
           flexDirection: 'column',
-          height: '100%'
+          height: '100%',
+          gap: 2
         }}
       >
         {/* Logo and app name with link to dashboard */}
@@ -311,31 +313,28 @@ const Navigation = ({}: NavigationProps) => {
           sx={{
             display: 'flex',
             alignItems: 'center',
-            mb: 1,
             justifyContent: 'space-between'
           }}
         >
-          <Link to="/dashboard" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center' }}>
-            <img src={logo} alt="Estrateo" width={32} height={32} style={{ marginRight: 8 }} />
+          <Link to="/dashboard" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center', gap: 1 }}>
+            <img src={logo} alt="Estrateo" width={32} height={32} />
             <Typography variant="h6" sx={{ fontWeight: 700, color: muiTheme.palette.primary.main }}>
               Estrateo
             </Typography>
           </Link>
         </Box>
         
-        {/* Configurações globais (tema e idioma) - posicionados diretamente abaixo do logo */}
-        <Box sx={{ display: 'flex', justifyContent: 'flex-start', mb: 2, gap: 1 }}>
+        {/* Configurações globais (tema e idioma) */}
+        <Box sx={{ display: 'flex', justifyContent: 'flex-start', gap: 1 }}>
           <ToggleDarkModeButton tooltipPlacement="bottom" />
           <ToggleLanguageButton tooltipPlacement="bottom" />
         </Box>
 
-        <Divider sx={{ mb: 2 }} />
+        <Divider sx={{ my: 2 }} />
 
         {/* Main navigation menu with permission-based items */}
         <List sx={{ flexGrow: 1 }}>
           {menuItems.map((item) => (
-            // Only display menu items if user has the required permission
-            // (or if the item doesn't require a permission)
             (!item.permission || hasPermission(item.permission)) && (
               <React.Fragment key={item.text}>
                 <ListItem disablePadding>
@@ -343,30 +342,50 @@ const Navigation = ({}: NavigationProps) => {
                     onClick={() => item.subItems ? toggleSubmenu(item.text) : navigate(item.path)}
                     selected={!item.subItems && location.pathname === item.path}
                     sx={{
+                      py: 1.5,
+                      px: 2,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 1.5,
+                      borderRadius: 1,
                       borderLeft: (!item.subItems && location.pathname === item.path) || 
                                   (item.subItems && location.pathname.startsWith(item.path))
-                        ? `4px solid ${muiTheme.palette.primary.main}` 
-                        : '4px solid transparent',
+                        ? `3px solid ${muiTheme.palette.primary.main}` 
+                        : '3px solid transparent',
                       '&.Mui-selected': {
-                        backgroundColor: 'rgba(25, 118, 210, 0.2)',
+                        backgroundColor: 'transparent',
+                        boxShadow: 'inset 3px 0 0 #0043CE',
+                        '& .MuiTypography-root': {
+                          fontWeight: 600,
+                        },
                       },
                       '&:hover': {
-                        backgroundColor: 'rgba(25, 118, 210, 0.1)',
+                        backgroundColor: muiTheme.palette.action.hover,
                       },
-                      backgroundColor: 'rgba(245, 245, 245, 0.9)',
-                      marginBottom: '4px',
-                      borderRadius: '4px',
-                      border: '1px solid rgba(0, 0, 0, 0.1)',
                     }}
                   >
                     <ListItemIcon
-                      sx={{ color: '#000000' }}
+                      sx={{ 
+                        minWidth: 'auto',
+                        color: (!item.subItems && location.pathname === item.path) || 
+                               (item.subItems && location.pathname.startsWith(item.path))
+                          ? muiTheme.palette.primary.main
+                          : muiTheme.palette.text.secondary
+                      }}
                     >
                       {item.icon}
                     </ListItemIcon>
                     <ListItemText 
                       primary={item.text} 
-                      sx={{ '& .MuiTypography-root': { color: '#000000 !important', fontWeight: 'bold' } }}
+                      sx={{ 
+                        '& .MuiTypography-root': { 
+                          fontWeight: (!item.subItems && location.pathname === item.path) || 
+                                     (item.subItems && location.pathname.startsWith(item.path))
+                            ? 600
+                            : 500,
+                          color: muiTheme.palette.text.primary
+                        } 
+                      }}
                     />
                     {item.badge && (
                       <Chip 
@@ -383,8 +402,8 @@ const Navigation = ({}: NavigationProps) => {
                     )}
                     {item.subItems && (
                       expandedMenus[item.text] ? 
-                        <KeyboardArrowUpIcon sx={{ color: '#000000' }} /> : 
-                        <KeyboardArrowDownIcon sx={{ color: '#000000' }} />
+                        <KeyboardArrowUpIcon sx={{ color: muiTheme.palette.text.secondary }} /> : 
+                        <KeyboardArrowDownIcon sx={{ color: muiTheme.palette.text.secondary }} />
                     )}
                   </ListItemButton>
                 </ListItem>
@@ -400,30 +419,45 @@ const Navigation = ({}: NavigationProps) => {
                             selected={location.pathname + location.search === subItem.path}
                             sx={{
                               pl: 4,
+                              py: 1.5,
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 1.5,
                               borderLeft: location.pathname + location.search === subItem.path
-                                ? `4px solid ${muiTheme.palette.primary.main}` 
-                                : '4px solid transparent',
+                                ? `3px solid ${muiTheme.palette.primary.main}` 
+                                : '3px solid transparent',
                               '&.Mui-selected': {
-                                backgroundColor: 'rgba(25, 118, 210, 0.2)',
+                                backgroundColor: 'transparent',
+                                boxShadow: 'inset 3px 0 0 #0043CE',
+                                '& .MuiTypography-root': {
+                                  fontWeight: 600,
+                                },
                               },
                               '&:hover': {
-                                backgroundColor: 'rgba(25, 118, 210, 0.1)',
+                                backgroundColor: muiTheme.palette.action.hover,
                               },
-                              backgroundColor: 'rgba(245, 245, 245, 0.9)',
-                              marginBottom: '3px',
-                              marginLeft: '10px',
-                              borderRadius: '4px',
-                              border: '1px solid rgba(0, 0, 0, 0.1)',
                             }}
                           >
                             <ListItemIcon
-                              sx={{ color: '#000000' }}
+                              sx={{ 
+                                minWidth: 'auto',
+                                color: location.pathname + location.search === subItem.path
+                                  ? muiTheme.palette.primary.main
+                                  : muiTheme.palette.text.secondary
+                              }}
                             >
                               {subItem.icon}
                             </ListItemIcon>
                             <ListItemText 
                               primary={subItem.text} 
-                              sx={{ '& .MuiTypography-root': { color: '#000000 !important', fontWeight: 'bold' } }}
+                              sx={{ 
+                                '& .MuiTypography-root': { 
+                                  fontWeight: location.pathname + location.search === subItem.path
+                                    ? 600
+                                    : 500,
+                                  color: muiTheme.palette.text.primary
+                                } 
+                              }}
                             />
                             {subItem.badge && (
                               <Chip 
@@ -450,10 +484,10 @@ const Navigation = ({}: NavigationProps) => {
         </List>
 
         {/* Bottom user section with profile link and menu */}
-        <Divider sx={{ mt: 'auto' }} />
+        <Divider sx={{ mt: 'auto', opacity: 0.1 }} />
         
         {/* User profile section */}
-        <Box sx={{ mt: 2, display: 'flex', alignItems: 'center' }}>
+        <Box sx={{ mt: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
           <Avatar 
             onClick={handleMenuOpen}
             sx={{ 
@@ -461,7 +495,6 @@ const Navigation = ({}: NavigationProps) => {
               height: 40, 
               bgcolor: muiTheme.palette.primary.main,
               cursor: 'pointer',
-              mr: 1
             }}
           >
             {user?.nome && user.nome[0]}
@@ -470,7 +503,7 @@ const Navigation = ({}: NavigationProps) => {
             <Typography variant="subtitle1" sx={{ fontWeight: 600, lineHeight: 1.2 }}>
               {user?.nome || t('usuarioDesconhecido')}
             </Typography>
-            <Typography variant="body2" sx={{ opacity: 0.7 }}>
+            <Typography variant="body2" sx={{ color: muiTheme.palette.text.secondary }}>
               {user?.email || 'email@exemplo.com'}
             </Typography>
           </Box>
@@ -487,6 +520,14 @@ const Navigation = ({}: NavigationProps) => {
             transformOrigin={{
               vertical: 'bottom',
               horizontal: 'right',
+            }}
+            PaperProps={{
+              elevation: 2,
+              sx: {
+                mt: 1,
+                borderRadius: 1,
+                minWidth: 180,
+              }
             }}
           >
             <MenuItem onClick={() => { handleMenuClose(); navigate('/dashboard/perfil'); }}>
