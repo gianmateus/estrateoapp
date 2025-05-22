@@ -106,5 +106,56 @@
   "atualizar": "Aktualisieren",
   "erroPrevisao": "Fehler beim Laden der Steuerprognose",
   "previsaoCalculada": "Prognose berechnet am",
-  "notaPrevisao": "Dies ist eine Schätzung basierend auf aktuellen Finanzdaten. Die tatsächlichen Werte können variieren."
+  "notaPrevisao": "Dies ist eine Schätzung basierend auf aktuellen Finanzdaten. Die tatsächlichen Werte können variieren.",
+
+  "fluxoCaixa": {
+    "titulo": "Cashflow",
+    "subtitulo": "Konsolidierte Finanzbewegungen",
+    "hoje": "Heute",
+    "ontem": "Gestern",
+    "entrada": "Einnahmen",
+    "saida": "Ausgaben",
+    "confirmado": "Bestätigt",
+    "pendente": "Ausstehend",
+    "cancelado": "Storniert",
+    "cliente": "Kunde",
+    "fornecedor": "Lieferant",
+    "totalEntradas": "Einnahmen",
+    "totalSaidas": "Ausgaben",
+    "saldoFinal": "Endsaldo",
+    "nenhumaMovimentacao": "Keine Transaktionen für den ausgewählten Zeitraum gefunden",
+    "previewRelatorio": "Berichtsvorschau",
+    "resumoFinanceiro": "Finanzübersicht",
+    "movimentacoesDetalhadas": "Detaillierte Transaktionen",
+    "movimentacoesNoRelatorio": "Der Bericht enthält {{count}} detaillierte Transaktionen.",
+    "geradoEm": "Erstellt am",
+    "periodo": "Zeitraum",
+    "data": "Datum",
+    "tipo": "Typ",
+    "descricao": "Beschreibung",
+    "valor": "Betrag",
+    "status": "Status",
+    "gerarRelatorio": "Bericht erstellen",
+    "filtros": {
+      "titulo": "Filter",
+      "tipo": "Typ",
+      "status": "Status",
+      "origem": "Quelle",
+      "todos": "Alle",
+      "entrada": "Einnahmen",
+      "saida": "Ausgaben",
+      "confirmado": "Bestätigt",
+      "pendente": "Ausstehend", 
+      "contasAPagar": "Verbindlichkeiten",
+      "contasAReceber": "Forderungen",
+      "manual": "Manuell",
+      "de": "Von",
+      "ate": "Bis",
+      "limpar": "Filter löschen"
+    }
+  },
+  
+  "FLUXOCAIXA": {
+    "GERARRELATORIO": "BERICHT ERSTELLEN"
+  }
 } 

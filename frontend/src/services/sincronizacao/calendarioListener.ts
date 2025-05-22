@@ -5,7 +5,9 @@
  * a interface do usuário conforme necessário
  */
 
-import { EventBus } from '../EventBus';
+import { eventBus } from '../EventBus';
+import { EventPayloadMap } from '../../types/EventTypes';
+import { ENTRADA_EVENTS, AUSENCIA_EVENTS, FUNCIONARIO_EVENTS, FERIAS_EVENTS, FOLGA_EVENTS } from '../../constants/events';
 
 // Interface para eventos do calendário
 export interface EventoCalendario {
@@ -26,41 +28,16 @@ export interface EventoCalendario {
 export function initializeCalendarioListeners() {
   console.log('[CalendarioListener] Inicializando listeners de calendário');
   
-  // Ouve eventos de pagamento para atualizar o calendário
-  EventBus.on('pagamento.criado', async (pagamento: any) => {
-    console.log('[CalendarioListener] Processando evento pagamento.criado para calendário', pagamento.id);
-    
-    try {
-      const eventoCalendario: EventoCalendario = {
-        id: `cal-pag-${pagamento.id}`,
-        titulo: `Pagamento: ${pagamento.descricao}`,
-        descricao: `Valor: ${pagamento.valor} - ${pagamento.status}`,
-        dataInicio: pagamento.data,
-        tipo: 'pagamento',
-        cor: '#ff5252', // Vermelho para pagamentos
-        referenciaId: pagamento.id,
-        modulo: 'financeiro'
-      };
-      
-      // Atualizar calendário na UI
-      await adicionarEventoCalendario(eventoCalendario);
-      
-      console.log('[CalendarioListener] Calendário atualizado com pagamento:', pagamento.id);
-    } catch (error) {
-      console.error('[CalendarioListener] Erro ao atualizar calendário com pagamento:', error);
-    }
-  });
-  
   // Ouve eventos de entrada para atualizar o calendário
-  EventBus.on('entrada.criada', async (entrada: any) => {
+  eventBus.on(ENTRADA_EVENTS.CRIADA, async (entrada: EventPayloadMap[typeof ENTRADA_EVENTS.CRIADA]) => {
     console.log('[CalendarioListener] Processando evento entrada.criada para calendário', entrada.id);
     
     try {
       const eventoCalendario: EventoCalendario = {
         id: `cal-ent-${entrada.id}`,
-        titulo: `Entrada: ${entrada.descricao}`,
-        descricao: `Valor: ${entrada.valor} - ${entrada.fonte}`,
-        dataInicio: entrada.data,
+        titulo: `Entrada: ${entrada.categoria}`,
+        descricao: `Valor: ${entrada.valor}`,
+        dataInicio: new Date(entrada.data),
         tipo: 'entrada',
         cor: '#4caf50', // Verde para entradas
         referenciaId: entrada.id,
@@ -72,109 +49,109 @@ export function initializeCalendarioListeners() {
       
       console.log('[CalendarioListener] Calendário atualizado com entrada:', entrada.id);
     } catch (error) {
-      console.error('[CalendarioListener] Erro ao atualizar calendário com entrada:', error);
+      console.error('[CalendarioListener] Erro ao processar evento entrada.criada:', error);
     }
   });
   
   // Ouve eventos de férias para atualizar o calendário
-  EventBus.on('ferias.registradas', async (ferias: any) => {
-    console.log('[CalendarioListener] Processando evento ferias.registradas para calendário', ferias.id);
+  eventBus.on(FERIAS_EVENTS.REGISTRADAS, async (ferias: EventPayloadMap[typeof FERIAS_EVENTS.REGISTRADAS]) => {
+    console.log('[CalendarioListener] Processando evento ferias.registradas para calendário', ferias.funcionarioId);
     
     try {
       const eventoCalendario: EventoCalendario = {
-        id: `cal-fer-${ferias.id}`,
+        id: `cal-fer-${ferias.funcionarioId}`,
         titulo: `Férias: ${ferias.funcionarioNome}`,
-        descricao: ferias.observacoes,
-        dataInicio: ferias.dataInicio,
-        dataFim: ferias.dataFim,
+        descricao: ferias.metadata?.motivo,
+        dataInicio: new Date(ferias.dataInicio),
+        dataFim: new Date(ferias.dataFim),
         tipo: 'ferias',
         cor: '#2196f3', // Azul para férias
-        referenciaId: ferias.id,
+        referenciaId: ferias.funcionarioId,
         modulo: 'funcionarios'
       };
       
       // Atualizar calendário na UI
       await adicionarEventoCalendario(eventoCalendario);
       
-      console.log('[CalendarioListener] Calendário atualizado com férias:', ferias.id);
+      console.log('[CalendarioListener] Calendário atualizado com férias:', ferias.funcionarioId);
     } catch (error) {
       console.error('[CalendarioListener] Erro ao atualizar calendário com férias:', error);
     }
   });
   
   // Ouve eventos de ausência para atualizar o calendário
-  EventBus.on('ausencia.registrada', async (ausencia: any) => {
-    console.log('[CalendarioListener] Processando evento ausencia.registrada para calendário', ausencia.id);
+  eventBus.on(AUSENCIA_EVENTS.REGISTRADA, async (ausencia: EventPayloadMap[typeof AUSENCIA_EVENTS.REGISTRADA]) => {
+    console.log('[CalendarioListener] Processando evento ausencia.registrada para calendário', ausencia.funcionarioId);
     
     try {
       const eventoCalendario: EventoCalendario = {
-        id: `cal-aus-${ausencia.id}`,
+        id: `cal-aus-${ausencia.funcionarioId}`,
         titulo: `Ausência: ${ausencia.funcionarioNome}`,
         descricao: ausencia.motivo,
-        dataInicio: ausencia.dataInicio,
-        dataFim: ausencia.dataFim,
+        dataInicio: new Date(ausencia.dataInicio),
+        dataFim: new Date(ausencia.dataFim),
         tipo: 'ausencia',
         cor: '#ff9800', // Laranja para ausências
-        referenciaId: ausencia.id,
+        referenciaId: ausencia.funcionarioId,
         modulo: 'funcionarios'
       };
       
       // Atualizar calendário na UI
       await adicionarEventoCalendario(eventoCalendario);
       
-      console.log('[CalendarioListener] Calendário atualizado com ausência:', ausencia.id);
+      console.log('[CalendarioListener] Calendário atualizado com ausência:', ausencia.funcionarioId);
     } catch (error) {
-      console.error('[CalendarioListener] Erro ao atualizar calendário com ausência:', error);
+      console.error('[CalendarioListener] Erro ao processar evento ausencia.registrada:', error);
     }
   });
   
   // Ouve eventos de folga para atualizar o calendário
-  EventBus.on('folga.registrada', async (folga: any) => {
-    console.log('[CalendarioListener] Processando evento folga.registrada para calendário', folga.id);
+  eventBus.on(FOLGA_EVENTS.REGISTRADA, async (folga: EventPayloadMap[typeof FOLGA_EVENTS.REGISTRADA]) => {
+    console.log('[CalendarioListener] Processando evento folga.registrada para calendário', folga.funcionarioId);
     
     try {
       const eventoCalendario: EventoCalendario = {
-        id: `cal-flg-${folga.id}`,
+        id: `cal-flg-${folga.funcionarioId}`,
         titulo: `Folga: ${folga.funcionarioNome}`,
-        descricao: folga.motivo,
-        dataInicio: folga.dataFolga,
+        descricao: undefined, // O evento de folga não tem motivo no payload
+        dataInicio: new Date(folga.data),
         tipo: 'folga',
         cor: '#9c27b0', // Roxo para folgas
-        referenciaId: folga.id,
+        referenciaId: folga.funcionarioId,
         modulo: 'funcionarios'
       };
       
       // Atualizar calendário na UI
       await adicionarEventoCalendario(eventoCalendario);
       
-      console.log('[CalendarioListener] Calendário atualizado com folga:', folga.id);
+      console.log('[CalendarioListener] Calendário atualizado com folga:', folga.funcionarioId);
     } catch (error) {
       console.error('[CalendarioListener] Erro ao atualizar calendário com folga:', error);
     }
   });
   
   // Ouve eventos de pagamento de salário para atualizar o calendário
-  EventBus.on('salario.pago', async (salario: any) => {
-    console.log('[CalendarioListener] Processando evento salario.pago para calendário', salario.id);
+  eventBus.on(FUNCIONARIO_EVENTS.SALARIO_PAGO, async (salario: EventPayloadMap[typeof FUNCIONARIO_EVENTS.SALARIO_PAGO]) => {
+    console.log('[CalendarioListener] Processando evento salario.pago para calendário', salario.funcionarioId);
     
     try {
       const eventoCalendario: EventoCalendario = {
-        id: `cal-sal-${salario.id}`,
+        id: `cal-sal-${salario.funcionarioId}`,
         titulo: `Salário: ${salario.funcionarioNome}`,
-        descricao: `Valor: ${salario.valorLiquido}`,
-        dataInicio: salario.dataPagamento,
+        descricao: `Valor: ${salario.valor}`,
+        dataInicio: new Date(salario.data),
         tipo: 'pagamento',
         cor: '#795548', // Marrom para salários
-        referenciaId: salario.id,
+        referenciaId: salario.funcionarioId,
         modulo: 'funcionarios'
       };
       
       // Atualizar calendário na UI
       await adicionarEventoCalendario(eventoCalendario);
       
-      console.log('[CalendarioListener] Calendário atualizado com salário:', salario.id);
+      console.log('[CalendarioListener] Calendário atualizado com salário:', salario.funcionarioId);
     } catch (error) {
-      console.error('[CalendarioListener] Erro ao atualizar calendário com salário:', error);
+      console.error('[CalendarioListener] Erro ao processar evento salario.pago:', error);
     }
   });
 }

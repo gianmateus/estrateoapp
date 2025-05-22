@@ -10,7 +10,7 @@
  */
 
 import prisma from '../../lib/prisma';
-import { EventBus } from '../../lib/EventBus';
+import { eventBus } from '../../../services/EventBus';
 import { format } from 'date-fns';
 
 export interface Entrada {
@@ -50,7 +50,7 @@ export function initializeEntradaListeners() {
   
   // Ouve evento de criação de entrada
   // Listens for income creation event
-  EventBus.on('entrada.criada', async (entrada: Entrada) => {
+  eventBus.on('entrada.criada', async (entrada: Entrada) => {
     console.log('[EntradaListener] Processando evento entrada.criada', entrada.id);
     
     try {
@@ -71,7 +71,7 @@ export function initializeEntradaListeners() {
   
   // Ouve evento de atualização de entrada
   // Listens for income update event
-  EventBus.on('entrada.atualizada', async (entrada: Entrada) => {
+  eventBus.on('entrada.atualizada', async (entrada: Entrada) => {
     console.log('[EntradaListener] Processando evento entrada.atualizada', entrada.id);
     
     try {
@@ -92,7 +92,7 @@ export function initializeEntradaListeners() {
   
   // Ouve evento de exclusão de entrada
   // Listens for income deletion event
-  EventBus.on('entrada.excluida', async (entradaId: string) => {
+  eventBus.on('entrada.excluida', async (entradaId: string) => {
     console.log('[EntradaListener] Processando evento entrada.excluida', entradaId);
     
     try {
@@ -114,7 +114,7 @@ export function initializeEntradaListeners() {
   // Novos eventos para entradas parceladas
   
   // Ouve evento de criação de entrada parcelada
-  EventBus.on('entrada.parcelada.criada', async (entrada: Entrada) => {
+  eventBus.on('entrada.parcelada.criada', async (entrada: Entrada) => {
     console.log('[EntradaListener] Processando evento entrada.parcelada.criada', entrada.id);
     
     try {
@@ -139,7 +139,7 @@ export function initializeEntradaListeners() {
   });
   
   // Ouve evento de pagamento de parcela
-  EventBus.on('entrada.parcela.paga', async (dadosParcela: { entradaId: string, parcelaId: string, dataPagamento: Date }) => {
+  eventBus.on('entrada.parcela.paga', async (dadosParcela: { entradaId: string, parcelaId: string, dataPagamento: Date }) => {
     console.log('[EntradaListener] Processando evento entrada.parcela.paga', dadosParcela.parcelaId);
     
     try {

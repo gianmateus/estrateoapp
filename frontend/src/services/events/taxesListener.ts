@@ -1,4 +1,4 @@
-import { EventBus } from '../EventBus';
+import { eventBus } from '../EventBus';
 
 /**
  * Listener para eventos relacionados a impostos
@@ -13,11 +13,11 @@ class TaxesListener {
     
     // Quando uma previsão fiscal é calculada
     // @ts-ignore - Tipos serão atualizados quando EventBus estiver disponível
-    EventBus.on('taxes.forecast.calculated', this.handleForecastCalculated);
+    eventBus.on('taxes.forecast.calculated', this.handleForecastCalculated);
     
     // Quando o perfil fiscal é atualizado
     // @ts-ignore - Tipos serão atualizados quando EventBus estiver disponível
-    EventBus.on('taxes.profile.updated', this.handleProfileUpdated);
+    eventBus.on('taxes.profile.updated', this.handleProfileUpdated);
   }
 
   /**
@@ -57,9 +57,9 @@ class TaxesListener {
     console.log('[TaxesListener] Removendo listeners de impostos');
     
     // @ts-ignore - Tipos serão atualizados quando EventBus estiver disponível
-    EventBus.off('taxes.forecast.calculated', this.handleForecastCalculated);
+    eventBus.off('taxes.forecast.calculated', this.handleForecastCalculated);
     // @ts-ignore - Tipos serão atualizados quando EventBus estiver disponível
-    EventBus.off('taxes.profile.updated', this.handleProfileUpdated);
+    eventBus.off('taxes.profile.updated', this.handleProfileUpdated);
   }
 }
 

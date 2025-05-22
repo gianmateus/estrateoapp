@@ -18,9 +18,18 @@ export const pt = {
   exportar: 'Exportar',
   imprimir: 'Imprimir',
   
+  // Traduções para área de funcionários
+  funcionarios: {
+    titulo: "Gerenciamento de Pagamentos",
+    pagamento: {
+      vazio: "Nenhum pagamento encontrado"
+    }
+  },
+  
   // Traduções para folha de pagamento
   folhaPagamento: 'Folha de Pagamento',
   adicionarPagamento: 'Adicionar Pagamento',
+  registrarPagamento: 'Registrar Pagamento',
   editarPagamento: 'Editar Pagamento',
   funcionario: 'Funcionário',
   tipoContrato: 'Tipo de Contrato',
@@ -34,6 +43,7 @@ export const pt = {
   acoes: 'Ações',
   pago: 'Pago',
   pendente: 'Pendente',
+  atrasado: 'Atrasado',
   observacoes: 'Observações',
   marcaComoPago: 'Marcar como pago',
   mes: 'Mês',
@@ -53,6 +63,7 @@ export const pt = {
   dezembro: 'Dezembro',
   exportarPDF: 'Exportar PDF',
   exportandoPDF: 'Exportando PDF:',
+  adicioneUmPagamentoParaExportar: 'Adicione pelo menos um pagamento para exportar o PDF',
   todos: 'Todos',
   visualizar: 'Visualizar',
   editar: 'Editar',
@@ -60,6 +71,10 @@ export const pt = {
   salvar: 'Salvar',
   cancelar: 'Cancelar',
   nenhumPagamentoEncontrado: 'Nenhum pagamento encontrado',
+  pagamentoDuplicado: 'Já existe um pagamento para este funcionário neste mês',
+  pagamentoAdicionado: 'Pagamento registrado com sucesso',
+  pagamentoAtualizado: 'Pagamento atualizado com sucesso',
+  erroAoCarregarDados: 'Erro ao carregar dados de pagamentos',
   
   // Traduções para o módulo de impostos
   impostos: 'Impostos',
@@ -101,7 +116,6 @@ export const pt = {
   mostrarVencidos: 'Mostrar Vencidos',
   limparFiltros: 'Limpar Filtros',
   aplicar: 'Aplicar',
-  registrarPagamento: 'Registrar Pagamento',
   registrandoPagamento: 'Registrando pagamento de',
   noValorDe: 'no valor de',
   referenciaPagamento: 'Referência de Pagamento',
@@ -270,8 +284,8 @@ export const pt = {
     cancelado: "Cancelado",
     cliente: "Cliente",
     fornecedor: "Fornecedor",
-    totalEntradas: "Total de Entradas",
-    totalSaidas: "Total de Saídas",
+    totalEntradas: "Entradas",
+    totalSaidas: "Saídas",
     saldoFinal: "Saldo Final",
     nenhumaMovimentacao: "Nenhuma movimentação encontrada para o período selecionado",
     previewRelatorio: "Visualização do Relatório",
@@ -290,7 +304,7 @@ export const pt = {
     // Filtros
     filtros: {
       titulo: "Filtros",
-      tipo: "Tipo de Movimentação",
+      tipo: "Tipo",
       status: "Status",
       origem: "Origem",
       todos: "Todos",

@@ -38,11 +38,106 @@
   },
   "financeiro": "Finanziario",
   "inventario": "Inventario",
-  "impostos": "Imposte",
+  "impostos": {
+    "titulo": "Riepilogo Fiscale",
+    "subtitulo": "Gestisci e visualizza le tue tasse",
+    "iva": {
+      "titulo": "IVA",
+      "descricao": "L'IVA è calcolata sulle vendite, con deduzione dell'imposta pagata sugli acquisti. È la principale imposta sui consumi in Germania.",
+      "detalhe1": "L'aliquota standard è del 19% per la maggior parte dei prodotti e servizi",
+      "detalhe2": "Deve essere dichiarata mensilmente o trimestralmente",
+      "detalhe3": "Le aziende più piccole possono optare per il regime di cassa",
+      "tooltip": "Imposta sul Valore Aggiunto"
+    },
+    "gewerbe": {
+      "titulo": "Gewerbesteuer",
+      "descricao": "La Gewerbesteuer è un'imposta municipale sull'utile operativo delle aziende. L'aliquota varia a seconda del comune.",
+      "detalhe1": "Calcolata in base all'utile rettificato dell'azienda",
+      "detalhe2": "L'aliquota è determinata dall'Hebesatz (moltiplicatore) del comune",
+      "detalhe3": "Pagata trimestralmente come anticipo",
+      "tooltip": "Imposta Commerciale"
+    },
+    "corpSoli": {
+      "titulo": "KSt + Soli",
+      "descricao": "La KSt è l'imposta sul reddito delle società, applicata all'utile imponibile. La Soli è un supplemento del 5,5% sull'imposta societaria.",
+      "detalhe1": "Imposta societaria: aliquota fissa del 15% sul profitto",
+      "detalhe2": "Tassa di solidarietà: 5,5% aggiuntivo sull'imposta calcolata",
+      "detalhe3": "Pagamenti anticipati trimestrali basati sul profitto stimato",
+      "tooltip": "Imposta societaria e tassa di solidarietà"
+    },
+    "folha": {
+      "titulo": "Buste Paga & Contributi",
+      "descricao": "Include la Lohnsteuer (ritenuta d'acconto sui salari) e i contributi sociali obbligatori pagati dal datore di lavoro.",
+      "detalhe1": "Include assicurazione sanitaria, pensione, disoccupazione e assistenza",
+      "detalhe2": "Generalmente diviso tra datore di lavoro e dipendente",
+      "detalhe3": "Pagamento mensile obbligatorio tramite sistema elettronico",
+      "tooltip": "Imposte sulle buste paga e contributi sociali"
+    },
+    "comum": {
+      "perfilFiscal": "Profilo Fiscale",
+      "irParaPerfil": "Vai al Profilo Fiscale",
+      "perfilIncompleto": "Completa il tuo Profilo Fiscale per abilitare il calcolo automatico.",
+      "calculo": "Calcolo",
+      "baseCalculo": "Base imponibile",
+      "taxa": "Aliquota applicata",
+      "selecionarMes": "Mese",
+      "selecionarAno": "Anno",
+      "buscar": "Cerca",
+      "exportarPDF": "Esporta Rapporto Fiscale (PDF)",
+      "atualizarDados": "Aggiorna",
+      "valorDevido": "Da pagare"
+    }
+  },
   "pagamentos": "Pagamenti",
   "pagamentosTexto": "Pagamenti",
   "calendario": "Calendario",
-  "funcionarios": "Dipendenti",
+  "funcionarios": {
+    "titulo": "Dipendenti",
+    "visaoGeral": {
+      "titulo": "Panoramica",
+      "totalFuncionarios": "Totale Dipendenti",
+      "funcionariosAtivos": "Dipendenti Attivi",
+      "ausenciasAtivas": "Assenze Attive",
+      "contratadosRecentemente": "Assunti Recentemente",
+      "ultimosTresMeses": "Ultimi Tre Mesi",
+      "custoMensalFolha": "Costo Mensile Busta Paga",
+      "mediaFuncionario": "Media per Dipendente",
+      "ultimosContratados": "Ultimi Assunti",
+      "verTodos": "Vedi Tutti",
+      "funcionariosPorDepartamento": "Dipendenti per Reparto",
+      "ativosDepartamento": "Attivi nel Reparto",
+      "custoMensal": "Costo Mensile",
+      "ferias": "Ferie",
+      "licenca": "Permesso"
+    },
+    "estatisticas": {
+      "titulo": "Statistiche",
+      "filtros": "Filtri",
+      "periodo": "Periodo",
+      "aplicar": "Applica",
+      "exportar": "Esporta"
+    },
+    "folhaPagamento": {
+      "titulo": "Busta Paga",
+      "filtros": "Filtri",
+      "mes": "Mese",
+      "ano": "Anno",
+      "funcionario": "Dipendente",
+      "salario": "Stipendio",
+      "beneficios": "Benefici",
+      "descontos": "Detrazioni",
+      "total": "Totale",
+      "tempoFerias": {
+        "titulo": "Tempo & Ferie",
+        "diasTrabalhados": "Giorni Lavorati",
+        "ausencias": "Assenze",
+        "folgas": "Giorni Liberi",
+        "ferias": "Ferie",
+        "registrarFerias": "Registra Ferie",
+        "registrarAusencia": "Registra Assenza"
+      }
+    }
+  },
   "inteligenciaArtificial": "IA & Analisi",
   "whatsapp": "WhatsApp",
   "contador": "Contabile",
@@ -518,5 +613,54 @@
     "confirmarRecebimento": "Conferma Ricevimento",
     "confirmarRecebimentoTexto": "Sei sicuro di voler segnare questo conto come ricevuto?"
   },
-  "resumoFinanceiro": "Riepilogo Finanziario"
+  "resumoFinanceiro": "Riepilogo Finanziario",
+  "fluxoCaixa": {
+    "titulo": "Flusso di Cassa",
+    "subtitulo": "Movimenti finanziari consolidati",
+    "hoje": "Oggi",
+    "ontem": "Ieri",
+    "entrada": "Entrate",
+    "saida": "Uscite",
+    "confirmado": "Confermato",
+    "pendente": "In attesa",
+    "cancelado": "Annullato",
+    "cliente": "Cliente",
+    "fornecedor": "Fornitore",
+    "totalEntradas": "Entrate",
+    "totalSaidas": "Uscite",
+    "saldoFinal": "Saldo Finale",
+    "nenhumaMovimentacao": "Nessuna transazione trovata per il periodo selezionato",
+    "previewRelatorio": "Anteprima Report",
+    "resumoFinanceiro": "Riepilogo Finanziario",
+    "movimentacoesDetalhadas": "Transazioni Dettagliate",
+    "movimentacoesNoRelatorio": "Il report includerà {{count}} transazioni dettagliate.",
+    "geradoEm": "Generato il",
+    "periodo": "Periodo",
+    "data": "Data",
+    "tipo": "Tipo",
+    "descricao": "Descrizione",
+    "valor": "Importo",
+    "status": "Stato",
+    "gerarRelatorio": "Genera Report",
+    "filtros": {
+      "titulo": "Filtri",
+      "tipo": "Tipo",
+      "status": "Stato",
+      "origem": "Origine",
+      "todos": "Tutti",
+      "entrada": "Entrate",
+      "saida": "Uscite",
+      "confirmado": "Confermati",
+      "pendente": "In attesa", 
+      "contasAPagar": "Conti da Pagare",
+      "contasAReceber": "Conti da Ricevere",
+      "manual": "Manuale",
+      "de": "Da",
+      "ate": "A",
+      "limpar": "Cancella Filtri"
+    }
+  },
+  "FLUXOCAIXA": {
+    "GERARRELATORIO": "GENERA REPORT"
+  }
 } 

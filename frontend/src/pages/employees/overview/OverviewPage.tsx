@@ -25,7 +25,10 @@ import {
   Paid as PaidIcon,
   Work as WorkIcon,
   AddCircle as AddCircleIcon,
-  MoreVert as MoreVertIcon
+  MoreVert as MoreVertIcon,
+  BeachAccess as BeachAccessIcon,
+  Warning as WarningIcon,
+  CalendarToday as CalendarIcon
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 
@@ -176,10 +179,11 @@ const OverviewPage: React.FC = () => {
 
   // Formatação de moeda
   const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('pt-BR', { 
-      style: 'currency', 
-      currency: 'BRL' 
-    }).format(value);
+    // Usar símbolo de Euro em vez de Real
+    return `€ ${value.toLocaleString('de-DE', { 
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    })}`;
   };
 
   // Formatação de data
@@ -230,7 +234,7 @@ const OverviewPage: React.FC = () => {
           <Paper elevation={2} sx={{ p: 2, display: 'flex', flexDirection: 'column', height: 140 }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
               <Typography color="text.secondary" variant="subtitle2" gutterBottom>
-                {t('totalFuncionarios')}
+                {t('funcionarios.visaoGeral.totalFuncionarios')}
               </Typography>
               <GroupIcon color="primary" />
             </Box>
@@ -238,7 +242,7 @@ const OverviewPage: React.FC = () => {
               {stats.total}
             </Typography>
             <Typography color="text.secondary" variant="body2" sx={{ mt: 'auto' }}>
-              {stats.ativos} {t('ativos')}
+              {stats.ativos} {t('funcionarios.visaoGeral.funcionariosAtivos')}
             </Typography>
           </Paper>
         </Grid>
@@ -246,23 +250,31 @@ const OverviewPage: React.FC = () => {
           <Paper elevation={2} sx={{ p: 2, display: 'flex', flexDirection: 'column', height: 140 }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
               <Typography color="text.secondary" variant="subtitle2" gutterBottom>
-                {t('ausenciasAtivas')}
+                {t('funcionarios.visaoGeral.ausenciasAtivas')}
               </Typography>
               <EventIcon color="error" />
             </Box>
             <Typography component="p" variant="h4" sx={{ mt: 2 }}>
               {stats.ferias + stats.licenca}
             </Typography>
-            <Typography color="text.secondary" variant="body2" sx={{ mt: 'auto' }}>
-              {stats.ferias} {t('ferias')}, {stats.licenca} {t('licenca')}
-            </Typography>
+            <Box sx={{ mt: 'auto', display: 'flex', alignItems: 'center', gap: 1 }}>
+              <BeachAccessIcon color="primary" fontSize="small" />
+              <Typography variant="body2" color="text.secondary">
+                {stats.ferias} {t('funcionarios.visaoGeral.ferias')}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">|</Typography>
+              <WarningIcon color="warning" fontSize="small" />
+              <Typography variant="body2" color="text.secondary">
+                {stats.licenca} {t('funcionarios.visaoGeral.licenca')}
+              </Typography>
+            </Box>
           </Paper>
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
           <Paper elevation={2} sx={{ p: 2, display: 'flex', flexDirection: 'column', height: 140 }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
               <Typography color="text.secondary" variant="subtitle2" gutterBottom>
-                {t('contratadosRecentemente')}
+                {t('funcionarios.visaoGeral.contratadosRecentemente')}
               </Typography>
               <AddCircleIcon color="success" />
             </Box>
@@ -270,7 +282,7 @@ const OverviewPage: React.FC = () => {
               {stats.contratadosRecentemente}
             </Typography>
             <Typography color="text.secondary" variant="body2" sx={{ mt: 'auto' }}>
-              {t('ultimosTresMeses')}
+              {t('funcionarios.visaoGeral.ultimosTresMeses')}
             </Typography>
           </Paper>
         </Grid>
@@ -278,15 +290,15 @@ const OverviewPage: React.FC = () => {
           <Paper elevation={2} sx={{ p: 2, display: 'flex', flexDirection: 'column', height: 140 }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
               <Typography color="text.secondary" variant="subtitle2" gutterBottom>
-                {t('custoMensalFolha')}
+                {t('funcionarios.visaoGeral.custoMensalFolha')}
               </Typography>
               <PaidIcon color="primary" />
             </Box>
             <Typography component="p" variant="h4" sx={{ mt: 2 }}>
-              {formatCurrency(funcionarios.reduce((sum, f) => sum + f.salario, 0))}
+              € {funcionarios.reduce((sum, f) => sum + f.salario, 0).toLocaleString('de-DE', {minimumFractionDigits: 2, maximumFractionDigits: 2})}
             </Typography>
             <Typography color="text.secondary" variant="body2" sx={{ mt: 'auto' }}>
-              {t('mediaFuncionario')}: {formatCurrency(funcionarios.reduce((sum, f) => sum + f.salario, 0) / stats.total)}
+              {t('funcionarios.visaoGeral.mediaFuncionario')}: € {(funcionarios.reduce((sum, f) => sum + f.salario, 0) / stats.total).toLocaleString('de-DE', {minimumFractionDigits: 2, maximumFractionDigits: 2})}
             </Typography>
           </Paper>
         </Grid>
@@ -295,9 +307,9 @@ const OverviewPage: React.FC = () => {
       {/* Lista de funcionários recentes */}
       <Box sx={{ mb: 4 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-          <Typography variant="h6">{t('ultimosContratados')}</Typography>
+          <Typography variant="h6">{t('funcionarios.visaoGeral.ultimosContratados')}</Typography>
           <Button size="small" variant="outlined">
-            {t('verTodos')}
+            {t('funcionarios.visaoGeral.verTodos')}
           </Button>
         </Box>
         <TableContainer component={Paper}>
@@ -331,7 +343,7 @@ const OverviewPage: React.FC = () => {
                     <TableCell>{funcionario.cargo}</TableCell>
                     <TableCell>{funcionario.departamento}</TableCell>
                     <TableCell>{formatDate(funcionario.dataContratacao)}</TableCell>
-                    <TableCell>{formatCurrency(funcionario.salario)}</TableCell>
+                    <TableCell>€ {funcionario.salario.toLocaleString('de-DE', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</TableCell>
                     <TableCell>{renderStatus(funcionario.status)}</TableCell>
                   </TableRow>
                 ))}
@@ -342,10 +354,14 @@ const OverviewPage: React.FC = () => {
 
       {/* Departamentos */}
       <Box>
-        <Typography variant="h6" sx={{ mb: 2 }}>{t('funcionariosPorDepartamento')}</Typography>
+        <Typography variant="h6" sx={{ mb: 2 }}>{t('funcionarios.visaoGeral.funcionariosPorDepartamento')}</Typography>
         <Grid container spacing={2}>
           {['Administrativo', 'Cozinha', 'Atendimento'].map(departamento => {
             const funcsDepartamento = funcionarios.filter(f => f.departamento === departamento);
+            const ativosDepartamento = funcsDepartamento.filter(f => f.status === 'ativo');
+            // Correção 1: Calcular o custo apenas de funcionários ativos
+            const custoMensalDepartamento = ativosDepartamento.reduce((sum, f) => sum + f.salario, 0);
+            
             return (
               <Grid item xs={12} sm={4} key={departamento}>
                 <Card>
@@ -359,18 +375,18 @@ const OverviewPage: React.FC = () => {
                     <Divider sx={{ my: 1 }} />
                     <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                       <Typography variant="body2" color="text.secondary">
-                        {t('ativosDepartamento')}:
+                        {t('funcionarios.visaoGeral.ativosDepartamento')}:
                       </Typography>
                       <Typography variant="body2">
-                        {funcsDepartamento.filter(f => f.status === 'ativo').length}
+                        {ativosDepartamento.length}
                       </Typography>
                     </Box>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                       <Typography variant="body2" color="text.secondary">
-                        {t('custoMensal')}:
+                        {t('funcionarios.visaoGeral.custoMensal')}:
                       </Typography>
                       <Typography variant="body2">
-                        {formatCurrency(funcsDepartamento.reduce((sum, f) => sum + f.salario, 0))}
+                        € {custoMensalDepartamento.toLocaleString('de-DE', {minimumFractionDigits: 2, maximumFractionDigits: 2})}
                       </Typography>
                     </Box>
                   </CardContent>

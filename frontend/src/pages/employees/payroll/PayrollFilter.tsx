@@ -8,19 +8,21 @@ import {
   MenuItem,
   TextField,
   Grid,
-  SelectChangeEvent
+  SelectChangeEvent,
+  Tooltip
 } from '@mui/material';
 import {
   Add as AddIcon,
-  FilterList as FilterIcon
+  FilterList as FilterIcon,
+  Euro as EuroIcon
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 
 interface PayrollFilterProps {
   monthYear: { month: number; year: number };
   setMonthYear: React.Dispatch<React.SetStateAction<{ month: number; year: number }>>;
-  statusFilter: 'todos' | 'pago' | 'pendente';
-  setStatusFilter: React.Dispatch<React.SetStateAction<'todos' | 'pago' | 'pendente'>>;
+  statusFilter: 'todos' | 'pago' | 'pendente' | 'atrasado';
+  setStatusFilter: React.Dispatch<React.SetStateAction<'todos' | 'pago' | 'pendente' | 'atrasado'>>;
   onAddPayment: () => void;
 }
 
@@ -50,7 +52,7 @@ const PayrollFilter: React.FC<PayrollFilterProps> = ({
 
   // Manipulador para alterar o status
   const handleStatusChange = (event: SelectChangeEvent<string>) => {
-    setStatusFilter(event.target.value as 'todos' | 'pago' | 'pendente');
+    setStatusFilter(event.target.value as 'todos' | 'pago' | 'pendente' | 'atrasado');
   };
 
   // Manipulador para aplicar os filtros
@@ -60,18 +62,18 @@ const PayrollFilter: React.FC<PayrollFilterProps> = ({
 
   // Lista de meses para o seletor
   const meses = [
-    { value: 1, label: t('janeiro') },
-    { value: 2, label: t('fevereiro') },
-    { value: 3, label: t('marco') },
-    { value: 4, label: t('abril') },
-    { value: 5, label: t('maio') },
-    { value: 6, label: t('junho') },
-    { value: 7, label: t('julho') },
-    { value: 8, label: t('agosto') },
-    { value: 9, label: t('setembro') },
-    { value: 10, label: t('outubro') },
-    { value: 11, label: t('novembro') },
-    { value: 12, label: t('dezembro') }
+    { value: 1, label: 'Janeiro' },
+    { value: 2, label: 'Fevereiro' },
+    { value: 3, label: 'Março' },
+    { value: 4, label: 'Abril' },
+    { value: 5, label: 'Maio' },
+    { value: 6, label: 'Junho' },
+    { value: 7, label: 'Julho' },
+    { value: 8, label: 'Agosto' },
+    { value: 9, label: 'Setembro' },
+    { value: 10, label: 'Outubro' },
+    { value: 11, label: 'Novembro' },
+    { value: 12, label: 'Dezembro' }
   ];
 
   return (
@@ -79,12 +81,12 @@ const PayrollFilter: React.FC<PayrollFilterProps> = ({
       <Grid container spacing={2} alignItems="center">
         <Grid item xs={12} sm={3} md={2}>
           <FormControl fullWidth size="small">
-            <InputLabel id="month-select-label">{t('mes')}</InputLabel>
+            <InputLabel id="month-select-label">Mês</InputLabel>
             <Select
               labelId="month-select-label"
               value={tempMonth}
               onChange={handleMonthChange}
-              label={t('mes')}
+              label="Mês"
             >
               {meses.map((mes) => (
                 <MenuItem key={mes.value} value={mes.value}>
@@ -96,7 +98,7 @@ const PayrollFilter: React.FC<PayrollFilterProps> = ({
         </Grid>
         <Grid item xs={12} sm={2} md={1}>
           <TextField
-            label={t('ano')}
+            label="Ano"
             type="number"
             size="small"
             value={tempYear}
@@ -107,39 +109,46 @@ const PayrollFilter: React.FC<PayrollFilterProps> = ({
         </Grid>
         <Grid item xs={12} sm={3} md={2}>
           <FormControl fullWidth size="small">
-            <InputLabel id="status-select-label">{t('status')}</InputLabel>
+            <InputLabel id="status-select-label">Status</InputLabel>
             <Select
               labelId="status-select-label"
               value={statusFilter}
               onChange={handleStatusChange}
-              label={t('status')}
+              label="Status"
             >
-              <MenuItem value="todos">{t('todos')}</MenuItem>
-              <MenuItem value="pago">{t('pago')}</MenuItem>
-              <MenuItem value="pendente">{t('pendente')}</MenuItem>
+              <MenuItem value="todos">Todos</MenuItem>
+              <MenuItem value="pago">Pago</MenuItem>
+              <MenuItem value="pendente">Pendente</MenuItem>
+              <MenuItem value="atrasado">Atrasado</MenuItem>
             </Select>
           </FormControl>
         </Grid>
         <Grid item xs={6} sm={2} md={1}>
-          <Button
-            variant="outlined"
-            startIcon={<FilterIcon />}
-            onClick={handleApplyFilters}
-            fullWidth
-          >
-            {t('filtrar')}
-          </Button>
+          <Tooltip title="Aplicar os filtros selecionados">
+            <Button
+              variant="outlined"
+              startIcon={<FilterIcon />}
+              onClick={handleApplyFilters}
+              fullWidth
+              sx={{ height: '40px' }}
+            >
+              Filtrar
+            </Button>
+          </Tooltip>
         </Grid>
         <Grid item xs={6} sm={2} md={2}>
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<AddIcon />}
-            onClick={onAddPayment}
-            fullWidth
-          >
-            {t('adicionarPagamento')}
-          </Button>
+          <Tooltip title="Cadastrar um novo pagamento para um funcionário">
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={<EuroIcon />}
+              onClick={onAddPayment}
+              fullWidth
+              sx={{ height: '40px' }}
+            >
+              Registrar Pagamento
+            </Button>
+          </Tooltip>
         </Grid>
       </Grid>
     </Box>

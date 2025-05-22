@@ -53,7 +53,7 @@ import { Delete as DeleteIcon, ExpandMore, ExpandLess, Add as AddIcon, Info as I
 import { format, addMonths } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { Transacao, TipoDespesa, FormaPagamento, Parcela } from '../../contexts/FinanceiroContext';
-import { EventBus } from '../../services/EventBus';
+import { eventBus } from '../../services/EventBus';
 
 interface FormularioSaidaProps {
   formData: any;
@@ -243,7 +243,7 @@ const FormularioSaida: React.FC<FormularioSaidaProps> = ({
     // Se for uma saída parcelada, emitir evento específico
     if (formData.parcelamento?.habilitado) {
       // Emite o evento com todos os detalhes do parcelamento
-      EventBus.emit('saida.parcelada.criada', {
+      eventBus.emit('saida.parcelada.criada', {
         ...formData,
         tipo: 'saida',
         parcelas
@@ -251,7 +251,7 @@ const FormularioSaida: React.FC<FormularioSaidaProps> = ({
     } else {
       // Caso não seja uma saída parcelada, emite um evento de saída padrão
       // Todos os campos são enviados, incluindo os novos campos adicionados
-      EventBus.emit('saida.criada', {
+      eventBus.emit('saida.criada', {
         ...formData,
         tipo: 'saida'
       });

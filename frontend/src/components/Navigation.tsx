@@ -16,13 +16,10 @@ import {
   ListItemButton,
   Box,
   Typography,
-  IconButton,
   Divider,
-  Tooltip,
   Avatar,
   Menu,
   MenuItem,
-  Button,
   useTheme as useMuiTheme,
   Chip
 } from '@mui/material';
@@ -33,7 +30,6 @@ import {
   ExitToApp as LogoutIcon,
   Person as PersonIcon,
   SmartToy as AIIcon,
-  RestaurantMenu as RestaurantIcon,
   Dashboard as DashboardIcon,
   WhatsApp as WhatsAppIcon,
   DateRange as CalendarioIcon,
@@ -76,25 +72,19 @@ interface NavigationProps {
 }
 
 /**
- * Interface for navigation menu items
- * Defines the structure of each menu item in the sidebar
+ * Interface for menu item
+ * Defines the structure of a menu item
  * 
- * Interface para os itens do menu de navegação
- * Define a estrutura de cada item de menu na barra lateral
+ * Interface para item de menu
+ * Define a estrutura de um item de menu
  */
-interface MenuItem {
-  text: string;             // Text to be displayed in the menu item
-                           // Texto a ser exibido no item de menu
-  icon: React.ReactNode;    // Icon component for the menu item
-                           // Componente de ícone para o item de menu
-  path: string;             // Navigation path when item is clicked
-                           // Caminho de navegação quando o item é clicado
-  permission: string | null; // Required permission to access/view this item (null means no permission required)
-                           // Permissão necessária para acessar/visualizar este item (null significa que não é necessária permissão)
-  subItems?: MenuItem[];    // Optional list of sub-items for nested menu
-                           // Lista opcional de sub-itens para menu aninhado
-  isExpanded?: boolean;     // Whether the submenu is expanded (only applicable for items with subItems)
-                           // Se o submenu está expandido (aplicável apenas para itens com subItems)
+interface NavigationMenuItem {
+  text: string;
+  icon: React.ReactNode;
+  path: string;
+  permission: string | null;
+  subItems?: NavigationMenuItem[];
+  isExpanded?: boolean;
   badge?: {
     text: string;
     color: 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning';
@@ -108,7 +98,7 @@ interface MenuItem {
  * Componente de navegação lateral com menu e opções de usuário
  * Exibe itens de menu com base nas permissões do usuário e fornece acesso ao perfil do usuário
  */
-const Navigation = ({}: NavigationProps) => {
+const Navigation = (_props: NavigationProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const muiTheme = useMuiTheme();
@@ -168,7 +158,7 @@ const Navigation = ({}: NavigationProps) => {
    * Itens do menu de navegação com seus ícones e permissões necessárias
    * Cada item especifica a rota, texto de exibição, ícone e requisito de permissão
    */
-  const menuItems: MenuItem[] = [
+  const menuItems: NavigationMenuItem[] = [
     { 
       text: "Dashboard", 
       icon: <DashboardIcon />, 
@@ -411,69 +401,17 @@ const Navigation = ({}: NavigationProps) => {
                 {/* Render submenu items if they exist and the parent menu is expanded */}
                 {item.subItems && expandedMenus[item.text] && (
                   <List component="div" disablePadding>
-                    {item.subItems.map(subItem => (
+                    {item.subItems.map((subItem: NavigationMenuItem) => (
                       (!subItem.permission || hasPermission(subItem.permission)) && (
-                        <ListItem key={subItem.text} disablePadding>
-                          <ListItemButton
-                            onClick={() => navigate(subItem.path)}
-                            selected={location.pathname + location.search === subItem.path}
-                            sx={{
-                              pl: 4,
-                              py: 1.5,
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: 1.5,
-                              borderLeft: location.pathname + location.search === subItem.path
-                                ? `3px solid ${muiTheme.palette.primary.main}` 
-                                : '3px solid transparent',
-                              '&.Mui-selected': {
-                                backgroundColor: 'transparent',
-                                boxShadow: 'inset 3px 0 0 #0043CE',
-                                '& .MuiTypography-root': {
-                                  fontWeight: 600,
-                                },
-                              },
-                              '&:hover': {
-                                backgroundColor: muiTheme.palette.action.hover,
-                              },
-                            }}
-                          >
-                            <ListItemIcon
-                              sx={{ 
-                                minWidth: 'auto',
-                                color: location.pathname + location.search === subItem.path
-                                  ? muiTheme.palette.primary.main
-                                  : muiTheme.palette.text.secondary
-                              }}
-                            >
-                              {subItem.icon}
-                            </ListItemIcon>
-                            <ListItemText 
-                              primary={subItem.text} 
-                              sx={{ 
-                                '& .MuiTypography-root': { 
-                                  fontWeight: location.pathname + location.search === subItem.path
-                                    ? 600
-                                    : 500,
-                                  color: muiTheme.palette.text.primary
-                                } 
-                              }}
-                            />
-                            {subItem.badge && (
-                              <Chip 
-                                label={subItem.badge.text}
-                                color={subItem.badge.color}
-                                size="small"
-                                sx={{ 
-                                  height: 20, 
-                                  fontSize: '0.65rem', 
-                                  fontWeight: 'bold',
-                                  ml: 1
-                                }}
-                              />
-                            )}
-                          </ListItemButton>
-                        </ListItem>
+                        <ListItemButton
+                          key={subItem.text}
+                          sx={{ pl: 4 }}
+                          onClick={() => navigate(subItem.path)}
+                          selected={location.pathname === subItem.path}
+                        >
+                          <ListItemIcon>{subItem.icon}</ListItemIcon>
+                          <ListItemText primary={subItem.text} />
+                        </ListItemButton>
                       )
                     ))}
                   </List>

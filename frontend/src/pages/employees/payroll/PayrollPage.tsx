@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Tab, Tabs } from '@mui/material';
+import { Box, Typography, Tab, Tabs, Alert, Snackbar } from '@mui/material';
 import { Money as MoneyIcon } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import PayrollTable from './PayrollTable';
@@ -17,7 +17,7 @@ export interface PaymentData {
   grossAmount: number;
   deductions: number;
   netAmount: number;
-  status: 'pago' | 'pendente';
+  status: 'pago' | 'pendente' | 'atrasado';
   observations?: string;
   month: number;
   year: number;
@@ -30,13 +30,16 @@ const PayrollPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [currentPayment, setCurrentPayment] = useState<PaymentData | null>(null);
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+  const [alertSeverity, setAlertSeverity] = useState<'error' | 'warning' | 'info' | 'success'>('error');
   
   // Filtros
   const [monthYear, setMonthYear] = useState<{month: number, year: number}>({
     month: new Date().getMonth() + 1,
     year: new Date().getFullYear()
   });
-  const [statusFilter, setStatusFilter] = useState<'todos' | 'pago' | 'pendente'>('todos');
+  const [statusFilter, setStatusFilter] = useState<'todos' | 'pago' | 'pendente' | 'atrasado'>('todos');
 
   // Mock de dados para exemplo
   const mockPayments: PaymentData[] = [
@@ -88,7 +91,7 @@ const PayrollPage: React.FC = () => {
       grossAmount: 1800,
       deductions: 180,
       netAmount: 1620,
-      status: 'pendente',
+      status: 'atrasado',
       month: 4,
       year: 2025
     },
@@ -117,13 +120,16 @@ const PayrollPage: React.FC = () => {
         setPayments(mockPayments);
       } catch (error) {
         console.error('Erro ao buscar dados de pagamentos:', error);
+        setAlertMessage('Erro ao carregar dados');
+        setAlertSeverity('error');
+        setAlertOpen(true);
       } finally {
         setLoading(false);
       }
     };
 
     fetchData();
-  }, []);
+  }, [t]);
 
   // Atualizar dados filtrados
   useEffect(() => {
@@ -154,43 +160,92 @@ const PayrollPage: React.FC = () => {
     setModalOpen(true);
   };
 
-  // Manipulador para marcar como pago/pendente
+  // Manipulador para marcar como pago/pendente/atrasado
   const handleToggleStatus = (id: string) => {
     setPayments(prevPayments =>
-      prevPayments.map(payment =>
-        payment.id === id
-          ? { ...payment, status: payment.status === 'pago' ? 'pendente' : 'pago' }
-          : payment
-      )
+      prevPayments.map(payment => {
+        if (payment.id === id) {
+          // Ciclo entre os estados: pendente -> pago -> atrasado -> pendente
+          let newStatus: 'pago' | 'pendente' | 'atrasado';
+          
+          if (payment.status === 'pendente') {
+            newStatus = 'pago';
+          } else if (payment.status === 'pago') {
+            newStatus = 'atrasado';
+          } else {
+            newStatus = 'pendente';
+          }
+          
+          return { ...payment, status: newStatus };
+        }
+        return payment;
+      })
+    );
+  };
+
+  // Verificar se já existe pagamento para o funcionário no mesmo mês/ano
+  const checkExistingPayment = (employeeId: string, month: number, year: number, currentId?: string): boolean => {
+    return payments.some(p => 
+      p.employeeId === employeeId && 
+      p.month === month && 
+      p.year === year && 
+      p.id !== currentId
     );
   };
 
   // Manipulador para salvar pagamento
   const handleSavePayment = (payment: PaymentData) => {
-    if (currentPayment) {
+    const isEditing = !!currentPayment;
+    const currentId = isEditing ? currentPayment.id : undefined;
+    
+    // Verificar pagamento duplicado
+    if (checkExistingPayment(payment.employeeId, monthYear.month, monthYear.year, currentId)) {
+      setAlertMessage('Pagamento duplicado para este funcionário no mesmo período');
+      setAlertSeverity('error');
+      setAlertOpen(true);
+      return;
+    }
+    
+    if (isEditing) {
       // Atualizar pagamento existente
       setPayments(prevPayments =>
         prevPayments.map(p => (p.id === payment.id ? payment : p))
       );
+      setAlertMessage('Pagamento atualizado com sucesso');
+      setAlertSeverity('success');
     } else {
       // Adicionar novo pagamento
       const newPayment = {
         ...payment,
-        id: (payments.length + 1).toString(),
+        id: Date.now().toString(), // Gerar ID único baseado em timestamp
         month: monthYear.month,
         year: monthYear.year
       };
       setPayments(prevPayments => [...prevPayments, newPayment]);
+      setAlertMessage('Pagamento adicionado com sucesso');
+      setAlertSeverity('success');
     }
+    
     setModalOpen(false);
+    setAlertOpen(true);
+  };
+
+  // Fechar o alerta
+  const handleCloseAlert = () => {
+    setAlertOpen(false);
   };
 
   return (
     <Box sx={{ flexGrow: 1, p: 3 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Typography variant="h5" component="h1">
-          <MoneyIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
-          {t('folhaPagamento')}
+      <Box sx={{ mb: 4 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+          <MoneyIcon sx={{ mr: 1, color: 'primary.main', fontSize: 28 }} />
+          <Typography variant="h5" component="h1" color="primary" fontWeight="bold">
+            Folha de Pagamento
+          </Typography>
+        </Box>
+        <Typography variant="subtitle1" color="text.secondary" sx={{ ml: 4 }}>
+          Funcionários
         </Typography>
       </Box>
 
@@ -217,6 +272,12 @@ const PayrollPage: React.FC = () => {
         payment={currentPayment} 
         onSave={handleSavePayment} 
       />
+      
+      <Snackbar open={alertOpen} autoHideDuration={6000} onClose={handleCloseAlert}>
+        <Alert onClose={handleCloseAlert} severity={alertSeverity} sx={{ width: '100%' }}>
+          {alertMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

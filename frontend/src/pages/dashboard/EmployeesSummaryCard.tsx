@@ -59,8 +59,8 @@ const EmployeesSummaryCard: React.FC<EmployeesSummaryCardProps> = ({
         title={
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <GroupIcon sx={{ mr: 1, color: 'info.main' }} />
-            <Typography variant="h6" component="div">
-              {t('funcionarios')}
+            <Typography variant="h6" sx={{ ml: 1, fontWeight: 'medium' }}>
+              Funcionários
             </Typography>
           </Box>
         }

@@ -68,7 +68,7 @@ const ConfiguracoesImpostos: React.FC<ConfiguracoesImpostosProps> = ({
   // Função para garantir que o texto da tradução não seja null
   const getText = (key: string, fallback: string): string => {
     const translated = t(key);
-    return translated || fallback;
+    return translated !== key ? translated : fallback;
   };
 
   // Manipulador para alteração de taxa comercial
@@ -78,7 +78,7 @@ const ConfiguracoesImpostos: React.FC<ConfiguracoesImpostosProps> = ({
 
   // Salvar configurações
   const handleSaveConfig = () => {
-    console.log('Saving tax configuration', {
+    console.log('Salvando configurações fiscais', {
       taxRate,
       businessTaxRate,
       enableECommerce,
@@ -233,6 +233,19 @@ const ConfiguracoesImpostos: React.FC<ConfiguracoesImpostosProps> = ({
         </Grid>
       </Grid>
 
+      {/* Aviso GDPR */}
+      <Paper sx={{ p: 2, mt: 3 }}>
+        <Stack direction="row" spacing={1} alignItems="center">
+          <Info color="primary" fontSize="small" />
+          <Typography variant="body2" fontWeight="medium">
+            {getText('contador.configuracoes.gdprInfo', 'Aviso de Privacidade')}
+          </Typography>
+        </Stack>
+        <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+          {getText('contador.configuracoes.gdprDesc', 'Todos os dados fiscais são processados e armazenados de acordo com os requisitos do GDPR e regulamentações fiscais alemãs.')}
+        </Typography>
+      </Paper>
+
       {/* Botões de ação */}
       <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
         <Button 
@@ -249,17 +262,6 @@ const ConfiguracoesImpostos: React.FC<ConfiguracoesImpostosProps> = ({
         >
           {getText('contador.configuracoes.salvarConfiguracoes', 'Salvar configurações')}
         </Button>
-      </Box>
-
-      {/* Informações de conformidade GDPR */}
-      <Box sx={{ mt: 3, p: 2, bgcolor: 'background.paper', borderRadius: 1 }}>
-        <Typography variant="subtitle2" gutterBottom sx={{ display: 'flex', alignItems: 'center' }}>
-          <Info fontSize="small" sx={{ mr: 1 }} />
-          {getText('contador.configuracoes.gdprInfo', 'Aviso de Privacidade')}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          {getText('contador.configuracoes.gdprDesc', 'Todos os dados fiscais são processados e armazenados de acordo com os requisitos do GDPR e regulamentações fiscais alemãs.')}
-        </Typography>
       </Box>
     </Box>
   );

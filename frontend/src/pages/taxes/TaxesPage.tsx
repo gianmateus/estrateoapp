@@ -11,20 +11,25 @@ import {
   Snackbar,
   IconButton,
   TextField,
-  useTheme
+  useTheme,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Select,
+  SelectChangeEvent
 } from '@mui/material';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { LocalizationProvider } from '@mui/x-date-pickers';
+import { 
+  Refresh as RefreshIcon,
+  Settings as SettingsIcon,
+  PictureAsPdf as PictureAsPdfIcon
+} from '@mui/icons-material';
 import { format, addMonths } from 'date-fns';
 import { ptBR, enUS, de, it } from 'date-fns/locale';
 import {
   Euro as EuroIcon,
   Business as BusinessIcon,
   AccountBalance as AccountBalanceIcon,
-  Group as GroupIcon,
-  Refresh as RefreshIcon,
-  Settings as SettingsIcon
+  Group as GroupIcon
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -51,20 +56,30 @@ const generateMockTaxData = (date: Date): TaxForecast => {
   };
 };
 
+// Função para gerar anos de 2022 até o ano atual + 5
+const generateYearOptions = (): number[] => {
+  const currentYear = new Date().getFullYear();
+  const years = [];
+  for (let year = 2022; year <= 2030; year++) {
+    years.push(year);
+  }
+  return years;
+};
+
 const TaxesPage: React.FC = () => {
   const { t, i18n } = useTranslation();
   const theme = useTheme();
   const navigate = useNavigate();
   const { isTaxProfileComplete } = useTaxProfile();
   
-  const [selectedMonth, setSelectedMonth] = useState<Date>(new Date());
+  const [selectedMonth, setSelectedMonth] = useState<number>(new Date().getMonth());
+  const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear());
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [networkError, setNetworkError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState<TaxForecast | null>(null);
   
-  // Formatar mês para a API (YYYY-MM)
-  const formattedMonth = format(selectedMonth, 'yyyy-MM');
+  const yearOptions = generateYearOptions();
   
   // Função para garantir que t() retorne uma string
   const tString = (key: string, defaultValue = ''): string => {
@@ -83,30 +98,49 @@ const TaxesPage: React.FC = () => {
     }
   };
   
-  // Efeito para carregar dados simulados quando o mês é alterado
+  // Meses do ano para o select
+  const months = Array.from({ length: 12 }, (_, i) => {
+    const date = new Date(2000, i, 1);
+    return {
+      value: i,
+      label: format(date, 'MMMM', { locale: getDateLocale() })
+    };
+  });
+  
+  // Função para formatar o período selecionado (mês/ano)
+  const formattedPeriod = () => {
+    const date = new Date(selectedYear, selectedMonth, 1);
+    return format(date, 'MMMM yyyy', { locale: getDateLocale() });
+  };
+  
+  // Efeito para carregar dados quando o componente é montado
   useEffect(() => {
+    if (isTaxProfileComplete) {
+      loadTaxData();
+    }
+  }, []);
+  
+  // Função para carregar dados fiscais
+  const loadTaxData = async () => {
     if (!isTaxProfileComplete) return; // Não carregar se o perfil fiscal não estiver completo
     
-    const loadMockData = async () => {
-      setIsLoading(true);
-      try {
-        // Simular requisição à API
-        await new Promise(resolve => setTimeout(resolve, 800));
-        
-        // Gerar dados simulados
-        const mockData = generateMockTaxData(selectedMonth);
-        setData(mockData);
-        setNetworkError(null);
-      } catch (error) {
-        console.error('Erro ao carregar dados:', error);
-        setNetworkError('Falha ao carregar dados fiscais');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    
-    loadMockData();
-  }, [selectedMonth, isTaxProfileComplete]);
+    setIsLoading(true);
+    try {
+      // Simular requisição à API
+      await new Promise(resolve => setTimeout(resolve, 800));
+      
+      // Gerar dados simulados com base no mês e ano selecionados
+      const date = new Date(selectedYear, selectedMonth, 1);
+      const mockData = generateMockTaxData(date);
+      setData(mockData);
+      setNetworkError(null);
+    } catch (error) {
+      console.error('Erro ao carregar dados:', error);
+      setNetworkError('Falha ao carregar dados fiscais');
+    } finally {
+      setIsLoading(false);
+    }
+  };
   
   // Função para atualizar os dados manualmente
   const handleRefresh = async () => {
@@ -118,7 +152,8 @@ const TaxesPage: React.FC = () => {
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       // Gerar novos dados simulados
-      const mockData = generateMockTaxData(selectedMonth);
+      const date = new Date(selectedYear, selectedMonth, 1);
+      const mockData = generateMockTaxData(date);
       setData(mockData);
       toast.success('Dados fiscais atualizados');
     } catch (error) {
@@ -134,14 +169,31 @@ const TaxesPage: React.FC = () => {
     navigate('/dashboard/perfil');
   };
   
+  // Função para exportar relatório em PDF
+  const handleExportPDF = () => {
+    toast.success('Exportando relatório fiscal em PDF...');
+    setTimeout(() => {
+      toast.success('Relatório "Resumo Tributário - ' + formattedPeriod() + '.pdf" exportado com sucesso!');
+    }, 2000);
+  };
+  
+  // Funções para manipular mudanças nos selects
+  const handleMonthChange = (event: SelectChangeEvent) => {
+    setSelectedMonth(Number(event.target.value));
+  };
+  
+  const handleYearChange = (event: SelectChangeEvent) => {
+    setSelectedYear(Number(event.target.value));
+  };
+  
   return (
     <Container maxWidth="lg">
       <Box mb={4}>
         <Typography variant="h4" gutterBottom>
-          {tString('taxes.title', 'Impostos')}
+          {tString('impostos.titulo', 'Resumo Tributário')}
         </Typography>
         <Typography variant="body1" color="textSecondary">
-          {tString('taxes.subtitle', 'Gerencie e visualize seus impostos')}
+          {tString('impostos.subtitulo', 'Gerencie e visualize seus impostos')}
         </Typography>
       </Box>
       
@@ -155,11 +207,11 @@ const TaxesPage: React.FC = () => {
               size="small" 
               onClick={goToTaxProfile}
             >
-              {tString('taxes.goToProfile', 'Ir para Perfil Fiscal')}
+              {tString('impostos.comum.irParaPerfil', 'Ir para Perfil Fiscal')}
             </Button>
           }
         >
-          {tString('taxes.profileMissing', 'Complete o Perfil Fiscal para habilitar o cálculo automático.')}
+          {tString('impostos.comum.perfilIncompleto', 'Complete o Perfil Fiscal para habilitar o cálculo automático.')}
         </Alert>
       )}
       
@@ -171,31 +223,71 @@ const TaxesPage: React.FC = () => {
         flexWrap="wrap"
         gap={2}
       >
-        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={getDateLocale()}>
-          <DatePicker
-            label={tString('taxes.selectMonth', 'Selecionar Mês')}
-            views={['month', 'year']}
-            value={selectedMonth}
-            onChange={(newDate) => newDate && setSelectedMonth(newDate)}
-            slotProps={{
-              textField: {
-                variant: 'outlined',
-                fullWidth: true,
-                sx: { minWidth: 200 }
-              }
-            }}
-          />
-        </LocalizationProvider>
+        <Box display="flex" alignItems="center" gap={1}>
+          <FormControl sx={{ minWidth: 120 }}>
+            <InputLabel id="month-select-label">{tString('impostos.comum.selecionarMes', 'Mês')}</InputLabel>
+            <Select
+              labelId="month-select-label"
+              id="month-select"
+              value={selectedMonth.toString()}
+              label={tString('impostos.comum.selecionarMes', 'Mês')}
+              onChange={handleMonthChange}
+              size="small"
+            >
+              {months.map((month) => (
+                <MenuItem key={month.value} value={month.value}>
+                  {month.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          
+          <FormControl sx={{ minWidth: 100 }}>
+            <InputLabel id="year-select-label">{tString('impostos.comum.selecionarAno', 'Ano')}</InputLabel>
+            <Select
+              labelId="year-select-label"
+              id="year-select"
+              value={selectedYear.toString()}
+              label={tString('impostos.comum.selecionarAno', 'Ano')}
+              onChange={handleYearChange}
+              size="small"
+            >
+              {yearOptions.map((year) => (
+                <MenuItem key={year} value={year}>
+                  {year}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          
+          <Button
+            variant="contained"
+            size="small"
+            onClick={loadTaxData}
+            disabled={isLoading || !isTaxProfileComplete}
+          >
+            {tString('impostos.comum.buscar', 'Buscar')}
+          </Button>
+        </Box>
         
-        <Box>
+        <Box display="flex" gap={1}>
+          <Button
+            variant="outlined"
+            startIcon={<PictureAsPdfIcon />}
+            onClick={handleExportPDF}
+            disabled={isLoading || !data || !isTaxProfileComplete}
+            color="primary"
+          >
+            {tString('impostos.comum.exportarPDF', 'Exportar Relatório Fiscal (PDF)')}
+          </Button>
+          
           <Button
             variant="outlined"
             startIcon={<RefreshIcon />}
             onClick={handleRefresh}
             disabled={isLoading || !isTaxProfileComplete}
-            sx={{ mr: 1 }}
           >
-            {tString('common.refresh', 'Atualizar')}
+            {tString('impostos.comum.atualizarDados', 'Atualizar')}
           </Button>
           
           <Button
@@ -203,7 +295,7 @@ const TaxesPage: React.FC = () => {
             startIcon={<SettingsIcon />}
             onClick={goToTaxProfile}
           >
-            {tString('taxes.profile', 'Perfil Fiscal')}
+            {tString('impostos.comum.perfilFiscal', 'Perfil Fiscal')}
           </Button>
         </Box>
       </Box>
@@ -215,16 +307,16 @@ const TaxesPage: React.FC = () => {
               <Skeleton variant="rectangular" height={140} animation="wave" />
             ) : (
               <TaxCard
-                title={tString('taxes.vat', 'IVA')}
+                title={tString('impostos.iva.titulo', 'IVA')}
                 value={data?.vatDue || 0}
                 color="primary"
                 icon={<EuroIcon />}
-                tooltip={tString('taxes.vatTooltip', 'Imposto sobre Valor Agregado')}
-                description={tString('taxes.vatDescription', 'O IVA é calculado sobre as vendas, com dedução do imposto pago nas compras. É o principal imposto sobre consumo na Alemanha.')}
+                tooltip={tString('impostos.iva.tooltip', 'Imposto sobre Valor Agregado')}
+                description={tString('impostos.iva.descricao', 'O IVA é calculado sobre as vendas, com dedução do imposto pago nas compras. É o principal imposto sobre consumo na Alemanha.')}
                 details={[
-                  tString('taxes.vatDetail1', 'A alíquota padrão é de 19% para a maioria dos produtos e serviços'),
-                  tString('taxes.vatDetail2', 'Deve ser declarado mensalmente ou trimestralmente'),
-                  tString('taxes.vatDetail3', 'Empresas menores podem optar pelo regime de caixa')
+                  tString('impostos.iva.detalhe1', 'A alíquota padrão é de 19% para a maioria dos produtos e serviços'),
+                  tString('impostos.iva.detalhe2', 'Deve ser declarado mensalmente ou trimestralmente'),
+                  tString('impostos.iva.detalhe3', 'Empresas menores podem optar pelo regime de caixa')
                 ]}
                 baseValue={data?.vatDue ? data.vatDue / 0.19 : 0}
                 taxRate={0.19}
@@ -237,16 +329,16 @@ const TaxesPage: React.FC = () => {
               <Skeleton variant="rectangular" height={140} animation="wave" />
             ) : (
               <TaxCard
-                title={tString('taxes.trade', 'Gewerbesteuer')}
+                title={tString('impostos.gewerbe.titulo', 'Gewerbesteuer')}
                 value={data?.tradeTaxDue || 0}
                 color="secondary"
                 icon={<BusinessIcon />}
-                tooltip={tString('taxes.tradeTooltip', 'Imposto Comercial')}
-                description={tString('taxes.tradeDescription', 'O Gewerbesteuer é um imposto municipal cobrado sobre o lucro operacional das empresas. A taxa varia conforme o município.')}
+                tooltip={tString('impostos.gewerbe.tooltip', 'Imposto Comercial')}
+                description={tString('impostos.gewerbe.descricao', 'O Gewerbesteuer é um imposto municipal cobrado sobre o lucro operacional das empresas. A taxa varia conforme o município.')}
                 details={[
-                  tString('taxes.tradeDetail1', 'Calculado com base no lucro ajustado da empresa'),
-                  tString('taxes.tradeDetail2', 'A taxa é determinada pelo Hebesatz (multiplicador) do município'),
-                  tString('taxes.tradeDetail3', 'Pago trimestralmente como adiantamento')
+                  tString('impostos.gewerbe.detalhe1', 'Calculado com base no lucro ajustado da empresa'),
+                  tString('impostos.gewerbe.detalhe2', 'A taxa é determinada pelo Hebesatz (multiplicador) do município'),
+                  tString('impostos.gewerbe.detalhe3', 'Pago trimestralmente como adiantamento')
                 ]}
                 baseValue={data?.tradeTaxDue ? data.tradeTaxDue / 0.035 : 0}
                 taxRate={0.035}
@@ -259,16 +351,16 @@ const TaxesPage: React.FC = () => {
               <Skeleton variant="rectangular" height={140} animation="wave" />
             ) : (
               <TaxCard
-                title={tString('taxes.corpSoli', 'KSt + Soli')}
+                title={tString('impostos.corpSoli.titulo', 'KSt + Soli')}
                 value={(data?.corpTaxDue || 0) + (data?.soliDue || 0)}
                 color="success"
                 icon={<AccountBalanceIcon />}
-                tooltip={tString('taxes.corpSoliTooltip', 'Imposto corporativo e taxa de solidariedade')}
-                description={tString('taxes.corpSoliDescription', 'O KSt é o imposto de renda corporativo, aplicado sobre o lucro tributável. O Soli é um adicional de 5,5% sobre o imposto corporativo.')}
+                tooltip={tString('impostos.corpSoli.tooltip', 'Imposto corporativo e taxa de solidariedade')}
+                description={tString('impostos.corpSoli.descricao', 'O KSt é o imposto de renda corporativo, aplicado sobre o lucro tributável. O Soli é um adicional de 5,5% sobre o imposto corporativo.')}
                 details={[
-                  tString('taxes.corpSoliDetail1', 'Imposto Corporativo: taxa fixa de 15% sobre o lucro'),
-                  tString('taxes.corpSoliDetail2', 'Taxa de Solidariedade: 5,5% adicional sobre o imposto calculado'),
-                  tString('taxes.corpSoliDetail3', 'Pagamentos trimestrais antecipados baseados no lucro estimado')
+                  tString('impostos.corpSoli.detalhe1', 'Imposto Corporativo: taxa fixa de 15% sobre o lucro'),
+                  tString('impostos.corpSoli.detalhe2', 'Taxa de Solidariedade: 5,5% adicional sobre o imposto calculado'),
+                  tString('impostos.corpSoli.detalhe3', 'Pagamentos trimestrais antecipados baseados no lucro estimado')
                 ]}
                 baseValue={data?.corpTaxDue ? data.corpTaxDue / 0.15 : 0}
                 taxRate={0.15}
@@ -281,16 +373,16 @@ const TaxesPage: React.FC = () => {
               <Skeleton variant="rectangular" height={140} animation="wave" />
             ) : (
               <TaxCard
-                title={tString('taxes.payroll', 'Folha & Sozial')}
+                title={tString('impostos.folha.titulo', 'Folha & Sozial')}
                 value={data?.payrollTaxDue || 0}
                 color="warning"
                 icon={<GroupIcon />}
-                tooltip={tString('taxes.payrollTooltip', 'Impostos sobre folha de pagamento e contribuições sociais')}
-                description={tString('taxes.payrollDescription', 'Inclui o Lohnsteuer (imposto retido sobre salários) e as contribuições sociais obrigatórias pagas pelo empregador.')}
+                tooltip={tString('impostos.folha.tooltip', 'Impostos sobre folha de pagamento e contribuições sociais')}
+                description={tString('impostos.folha.descricao', 'Inclui o Lohnsteuer (imposto retido sobre salários) e as contribuições sociais obrigatórias pagas pelo empregador.')}
                 details={[
-                  tString('taxes.payrollDetail1', 'Inclui seguro saúde, aposentadoria, desemprego e cuidados'),
-                  tString('taxes.payrollDetail2', 'Geralmente dividido entre empregador e empregado'),
-                  tString('taxes.payrollDetail3', 'Pagamento mensal obrigatório via sistema eletrônico')
+                  tString('impostos.folha.detalhe1', 'Inclui seguro saúde, aposentadoria, desemprego e cuidados'),
+                  tString('impostos.folha.detalhe2', 'Geralmente dividido entre empregador e empregado'),
+                  tString('impostos.folha.detalhe3', 'Pagamento mensal obrigatório via sistema eletrônico')
                 ]}
                 baseValue={data?.payrollTaxDue ? data.payrollTaxDue / 0.22 : 0}
                 taxRate={0.22}
@@ -322,7 +414,7 @@ const TaxesPage: React.FC = () => {
         forecast={data || null}
         open={drawerOpen} 
         onClose={() => setDrawerOpen(false)}
-        month={formattedMonth}
+        month={formattedPeriod()}
       />
     </Container>
   );

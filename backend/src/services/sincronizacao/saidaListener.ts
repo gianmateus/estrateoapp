@@ -10,7 +10,7 @@
  */
 
 import prisma from '../../lib/prisma';
-import { EventBus } from '../../lib/EventBus';
+import { eventBus } from '../../../services/EventBus';
 import { format } from 'date-fns';
 
 export interface Saida {
@@ -48,7 +48,7 @@ export function initializeSaidaListeners() {
   
   // Ouve evento de criação de saída
   // Listens for expense creation event
-  EventBus.on('pagamento.criado', async (saida: Saida) => {
+  eventBus.on('pagamento.criado', async (saida: Saida) => {
     console.log('[SaidaListener] Processando evento pagamento.criado', saida.id);
     
     try {
@@ -69,7 +69,7 @@ export function initializeSaidaListeners() {
   
   // Ouve evento de atualização de saída
   // Listens for expense update event
-  EventBus.on('pagamento.atualizado', async (saida: Saida) => {
+  eventBus.on('pagamento.atualizado', async (saida: Saida) => {
     console.log('[SaidaListener] Processando evento pagamento.atualizado', saida.id);
     
     try {
@@ -90,7 +90,7 @@ export function initializeSaidaListeners() {
   
   // Ouve evento de exclusão de saída
   // Listens for expense deletion event
-  EventBus.on('pagamento.excluido', async (saidaId: string) => {
+  eventBus.on('pagamento.excluido', async (saidaId: string) => {
     console.log('[SaidaListener] Processando evento pagamento.excluido', saidaId);
     
     try {
@@ -112,7 +112,7 @@ export function initializeSaidaListeners() {
   // Novos eventos para saídas parceladas
   
   // Ouve evento de criação de saída parcelada
-  EventBus.on('saida.parcelada.criada', async (saida: Saida) => {
+  eventBus.on('saida.parcelada.criada', async (saida: Saida) => {
     console.log('[SaidaListener] Processando evento saida.parcelada.criada', saida.id);
     
     try {
@@ -137,7 +137,7 @@ export function initializeSaidaListeners() {
   });
   
   // Ouve evento de pagamento de parcela
-  EventBus.on('saida.parcela.paga', async (dadosParcela: { saidaId: string, parcelaId: string, dataPagamento: Date }) => {
+  eventBus.on('saida.parcela.paga', async (dadosParcela: { saidaId: string, parcelaId: string, dataPagamento: Date }) => {
     console.log('[SaidaListener] Processando evento saida.parcela.paga', dadosParcela.parcelaId);
     
     try {

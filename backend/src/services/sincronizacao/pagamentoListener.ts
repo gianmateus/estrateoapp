@@ -10,7 +10,7 @@
  */
 
 import prisma from '../../lib/prisma';
-import { EventBus } from '../../lib/EventBus';
+import { eventBus } from '../../../services/EventBus';
 
 export interface Pagamento {
   id: string;
@@ -32,7 +32,7 @@ export function initializePagamentoListeners() {
   
   // Ouve evento de criação de pagamento
   // Listens for payment creation event
-  EventBus.on('pagamento.criado', async (pagamento: Pagamento) => {
+  eventBus.on('pagamento.criado', async (pagamento: Pagamento) => {
     console.log('[PagamentoListener] Processando evento pagamento.criado', pagamento.id);
     
     try {
@@ -53,7 +53,7 @@ export function initializePagamentoListeners() {
   
   // Ouve evento de atualização de pagamento
   // Listens for payment update event
-  EventBus.on('pagamento.atualizado', async (pagamento: Pagamento) => {
+  eventBus.on('pagamento.atualizado', async (pagamento: Pagamento) => {
     console.log('[PagamentoListener] Processando evento pagamento.atualizado', pagamento.id);
     
     try {
@@ -74,7 +74,7 @@ export function initializePagamentoListeners() {
   
   // Ouve evento de exclusão de pagamento
   // Listens for payment deletion event
-  EventBus.on('pagamento.excluido', async (pagamentoId: string) => {
+  eventBus.on('pagamento.excluido', async (pagamentoId: string) => {
     console.log('[PagamentoListener] Processando evento pagamento.excluido', pagamentoId);
     
     try {

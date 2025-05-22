@@ -142,10 +142,10 @@ const RelatorioPDF: React.FC<RelatorioPDFProps> = ({
   
   return (
     <>
-      <Button
+      <Button 
         variant="contained"
         color="primary"
-        startIcon={gerando ? <CircularProgress size={20} color="inherit" /> : <DownloadIcon />}
+        startIcon={gerando ? <CircularProgress size={20} color="inherit" /> : <PdfIcon />}
         onClick={gerarPDF}
         disabled={gerando || transacoes.length === 0}
       >

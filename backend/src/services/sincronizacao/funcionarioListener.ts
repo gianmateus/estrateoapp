@@ -10,7 +10,7 @@
  */
 
 import prisma from '../../lib/prisma';
-import { EventBus } from '../../lib/EventBus';
+import { eventBus } from '../../../services/EventBus';
 
 export interface PagamentoFuncionario {
   id: string;
@@ -32,7 +32,7 @@ export function initializeFuncionarioListeners() {
   
   // Ouve evento de pagamento realizado
   // Listens for payment made event
-  EventBus.on('funcionario.pagamento.realizado', async (pagamento: PagamentoFuncionario) => {
+  eventBus.on('funcionario.pagamento.realizado', async (pagamento: PagamentoFuncionario) => {
     console.log('[FuncionarioListener] Processando evento funcionario.pagamento.realizado', pagamento.id);
     
     try {
@@ -53,7 +53,7 @@ export function initializeFuncionarioListeners() {
   
   // Ouve evento de pagamento cancelado
   // Listens for payment cancellation event
-  EventBus.on('funcionario.pagamento.cancelado', async (pagamentoId: string) => {
+  eventBus.on('funcionario.pagamento.cancelado', async (pagamentoId: string) => {
     console.log('[FuncionarioListener] Processando evento funcionario.pagamento.cancelado', pagamentoId);
     
     try {

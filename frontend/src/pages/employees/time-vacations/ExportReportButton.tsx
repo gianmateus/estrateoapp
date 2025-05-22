@@ -74,12 +74,12 @@ const ExportReportButton: React.FC<ExportReportButtonProps> = ({
       });
       
       // Feedback visual (em produção, seria um download real)
-      alert(t('relatorioExportadoComSucesso'));
+      alert(t('tempo.mensagem.relatorioExportadoComSucesso'));
       
       closeExportDialog();
     } catch (error) {
       console.error('Erro ao exportar relatório:', error);
-      alert(t('erroAoExportarRelatorio'));
+      alert(t('tempo.mensagem.erroAoExportarRelatorio'));
     } finally {
       setExportLoading(false);
     }
@@ -92,6 +92,9 @@ const ExportReportButton: React.FC<ExportReportButtonProps> = ({
     return date.toLocaleString('pt-BR', { month: 'long' });
   };
 
+  // Verificar se o botão deve estar desabilitado
+  const isExportDisabled = data.length === 0;
+
   return (
     <>
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
@@ -101,9 +104,13 @@ const ExportReportButton: React.FC<ExportReportButtonProps> = ({
           startIcon={<DownloadIcon />}
           endIcon={<ArrowDownIcon />}
           onClick={handleClick}
-          size="small"
+          disabled={isExportDisabled}
+          sx={{ 
+            height: '40px',
+            fontWeight: 500
+          }}
         >
-          {t('exportarRelatorio')}
+          {t('tempo.button.exportarRelatorio')}
         </Button>
       </Box>
 
@@ -116,45 +123,45 @@ const ExportReportButton: React.FC<ExportReportButtonProps> = ({
           <ListItemIcon>
             <PdfIcon fontSize="small" />
           </ListItemIcon>
-          <ListItemText>{t('exportarPDF')}</ListItemText>
+          <ListItemText>{t('tempo.button.exportarPDF')}</ListItemText>
         </MenuItem>
         <MenuItem onClick={() => handleExportClick('csv')}>
           <ListItemIcon>
             <CsvIcon fontSize="small" />
           </ListItemIcon>
-          <ListItemText>{t('exportarCSV')}</ListItemText>
+          <ListItemText>{t('tempo.button.exportarCSV')}</ListItemText>
         </MenuItem>
         <MenuItem onClick={handleClose}>
           <ListItemIcon>
             <PrintIcon fontSize="small" />
           </ListItemIcon>
-          <ListItemText>{t('imprimir')}</ListItemText>
+          <ListItemText>{t('tempo.button.imprimir')}</ListItemText>
         </MenuItem>
       </Menu>
 
       <Dialog open={showExportDialog} onClose={closeExportDialog}>
-        <DialogTitle>{t('exportarRelatorio')}</DialogTitle>
+        <DialogTitle>{t('tempo.dialog.exportarRelatorio')}</DialogTitle>
         <DialogContent sx={{ pt: 1 }}>
           <FormControl fullWidth sx={{ mt: 2 }}>
-            <InputLabel id="report-type-label">{t('tipoDeRelatorio')}</InputLabel>
+            <InputLabel id="report-type-label">{t('tempo.label.tipoDeRelatorio')}</InputLabel>
             <Select
               labelId="report-type-label"
               value={exportType}
-              label={t('tipoDeRelatorio')}
+              label={t('tempo.label.tipoDeRelatorio')}
               onChange={(e) => setExportType(e.target.value as 'monthly' | 'annual')}
             >
               <MenuItem value="monthly">
-                {t('relatorioMensal')} - {getMonthName(monthYear.month)} {monthYear.year}
+                {t('tempo.option.relatorioMensal')} - {getMonthName(monthYear.month)} {monthYear.year}
               </MenuItem>
               <MenuItem value="annual">
-                {t('relatorioAnual')} - {monthYear.year}
+                {t('tempo.option.relatorioAnual')} - {monthYear.year}
               </MenuItem>
             </Select>
           </FormControl>
         </DialogContent>
         <DialogActions>
           <Button onClick={closeExportDialog}>
-            {t('cancelar')}
+            {t('tempo.button.cancelar')}
           </Button>
           <Button 
             variant="contained" 
@@ -165,7 +172,7 @@ const ExportReportButton: React.FC<ExportReportButtonProps> = ({
               exportFormat === 'pdf' ? <PdfIcon /> : <CsvIcon />
             )}
           >
-            {exportLoading ? t('exportando') : t('exportar')}
+            {exportLoading ? t('tempo.button.exportando') : t('tempo.button.exportar')}
           </Button>
         </DialogActions>
       </Dialog>

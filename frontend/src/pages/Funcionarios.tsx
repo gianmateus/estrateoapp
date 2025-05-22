@@ -346,10 +346,10 @@ const Funcionarios = () => {
             variant="scrollable"
             scrollButtons="auto"
           >
-            <Tab label={t('visaoGeral')} icon={<PersonIcon />} iconPosition="start" />
-            <Tab label={t('estatisticas')} icon={<ChartIcon />} iconPosition="start" />
-            <Tab label={t('folhaPagamento')} icon={<MoneyIcon />} iconPosition="start" />
-            <Tab label={t('tempoFerias')} icon={<AccessTimeIcon />} iconPosition="start" />
+            <Tab label="Visão Geral" icon={<PersonIcon />} iconPosition="start" />
+            <Tab label="Estatísticas" icon={<ChartIcon />} iconPosition="start" />
+            <Tab label="Folha de Pagamento" icon={<MoneyIcon />} iconPosition="start" />
+            <Tab label="Tempo e Férias" icon={<AccessTimeIcon />} iconPosition="start" />
           </Tabs>
         </Box>
 
@@ -387,7 +387,7 @@ const Funcionarios = () => {
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Typography variant="h5" component="h1">
           <PersonIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
-          {t('funcionarios')}
+          Funcionários
         </Typography>
         <Button
           variant="contained"

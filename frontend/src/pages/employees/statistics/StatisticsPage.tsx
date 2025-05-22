@@ -417,7 +417,7 @@ const StatisticsPage: React.FC = () => {
           color="text.secondary"
           sx={{ mb: 2 }}
         >
-          {format(new Date(), 'dd/MM/yyyy')} • {stats.totalFuncionarios} {t('funcionarios.titulo').toLowerCase()}
+          {format(new Date(), 'dd/MM/yyyy')} • {stats.totalFuncionarios} funcionários
         </Typography>
         <Divider />
       </Box>

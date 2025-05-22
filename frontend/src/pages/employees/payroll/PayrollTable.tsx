@@ -11,14 +11,17 @@ import {
   Box,
   IconButton,
   Tooltip,
-  Button,
-  Chip
+  Chip,
+  Typography
 } from '@mui/material';
 import {
   Edit as EditIcon,
-  CheckCircle as CheckIcon,
-  Cancel as CancelIcon,
-  Visibility as ViewIcon
+  Delete as DeleteIcon,
+  Visibility as ViewIcon,
+  AccessTime as PendingIcon,
+  CheckCircle as PaidIcon,
+  ErrorOutline as OverdueIcon,
+  Info as InfoIcon
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { PaymentData } from './PayrollPage';
@@ -46,21 +49,32 @@ const PayrollTable: React.FC<PayrollTableProps> = ({
     }).format(valor);
   };
 
-  // Renderização do status
-  const renderizarStatus = (status: 'pago' | 'pendente', id: string) => {
-    const isPago = status === 'pago';
+  // Renderização do status com badge visual
+  const renderizarStatus = (status: 'pago' | 'pendente' | 'atrasado', id: string) => {
+    let color: 'success' | 'warning' | 'error' = 'warning';
+    let icon = <PendingIcon fontSize="small" />;
+    let label = 'Pendente';
+    
+    if (status === 'pago') {
+      color = 'success';
+      icon = <PaidIcon fontSize="small" />;
+      label = 'Pago';
+    } else if (status === 'atrasado') {
+      color = 'error';
+      icon = <OverdueIcon fontSize="small" />;
+      label = 'Atrasado';
+    }
     
     return (
-      <Button
-        variant="contained"
+      <Chip
+        icon={icon}
+        label={label}
+        color={color}
+        variant="outlined"
         size="small"
-        color={isPago ? 'success' : 'error'}
-        startIcon={isPago ? <CheckIcon /> : <CancelIcon />}
         onClick={() => onToggleStatus(id)}
         sx={{ minWidth: '110px' }}
-      >
-        {isPago ? t('pago') : t('pendente')}
-      </Button>
+      />
     );
   };
 
@@ -68,7 +82,7 @@ const PayrollTable: React.FC<PayrollTableProps> = ({
   const renderizarTipoContrato = (tipo: 'mensalista' | 'horista') => {
     return (
       <Chip 
-        label={tipo === 'mensalista' ? t('mensalista') : t('horista')} 
+        label={tipo === 'mensalista' ? 'Mensalista' : 'Horista'} 
         color={tipo === 'mensalista' ? 'primary' : 'secondary'}
         size="small"
         variant="outlined"
@@ -89,42 +103,75 @@ const PayrollTable: React.FC<PayrollTableProps> = ({
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>{t('funcionario')}</TableCell>
-            <TableCell>{t('tipoContrato')}</TableCell>
-            <TableCell>{t('horasTrabalhadas')}</TableCell>
-            <TableCell>{t('valorBruto')}</TableCell>
-            <TableCell>{t('descontos')}</TableCell>
-            <TableCell>{t('valorLiquido')}</TableCell>
-            <TableCell>{t('status')}</TableCell>
-            <TableCell align="center">{t('acoes')}</TableCell>
+            <TableCell>Funcionário</TableCell>
+            <TableCell>Tipo de Contrato</TableCell>
+            <TableCell align="center">Horas Trabalhadas</TableCell>
+            <TableCell align="center">Valor Bruto</TableCell>
+            <TableCell align="center">Descontos</TableCell>
+            <TableCell align="center">Valor Líquido</TableCell>
+            <TableCell align="center">Status</TableCell>
+            <TableCell align="center">Ações</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {payments.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={8} align="center">{t('nenhumPagamentoEncontrado')}</TableCell>
+              <TableCell colSpan={8} align="center" sx={{ py: 4 }}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
+                  <InfoIcon color="info" fontSize="large" />
+                  <Typography variant="body1" color="text.secondary">
+                    Nenhum pagamento encontrado
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Tente mudar os filtros ou adicione um novo pagamento
+                  </Typography>
+                </Box>
+              </TableCell>
             </TableRow>
           ) : (
             payments.map((payment) => (
               <TableRow key={payment.id}>
                 <TableCell>{payment.employeeName}</TableCell>
                 <TableCell>{renderizarTipoContrato(payment.contractType)}</TableCell>
-                <TableCell>{payment.hoursWorked}h</TableCell>
-                <TableCell>{formatarMoeda(payment.grossAmount)}</TableCell>
-                <TableCell>{formatarMoeda(payment.deductions)}</TableCell>
-                <TableCell>{formatarMoeda(payment.netAmount)}</TableCell>
-                <TableCell>{renderizarStatus(payment.status, payment.id)}</TableCell>
                 <TableCell align="center">
-                  <Tooltip title={t('visualizar')}>
-                    <IconButton size="small">
-                      <ViewIcon />
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip title={t('editar')}>
-                    <IconButton size="small" onClick={() => onEditPayment(payment)}>
-                      <EditIcon />
-                    </IconButton>
-                  </Tooltip>
+                  <Typography variant="body2" fontWeight="medium">
+                    {payment.hoursWorked}h
+                  </Typography>
+                </TableCell>
+                <TableCell align="center">
+                  <Typography variant="body2" fontWeight="medium">
+                    {formatarMoeda(payment.grossAmount)}
+                  </Typography>
+                </TableCell>
+                <TableCell align="center">
+                  <Typography variant="body2" fontWeight="medium" color="error.main">
+                    {formatarMoeda(payment.deductions)}
+                  </Typography>
+                </TableCell>
+                <TableCell align="center">
+                  <Typography variant="body2" fontWeight="bold" color="success.main">
+                    {formatarMoeda(payment.netAmount)}
+                  </Typography>
+                </TableCell>
+                <TableCell align="center">{renderizarStatus(payment.status, payment.id)}</TableCell>
+                <TableCell align="center">
+                  <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                    <Tooltip title="Visualizar">
+                      <IconButton size="small" color="info">
+                        <ViewIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Editar">
+                      <IconButton size="small" color="primary" onClick={() => onEditPayment(payment)}>
+                        <EditIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Excluir">
+                      <IconButton size="small" color="error">
+                        <DeleteIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  </Box>
                 </TableCell>
               </TableRow>
             ))

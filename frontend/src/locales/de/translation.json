@@ -78,7 +78,56 @@
   },
   "financeiro": "Finanzen",
   "inventario": "Inventar",
-  "impostos": "Steuern",
+  "impostos": {
+    "titulo": "Steuerübersicht",
+    "subtitulo": "Verwalten und anzeigen Ihrer Steuern",
+    "iva": {
+      "titulo": "Umsatzsteuer",
+      "descricao": "Die Umsatzsteuer wird auf Verkäufe berechnet, abzüglich der auf Einkäufe gezahlten Steuer. Sie ist die wichtigste Verbrauchsteuer in Deutschland.",
+      "detalhe1": "Der Standardsatz beträgt 19% für die meisten Produkte und Dienstleistungen",
+      "detalhe2": "Muss monatlich oder vierteljährlich erklärt werden",
+      "detalhe3": "Kleinere Unternehmen können die Ist-Versteuerung wählen",
+      "tooltip": "Mehrwertsteuer"
+    },
+    "gewerbe": {
+      "titulo": "Gewerbesteuer",
+      "descricao": "Die Gewerbesteuer ist eine kommunale Steuer auf den Betriebsgewinn von Unternehmen. Der Satz variiert je nach Gemeinde.",
+      "detalhe1": "Berechnet auf Basis des angepassten Unternehmensgewinns",
+      "detalhe2": "Der Satz wird durch den Hebesatz der Gemeinde bestimmt",
+      "detalhe3": "Wird vierteljährlich als Vorauszahlung gezahlt",
+      "tooltip": "Kommunale Gewerbesteuer"
+    },
+    "corpSoli": {
+      "titulo": "KSt + Soli",
+      "descricao": "Die KSt ist die Körperschaftsteuer auf den steuerpflichtigen Gewinn. Der Soli ist ein Zuschlag von 5,5% auf die Körperschaftsteuer.",
+      "detalhe1": "Körperschaftsteuer: fester Satz von 15% auf den Gewinn",
+      "detalhe2": "Solidaritätszuschlag: zusätzliche 5,5% auf die berechnete Steuer",
+      "detalhe3": "Vierteljährliche Vorauszahlungen basierend auf dem geschätzten Gewinn",
+      "tooltip": "Körperschaftsteuer und Solidaritätszuschlag"
+    },
+    "folha": {
+      "titulo": "Lohn & Sozial",
+      "descricao": "Beinhaltet die Lohnsteuer und die vom Arbeitgeber zu zahlenden Pflichtbeiträge zur Sozialversicherung.",
+      "detalhe1": "Umfasst Krankenversicherung, Rente, Arbeitslosenversicherung und Pflegeversicherung",
+      "detalhe2": "Wird in der Regel zwischen Arbeitgeber und Arbeitnehmer aufgeteilt",
+      "detalhe3": "Obligatorische monatliche Zahlung über elektronisches System",
+      "tooltip": "Lohnsteuer und Sozialversicherungsbeiträge"
+    },
+    "comum": {
+      "perfilFiscal": "Steuerprofil",
+      "irParaPerfil": "Zum Steuerprofil",
+      "perfilIncompleto": "Vervollständigen Sie Ihr Steuerprofil, um die automatische Berechnung zu aktivieren.",
+      "calculo": "Berechnung",
+      "baseCalculo": "Bemessungsgrundlage",
+      "taxa": "Angewandter Satz",
+      "selecionarMes": "Monat",
+      "selecionarAno": "Jahr",
+      "buscar": "Suchen",
+      "exportarPDF": "Steuerbericht exportieren (PDF)",
+      "atualizarDados": "Aktualisieren",
+      "valorDevido": "fällig"
+    }
+  },
   "pagamentos": "Zahlungen",
   "pagamentosTexto": "Zahlungen",
   "calendario": "Kalender",
@@ -513,7 +562,16 @@
     "edicao": "Mitarbeiter bearbeiten",
     "dadosPessoais": "Persönliche Daten",
     "dadosProfissionais": "Berufliche Daten",
-    "contato": "Kontakt"
+    "contato": "Kontakt",
+    "tempoFerias": {
+      "titulo": "Zeit & Urlaub",
+      "diasTrabalhados": "Arbeitstage",
+      "ausencias": "Abwesenheiten",
+      "folgas": "Freie Tage",
+      "ferias": "Urlaub",
+      "registrarFerias": "Urlaub eintragen",
+      "registrarAusencia": "Abwesenheit eintragen"
+    }
   },
   
   "timeAndVacations": "Zeit und Urlaub",
@@ -753,5 +811,92 @@
   "marcarComoPago": "Als bezahlt markieren",
   "marcarComoRecebido": "Als erhalten markieren",
   "recebido": "Erhalten",
-  "todos": "Alle"
+  "todos": "Alle",
+  "fluxoCaixa": {
+    "titulo": "Cashflow",
+    "subtitulo": "Konsolidierte Finanzbewegungen",
+    "hoje": "Heute",
+    "ontem": "Gestern",
+    "entrada": "Einnahmen",
+    "saida": "Ausgaben",
+    "confirmado": "Bestätigt",
+    "pendente": "Ausstehend",
+    "cancelado": "Storniert",
+    "cliente": "Kunde",
+    "fornecedor": "Lieferant",
+    "totalEntradas": "Einnahmen",
+    "totalSaidas": "Ausgaben",
+    "saldoFinal": "Endsaldo",
+    "nenhumaMovimentacao": "Keine Transaktionen für den ausgewählten Zeitraum gefunden",
+    "previewRelatorio": "Berichtsvorschau",
+    "resumoFinanceiro": "Finanzübersicht",
+    "movimentacoesDetalhadas": "Detaillierte Transaktionen",
+    "movimentacoesNoRelatorio": "Der Bericht enthält {{count}} detaillierte Transaktionen.",
+    "geradoEm": "Erstellt am",
+    "periodo": "Zeitraum",
+    "data": "Datum",
+    "tipo": "Typ",
+    "descricao": "Beschreibung",
+    "valor": "Betrag",
+    "status": "Status",
+    "gerarRelatorio": "Bericht erstellen",
+    "filtros": {
+      "titulo": "Filter",
+      "tipo": "Typ",
+      "status": "Status",
+      "origem": "Quelle",
+      "todos": "Alle",
+      "entrada": "Einnahmen",
+      "saida": "Ausgaben",
+      "confirmado": "Bestätigt",
+      "pendente": "Ausstehend", 
+      "contasAPagar": "Verbindlichkeiten",
+      "contasAReceber": "Forderungen",
+      "manual": "Manuell",
+      "de": "Von",
+      "ate": "Bis",
+      "limpar": "Filter löschen"
+    }
+  },
+  "FLUXOCAIXA": {
+    "GERARRELATORIO": "BERICHT ERSTELLEN"
+  },
+  "funcionarios": {
+    "titulo": "Mitarbeiter",
+    "visaoGeral": {
+      "titulo": "Überblick",
+      "totalFuncionarios": "Mitarbeiter gesamt",
+      "funcionariosAtivos": "Aktive Mitarbeiter",
+      "ausenciasAtivas": "Aktive Abwesenheiten",
+      "contratadosRecentemente": "Kürzlich eingestellt",
+      "ultimosTresMeses": "Letzten drei Monate",
+      "custoMensalFolha": "Monatliche Lohnkosten",
+      "mediaFuncionario": "Durchschnitt pro Mitarbeiter",
+      "ultimosContratados": "Neueste Einstellungen",
+      "verTodos": "Alle anzeigen",
+      "funcionariosPorDepartamento": "Mitarbeiter nach Abteilung",
+      "ativosDepartamento": "Aktiv in Abteilung",
+      "custoMensal": "Monatliche Kosten",
+      "ferias": "Urlaub",
+      "licenca": "Abwesenheit"
+    },
+    "estatisticas": {
+      "titulo": "Statistiken",
+      "filtros": "Filter",
+      "periodo": "Zeitraum",
+      "aplicar": "Anwenden",
+      "exportar": "Exportieren"
+    },
+    "folhaPagamento": {
+      "titulo": "Lohnabrechnung",
+      "filtros": "Filter",
+      "mes": "Monat",
+      "ano": "Jahr",
+      "funcionario": "Mitarbeiter",
+      "salario": "Gehalt",
+      "beneficios": "Zusatzleistungen",
+      "descontos": "Abzüge",
+      "total": "Gesamt"
+    }
+  }
 } 

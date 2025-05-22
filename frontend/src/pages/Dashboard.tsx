@@ -621,7 +621,7 @@ const Dashboard: React.FC = () => {
           todayIncome={getTodayIncome()}
           todayExpenses={getTodayExpenses()}
           funcionariosEmFerias={funcionariosEmFerias.length}
-        />
+                  />
       )}
 
       <Snackbar 

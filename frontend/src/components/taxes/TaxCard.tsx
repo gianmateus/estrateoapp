@@ -82,32 +82,39 @@ const TaxCard: React.FC<TaxCardProps> = ({
         }}
       >
         <CardContent>
-          <Box display="flex" alignItems="center" mb={1}>
-            <Box 
-              sx={{ 
-                mr: 1, 
-                color: theme.palette[color].main,
-                display: 'flex',
-                alignItems: 'center'
-              }}
-            >
-              {icon}
+          <Box display="flex" alignItems="center" mb={1} justifyContent="space-between">
+            <Box display="flex" alignItems="center">
+              <Box 
+                sx={{ 
+                  mr: 1, 
+                  color: theme.palette[color].main,
+                  display: 'flex',
+                  alignItems: 'center'
+                }}
+              >
+                {icon}
+              </Box>
+              <Tooltip title={tooltip} arrow placement="top">
+                <Typography variant="h6" component="div" sx={{ display: 'flex', alignItems: 'center' }}>
+                  {title}
+                  {tooltip && (
+                    <InfoIcon fontSize="small" sx={{ ml: 0.5, opacity: 0.6, width: 16, height: 16 }} />
+                  )}
+                </Typography>
+              </Tooltip>
             </Box>
-            <Tooltip title={tooltip} arrow placement="top">
-              <Typography variant="h6" component="div" sx={{ display: 'flex', alignItems: 'center' }}>
-                {title}
-                {tooltip && (
-                  <InfoIcon fontSize="small" sx={{ ml: 0.5, opacity: 0.6, width: 16, height: 16 }} />
-                )}
-              </Typography>
-            </Tooltip>
-            <Box sx={{ flexGrow: 1 }} />
             <IconButton 
               size="small" 
               onClick={toggleExpand}
+              aria-expanded={expanded}
+              aria-label={expanded ? "Recolher detalhes" : "Expandir detalhes"}
               sx={{ 
+                bgcolor: expanded ? 'rgba(0, 0, 0, 0.04)' : 'transparent',
+                '&:hover': {
+                  bgcolor: 'rgba(0, 0, 0, 0.08)'
+                },
                 transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)',
-                transition: 'transform 0.3s'
+                transition: 'transform 0.3s, background-color 0.3s'
               }}
             >
               {expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
@@ -149,16 +156,16 @@ const TaxCard: React.FC<TaxCardProps> = ({
                   }}
                 >
                   <Typography variant="body2" sx={{ mb: 1 }}>
-                    <strong>{t('taxes.calculation', 'Cálculo')}:</strong>
+                    <strong>{t('impostos.comum.calculo')}:</strong>
                   </Typography>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
-                    <Typography variant="body2">{t('taxes.taxableBase', 'Base de cálculo')}:</Typography>
+                    <Typography variant="body2">{t('impostos.comum.baseCalculo')}:</Typography>
                     <Typography variant="body2" fontWeight="medium">
                       {formatCurrency(baseValue)}
                     </Typography>
                   </Box>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
-                    <Typography variant="body2">{t('taxes.taxRate', 'Taxa aplicada')}:</Typography>
+                    <Typography variant="body2">{t('impostos.comum.taxa')}:</Typography>
                     <Typography variant="body2" fontWeight="medium">
                       {formatPercent(taxRate)}
                     </Typography>

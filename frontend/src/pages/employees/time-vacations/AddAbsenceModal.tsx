@@ -24,7 +24,8 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { ptBR } from 'date-fns/locale';
 import { useTranslation } from 'react-i18next';
 import { differenceInDays, isAfter, isBefore, addDays } from 'date-fns';
-import { EventBus } from '../../../services/EventBus';
+import { eventBus } from '../../../services/EventBus';
+import { AUSENCIA_EVENTS, FOLGA_EVENTS } from '../../../constants/events';
 
 interface Employee {
   id: string;
@@ -192,7 +193,14 @@ const AddAbsenceModal: React.FC<AddAbsenceModalProps> = ({
         };
         
         // Emitir evento de ausência registrada
-        EventBus.emit('ausencia.registrada', ausenciaDados);
+        eventBus.emit(AUSENCIA_EVENTS.REGISTRADA, {
+          funcionarioId: employee,
+          funcionarioNome: selectedEmployee ? selectedEmployee.name : 'Desconhecido',
+          tipo: 'outro',
+          dataInicio: startDate!.toISOString(),
+          dataFim: endDate!.toISOString(),
+          motivo: reason
+        });
       } else {
         const folgaDados = {
           id: `folga-${Date.now()}`, // Gera um ID único
@@ -203,7 +211,12 @@ const AddAbsenceModal: React.FC<AddAbsenceModalProps> = ({
         };
         
         // Emitir evento de folga registrada
-        EventBus.emit('folga.registrada', folgaDados);
+        eventBus.emit(FOLGA_EVENTS.REGISTRADA, {
+          funcionarioId: employee,
+          funcionarioNome: selectedEmployee ? selectedEmployee.name : 'Desconhecido',
+          data: startDate!.toISOString(),
+          tipo: 'folga'
+        });
       }
       
       // Chamar o callback original

@@ -73,7 +73,7 @@ const EmployeesGrowthChart: React.FC<EmployeesGrowthChartProps> = ({
               }} 
             />
             <Typography variant="body2" color="text.secondary" component="span">
-              {t('funcionarios')}:
+              Funcionários:
             </Typography>
             <Typography variant="body2" fontWeight="bold" sx={{ ml: 1 }}>
               {formatNumber(payload[0].value)}
@@ -134,6 +134,7 @@ const EmployeesGrowthChart: React.FC<EmployeesGrowthChartProps> = ({
                 tick={{ fill: theme.palette.text.secondary }}
                 axisLine={{ stroke: theme.palette.divider }}
                 tickLine={{ stroke: theme.palette.divider }}
+                tickFormatter={(value) => `${value}`}
               />
               <YAxis 
                 tick={{ fill: theme.palette.text.secondary }}

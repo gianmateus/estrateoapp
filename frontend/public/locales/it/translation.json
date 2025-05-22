@@ -89,5 +89,56 @@
   "geradoHoje": "Generato Oggi",
   "sugestao1": "Le tue scorte di patate sono sotto il minimo, considera di rifornire",
   "sugestao2": "Le vendite tendono ad aumentare del 20% nei fine settimana, prepara le tue scorte",
-  "sugestao3": "Le tue spese per i fornitori sono aumentate del 15% questo mese"
+  "sugestao3": "Le tue spese per i fornitori sono aumentate del 15% questo mese",
+
+  "fluxoCaixa": {
+    "titulo": "Flusso di Cassa",
+    "subtitulo": "Movimenti finanziari consolidati",
+    "hoje": "Oggi",
+    "ontem": "Ieri",
+    "entrada": "Entrate",
+    "saida": "Uscite",
+    "confirmado": "Confermato",
+    "pendente": "In attesa",
+    "cancelado": "Annullato",
+    "cliente": "Cliente",
+    "fornecedor": "Fornitore",
+    "totalEntradas": "Entrate",
+    "totalSaidas": "Uscite",
+    "saldoFinal": "Saldo Finale",
+    "nenhumaMovimentacao": "Nessuna transazione trovata per il periodo selezionato",
+    "previewRelatorio": "Anteprima Report",
+    "resumoFinanceiro": "Riepilogo Finanziario",
+    "movimentacoesDetalhadas": "Transazioni Dettagliate",
+    "movimentacoesNoRelatorio": "Il report includerà {{count}} transazioni dettagliate.",
+    "geradoEm": "Generato il",
+    "periodo": "Periodo",
+    "data": "Data",
+    "tipo": "Tipo",
+    "descricao": "Descrizione",
+    "valor": "Importo",
+    "status": "Stato",
+    "gerarRelatorio": "Genera Report",
+    "filtros": {
+      "titulo": "Filtri",
+      "tipo": "Tipo",
+      "status": "Stato",
+      "origem": "Origine",
+      "todos": "Tutti",
+      "entrada": "Entrate",
+      "saida": "Uscite",
+      "confirmado": "Confermati",
+      "pendente": "In attesa", 
+      "contasAPagar": "Conti da Pagare",
+      "contasAReceber": "Conti da Ricevere",
+      "manual": "Manuale",
+      "de": "Da",
+      "ate": "A",
+      "limpar": "Cancella Filtri"
+    }
+  },
+  
+  "FLUXOCAIXA": {
+    "GERARRELATORIO": "GENERA REPORT"
+  }
 } 

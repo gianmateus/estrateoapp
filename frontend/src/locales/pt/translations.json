@@ -37,12 +37,12 @@
     "moreDetails": "Mais detalhes"
   },
   "contador": {
-    "pageTitle": "Relatórios Financeiros & Impostos",
-    "pageSubtitle": "Cálculos fiscais e relatórios financeiros para o mercado alemão",
+    "pageTitle": "Contabilidade & Impostos Alemães",
+    "pageSubtitle": "Gestão fiscal e contábil especializada para o mercado alemão",
     "selecioneMes": "Selecionar mês",
     "infoDeutscheSteuern": "Este módulo está adaptado às regulamentações fiscais alemãs, com suporte para cálculos de Mehrwertsteuer (IVA) e integrações com o sistema ELSTER.",
-    "dashboardTitle": "Painel Financeiro",
-    "dashboardDesc": "Visão geral de indicadores financeiros e cálculos de impostos",
+    "dashboardTitle": "Dashboard Contábil Alemão",
+    "dashboardDesc": "Visão geral de indicadores fiscais e cálculos de impostos alemães",
     "conformidadeGdpr": "Todos os dados são processados e protegidos de acordo com as diretrizes do GDPR",
     
     "impostos": {
@@ -71,9 +71,11 @@
       "annualFinancial": "Demonstração Financeira Anual",
       "annualFinancialDesc": "Relatório financeiro completo no formato XBRL",
       "tradeTax": "Declaração de Imposto Comercial",
-      "tradeTaxDesc": "Declaração anual do imposto comercial",
+      "tradeTaxDesc": "Declaração anual do imposto comercial (Gewerbesteuer)",
       "euVatReport": "Declaração de IVA da UE",
       "euVatReportDesc": "Relatório para transações transfronteiriças na UE",
+      "monthlyInternal": "Relatório Mensal Interno",
+      "monthlyInternalDesc": "Resumo administrativo mensal com entradas, saídas, folha de pagamento e movimentação de estoque",
       "emBreve": "Em breve",
       "gerar": "Gerar",
       "processando": "Processando...",
@@ -95,6 +97,8 @@
       "ecommerce": "Ativar vendas e-commerce",
       "oneStopShop": "One-Stop-Shop para vendas UE",
       "oneStopShopTooltip": "Processamento simplificado de IVA para vendas a clientes da UE",
+      "vatSettings": "Configurações de Mehrwertsteuer (IVA)",
+      "vatSettingsDesc": "Configure as alíquotas e aplicabilidade do IVA",
       "businessTaxSettings": "Configurações de Imposto Comercial",
       "businessTaxSettingsDesc": "Configure os parâmetros de cálculo do imposto comercial",
       "businessTaxRate": "Alíquota de imposto comercial",

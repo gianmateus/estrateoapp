@@ -87,6 +87,12 @@ const Contador: React.FC = () => {
     setSuccessMessage(null);
   };
   
+  // Função para garantir que o texto da tradução não seja null
+  const getText = (key: string, fallback: string): string => {
+    const translated = t(key);
+    return translated !== key ? translated : fallback;
+  };
+  
   if (loading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
@@ -130,20 +136,20 @@ const Contador: React.FC = () => {
       >
         <Box>
           <Typography variant="h4" component="h1" fontWeight="bold" color="primary">
-            {t('contador.pageTitle')}
+            {getText('contador.pageTitle', 'Contabilidade & Impostos Alemães')}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            {t('contador.pageSubtitle')}
+            {getText('contador.pageSubtitle', 'Gestão fiscal e contábil especializada para o mercado alemão')}
           </Typography>
         </Box>
         
         <FormControl sx={{ minWidth: 200 }}>
-          <InputLabel id="month-select-label">{t('contador.selecioneMes')}</InputLabel>
+          <InputLabel id="month-select-label">{getText('contador.selecioneMes', 'Selecionar mês')}</InputLabel>
           <Select
             labelId="month-select-label"
             id="month-select"
             value={selectedMonth}
-            label={t('contador.selecioneMes')}
+            label={getText('contador.selecioneMes', 'Selecionar mês')}
             onChange={handleMonthChange}
           >
             {monthOptions.map((option) => (
@@ -158,7 +164,7 @@ const Contador: React.FC = () => {
       {/* Informação fiscal alemã */}
       <Paper sx={{ p: 2, mb: 3 }}>
         <Typography variant="body1">
-          {t('contador.infoDeutscheSteuern')}
+          {getText('contador.infoDeutscheSteuern', 'Este módulo está adaptado às regulamentações fiscais alemãs, com suporte para cálculos de Mehrwertsteuer (IVA) e integrações com o sistema ELSTER.')}
         </Typography>
       </Paper>
       

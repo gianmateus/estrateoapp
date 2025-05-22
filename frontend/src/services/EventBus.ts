@@ -5,116 +5,158 @@
  * entre si sem acoplamento direto, usando um sistema de publicação e inscrição.
  */
 
-// Tipos de eventos suportados pelo sistema
-export type EventName = 
-  // Eventos de financeiro
-  'pagamento.criado' | 
-  'pagamento.atualizado' | 
-  'pagamento.excluido' |
-  'entrada.criada' | 
-  'entrada.atualizada' | 
-  'entrada.excluida' |
-  'entrada.parcelada.criada' |      // Novo evento para entradas parceladas
-  'entrada.parcelada.atualizada' |  // Novo evento para atualização de parcelas
-  'entrada.parcela.paga' |          // Novo evento para pagamento de parcela
-  'saida.criada' |                  // Evento para criação de saída padrão
-  'saida.atualizada' |              // Evento para atualização de saída
-  'saida.excluida' |                // Evento para exclusão de saída
-  'saida.parcelada.criada' |        // Novo evento para saídas parceladas
-  'saida.parcelada.atualizada' |    // Novo evento para atualização de parcelas
-  'saida.parcela.paga' |            // Novo evento para pagamento de parcela
-  // Eventos de funcionários
-  'funcionario.pagamento.realizado' | 
-  'funcionario.pagamento.cancelado' |
-  'ferias.registradas' |
-  'folga.registrada' |
-  'ausencia.registrada' |
-  'salario.pago' |
-  // Eventos de estoque
-  'estoque.movimentado' |
-  'estoque.item.abaixo.minimo' |
-  'estoque.item.adicionado' |      // Novo evento para adição de item ao estoque
-  'estoque.item.atualizado' |      // Novo evento para atualização de item do estoque
-  'estoque.item.removido' |        // Novo evento para remoção de item do estoque
-  'estoque.item.proxim.vencimento' | // Novo evento para itens próximos do vencimento
-  'estoque.item.vencido' |         // Novo evento para itens vencidos
-  // Eventos de relatórios
-  'relatorio.mensal.gerado' |
-  // Eventos de notas fiscais
-  'notaFiscal.gerada';
+import { EventName, EventPayloadMap } from '../types/EventTypes';
 
-// Tipo para handlers de eventos
-type EventHandler = (data: any) => void;
+type EventCallback<T extends EventName> = (payload: EventPayloadMap[T]) => void;
 
-// Classe do EventBus
-class EventBusService {
-  // Armazena os handlers registrados para cada tipo de evento
-  private handlers: { [key in EventName]?: EventHandler[] } = {};
+/**
+ * Interface para o logger do EventBus
+ */
+interface EventBusLogger {
+  info(message: string, ...args: unknown[]): void;
+  warn(message: string, ...args: unknown[]): void;
+  error(message: string, ...args: unknown[]): void;
+}
 
-  /**
-   * Registra um handler para um tipo de evento
-   */
-  on(eventName: EventName, handler: EventHandler) {
-    if (!this.handlers[eventName]) {
-      this.handlers[eventName] = [];
-    }
-    this.handlers[eventName]?.push(handler);
-    return this; // Para encadeamento (chaining)
+/**
+ * Implementação padrão do logger usando console
+ */
+class ConsoleLogger implements EventBusLogger {
+  info(message: string, ...args: unknown[]): void {
+    console.log(`[EventBus] ${message}`, ...args);
   }
 
-  /**
-   * Remove um handler para um tipo de evento
-   */
-  off(eventName: EventName, handler: EventHandler) {
-    if (this.handlers[eventName]) {
-      this.handlers[eventName] = this.handlers[eventName]?.filter(h => h !== handler);
-    }
-    return this;
+  warn(message: string, ...args: unknown[]): void {
+    console.warn(`[EventBus] ${message}`, ...args);
   }
 
-  /**
-   * Emite um evento com dados para todos os handlers registrados
-   */
-  emit(eventName: EventName, data: any) {
-    if (this.handlers[eventName]) {
-      console.log(`[EventBus] Emitindo evento: ${eventName}`);
-      this.handlers[eventName]?.forEach(handler => {
-        try {
-          handler(data);
-        } catch (error) {
-          console.error(`[EventBus] Erro ao processar evento ${eventName}:`, error);
-        }
-      });
-    } else {
-      console.log(`[EventBus] Evento emitido sem handlers: ${eventName}`);
-    }
-    return this;
-  }
-
-  /**
-   * Remove todos os handlers de um tipo de evento
-   */
-  clear(eventName: EventName) {
-    this.handlers[eventName] = [];
-    return this;
-  }
-
-  /**
-   * Remove todos os handlers de todos os eventos
-   */
-  clearAll() {
-    this.handlers = {};
-    return this;
-  }
-
-  /**
-   * Remove todos os handlers de um tipo de evento (alias para clear)
-   * @param eventName Nome do evento
-   */
-  removeAllListeners(eventName: EventName) {
-    return this.clear(eventName);
+  error(message: string, ...args: unknown[]): void {
+    console.error(`[EventBus] ${message}`, ...args);
   }
 }
 
-// Exporta uma instância única do EventBus (Singleton)
-export const EventBus = new EventBusService(); 
+/**
+ * Classe EventBus - Gerenciador de eventos do sistema
+ * Implementa o padrão Singleton e fornece uma interface tipada para eventos
+ */
+export class EventBus {
+  private static instance: EventBus;
+  private listeners: Map<EventName, Set<EventCallback<any>>>;
+  private logger: Console;
+
+  private constructor() {
+    this.listeners = new Map();
+    this.logger = console;
+  }
+
+  /**
+   * Obtém a instância única do EventBus
+   */
+  public static getInstance(): EventBus {
+    if (!EventBus.instance) {
+      EventBus.instance = new EventBus();
+    }
+    return EventBus.instance;
+  }
+
+  /**
+   * Registra um listener para um evento específico
+   * @param eventName Nome do evento
+   * @param callback Função a ser executada quando o evento for emitido
+   * @returns Função para remover o listener
+   */
+  public on<T extends EventName>(
+    eventName: T,
+    callback: EventCallback<T>
+  ): () => void {
+    if (!this.listeners.has(eventName)) {
+      this.listeners.set(eventName, new Set());
+    }
+
+    const typedCallback = callback as EventCallback<EventName>;
+    this.listeners.get(eventName)?.add(typedCallback);
+    
+    return () => this.off(eventName, typedCallback);
+  }
+
+  /**
+   * Remove um listener de um evento específico
+   * @param eventName Nome do evento
+   * @param callback Função a ser removida
+   */
+  public off<T extends EventName>(
+    eventName: T,
+    callback: EventCallback<T>
+  ): void {
+    const typedCallback = callback as EventCallback<EventName>;
+    this.listeners.get(eventName)?.delete(typedCallback);
+  }
+
+  /**
+   * Emite um evento com payload tipado
+   * @param eventName Nome do evento
+   * @param payload Dados do evento
+   */
+  public emit<T extends EventName>(
+    eventName: T,
+    payload: Omit<EventPayloadMap[T], 'timestamp' | 'source'>
+  ): void {
+    const fullPayload = {
+      ...payload,
+      timestamp: new Date().toISOString(),
+      source: 'EventBus'
+    } as unknown as EventPayloadMap[T];
+
+    this.logger.info(`Emitindo evento: ${eventName}`, fullPayload);
+    
+    const callbacks = this.listeners.get(eventName);
+    if (callbacks) {
+      callbacks.forEach(callback => {
+        try {
+          callback(fullPayload);
+        } catch (error) {
+          this.logger.error(
+            `Erro ao processar evento ${eventName}:`,
+            error
+          );
+        }
+      });
+    }
+  }
+
+  /**
+   * Remove todos os listeners de um evento específico
+   * @param eventName Nome do evento
+   */
+  public clear(eventName: EventName): void {
+    this.logger.info(`Removendo todos os listeners do evento: ${eventName}`);
+    this.listeners.delete(eventName);
+  }
+
+  /**
+   * Remove todos os listeners de todos os eventos
+   */
+  public clearAll(): void {
+    this.logger.info('Removendo todos os listeners');
+    this.listeners.clear();
+  }
+
+  /**
+   * Obtém o número de listeners para um evento específico
+   * @param eventName Nome do evento
+   */
+  public getListenerCount(eventName: EventName): number {
+    return this.listeners.get(eventName)?.size || 0;
+  }
+
+  /**
+   * Verifica se um evento tem listeners
+   * @param eventName Nome do evento
+   */
+  public hasListeners(eventName: EventName): boolean {
+    return this.getListenerCount(eventName) > 0;
+  }
+}
+
+// Exporta uma instância única do EventBus
+export const eventBus = EventBus.getInstance(); 

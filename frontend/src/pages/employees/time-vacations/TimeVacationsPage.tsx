@@ -276,18 +276,18 @@ const TimeVacationsPage: React.FC = () => {
             onClick={() => navigate('/dashboard/funcionarios')}
             sx={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}
           >
-            {t('funcionarios')}
+            Funcionários
           </Link>
           <Typography color="text.primary" sx={{ display: 'flex', alignItems: 'center' }}>
             <AccessTimeIcon sx={{ mr: 0.5, fontSize: '1.1rem' }} />
-            {t('tempoFerias')}
+            {t('funcionarios.tempoFerias.titulo')}
           </Typography>
         </Breadcrumbs>
 
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
           <Typography variant="h5" component="h1">
             <AccessTimeIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
-            {t('timeAndVacations')}
+            {t('funcionarios.tempoFerias.titulo')}
           </Typography>
         </Box>
 

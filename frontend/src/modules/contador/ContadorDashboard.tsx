@@ -73,7 +73,7 @@ const ContadorDashboard: React.FC<ContadorDashboardProps> = ({ mes }) => {
   // Função para garantir que o texto da tradução não seja null
   const getText = (key: string, fallback: string): string => {
     const translated = t(key);
-    return translated || fallback;
+    return translated !== key ? translated : fallback;
   };
 
   // Carregar dados quando o mês muda
@@ -175,10 +175,10 @@ const ContadorDashboard: React.FC<ContadorDashboardProps> = ({ mes }) => {
 
       <Box sx={{ mb: 3 }}>
         <Typography variant="h5" fontWeight="bold" gutterBottom>
-          {getText('contador.dashboardTitle', 'Painel Financeiro')}
+          {getText('contador.dashboardTitle', 'Dashboard Contábil Alemão')}
         </Typography>
         <Typography variant="body1" color="text.secondary">
-          {getText('contador.dashboardDesc', 'Visão geral de indicadores financeiros e cálculos de impostos')}
+          {getText('contador.dashboardDesc', 'Visão geral de indicadores fiscais e cálculos de impostos alemães')}
         </Typography>
       </Box>
 

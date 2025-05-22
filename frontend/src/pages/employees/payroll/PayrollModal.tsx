@@ -12,10 +12,12 @@ import {
   Select,
   MenuItem,
   FormControlLabel,
-  Checkbox,
+  Radio,
+  RadioGroup,
   Typography,
   Box,
-  SelectChangeEvent
+  SelectChangeEvent,
+  FormLabel
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { PaymentData } from './PayrollPage';
@@ -127,11 +129,11 @@ const PayrollModal: React.FC<PayrollModalProps> = ({
     }
   };
 
-  // Manipulador para alteração no checkbox de pago
+  // Manipulador para alteração no radio de status
   const handleStatusChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prev => ({
       ...prev,
-      status: event.target.checked ? 'pago' : 'pendente'
+      status: event.target.value as 'pago' | 'pendente' | 'atrasado'
     }));
   };
 
@@ -148,19 +150,19 @@ const PayrollModal: React.FC<PayrollModalProps> = ({
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
       <DialogTitle>
-        {payment ? t('editarPagamento') : t('adicionarPagamento')}
+        {payment ? 'Editar Pagamento' : 'Registrar Pagamento'}
       </DialogTitle>
       <DialogContent>
         <Grid container spacing={2} sx={{ mt: 1 }}>
           <Grid item xs={12} sm={6}>
             <FormControl fullWidth>
-              <InputLabel id="employee-select-label">{t('funcionario')}</InputLabel>
+              <InputLabel id="employee-select-label">Funcionário</InputLabel>
               <Select
                 labelId="employee-select-label"
                 name="employeeId"
                 value={formData.employeeId}
                 onChange={handleSelectChange}
-                label={t('funcionario')}
+                label="Funcionário"
                 disabled={!!payment}
               >
                 {mockEmployees.map(emp => (
@@ -173,23 +175,23 @@ const PayrollModal: React.FC<PayrollModalProps> = ({
           </Grid>
           <Grid item xs={12} sm={6}>
             <FormControl fullWidth>
-              <InputLabel id="contract-type-label">{t('tipoContrato')}</InputLabel>
+              <InputLabel id="contract-type-label">Tipo de Contrato</InputLabel>
               <Select
                 labelId="contract-type-label"
                 name="contractType"
                 value={formData.contractType}
                 onChange={handleSelectChange}
-                label={t('tipoContrato')}
+                label="Tipo de Contrato"
               >
-                <MenuItem value="mensalista">{t('mensalista')}</MenuItem>
-                <MenuItem value="horista">{t('horista')}</MenuItem>
+                <MenuItem value="mensalista">Mensalista</MenuItem>
+                <MenuItem value="horista">Horista</MenuItem>
               </Select>
             </FormControl>
           </Grid>
           <Grid item xs={12} sm={4}>
             <TextField
               name="hoursWorked"
-              label={t('horasTrabalhadas')}
+              label="Horas Trabalhadas"
               type="number"
               fullWidth
               value={formData.hoursWorked}
@@ -203,7 +205,7 @@ const PayrollModal: React.FC<PayrollModalProps> = ({
           <Grid item xs={12} sm={4}>
             <TextField
               name="grossAmount"
-              label={t('valorBruto')}
+              label="Valor Bruto"
               type="number"
               fullWidth
               value={formData.grossAmount}
@@ -217,7 +219,7 @@ const PayrollModal: React.FC<PayrollModalProps> = ({
           <Grid item xs={12} sm={4}>
             <TextField
               name="deductions"
-              label={t('descontos')}
+              label="Descontos"
               type="number"
               fullWidth
               value={formData.deductions}
@@ -231,7 +233,7 @@ const PayrollModal: React.FC<PayrollModalProps> = ({
           <Grid item xs={12}>
             <Box sx={{ p: 2, bgcolor: 'grey.100', borderRadius: 1 }}>
               <Typography variant="subtitle1" sx={{ mb: 1 }}>
-                {t('valorLiquido')}
+                Valor Líquido
               </Typography>
               <Typography variant="h5" color="primary">
                 {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'EUR' })
@@ -240,22 +242,36 @@ const PayrollModal: React.FC<PayrollModalProps> = ({
             </Box>
           </Grid>
           <Grid item xs={12}>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={formData.status === 'pago'}
-                  onChange={handleStatusChange}
-                  name="status"
-                  color="success"
+            <FormControl component="fieldset">
+              <FormLabel component="legend">Status</FormLabel>
+              <RadioGroup
+                row
+                name="status"
+                value={formData.status}
+                onChange={handleStatusChange}
+              >
+                <FormControlLabel 
+                  value="pago" 
+                  control={<Radio color="success" />} 
+                  label="Pago" 
                 />
-              }
-              label={t('marcaComoPago')}
-            />
+                <FormControlLabel 
+                  value="pendente" 
+                  control={<Radio color="warning" />} 
+                  label="Pendente" 
+                />
+                <FormControlLabel 
+                  value="atrasado" 
+                  control={<Radio color="error" />} 
+                  label="Atrasado" 
+                />
+              </RadioGroup>
+            </FormControl>
           </Grid>
           <Grid item xs={12}>
             <TextField
               name="observations"
-              label={t('observacoes')}
+              label="Observações"
               multiline
               rows={3}
               fullWidth
@@ -266,14 +282,14 @@ const PayrollModal: React.FC<PayrollModalProps> = ({
         </Grid>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>{t('cancelar')}</Button>
+        <Button onClick={onClose}>Cancelar</Button>
         <Button 
           onClick={handleSave} 
           variant="contained" 
           color="primary"
           disabled={!formData.employeeId || !formData.grossAmount}
         >
-          {t('salvar')}
+          Salvar
         </Button>
       </DialogActions>
     </Dialog>

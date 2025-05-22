@@ -10,7 +10,7 @@
  */
 
 import prisma from '../../lib/prisma';
-import { EventBus } from '../../lib/EventBus';
+import { eventBus } from '../../../services/EventBus';
 
 export interface MovimentacaoEstoque {
   id: string;
@@ -33,7 +33,7 @@ export function initializeEstoqueListeners() {
   
   // Ouve evento de movimentação de estoque
   // Listens for inventory movement event
-  EventBus.on('estoque.movimentado', async (movimentacao: MovimentacaoEstoque) => {
+  eventBus.on('estoque.movimentado', async (movimentacao: MovimentacaoEstoque) => {
     console.log('[EstoqueListener] Processando evento estoque.movimentado', movimentacao.id);
     
     try {
@@ -51,7 +51,7 @@ export function initializeEstoqueListeners() {
   
   // Ouve evento de item abaixo do mínimo
   // Listens for item below minimum stock level event
-  EventBus.on('estoque.item.abaixo.minimo', async (item: any) => {
+  eventBus.on('estoque.item.abaixo.minimo', async (item: any) => {
     console.log('[EstoqueListener] Processando evento estoque.item.abaixo.minimo', item.id);
     
     try {

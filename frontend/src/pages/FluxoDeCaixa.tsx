@@ -591,166 +591,170 @@ const FluxoDeCaixa: React.FC = () => {
         </Alert>
       ) : (
         <Box>
-          {Object.entries(transacoesAgrupadasPorDia).map(([data, transacoesDoDia]) => (
-            <Paper key={data} sx={{ mb: 3, overflow: 'hidden' }}>
-              {/* Cabeçalho do dia */}
-              <Box sx={{ 
-                p: 2, 
-                backgroundColor: 'primary.main', 
-                color: 'primary.contrastText',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between'
-              }}>
-                <Typography variant="h6">
-                  {(() => {
-                    const dataObj = new Date(data);
-                    const locale = getDateLocale(i18n.language);
-                    
-                    if (isToday(dataObj)) {
-                      return t('fluxoCaixa.hoje');
-                    } else if (isYesterday(dataObj)) {
-                      return t('fluxoCaixa.ontem');
-                    } else {
-                      return format(dataObj, 'EEEE, dd MMMM yyyy', { locale });
-                    }
-                  })()}
-                </Typography>
-                
-                <Box>
-                  {/* Resumo do dia */}
-                  {(() => {
-                    const totalDia = transacoesDoDia.reduce((acc, t) => {
-                      return t.tipo === 'entrada' 
-                        ? acc + t.valor 
-                        : acc - t.valor;
-                    }, 0);
-                    
-                    return (
-                      <Chip 
-                        label={formatarMoeda(totalDia)}
-                        color={totalDia >= 0 ? 'success' : 'error'}
-                        variant="filled"
-                      />
-                    );
-                  })()}
-                </Box>
-              </Box>
-              
-              {/* Lista de transações do dia */}
-              <Box>
-                {transacoesDoDia.map((transacao) => (
-                  <Box 
-                    key={transacao.id}
-                    sx={{ 
-                      p: 2, 
-                      borderBottom: '1px solid',
-                      borderColor: 'divider',
-                      '&:last-child': {
-                        borderBottom: 'none'
-                      },
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      transition: 'background-color 0.2s',
-                      '&:hover': {
-                        backgroundColor: 'action.hover'
+          {Object.entries(transacoesAgrupadasPorDia).map(([data, transacoesDoDia]) => {
+            const dataObj = new Date(data);
+            const isOntem = isYesterday(dataObj);
+            
+            return (
+              <Paper key={data} sx={{ mb: 3, overflow: 'hidden' }}>
+                {/* Cabeçalho do dia */}
+                <Box sx={{ 
+                  p: 2, 
+                  backgroundColor: isOntem ? theme.palette.grey[100] : 'primary.main', 
+                  color: isOntem ? 'text.primary' : 'primary.contrastText',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between'
+                }}>
+                  <Typography variant="h6">
+                    {(() => {
+                      const locale = getDateLocale(i18n.language);
+                      
+                      if (isToday(dataObj)) {
+                        return t('fluxoCaixa.hoje');
+                      } else if (isOntem) {
+                        return t('fluxoCaixa.ontem');
+                      } else {
+                        return format(dataObj, 'EEEE, dd MMMM yyyy', { locale });
                       }
-                    }}
-                  >
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                      {/* Ícone de entrada/saída */}
-                      <Box 
-                        sx={{ 
-                          borderRadius: '50%',
-                          width: 40,
-                          height: 40,
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          backgroundColor: transacao.tipo === 'entrada' 
-                            ? 'success.light' 
-                            : 'error.light',
-                          color: '#fff',
-                          mr: 2
-                        }}
-                      >
-                        {transacao.tipo === 'entrada' 
-                          ? <ArrowUpIcon /> 
-                          : <ArrowDownwardIcon />}
-                      </Box>
+                    })()}
+                  </Typography>
+                  
+                  <Box>
+                    {/* Resumo do dia */}
+                    {(() => {
+                      const totalDia = transacoesDoDia.reduce((acc, t) => {
+                        return t.tipo === 'entrada' 
+                          ? acc + t.valor 
+                          : acc - t.valor;
+                      }, 0);
                       
-                      {/* Descrição e detalhes */}
-                      <Box>
-                        <Typography variant="body1" fontWeight="medium">
-                          {transacao.descricao}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          {transacao.tipo === 'entrada' 
-                            ? (transacao.cliente || t('fluxoCaixa.cliente')) 
-                            : (transacao.fornecedor || t('fluxoCaixa.fornecedor'))}
-                          {transacao.observacao && ` • ${transacao.observacao}`}
-                        </Typography>
-                      </Box>
-                    </Box>
-                    
-                    {/* Valor e status */}
-                    <Box sx={{ textAlign: 'right' }}>
-                      <Typography 
-                        variant="body1" 
-                        fontWeight="bold"
-                        color={transacao.tipo === 'entrada' ? 'success.main' : 'error.main'}
-                      >
-                        {transacao.tipo === 'entrada' ? '+' : '-'} {formatarMoeda(transacao.valor)}
-                      </Typography>
-                      
-                      {/* Status com ícones */}
-                      {(() => {
-                        const isPago = transacao.parcelamento?.parcelas.some(p => p.pago) || false;
-                        // Verificação de status cancelado - pode variar conforme a implementação do sistema
-                        const isCancelado = false; // Removendo referência a propriedade inexistente
-                        
-                        if (isCancelado) {
-                          return (
-                            <Chip
-                              size="small"
-                              icon={<CancelIcon />}
-                              label={t('fluxoCaixa.cancelado') || 'Cancelado'}
-                              color="default"
-                              variant="outlined"
-                              sx={{ mt: 0.5 }}
-                            />
-                          );
-                        } else if (isPago) {
-                          return (
-                            <Chip
-                              size="small"
-                              icon={<CheckCircleIcon />}
-                              label={t('fluxoCaixa.confirmado') || 'Confirmado'}
-                              color="success"
-                              variant="outlined"
-                              sx={{ mt: 0.5 }}
-                            />
-                          );
-                        } else {
-                          return (
-                            <Chip
-                              size="small"
-                              icon={<AccessTimeIcon />}
-                              label={t('fluxoCaixa.pendente') || 'Pendente'}
-                              color="warning"
-                              variant="outlined"
-                              sx={{ mt: 0.5 }}
-                            />
-                          );
-                        }
-                      })()}
-                    </Box>
+                      return (
+                        <Chip 
+                          label={formatarMoeda(totalDia)}
+                          color={totalDia >= 0 ? 'success' : 'error'}
+                          variant="filled"
+                        />
+                      );
+                    })()}
                   </Box>
-                ))}
-              </Box>
-            </Paper>
-          ))}
+                </Box>
+                
+                {/* Lista de transações do dia */}
+                <Box>
+                  {transacoesDoDia.map((transacao) => (
+                    <Box 
+                      key={transacao.id}
+                      sx={{ 
+                        p: 2, 
+                        borderBottom: '1px solid',
+                        borderColor: 'divider',
+                        '&:last-child': {
+                          borderBottom: 'none'
+                        },
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        transition: 'background-color 0.2s',
+                        '&:hover': {
+                          backgroundColor: 'action.hover'
+                        }
+                      }}
+                    >
+                      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        {/* Ícone de entrada/saída */}
+                        <Box 
+                          sx={{ 
+                            borderRadius: '50%',
+                            width: 40,
+                            height: 40,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            backgroundColor: transacao.tipo === 'entrada' 
+                              ? 'success.light' 
+                              : 'error.light',
+                            color: '#fff',
+                            mr: 2
+                          }}
+                        >
+                          {transacao.tipo === 'entrada' 
+                            ? <ArrowUpIcon /> 
+                            : <ArrowDownwardIcon />}
+                        </Box>
+                        
+                        {/* Descrição e detalhes */}
+                        <Box>
+                          <Typography variant="body1" fontWeight="medium">
+                            {transacao.descricao}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            {transacao.tipo === 'entrada' 
+                              ? (transacao.cliente || t('fluxoCaixa.cliente')) 
+                              : (transacao.fornecedor || t('fluxoCaixa.fornecedor'))}
+                            {transacao.observacao && ` • ${transacao.observacao}`}
+                          </Typography>
+                        </Box>
+                      </Box>
+                      
+                      {/* Valor e status */}
+                      <Box sx={{ textAlign: 'right' }}>
+                        <Typography 
+                          variant="body1" 
+                          fontWeight="bold"
+                          color={transacao.tipo === 'entrada' ? 'success.main' : 'error.main'}
+                        >
+                          {transacao.tipo === 'entrada' ? '+' : '-'} {formatarMoeda(transacao.valor)}
+                        </Typography>
+                        
+                        {/* Status com ícones */}
+                        {(() => {
+                          const isPago = transacao.parcelamento?.parcelas.some(p => p.pago) || false;
+                          // Verificação de status cancelado - pode variar conforme a implementação do sistema
+                          const isCancelado = false; // Removendo referência a propriedade inexistente
+                          
+                          if (isCancelado) {
+                            return (
+                              <Chip
+                                size="small"
+                                icon={<CancelIcon />}
+                                label={t('fluxoCaixa.cancelado') || 'Cancelado'}
+                                color="default"
+                                variant="outlined"
+                                sx={{ mt: 0.5 }}
+                              />
+                            );
+                          } else if (isPago) {
+                            return (
+                              <Chip
+                                size="small"
+                                icon={<CheckCircleIcon />}
+                                label={t('fluxoCaixa.confirmado') || 'Confirmado'}
+                                color="success"
+                                variant="outlined"
+                                sx={{ mt: 0.5 }}
+                              />
+                            );
+                          } else {
+                            return (
+                              <Chip
+                                size="small"
+                                icon={<AccessTimeIcon />}
+                                label={t('fluxoCaixa.pendente') || 'Pendente'}
+                                color="warning"
+                                variant="outlined"
+                                sx={{ mt: 0.5 }}
+                              />
+                            );
+                          }
+                        })()}
+                      </Box>
+                    </Box>
+                  ))}
+                </Box>
+              </Paper>
+            );
+          })}
         </Box>
       )}
     </Box>

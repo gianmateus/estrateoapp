@@ -68,7 +68,7 @@ const RelatoriosFiscais: React.FC<RelatoriosFiscaisProps> = ({ mes, impostos }) 
   // Função para garantir que o texto da tradução não seja null
   const getText = (key: string, fallback: string): string => {
     const translated = t(key);
-    return translated || fallback;
+    return translated !== key ? translated : fallback;
   };
 
   // Lista de relatórios disponíveis
@@ -92,7 +92,7 @@ const RelatoriosFiscais: React.FC<RelatoriosFiscaisProps> = ({ mes, impostos }) 
     {
       id: 'trade_tax',
       title: getText('contador.relatorios.tradeTax', 'Declaração de Imposto Comercial'),
-      description: getText('contador.relatorios.tradeTaxDesc', 'Declaração anual do imposto comercial'),
+      description: getText('contador.relatorios.tradeTaxDesc', 'Declaração anual do imposto comercial (Gewerbesteuer)'),
       format: 'pdf',
       icon: <PictureAsPdf />,
       available: true
@@ -107,8 +107,8 @@ const RelatoriosFiscais: React.FC<RelatoriosFiscaisProps> = ({ mes, impostos }) 
     },
     {
       id: 'relatorio_mensal_interno',
-      title: 'Relatório Mensal Interno',
-      description: 'Resumo administrativo mensal com entradas, saídas, folha de pagamento e movimentação de estoque.',
+      title: getText('contador.relatorios.monthlyInternal', 'Relatório Mensal Interno'),
+      description: getText('contador.relatorios.monthlyInternalDesc', 'Resumo administrativo mensal com entradas, saídas, folha de pagamento e movimentação de estoque'),
       format: 'interno',
       icon: <BarChart />,
       available: true,

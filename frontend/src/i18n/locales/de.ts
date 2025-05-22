@@ -1,18 +1,77 @@
 export const de = {
-  // Übersetzungen für das Cash-Flow-Modul (neue Funktion)
+  // Übersetzungen für Mitarbeiterbereich
+  funcionarios: {
+    titulo: "Zahlungsverwaltung",
+    pagamento: {
+      vazio: "Keine Zahlungen gefunden"
+    }
+  },
+  
+  // Übersetzungen für die Gehaltsabrechnung
+  folhaPagamento: 'Gehaltsabrechnung',
+  registrarPagamento: 'Zahlung registrieren',
+  adicionarPagamento: 'Zahlung hinzufügen',
+  editarPagamento: 'Zahlung bearbeiten',
+  funcionario: 'Mitarbeiter',
+  tipoContrato: 'Vertragstyp',
+  mensalista: 'Monatsgehalt',
+  horista: 'Stundenlohn',
+  horasTrabalhadas: 'Arbeitsstunden',
+  valorBruto: 'Bruttobetrag',
+  descontos: 'Abzüge',
+  valorLiquido: 'Nettobetrag',
+  status: 'Status',
+  acoes: 'Aktionen',
+  pago: 'Bezahlt',
+  pendente: 'Ausstehend',
+  atrasado: 'Überfällig',
+  observacoes: 'Anmerkungen',
+  marcaComoPago: 'Als bezahlt markieren',
+  mes: 'Monat',
+  ano: 'Jahr',
+  filtrar: 'Filtern',
+  janeiro: 'Januar',
+  fevereiro: 'Februar',
+  marco: 'März',
+  abril: 'April',
+  maio: 'Mai',
+  junho: 'Juni',
+  julho: 'Juli',
+  agosto: 'August',
+  setembro: 'September',
+  outubro: 'Oktober',
+  novembro: 'November',
+  dezembro: 'Dezember',
+  exportarPDF: 'PDF exportieren',
+  exportandoPDF: 'Exportiere PDF:',
+  adicioneUmPagamentoParaExportar: 'Fügen Sie mindestens eine Zahlung hinzu, um PDF zu exportieren',
+  todos: 'Alle',
+  visualizar: 'Anzeigen',
+  editar: 'Bearbeiten',
+  excluir: 'Löschen',
+  salvar: 'Speichern',
+  cancelar: 'Abbrechen',
+  nenhumPagamentoEncontrado: 'Keine Zahlungen gefunden',
+  pagamentoDuplicado: 'Für diesen Mitarbeiter existiert bereits eine Zahlung in diesem Monat',
+  pagamentoAdicionado: 'Zahlung erfolgreich registriert',
+  pagamentoAtualizado: 'Zahlung erfolgreich aktualisiert',
+  erroAoCarregarDados: 'Fehler beim Laden der Zahlungsdaten',
+
+  // Übersetzungen für das Cashflow-Modul (neue Funktion)
   fluxoCaixa: {
     titulo: "Cashflow",
-    subtitulo: "Vollständige Historie der Finanztransaktionen",
+    subtitulo: "Konsolidierte Finanzbewegungen",
     hoje: "Heute",
     ontem: "Gestern",
-    entrada: "Einnahme",
-    saida: "Ausgabe",
+    entrada: "Einnahmen",
+    saida: "Ausgaben",
     confirmado: "Bestätigt",
     pendente: "Ausstehend",
+    cancelado: "Storniert",
     cliente: "Kunde",
     fornecedor: "Lieferant",
-    totalEntradas: "Gesamteinnahmen",
-    totalSaidas: "Gesamtausgaben",
+    totalEntradas: "Einnahmen",
+    totalSaidas: "Ausgaben",
     saldoFinal: "Endsaldo",
     nenhumaMovimentacao: "Keine Transaktionen für den ausgewählten Zeitraum gefunden",
     previewRelatorio: "Berichtsvorschau",
@@ -31,7 +90,7 @@ export const de = {
     // Filter
     filtros: {
       titulo: "Filter",
-      tipo: "Transaktionstyp",
+      tipo: "Typ",
       status: "Status",
       origem: "Quelle",
       todos: "Alle",
@@ -44,7 +103,7 @@ export const de = {
       manual: "Manuell",
       de: "Von",
       ate: "Bis",
-      limpar: "Filter zurücksetzen"
+      limpar: "Filter löschen"
     }
   }
 }; 

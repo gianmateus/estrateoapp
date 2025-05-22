@@ -33,7 +33,8 @@ import InfoIcon from '@mui/icons-material/Info';
 import { format, addMonths } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { Transacao, TipoEntrada, StatusRecebimento, FormaPagamento, Parcela } from '../../contexts/FinanceiroContext';
-import { EventBus } from '../../services/EventBus';
+import { eventBus } from '../../services/EventBus';
+import { ENTRADA_EVENTS } from '../../constants/events';
 
 interface FormularioEntradaProps {
   formData: any;
@@ -181,10 +182,12 @@ const FormularioEntrada: React.FC<FormularioEntradaProps> = ({
   const handleSubmitForm = () => {
     // Se for uma entrada parcelada, emitir evento específico
     if (formData.parcelamento?.habilitado) {
-      EventBus.emit('entrada.parcelada.criada', {
-        ...formData,
-        tipo: 'entrada',
-        parcelas
+      eventBus.emit(ENTRADA_EVENTS.PARCELADA_CRIADA, {
+        id: formData.id,
+        valor: formData.valor,
+        parcelas: formData.parcelamento.parcelas,
+        data: formData.data,
+        categoria: formData.categoria
       });
     }
     

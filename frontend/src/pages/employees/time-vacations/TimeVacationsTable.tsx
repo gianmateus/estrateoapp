@@ -15,17 +15,20 @@ import {
   InputAdornment,
   Grid,
   Typography,
-  CircularProgress
+  CircularProgress,
+  Chip
 } from '@mui/material';
 import {
   Search as SearchIcon,
-  Add as AddIcon,
   Edit as EditIcon,
   CalendarMonth as CalendarIcon,
   AccessTime as ClockIcon,
   EventBusy as AbsenceIcon,
   BeachAccess as VacationIcon,
-  Weekend as TimeOffIcon
+  Weekend as TimeOffIcon,
+  CalendarMonthOutlined,
+  WorkOffOutlined,
+  EventBusyOutlined
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { AttendanceData } from './TimeVacationsPage';
@@ -43,6 +46,15 @@ interface TimeVacationsTableProps {
   setEmployeeFilter: React.Dispatch<React.SetStateAction<string>>;
   onAddVacation: (employeeId?: string) => void;
   onAddAbsence: (employeeId?: string) => void;
+}
+
+// Configuração dos botões de ação para evitar duplicação de código
+interface ActionButton {
+  icon: React.ReactNode;
+  label: string;
+  tooltipText: string;
+  onClick: () => void;
+  color?: "primary" | "secondary" | "success" | "error" | "info" | "warning";
 }
 
 const TimeVacationsTable: React.FC<TimeVacationsTableProps> = ({
@@ -88,6 +100,74 @@ const TimeVacationsTable: React.FC<TimeVacationsTableProps> = ({
     return date;
   };
 
+  // Array de ações para os botões
+  const actionButtons: ActionButton[] = [
+    {
+      icon: <CalendarMonthOutlined />,
+      label: t('tempo.button.registrarFerias'),
+      tooltipText: t('tempo.tooltip.registrarFerias'),
+      onClick: handleAddVacation
+    },
+    {
+      icon: <WorkOffOutlined />,
+      label: t('tempo.button.registrarFolga'),
+      tooltipText: t('tempo.tooltip.registrarFolga'),
+      onClick: handleAddTimeOff
+    },
+    {
+      icon: <EventBusyOutlined />,
+      label: t('tempo.button.registrarAusencia'),
+      tooltipText: t('tempo.tooltip.registrarAusencia'),
+      onClick: handleAddAbsence
+    }
+  ];
+
+  // Renderizar status do funcionário
+  const renderStatusChips = (row: AttendanceData) => {
+    const chips = [];
+    
+    if (row.vacations > 0) {
+      chips.push(
+        <Chip 
+          key="ferias"
+          label={t('tempo.label.ferias')}
+          size="small"
+          color="primary"
+          sx={{ mr: 0.5 }}
+        />
+      );
+    }
+    
+    if (row.absences > 0) {
+      chips.push(
+        <Chip 
+          key="ausencias"
+          label={t('tempo.label.ausencias')}
+          size="small"
+          color="warning"
+          sx={{ mr: 0.5 }}
+        />
+      );
+    }
+    
+    if (row.timeOff > 0) {
+      chips.push(
+        <Chip 
+          key="folgas"
+          label={t('tempo.label.folgas')}
+          size="small"
+          color="success"
+        />
+      );
+    }
+    
+    return (
+      <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 0.5 }}>
+        {chips}
+      </Box>
+    );
+  };
+
   return (
     <Box sx={{ width: '100%' }}>
       {/* Filtros e botões de ação */}
@@ -96,7 +176,7 @@ const TimeVacationsTable: React.FC<TimeVacationsTableProps> = ({
           <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ptBR}>
             <DatePicker
               views={['month', 'year']}
-              label={t('meseAno')}
+              label={t('tempo.label.mesAno')}
               value={getDateForPicker()}
               onChange={handleDateChange}
               slotProps={{
@@ -115,7 +195,7 @@ const TimeVacationsTable: React.FC<TimeVacationsTableProps> = ({
             fullWidth
             value={employeeFilter}
             onChange={(e) => setEmployeeFilter(e.target.value)}
-            placeholder={String(t('filtrarPorFuncionario'))}
+            placeholder={String(t('tempo.placeholder.filtrarPorFuncionario'))}
             variant="outlined"
             size="small"
             InputProps={{
@@ -130,32 +210,19 @@ const TimeVacationsTable: React.FC<TimeVacationsTableProps> = ({
         
         <Grid item xs={12} md={6}>
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
-            <Button
-              variant="outlined"
-              startIcon={<VacationIcon />}
-              onClick={handleAddVacation}
-              size="small"
-            >
-              {t('adicionarFerias')}
-            </Button>
-            
-            <Button
-              variant="outlined"
-              startIcon={<TimeOffIcon />}
-              onClick={handleAddTimeOff}
-              size="small"
-            >
-              {t('registrarFolga')}
-            </Button>
-            
-            <Button
-              variant="outlined"
-              startIcon={<AbsenceIcon />}
-              onClick={handleAddAbsence}
-              size="small"
-            >
-              {t('registrarAusencia')}
-            </Button>
+            {actionButtons.map((button, index) => (
+              <Tooltip key={index} title={button.tooltipText}>
+                <Button
+                  variant="outlined"
+                  startIcon={button.icon}
+                  onClick={button.onClick}
+                  size="small"
+                  color={button.color}
+                >
+                  {button.label}
+                </Button>
+              </Tooltip>
+            ))}
           </Box>
         </Grid>
       </Grid>
@@ -165,62 +232,63 @@ const TimeVacationsTable: React.FC<TimeVacationsTableProps> = ({
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>{t('funcionario')}</TableCell>
+              <TableCell>{t('tempo.label.funcionario')}</TableCell>
               <TableCell align="center">
-                <Tooltip title={t('diasTrabalhadosNoMes')}>
+                <Tooltip title={t('tempo.tooltip.diasTrabalhados')}>
                   <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <CalendarIcon fontSize="small" sx={{ mr: 0.5 }} />
-                    {t('diasTrabalhados')}
+                    {t('tempo.label.diasTrabalhados')}
                   </Box>
                 </Tooltip>
               </TableCell>
               <TableCell align="center">
-                <Tooltip title={t('horasTrabalhadasNoMes')}>
+                <Tooltip title={t('tempo.tooltip.horasTrabalhadas')}>
                   <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <ClockIcon fontSize="small" sx={{ mr: 0.5 }} />
-                    {t('horasTrabalhadas')}
+                    {t('tempo.label.horasTrabalhadas')}
                   </Box>
                 </Tooltip>
               </TableCell>
               <TableCell align="center">
-                <Tooltip title={t('ausenciasNoMes')}>
+                <Tooltip title={t('tempo.tooltip.ausencias')}>
                   <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <AbsenceIcon fontSize="small" sx={{ mr: 0.5 }} />
-                    {t('ausencias')}
+                    {t('tempo.label.ausencias')}
                   </Box>
                 </Tooltip>
               </TableCell>
               <TableCell align="center">
-                <Tooltip title={t('feriasNoMes')}>
+                <Tooltip title={t('tempo.tooltip.ferias')}>
                   <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <VacationIcon fontSize="small" sx={{ mr: 0.5 }} />
-                    {t('ferias')}
+                    {t('tempo.label.ferias')}
                   </Box>
                 </Tooltip>
               </TableCell>
               <TableCell align="center">
-                <Tooltip title={t('folgasNoMes')}>
+                <Tooltip title={t('tempo.tooltip.folgas')}>
                   <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <TimeOffIcon fontSize="small" sx={{ mr: 0.5 }} />
-                    {t('folgas')}
+                    {t('tempo.label.folgas')}
                   </Box>
                 </Tooltip>
               </TableCell>
-              <TableCell align="center">{t('acoes')}</TableCell>
+              <TableCell align="center">{t('tempo.label.status')}</TableCell>
+              <TableCell align="center">{t('tempo.label.acoes')}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {loading ? (
               <TableRow>
-                <TableCell colSpan={7} align="center" sx={{ py: 3 }}>
+                <TableCell colSpan={8} align="center" sx={{ py: 3 }}>
                   <CircularProgress size={30} />
                 </TableCell>
               </TableRow>
             ) : data.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} align="center" sx={{ py: 3 }}>
+                <TableCell colSpan={8} align="center" sx={{ py: 3 }}>
                   <Typography variant="body2" color="text.secondary">
-                    {t('nenhumRegistroEncontrado')}
+                    {t('tempo.mensagem.nenhumRegistroEncontrado')}
                   </Typography>
                 </TableCell>
               </TableRow>
@@ -228,54 +296,67 @@ const TimeVacationsTable: React.FC<TimeVacationsTableProps> = ({
               data.map((row) => (
                 <TableRow key={row.id}>
                   <TableCell>{row.employeeName}</TableCell>
-                  <TableCell align="center">{row.daysWorked} {t('dias')}</TableCell>
-                  <TableCell align="center">{row.hoursWorked}h</TableCell>
                   <TableCell align="center">
-                    {row.absences > 0 ? (
-                      <Typography variant="body2" color="error">
-                        {row.absences} {t('dias')}
-                      </Typography>
-                    ) : (
-                      `${row.absences} ${t('dias')}`
-                    )}
+                    <Typography variant="body2" fontWeight="medium">
+                      {row.daysWorked} {t('tempo.label.dias')}
+                    </Typography>
                   </TableCell>
                   <TableCell align="center">
-                    {row.vacations > 0 ? (
-                      <Typography variant="body2" color="primary">
-                        {row.vacations} {t('dias')}
-                      </Typography>
-                    ) : (
-                      `${row.vacations} ${t('dias')}`
-                    )}
+                    <Typography variant="body2" fontWeight="medium">
+                      {row.hoursWorked}h
+                    </Typography>
                   </TableCell>
                   <TableCell align="center">
-                    {row.timeOff > 0 ? (
-                      <Typography variant="body2" color="warning.main">
-                        {row.timeOff} {t('dias')}
-                      </Typography>
-                    ) : (
-                      `${row.timeOff} ${t('dias')}`
-                    )}
+                    <Typography 
+                      variant="body2" 
+                      fontWeight="medium"
+                      color={row.absences > 0 ? "error" : "text.primary"}
+                    >
+                      {row.absences} {t('tempo.label.dias')}
+                    </Typography>
+                  </TableCell>
+                  <TableCell align="center">
+                    <Typography 
+                      variant="body2" 
+                      fontWeight="medium"
+                      color={row.vacations > 0 ? "primary" : "text.primary"}
+                    >
+                      {row.vacations} {t('tempo.label.dias')}
+                    </Typography>
+                  </TableCell>
+                  <TableCell align="center">
+                    <Typography 
+                      variant="body2" 
+                      fontWeight="medium"
+                      color={row.timeOff > 0 ? "success.main" : "text.primary"}
+                    >
+                      {row.timeOff} {t('tempo.label.dias')}
+                    </Typography>
+                  </TableCell>
+                  <TableCell align="center">
+                    {renderStatusChips(row)}
                   </TableCell>
                   <TableCell align="center">
                     <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                      <Tooltip title={t('editar')}>
+                      <Tooltip title={t('tempo.tooltip.editar')}>
                         <IconButton size="small">
                           <EditIcon fontSize="small" />
                         </IconButton>
                       </Tooltip>
-                      <Tooltip title={t('adicionarFerias')}>
+                      <Tooltip title={t('tempo.tooltip.registrarFerias')}>
                         <IconButton 
                           size="small" 
                           onClick={() => onAddVacation(row.employeeId)}
+                          color="primary"
                         >
                           <VacationIcon fontSize="small" />
                         </IconButton>
                       </Tooltip>
-                      <Tooltip title={t('registrarAusenciaOuFolga')}>
+                      <Tooltip title={t('tempo.tooltip.registrarAusencia')}>
                         <IconButton 
                           size="small"
                           onClick={() => onAddAbsence(row.employeeId)}
+                          color="warning"
                         >
                           <AbsenceIcon fontSize="small" />
                         </IconButton>
